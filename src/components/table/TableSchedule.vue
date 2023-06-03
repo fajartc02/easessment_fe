@@ -145,7 +145,7 @@ import ApiService from '@/store/api.service';
             },
             detailSchedule(obser) {
                 console.log(obser.observation_id);
-                this.$router.push(`/schedule/${obser.observation_id}`)
+                this.$router.push(`/observation/${obser.observation_id}`)
             }
         },
         mounted() {

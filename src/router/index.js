@@ -17,9 +17,9 @@ const routes = [{
             component: () =>
                 import ('@/views/Dashboard.vue'),
         }, {
-            path: '/schedule/:id',
-            name: 'DetailSchedule',
-            component: import ('@/views/schedules/DetailSchedule.vue'),
+            path: '/observation/:id',
+            name: 'DetailObservation',
+            component: import ('@/views/schedules/DetailObservation.vue'),
         }, ],
     },
 
