@@ -12,6 +12,7 @@ tests/e2e/reports/
 package-lock.json
 yarn.lock
 
+*copy*.*
 # OS or Editor folders
 ._*
 .cache
