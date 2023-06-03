@@ -47,7 +47,11 @@
             return {
 
             }
-        }
+        },
+        props: {
+            selectedLine: String,
+            selectedMonth: String
+        },
     }
 </script>
 

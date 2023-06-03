@@ -64,7 +64,20 @@
 </template>
 
 <script>
+import { LOGIN } from "@/store/modules/auth.module";
 export default {
   name: 'Login',
+  data() {
+    return {
+      noreg: null,
+      password: null
+    }
+  },
+  methods: {
+    login() {
+      this.$store
+          .dispatch(LOGIN, { noreg: this.noreg, password: this.password })
+    }
+  }
 }
 </script>

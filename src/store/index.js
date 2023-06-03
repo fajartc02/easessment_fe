@@ -1,21 +1,24 @@
 import { createStore } from 'vuex'
+import auth from "./modules/auth.module";
 
 export default createStore({
-  state: {
-    sidebarVisible: '',
-    sidebarUnfoldable: false,
-  },
-  mutations: {
-    toggleSidebar(state) {
-      state.sidebarVisible = !state.sidebarVisible
+    state: {
+        sidebarVisible: '',
+        sidebarUnfoldable: false,
     },
-    toggleUnfoldable(state) {
-      state.sidebarUnfoldable = !state.sidebarUnfoldable
+    mutations: {
+        toggleSidebar(state) {
+            state.sidebarVisible = !state.sidebarVisible
+        },
+        toggleUnfoldable(state) {
+            state.sidebarUnfoldable = !state.sidebarUnfoldable
+        },
+        updateSidebarVisible(state, payload) {
+            state.sidebarVisible = payload.value
+        },
     },
-    updateSidebarVisible(state, payload) {
-      state.sidebarVisible = payload.value
+    actions: {},
+    modules: {
+        auth
     },
-  },
-  actions: {},
-  modules: {},
 })
