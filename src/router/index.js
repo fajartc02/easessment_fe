@@ -19,7 +19,13 @@ const routes = [{
         }, {
             path: '/observation/:id',
             name: 'DetailObservation',
-            component: import ('@/views/schedules/DetailObservation.vue'),
+            component: () =>
+                import ('@/views/observations/DetailObservation.vue'),
+        }, {
+            path: '/observation/report/:id',
+            name: 'ReportObservation',
+            component: () =>
+                import ('@/views/observations/ReportObservation.vue'),
         }, ],
     },
 

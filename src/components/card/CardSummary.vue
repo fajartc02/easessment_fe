@@ -31,7 +31,7 @@
                         <strong>Total</strong>
                         </CCardHeader>
                         <CCardBody class="overflow-auto">
-                            <h1 >6/8</h1>
+                            <h1>6/8</h1>
                         </CCardBody>
                     </CCard>
                 </CCol>
@@ -41,17 +41,28 @@
 </template>
 
 <script>
+import ApiService from '@/store/api.service';
+
+
     export default {
         name: 'CardSummary',
         data() {
             return {
-
+                summaryData: null
             }
         },
         props: {
             selectedLine: String,
             selectedMonth: String
         },
+        methods: {
+            async getSummary() {
+                ApiService.setHeader()
+                const summaryData = await ApiService.get('operational/observation', 'summary')
+                console.log(summaryData);
+            }
+        },
+        
     }
 </script>
 
