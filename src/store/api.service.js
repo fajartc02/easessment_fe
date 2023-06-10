@@ -7,7 +7,7 @@ import JwtService from "@/store/jwt.service";
  */
 const ApiService = {
     init() {
-        axios.defaults.baseURL = "http://localhost:3200/api/v1";
+        axios.defaults.baseURL = "http://10.70.132.21:3200/api/v1";
     },
 
     /**
@@ -23,7 +23,7 @@ const ApiService = {
         let container = []
         let query = `?`
         for (const key in params) {
-            container.push(`${key}=${params[key]}`)
+            if (params[key]) container.push(`${key}=${params[key]}`);
         }
         query += container.join('&')
         return axios.get(resource + query).catch(error => {

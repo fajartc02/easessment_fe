@@ -117,7 +117,7 @@
                                 <CIcon icon="cil-check-circle" size="lg" class="text-success"/>
                             </CButton>
                             <!-- <small v-if="date.idx == 4">0174</small> -->
-                            <CButton v-if="date.idx == 19" color="info" variant="outline">
+                            <CButton v-if="date.idx == 13" color="info" variant="outline">
                                 <CIcon icon="cil-circle" class="text-dark" size="lg"/>
                             </CButton>
                             <!-- <small v-if="date.idx == 19">0196</small> -->
@@ -136,11 +136,11 @@
                                 <CIcon icon="cil-check-circle" size="lg" class="text-success"/>
                             </CButton>
                             <!-- <small v-if="date.idx == 4">0174</small> -->
-                            <CButton v-if="date.idx == 19" color="info" variant="outline">
+                            <CButton v-if="date.idx == 14" color="info" variant="outline">
                                 <CIcon icon="cil-circle" class="text-dark" size="lg"/>
                             </CButton>
                             <!-- <small v-if="date.idx == 19">0196</small> -->
-                            <CButton v-if="date.idx == 25" color="info" variant="outline">
+                            <CButton v-if="date.idx == 27" color="info" variant="outline">
                                 <CIcon icon="cil-circle" class="text-dark" size="lg"/>
                             </CButton>
                         </td>

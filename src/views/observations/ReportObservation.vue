@@ -4,7 +4,25 @@
     </div>
     <div class="card" id="content-pdf" ref="content">
         <div class="card-header">
-            Checksheet Observasi SW
+            <div class="row">
+                <div class="col-10">
+                    Checksheet Observasi SW
+                </div>
+                <div class="col">
+                    <CButton color="info" @click="() => { xlDemo = true }">Lihat Video</CButton>
+                    <CModal size="xl" :visible="xlDemo" @close="() => { xlDemo = false }">
+                        <CModalHeader>
+                        <CModalTitle>Video Observasi SW</CModalTitle>
+                        </CModalHeader>
+                        <CModalBody>
+                            <video style="width: 100%;height: 100%;" controls>
+                                <source src="../../assets/video1.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </CModalBody>
+                    </CModal>
+                </div>
+            </div>
         </div>
         <div class="card-body" v-if="observation">
             <table class="table">
@@ -75,7 +93,8 @@ export default {
             judgments: [],
             factors: [],
             resultCheck: [],
-            isCheck: false
+            isCheck: false,
+            xlDemo: false
         }
     },
     methods: {
