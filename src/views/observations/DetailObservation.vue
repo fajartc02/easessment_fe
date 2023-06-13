@@ -33,7 +33,40 @@
     </div>
     <div class="card mt-1">
         <div class="card-header">
-            <b>Data Observasi</b>
+            <div class="row">
+                <div class="col-9">
+                    <b>Data Observasi</b>
+                </div>
+                <div class="d-flex col-3 text-right justify-content-around">
+                    <CButton color="info" @click="() => { demoTSK = true }">TSK</CButton>
+                    <CModal size="xl" :visible="demoTSK" @close="() => { demoTSK = false }">
+                        <CModalHeader>
+                        <CModalTitle>TSK</CModalTitle>
+                        </CModalHeader>
+                        <CModalBody>
+                            <img style="width: 100%;" src="@/assets/TSK.png"/>
+                        </CModalBody>
+                    </CModal>
+                    <CButton color="info" @click="() => { demoTSKK = true }">TSKK</CButton>
+                    <CModal size="xl" :visible="demoTSKK" @close="() => { demoTSKK = false }">
+                        <CModalHeader>
+                        <CModalTitle>TSKK</CModalTitle>
+                        </CModalHeader>
+                        <CModalBody>
+                            <img style="width: 100%;" src="@/assets/TSK.png"/>
+                        </CModalBody>
+                    </CModal>
+                    <CButton color="info" @click="() => { demoSOP = true }">SOP</CButton>
+                    <CModal size="xl" :visible="demoSOP" @close="() => { demoSOP = false }">
+                        <CModalHeader>
+                        <CModalTitle>TSKK</CModalTitle>
+                        </CModalHeader>
+                        <CModalBody>
+                            <img style="width: 100%;" src="@/assets/SOP.png"/>
+                        </CModalBody>
+                    </CModal>
+                </div>
+            </div>
         </div>
         <div class="card-body overflow-auto">
             <CInputGroup class="mb-3">
@@ -75,6 +108,8 @@
 </template>
 
 <script>
+// import pdf from 'vue-pdf'
+
 import ApiService from '@/store/api.service';
 import moment from 'moment'
 export default {
@@ -86,12 +121,17 @@ export default {
                 actual_check_dt: moment().toISOString().split('T')[0]
             },
             categories: [],
-
             judgments: [],
             factors: [],
             resultCheck: [],
-            isCheck: false
+            isCheck: false,
+            demoTSK:false,
+            demoTSKK: false,
+            demoSOP: false
         }
+    },
+    components: {
+        // pdf
     },
     methods: {
         viewReport() {

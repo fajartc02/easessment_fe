@@ -70,11 +70,12 @@
                                             size="lg"
                                         />
                                         <CIcon
-                                            v-else-if="+child.idxdate > +currentDate"
+                                            v-else-if="+currentDate <= +child.idxdate"
                                             icon="cil-circle" 
                                             class="text-dark"
                                             size="lg"
                                         />
+                                        
                                         
                                         <CIcon
                                             v-else

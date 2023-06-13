@@ -15,10 +15,23 @@
                         <CModalTitle>Video Observasi SW</CModalTitle>
                         </CModalHeader>
                         <CModalBody>
-                            <video style="width: 100%;height: 100%;" controls>
-                                <source src="../../assets/video1.mp4" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
+                            <div class="row">
+                                <div class="col border-all">
+                                    <h6>Before</h6>
+                                    <video muted style="width: 100%;height: 100%;" autoplay controls>
+                                        <source src="../../assets/video1.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="col border-all">
+                                    <h6>After</h6>
+                                    <video muted style="width: 100%;height: 100%;" autoplay controls>
+                                        <source src="../../assets/video2.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            </div>
+                            
                         </CModalBody>
                     </CModal>
                 </div>

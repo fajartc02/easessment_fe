@@ -7,7 +7,7 @@ import JwtService from "@/store/jwt.service";
  */
 const ApiService = {
     init() {
-        axios.defaults.baseURL = "http://10.70.132.21:3200/api/v1";
+        axios.defaults.baseURL = "http://10.70.132.23:3200/api/v1";
     },
 
     /**
