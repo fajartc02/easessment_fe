@@ -60,14 +60,19 @@ const actions = {
         });
     },
     [VERIFY_AUTH](context) {
+        console.log('verify auth');
+        
         if (JwtService.getToken()) {
             ApiService.setHeader();
             ApiService.get("verify")
                 .then(({ data }) => {
-                    context.commit(SET_AUTH, data);
+                    console.log(data);
+                    
+                    // context.commit(SET_AUTH, data);
                 })
                 .catch(({ response }) => {
-                    context.commit(SET_ERROR, response.data.errors);
+                    context.commit(SET_ERROR, response.data.status);
+                    return response.status
                 });
         } else {
             context.commit(PURGE_AUTH);

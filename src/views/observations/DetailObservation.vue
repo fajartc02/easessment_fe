@@ -10,6 +10,10 @@
                 <CFormInput :value="observation.machine_nm" disabled/>
             </CInputGroup>
             <CInputGroup class="mb-3">
+                <CInputGroupText>Pos</CInputGroupText>
+                <CFormInput :value="observation.pos_nm" disabled/>
+            </CInputGroup>
+            <CInputGroup class="mb-3">
                 <CInputGroupText>Job No.</CInputGroupText>
                 <CFormInput :value="observation.job_no" disabled/>
             </CInputGroup>
@@ -44,7 +48,9 @@
                         <CModalTitle>TSK</CModalTitle>
                         </CModalHeader>
                         <CModalBody>
-                            <img style="width: 100%;" src="@/assets/TSK.png"/>
+                            <vue-pdf-embed v-if="tskFile" :source="tskFile" />
+                            <h2 v-else>TIDAK ADA TSK</h2>
+                            <!-- <img style="width: 100%;" src="@/assets/TSK.png"/> -->
                         </CModalBody>
                     </CModal>
                     <CButton color="info" @click="() => { demoTSKK = true }">TSKK</CButton>
@@ -53,16 +59,19 @@
                         <CModalTitle>TSKK</CModalTitle>
                         </CModalHeader>
                         <CModalBody>
-                            <img style="width: 100%;" src="@/assets/TSK.png"/>
+                            <vue-pdf-embed v-if="tskkFile" :source="tskkFile" />
+                            <h2 v-else>TIDAK ADA TSKK</h2>
+                            <!-- <img style="width: 100%;" src="@/assets/TSK.png"/> -->
                         </CModalBody>
                     </CModal>
                     <CButton color="info" @click="() => { demoSOP = true }">SOP</CButton>
                     <CModal size="xl" :visible="demoSOP" @close="() => { demoSOP = false }">
                         <CModalHeader>
-                        <CModalTitle>TSKK</CModalTitle>
+                        <CModalTitle>SOP</CModalTitle>
                         </CModalHeader>
                         <CModalBody>
-                            <img style="width: 100%;" src="@/assets/SOP.png"/>
+                            <vue-pdf-embed v-if="sopFile" :source="sopFile" />
+                            <h2 v-else>TIDAK ADA SOP</h2>
                         </CModalBody>
                     </CModal>
                 </div>
@@ -71,7 +80,14 @@
         <div class="card-body overflow-auto">
             <CInputGroup class="mb-3">
                 <CInputGroupText>Actual Date</CInputGroupText>
-                <input class="form-control" type="date" v-model="form.actual_check_dt"/>
+                <input :disabled="isCheck" class="form-control" type="date" v-model="form.actual_check_dt"/>
+            </CInputGroup>
+            <CInputGroup>
+                <CInputGroupText>Shift</CInputGroupText>
+                <CFormSelect :disabled="isCheck" v-model="form.group_id">
+                    <option>Select Shift</option>
+                    <option v-for="judg in groups" :key="judg.id" :value="judg.id">{{ judg.text }}</option>
+                </CFormSelect>
             </CInputGroup>
             <table class="table table-bordered">
                 <tr>
@@ -108,62 +124,83 @@
 </template>
 
 <script>
-// import pdf from 'vue-pdf'
+import {GET_OBSERVATION_DETAIL, POST_OBSERVATION_CHECK} from '@/store/modules/observation.module'
+import { mapGetters } from 'vuex'
+import VuePdfEmbed from 'vue-pdf-embed'
 
 import ApiService from '@/store/api.service';
 import moment from 'moment'
+import Swal from 'sweetalert2';
 export default {
     name: 'DetailSchedule',
     data() {
         return {
             observation: null,
             form: {
-                actual_check_dt: moment().toISOString().split('T')[0]
+                actual_check_dt: moment().toISOString().split('T')[0],
+                group_id: null
             },
             categories: [],
             judgments: [],
             factors: [],
+            groups: [],
             resultCheck: [],
             isCheck: false,
             demoTSK:false,
+            sopFile: null,
+            tskFile: null,
+            tskkFile: null,
             demoTSKK: false,
             demoSOP: false
         }
     },
+    watch: {
+        observationData: function() {
+            if(this.observationData) {
+                this.observation = this.observationData[0]
+                let resCheckData = this.observationData[1]
+                if(resCheckData.length > 0) this.isCheck = true
+                let actualDate = this.observationData[0].actual_check_dt
+                this.form.actual_check_dt = actualDate ? moment(actualDate).toISOString().split('T')[0] : moment().toISOString().split('T')[0]
+                let actualGroup = this.observationData[0].group_id
+                this.form.group_id = actualGroup
+                this.sopFile = this.observation.sop ? `${process.env.VUE_APP_URL}/file?path=${this.observation.sop}` : null;
+                this.resultCheck = resCheckData
+            }
+        }
+    },
+    computed: {
+        ...mapGetters(['observationData'])
+    },
     components: {
-        // pdf
+        VuePdfEmbed,
     },
     methods: {
         viewReport() {
             this.$router.push(`/observation/report/${this.observation.observation_id}`)
         },
         async getDetail() {
-            ApiService.setHeader()
-            const detailObser = await ApiService.get(`operational/observation/schedule`, this.$route.params.id)
-            this.observation = detailObser.data.data[0]
-            let resCheckData = detailObser.data.data[1]
-            if(resCheckData.length > 0) this.isCheck = true
-            let actualDate = detailObser.data.data[0].actual_check_dt
-            this.form.actual_check_dt = actualDate ? moment(actualDate).toISOString().split('T')[0] : moment().toISOString().split('T')[0]
-            this.resultCheck = resCheckData
+            await this.$store.dispatch(GET_OBSERVATION_DETAIL, this.$route.params.id)
         },
         async getJudgments() {
             ApiService.setHeader()
-            const judgments = await ApiService.get(`master/judgments/opts`)
-            // console.log(judgments);
+            const judgments = await ApiService.get(`master/judgments`)
             this.judgments = judgments.data.data
         },
         async getFactors() {
             ApiService.setHeader()
-            const factors = await ApiService.get(`master/factors/opts`)
-            // console.log(factors);
+            const factors = await ApiService.get(`master/factors`)
             this.factors = factors.data.data
+        },
+        async getGroups() {
+            ApiService.setHeader()
+            const groups = await ApiService.get(`master/groups`)
+            this.groups = groups.data.data
         },
         async getCategories() {
             ApiService.setHeader()
             const categories = await ApiService.get(`master/categories`)
             const mapCategory = categories.data.data.map((itm, i) => {
-                
                 itm.judgment_id = null
                 itm.factor_id = null
                 itm.findings = null
@@ -178,9 +215,11 @@ export default {
             this.categories = mapCategory
             await this.getJudgments()
             await this.getFactors()
+            await this.getGroups()
         },
         async postCheckObs() {
-            this.resultCheck = []
+            try {
+                this.resultCheck = []
             for (let i = 0; i < this.categories.length; i++) {
                 const element = this.categories[i];
                 element.category_id = element.id
@@ -195,21 +234,24 @@ export default {
             
             let formInput = {
                 observation_id: this.$route.params.id,
-                actual_check_dt: moment(new Date()).toISOString().split('T').join(' '),
-                results_check: this.resultCheck
+                actual_check_dt: this.form.actual_check_dt,
+                results_check: this.resultCheck,
+                group_id: this.form.group_id
             }
-            console.log(formInput);
-            ApiService.setHeader()
-            await ApiService.post(`operational/observation/check`, formInput) 
-            .then((result) => {
-                console.log(result);
-            }).catch((err) => {
-                console.log(err);
-            });
+            await this.$store.dispatch(POST_OBSERVATION_CHECK, formInput)
+            .then(() => {
+                Swal.fire('Pengecekan berhasil di submit', '', 'success')
+                setTimeout(() => {
+                    this.$router.push('/')
+                }, 1000)
+            })
+            } catch (error) {
+                console.log(error);
+                Swal.fire('Pengecekan gagal di submit', '', 'error')
+            }
         }
     },
     async mounted() {
-        console.log(this.$route.params.id);
         await this.getDetail()
         await this.getCategories() 
         // await this.getFactors()

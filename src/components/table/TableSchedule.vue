@@ -37,8 +37,8 @@
                         <th v-for="(date) in containerDate" :key="date" :class="date.bg">{{ date.idx }}</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr v-for="(observation, i) in schedules" :key="observation.pos_id">
+                <tbody v-if="observationSchedule.length > 0">
+                    <tr v-for="(observation, i) in observationSchedule" :key="observation.pos_id">
                         <td>{{ i + 1 }}</td>
                         <td>{{ observation.line_snm }}</td>
                         <td>{{ observation.pos_nm }}</td>
@@ -89,7 +89,7 @@
                             
                         </td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <td>2</td>
                         <td>CH</td>
                         <td>Pos 2</td>
@@ -98,11 +98,9 @@
                             <CButton v-if="date.idx == 5" color="info" variant="outline">
                                 <CIcon icon="cil-check-circle" size="lg" class="text-success"/>
                             </CButton>
-                            <!-- <small v-if="date.idx == 4">0174</small> -->
                             <CButton v-if="date.idx == 19" color="info" variant="outline">
                                 <CIcon icon="cil-circle" class="text-dark" size="lg"/>
                             </CButton>
-                            <!-- <small v-if="date.idx == 19">0196</small> -->
                             <CButton v-if="date.idx == 25" color="info" variant="outline">
                                 <CIcon icon="cil-circle" class="text-dark" size="lg"/>
                             </CButton>
@@ -117,11 +115,11 @@
                             <CButton v-if="date.idx == 2" color="info" variant="outline">
                                 <CIcon icon="cil-check-circle" size="lg" class="text-success"/>
                             </CButton>
-                            <!-- <small v-if="date.idx == 4">0174</small> -->
+                            
                             <CButton v-if="date.idx == 13" color="info" variant="outline">
                                 <CIcon icon="cil-circle" class="text-dark" size="lg"/>
                             </CButton>
-                            <!-- <small v-if="date.idx == 19">0196</small> -->
+                            
                             <CButton v-if="date.idx == 25" color="info" variant="outline">
                                 <CIcon icon="cil-circle" class="text-dark" size="lg"/>
                             </CButton>
@@ -136,14 +134,19 @@
                             <CButton v-if="date.idx == 6" color="info" variant="outline">
                                 <CIcon icon="cil-check-circle" size="lg" class="text-success"/>
                             </CButton>
-                            <!-- <small v-if="date.idx == 4">0174</small> -->
                             <CButton v-if="date.idx == 14" color="info" variant="outline">
                                 <CIcon icon="cil-circle" class="text-dark" size="lg"/>
                             </CButton>
-                            <!-- <small v-if="date.idx == 19">0196</small> -->
                             <CButton v-if="date.idx == 27" color="info" variant="outline">
                                 <CIcon icon="cil-circle" class="text-dark" size="lg"/>
                             </CButton>
+                        </td>
+                    </tr> -->
+                </tbody>
+                <tbody v-else>
+                    <tr>
+                        <td :colspan="3 + containerDate.length + 1">
+                            <b class="text-danger">Tidak Ada Data</b>
                         </td>
                     </tr>
                 </tbody>
@@ -153,81 +156,75 @@
 </template>
 
 <script>
-// import moment from 'moment'
-import ApiService from '@/store/api.service';
-    export default {
-        name: 'TableSchedule',
-        data() {
-            return {
-                // containerDate: ['01','02','03','04','05','06','07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'],
-                containerDate: [],
-                schedules: [],
-                idxMonth: ['01','02','03','04','05','06','07', '08', '09', '10', '11', '12'],
-                monthStr: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
-                yearMonth: '',
-                currentDate: `${new Date().getDate()}`
-            }
-        },
-        watch: {
-            selectedLine: function() {
-                if(this.selectedLine != "0") this.getObsSchedule()
-            },
-            selectedMonth: function() {
-                if(this.selectedMonth) {
-                    this.generateDate()
-                    let idx = this.idxMonth.indexOf(this.selectedMonth.split('-')[1])
-                    this.yearMonth = `${this.monthStr[idx]} ${this.selectedMonth.split('-')[0]}`
-                    this.getObsSchedule()
-                }
-            },
-            // containerDate: function() {
-            //     console.log(this.containerDate);
-            // }
-        },
-        props: {
-            selectedLine: String,
-            selectedMonth: String
-        },
-        methods: {
-            generateDate() {
-                let year = new Date(this.selectedMonth).getFullYear()
-                let month = new Date(this.selectedMonth).getMonth() + 1
-                var lastDay = new Date(year, month, 0);
-                let container = []
-                for (let i = 1; i <= lastDay.getDate(); i++) {
-                    // const date = i;
-                    let setDt = new Date().setDate(i)
-                    let newDate = new Date(setDt)
-                    container.push(newDate.getDate())
-                    let dateObj = {
-                        bg: ``,
-                        date:newDate,
-                        idx: `${i}`
-                    }
-                    if(dateObj.date.getDay() === 0 || dateObj.date.getDay() === 6) dateObj.bg = `bg-secondary`
-                    // console.log(dateObj);
-                    // console.log(i);
-                    this.containerDate.push(dateObj)
-                }
-                // console.log(container);
-                // this.containerDate = container
-            },
-            async getObsSchedule() {
-                let objQuery = {
-                    month: this.selectedMonth.split('-')[1], 
-                    year: this.selectedMonth.split('-')[0]
-                }
-                if(this.selectedLine != "0") objQuery.line = this.selectedLine
-                ApiService.setHeader()
-                const schedulesData = await ApiService.query('operational/observation/schedule', objQuery)
-                this.schedules = schedulesData.data.data
-            },
-            detailSchedule(obser) {
-                console.log(obser.observation_id);
-                this.$router.push(`/observation/${obser.observation_id}`)
-            }
-        },
-        mounted() {
+import {GET_OBSERVATION_SCHEDULE} from '@/store/modules/observation.module'
+import { mapGetters } from 'vuex'
+
+export default {
+    name: 'TableSchedule',
+    props: {
+        selectedLine: String,
+        selectedMonth: String
+    },
+    data() {
+        return {
+            // containerDate: ['01','02','03','04','05','06','07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'],
+            containerDate: [],
+            schedules: [],
+            idxMonth: ['01','02','03','04','05','06','07', '08', '09', '10', '11', '12'],
+            monthStr: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
+            yearMonth: '',
+            currentDate: `${new Date().getDate()}`
         }
-    }
+    },
+    computed: {
+        ...mapGetters(['observationSchedule'])
+    },
+    watch: {
+        selectedLine: function() {
+            if(this.selectedLine != "0") this.getObsSchedule()
+        },
+        selectedMonth: function() {
+            if(this.selectedMonth) {
+                this.generateDate()
+                let idx = this.idxMonth.indexOf(this.selectedMonth.split('-')[1])
+                this.yearMonth = `${this.monthStr[idx]} ${this.selectedMonth.split('-')[0]}`
+                this.getObsSchedule()
+            }
+        },
+    },
+    methods: {
+        generateDate() {
+            let year = new Date(this.selectedMonth).getFullYear()
+            let month = new Date(this.selectedMonth).getMonth() + 1
+            let selectedMonth = new Date(`${year}-${month}`)
+            var lastDay = new Date(year, month, 0);
+            let container = []
+            this.containerDate = []
+            for (let i = 1; i <= lastDay.getDate(); i++) {
+                let setDt = new Date(selectedMonth).setDate(i)
+                let newDate = new Date(setDt)
+                container.push(newDate.getDate())
+                let dateObj = {
+                    bg: ``,
+                    date:newDate,
+                    idx: `${i}`
+                }
+                if(newDate.getDay() === 0 || newDate.getDay() === 6) dateObj.bg = `bg-secondary`
+                this.containerDate.push(dateObj)
+            }
+        },
+        async getObsSchedule() {
+            let objQuery = {
+                month: this.selectedMonth.split('-')[1], 
+                year: this.selectedMonth.split('-')[0]
+            }
+            if(this.selectedLine != "0") objQuery.line = this.selectedLine
+            await this.$store.dispatch(GET_OBSERVATION_SCHEDULE, objQuery)
+        },
+        detailSchedule(obser) {
+            console.log(obser.observation_id);
+            this.$router.push(`/observation/${obser.observation_id}`)
+        }
+    },
+}
 </script>

@@ -7,7 +7,7 @@ import JwtService from "@/store/jwt.service";
  */
 const ApiService = {
     init() {
-        axios.defaults.baseURL = "http://10.70.132.23:3200/api/v1";
+        axios.defaults.baseURL = process.env.VUE_APP_URL;
     },
 
     /**
@@ -27,7 +27,7 @@ const ApiService = {
         }
         query += container.join('&')
         return axios.get(resource + query).catch(error => {
-            throw new Error(`[KT] ApiService ${error}`);
+            return error
         });
     },
 
@@ -40,7 +40,8 @@ const ApiService = {
     get(resource, slug = "") {
         return axios.get(`${resource}/${slug}`).catch(error => {
             // console.log(error);
-            throw new Error(`[KT] ApiService ${error}`);
+            return error;
+            // throw new Error(`[KT] ApiService ${error}`);
         });
     },
 
@@ -50,7 +51,7 @@ const ApiService = {
      * @param params
      * @returns {*}
      */
-    post(resource, params) {
+    post(resource, params = null) {
         console.log(resource);
         return axios.post(`${resource}`, params);
     },
@@ -83,8 +84,9 @@ const ApiService = {
      */
     delete(resource) {
         return axios.delete(resource).catch(error => {
-            // console.log(error);
-            throw new Error(`[RWV] ApiService ${error}`);
+            console.log(error);
+            return error;
+            // throw new Error(`[RWV] ApiService ${error}`);
         });
     }
 };

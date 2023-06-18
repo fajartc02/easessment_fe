@@ -26,6 +26,26 @@ const routes = [{
             name: 'ReportObservation',
             component: () =>
                 import ('@/views/observations/ReportObservation.vue'),
+        }, {
+            path: '/master/pos',
+            name: 'Pos',
+            component: () =>
+                import ('@/views/master/Pos/Pos.vue'),
+        }, {
+            path: '/master/pos/form',
+            name: 'FormPos',
+            component: () =>
+                import ('@/views/master/Pos/FormPos.vue'),
+        }, {
+            path: '/master/job',
+            name: 'Job',
+            component: () =>
+                import ('@/views/master/Job/Job.vue'),
+        }, {
+            path: '/master/job/form',
+            name: 'FormJob',
+            component: () =>
+                import ('@/views/master/Job/FormJob.vue'),
         }, ],
     },
 

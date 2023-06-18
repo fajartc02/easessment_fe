@@ -1,5 +1,12 @@
 import { createStore } from 'vuex'
 import auth from "./modules/auth.module";
+import line from "./modules/line.module";
+import machine from "./modules/machine.module";
+
+import observations from "./modules/observation.module"
+import pos from "./modules/pos.module"
+import job from "./modules/job.module"
+import jobType from "./modules/jobType.module"
 
 export default createStore({
     state: {
@@ -19,6 +26,13 @@ export default createStore({
     },
     actions: {},
     modules: {
-        auth
+        auth,
+        line,
+        machine,
+
+        observations,
+        pos,
+        job,
+        jobType
     },
 })

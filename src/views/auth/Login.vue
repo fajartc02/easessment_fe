@@ -16,7 +16,6 @@
                       <CFormInput
                         placeholder="noreg"
                         v-model="noreg"
-                        autocomplete="noreg"
                       />
                     </CInputGroup>
                     <CInputGroup class="mb-4">

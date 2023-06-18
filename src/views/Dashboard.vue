@@ -4,7 +4,7 @@
           <div class="col-6">
               <CInputGroup class="mb-3">
                   <CInputGroupText>Line</CInputGroupText>
-                  <Select2 v-model="selectedLine" class="form-control" :options="lineOpts" @change="myChangeEvent($event)" @select="mySelectEvent($event)" />
+                  <Select2 v-model="selectedLine" class="form-control" :options="getLinesOpts" />
               </CInputGroup>
           </div>
           <div class="col-6">
@@ -23,35 +23,37 @@
 import moment from 'moment'
 import TableSchedule from '@/components/table/TableSchedule.vue'
 import CardSummary from '@/components/card/CardSummary.vue'
-import ApiService from '@/store/api.service'
+
+import { GET_LINES } from "@/store/modules/line.module";
+import { mapGetters } from 'vuex'
+
 
 export default {
   name: 'Dashboard',
   data() {
     return {
       selectedMonth: null,
-      selectedLine: "0",
-      lineOpts: [{id: "0", text: 'all'}]
+      selectedLine: "-1",
     }
   },
+  computed: {
+    ...mapGetters(['getLinesOpts'])
+  },
   methods: {
-    myChangeEvent(val){
-      console.log(val);
-    },
-    mySelectEvent({id, text}){
-      console.log({id, text})
-    },
-    async getLinesOpts() {
-      ApiService.setHeader()
-      const lines = await ApiService.get("master/lines", "opts")
-      this.lineOpts.push(...lines.data.data)
+    async getLines() {
+      try {
+        this.$store.dispatch(GET_LINES)
+      } catch (error) {
+        if(error.response.status == 401) this.$router.push('/login')
+        console.log(error);
+      }
     }
   },
   mounted() {
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
-    this.getLinesOpts()
+    this.getLines()
   },
   components: {
     TableSchedule,

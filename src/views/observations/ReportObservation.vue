@@ -9,7 +9,7 @@
                     Checksheet Observasi SW
                 </div>
                 <div class="col">
-                    <CButton color="info" @click="() => { xlDemo = true }">Lihat Video</CButton>
+                    <CButton v-if="!ignoringExport" color="info" @click="() => { xlDemo = true }">Lihat Video</CButton>
                     <CModal size="xl" :visible="xlDemo" @close="() => { xlDemo = false }">
                         <CModalHeader>
                         <CModalTitle>Video Observasi SW</CModalTitle>
@@ -44,7 +44,7 @@
                     <td>Line: <b>{{ observation.line_nm }}</b></td>
                     <td>Pos: <b>{{ observation.pos_nm }}</b></td>
                     <td style="min-width: 300px;">No SOP: <b>{{ observation.job_no }}</b></td>
-                    <td>Shift: <b>{{ 'RED' }}</b></td>
+                    <td>Shift: <b>{{ observation.group_nm }}</b></td>
                 </tr>
                 <tr class="text-center">
                     <td :colspan="category.category_nm == 'Quality' ? '' : ''" class="bg-warning" v-for="category in categories" :key="category.id">
@@ -107,12 +107,14 @@ export default {
             factors: [],
             resultCheck: [],
             isCheck: false,
-            xlDemo: false
+            xlDemo: false,
+            ignoringExport: false
         }
     },
     methods: {
         exportToPDF(nameFile) {
             console.log(nameFile);
+            this.ignoringExport = true
             html2pdf(this.$refs.content, {
                 margin: 1,
                 filename: `REPORT_SW_${this.observation.job_no}_${this.observation.pos_nm}.pdf`,
@@ -123,6 +125,7 @@ export default {
             }).then((pdf) => {
                 console.log(pdf);
                 // this.$router.go(-1);
+                this.ignoringExport = false
                 this.dialogLoading = false;
             });
         },
@@ -139,13 +142,13 @@ export default {
         },
         async getJudgments() {
             ApiService.setHeader()
-            const judgments = await ApiService.get(`master/judgments/opts`)
+            const judgments = await ApiService.get(`master/judgments`)
             // console.log(judgments);
             this.judgments = judgments.data.data
         },
         async getFactors() {
             ApiService.setHeader()
-            const factors = await ApiService.get(`master/factors/opts`)
+            const factors = await ApiService.get(`master/factors`)
             // console.log(factors);
             this.factors = factors.data.data
         },
@@ -174,8 +177,6 @@ export default {
         console.log(this.$route.params.id);
         await this.getDetail()
         await this.getCategories() 
-        // await this.getFactors()
-        // await this.judgments()
     }
 }
 </script>

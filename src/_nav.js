@@ -52,6 +52,18 @@ export default [{
         to: '/master/line',
         icon: 'cil-border-all',
     },
+    {
+        component: 'CNavItem',
+        name: 'Pos',
+        to: '/master/pos',
+        icon: 'cil-border-all',
+    },
+    {
+        component: 'CNavItem',
+        name: 'Job',
+        to: '/master/job',
+        icon: 'cil-border-all',
+    },
     // {
     //   component: 'CNavTitle',
     //   name: 'Theme',
