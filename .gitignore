@@ -12,6 +12,8 @@ tests/e2e/reports/
 package-lock.json
 yarn.lock
 *copy*.*
+video1.mp4
+video2.mp4
 
 *copy*.*
 # OS or Editor folders
