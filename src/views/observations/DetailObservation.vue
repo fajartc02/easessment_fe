@@ -165,6 +165,8 @@ export default {
                 let actualGroup = this.observationData[0].group_id
                 this.form.group_id = actualGroup
                 this.sopFile = this.observation.sop ? `${process.env.VUE_APP_URL}/file?path=${this.observation.sop}` : null;
+                this.tskFile = this.observation.tsk ? `${process.env.VUE_APP_URL}/file?path=${this.observation.tsk}` : null;
+                this.tskkFile = this.observation.tskk ? `${process.env.VUE_APP_URL}/file?path=${this.observation.tskk}` : null;
                 this.resultCheck = resCheckData
             }
         }

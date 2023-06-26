@@ -14,10 +14,10 @@ const getters = {
     },
     getJobTypeOpts(state) {
         if (state.jobType) {
-            const mapJobType = state.jobType.map(machine => {
+            const mapJobType = state.jobType.map(jobType => {
                 return {
-                    id: machine.uuid,
-                    text: machine.job_type_nm
+                    id: jobType.id,
+                    text: jobType.job_type_nm
                 }
             })
             mapJobType.push({
@@ -29,10 +29,10 @@ const getters = {
     },
     getJobTypeOptsWithoutAll(state) {
         if (state.jobType) {
-            const mapJobType = state.jobType.map(machine => {
+            const mapJobType = state.jobType.map(jobType => {
                 return {
-                    id: machine.uuid,
-                    text: machine.job_type_nm
+                    id: jobType.id,
+                    text: jobType.job_type_nm
                 }
             })
             return mapJobType

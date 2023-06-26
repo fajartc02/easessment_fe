@@ -13,10 +13,10 @@ const getters = {
         return state.lines
     },
     getLinesOpts(state) {
-        if(state.lines) {
+        if (state.lines) {
             const mapLines = state.lines.map(line => {
                 return {
-                    id: line.uuid,
+                    id: line.id,
                     text: line.line_nm
                 }
             })
@@ -28,10 +28,10 @@ const getters = {
         }
     },
     getLinesOptsWithoutAll(state) {
-        if(state.lines) {
+        if (state.lines) {
             const mapLines = state.lines.map(line => {
                 return {
-                    id: line.uuid,
+                    id: line.id,
                     text: line.line_nm
                 }
             })
@@ -41,21 +41,21 @@ const getters = {
 };
 
 const actions = {
-    [GET_LINES]({commit}) {
+    [GET_LINES]({ commit }) {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
             ApiService.get("master/lines")
-            .then((result) => {
-                const lines = result.data
-                if(lines) {
-                    commit(SET_LINES, lines.data)
-                    resolve(lines.data)
-                }
-                // throw result;
-            }).catch((err) => {
-                reject(err)
-            });
-            
+                .then((result) => {
+                    const lines = result.data
+                    if (lines) {
+                        commit(SET_LINES, lines.data)
+                        resolve(lines.data)
+                    }
+                    // throw result;
+                }).catch((err) => {
+                    reject(err)
+                });
+
         });
     },
 };

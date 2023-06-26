@@ -3,14 +3,15 @@
         <div class="card-header">
             <div class="d-flex row align-items-center">
                 <div class="col-10">
-                    Master Job
+                    Schedule Observasi
                 </div>
                 <div class="col">
-                    <button class="btn btn-success" @click="this.$router.push('/master/job/form')">
-                        Add Job<CIcon
-                                    icon="cil-plus" 
-                                    size="sm"
-                                />
+                    <button class="btn btn-success" @click="this.$router.push('/schedule/observation/form')">
+                        Add Schedule
+                        <CIcon
+                            icon="cil-plus" 
+                            size="sm"
+                        />
                     </button>
                 </div>
             </div>
@@ -20,17 +21,17 @@
                 <tr>
                    <th>No</th>
                    <th>Line</th> 
-                   <th>Mesin</th>
                    <th>Pos</th>
                    <th>Type Pekerjaan</th>
-                   <th>Job No</th>
+                   <th>Petugas</th>
+                   <th>Member</th>
                    <th>Job Desc</th>
                    <th>SOP</th>
-                   <th>Pembuat</th>
-                   <th>Tanggal Di buat</th>
+                   <th>Planning</th>
+                   <th>Actual</th>
                    <th colspan="2">Actions</th>
                 </tr>
-                <template v-if="jobState.length > 0">
+                <!-- <template v-if="jobState.length > 0">
                     <tr v-for="(job, i) in jobState" :key="job.uuid">
                         <td>{{ i + 1 }}</td>
                         <td>{{ job.line_nm }}</td>
@@ -72,12 +73,12 @@
                             </CButton>
                         </td>
                     </tr>
-                </template>
-                <tr v-else>
+                </template> -->
+                <!-- <tr v-else>
                     <td colspan="6">
                         <h3>Tidak Ada Data</h3>
                     </td>
-                </tr>
+                </tr> -->
             </table>
         </div>
     </div>
@@ -89,7 +90,7 @@ import { mapGetters } from 'vuex'
 import Swal from 'sweetalert2'
 
 export default {
-    name: 'Job',
+    name: 'ScheduleObservation',
     data() {
         return {
             form: {

@@ -2,6 +2,8 @@ import { createStore } from 'vuex'
 import auth from "./modules/auth.module";
 import line from "./modules/line.module";
 import machine from "./modules/machine.module";
+import user from "./modules/user.module";
+import group from "./modules/group.module";
 
 import observations from "./modules/observation.module"
 import pos from "./modules/pos.module"
@@ -27,6 +29,9 @@ export default createStore({
     actions: {},
     modules: {
         auth,
+        user,
+        group,
+
         line,
         machine,
 

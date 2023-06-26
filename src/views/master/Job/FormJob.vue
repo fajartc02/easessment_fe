@@ -71,7 +71,7 @@ import VuePdfEmbed from 'vue-pdf-embed'
 import Swal from 'sweetalert2'
 
 export default {
-    name: 'Pos',
+    name: 'FormJob',
     data() {
         return {
             selectedLine: null,

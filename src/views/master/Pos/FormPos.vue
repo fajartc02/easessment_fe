@@ -17,12 +17,12 @@
             </CInputGroup>
             <CInputGroup class="mb-3">
                 <CInputGroupText>TSK</CInputGroupText>
-                <input class="form-control" type="file" ref="tsk" @change="uploadFile('tsk', 0)">
+                <input class="form-control" type="file" ref="tsk" @change="uploadFile('tsk')">
             </CInputGroup>
             <vue-pdf-embed v-if="displayTSK" :source="displayTSK" />
             <CInputGroup class="mb-3">
                 <CInputGroupText>TSKK</CInputGroupText>
-                <input class="form-control" type="file" ref="tskk" @change="uploadFile('tskk', 1)">
+                <input class="form-control" type="file" ref="tskk" @change="uploadFile('tskk')">
             </CInputGroup>
             <vue-pdf-embed v-if="displayTSKK" :source="displayTSKK" />
         </div>
@@ -48,7 +48,7 @@ import Swal from 'sweetalert2'
 import VuePdfEmbed from 'vue-pdf-embed'
 
 export default {
-    name: 'Pos',
+    name: 'FormPos',
     data() {
         return {
             form: {

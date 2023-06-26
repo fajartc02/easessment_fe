@@ -16,7 +16,7 @@ const getters = {
         if (state.machines) {
             const mapMachines = state.machines.map(machine => {
                 return {
-                    id: machine.uuid,
+                    id: machine.id,
                     text: machine.machine_nm
                 }
             })
@@ -31,7 +31,7 @@ const getters = {
         if (state.machines) {
             const mapMachines = state.machines.map(machine => {
                 return {
-                    id: machine.uuid,
+                    id: machine.id,
                     text: machine.machine_nm
                 }
             })

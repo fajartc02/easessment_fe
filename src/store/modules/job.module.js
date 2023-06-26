@@ -17,7 +17,18 @@ const state = {
 const getters = {
     jobData(state) {
         return state.jobData
-    }
+    },
+    getJobOpts(state) {
+        if (state.jobData) {
+            const mapJob = state.jobData.map(job => {
+                return {
+                    id: job.id,
+                    text: `${job.job_no}-${job.job_nm}`
+                }
+            })
+            return mapJob
+        }
+    },
 };
 
 const actions = {

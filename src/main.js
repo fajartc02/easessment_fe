@@ -23,6 +23,7 @@ app.provide('icons', icons)
 app.component('CIcon', CIcon)
 app.component('DocsExample', DocsExample)
 app.component('Select2', Select2)
+    // app.component()
 
 ApiService.init();
 app.mount('#app')

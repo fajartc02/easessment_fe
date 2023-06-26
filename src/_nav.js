@@ -9,6 +9,12 @@ export default [{
         // },
     },
     {
+        component: 'CNavItem',
+        name: 'Schedule Observasi',
+        to: '/schedule/observation',
+        icon: 'cil-clipboard',
+    },
+    {
         component: 'CNavTitle', // --- HISTORY MENU
         name: 'History Data',
     },

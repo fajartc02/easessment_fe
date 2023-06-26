@@ -16,11 +16,13 @@
             </div>
         </div>
         <div class="card-body text-center">
-            <table class="table table-bordered">
+            <table class="table table-bordered table-stripped">
                 <tr>
                    <th>No</th>
                    <th>Line</th> 
                    <th>Pos Name</th>
+                   <th>TSK</th>
+                   <th>TSKK</th>
                    <th>Pembuat</th>
                    <th>Tanggal Di buat</th>
                    <th colspan="2">Actions</th>
@@ -30,6 +32,34 @@
                         <td>{{ i + 1 }}</td>
                         <td>{{ pos.line_nm }}</td>
                         <td>{{ pos.pos_nm }}</td>
+                        <td v-if="pos.tsk">
+                            <CIcon
+                                icon="cil-check-circle" 
+                                class="text-success"
+                                size="xxl"
+                            />
+                        </td>
+                        <td v-else>
+                            <CIcon
+                                icon="cil-x" 
+                                class="text-danger"
+                                size="xxl"
+                            />
+                        </td>
+                        <td v-if="pos.tskk">
+                            <CIcon
+                                icon="cil-check-circle" 
+                                class="text-success"
+                                size="xxl"
+                            />
+                        </td>
+                        <td v-else>
+                            <CIcon
+                                icon="cil-x" 
+                                class="text-danger"
+                                size="xxl"
+                            />
+                        </td>
                         <td>{{ pos.created_by }}</td>
                         <td>{{ pos.created_dt.split('T')[0] }}</td>
                         <td>
