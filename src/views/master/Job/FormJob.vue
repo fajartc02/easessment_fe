@@ -7,14 +7,14 @@
             <CInputGroup class="mb-3">
                 <CInputGroupText>Line</CInputGroupText>
                 <CFormSelect v-model="selectedLine">
-                    <option>Select Line</option>
+                    <option value="null">Select Line</option>
                     <option v-for="line in getLinesOptsWithoutAll" :key="line.id" :value="line.id">{{ line.text }}</option>
                 </CFormSelect>
             </CInputGroup>
             <CInputGroup class="mb-3">
                 <CInputGroupText>Machine</CInputGroupText>
                 <CFormSelect :disabled="!selectedLine" v-model="form.machine_id">
-                    <option>Select Machine</option>
+                    <option value="null">Select Machine</option>
                     <option v-for="machine in getMachinesOptsWithoutAll" :key="machine.id" :value="machine.id">{{ machine.text }}</option>
                 </CFormSelect>
             </CInputGroup>
@@ -145,9 +145,11 @@ export default {
                 let formData = new FormData()
                 for (const key in this.form) {
                     const element = this.form[key];
-                    formData.append(key, element)
+                    if(element != 'null' || element) {
+                        formData.append(key, element)
+                    }
                 }
-                formData.append('attachment', this.attachment)
+                if(this.attachment) formData.append('attachment', this.attachment)
                 await this.$store.dispatch(POST_JOB, formData)
                 .then(() => {
                     Swal.fire('Berhasil menambah job', '', 'success')

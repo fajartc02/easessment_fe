@@ -39,10 +39,10 @@
                     <option v-for="member in getUsersOptsWithoutAll" :key="member.id" :value="member.name">{{ member.text }}</option>
                 </CFormSelect>
             </CInputGroup>
-            <CInputGroup class="mb-3">
+            <!-- <CInputGroup class="mb-3">
                 <CInputGroupText>Petugas</CInputGroupText>
                 <treeselect :disabled="selectedLine == -1" class="w-50" v-model="checkers" :multiple="true" :options="getUsersTreeselect" />
-            </CInputGroup>
+            </CInputGroup> -->
             <CInputGroup class="mb-3">
                 <CInputGroupText>Plan Date</CInputGroupText>
                 <input class="form-control" type="date" v-model="form.plan_check_dt">
@@ -63,6 +63,7 @@
 </template>
 
 <script>
+import { POST_OBSERVATION_SCHEDULE, GET_OBSERVATION_SCHEDULE_LIST } from '@/store/modules/observation.module'
 import { GET_JOB } from '@/store/modules/job.module'
 import { GET_USERS } from '@/store/modules/user.module'
 import { GET_LINES } from '@/store/modules/line.module'
@@ -70,7 +71,9 @@ import { GET_POS } from '@/store/modules/pos.module'
 import { GET_GROUP } from '@/store/modules/group.module'
 import { mapGetters } from 'vuex'
 
-import Treeselect from 'vue3-treeselect'
+// import formatDate from '@/functions/formatDate'
+
+// import Treeselect from 'vue3-treeselect'
 
 import 'vue3-treeselect/dist/vue3-treeselect.css'
 import moment from 'moment'
@@ -87,7 +90,7 @@ export default {
                 job_id: null,
                 group_id: null,
                 member_nm: null,
-                plan_check_dt: moment(new Date()).format('l')
+                plan_check_dt: moment(new Date()).format('YYYY-MM-DD')
             },
             checkers: null,
             isUpdate: false
@@ -103,10 +106,27 @@ export default {
         },
         ['form.group_id']: function() {
             if(this.form.group_id && this.selectedLine != '-1') this.getUser({group_id: this.form.group_id, line_id: this.selectedLine})
+        },
+        observationSchedule: async function() {
+            if(this.observationSchedule.length > 0) {
+                let observation = this.observationSchedule[0]
+                this.form.pos_id = observation.pos_id
+                this.form.job_id = observation.job_id
+                this.form.group_id = observation.group_id
+                this.selectedLine = observation.line_id
+                this.form.member_nm = observation.member_nm
+            }
+        },
+        getUsersTreeselect: async function() {
+            let observation = this.observationSchedule[0]
+            this.checkers = await observation.checkers.map(checker => {
+                return checker.checker_nm
+            })
         }
+
     },
     components: {
-        Treeselect
+        // Treeselect
     },
     computed: {
         ...mapGetters([
@@ -117,41 +137,68 @@ export default {
             'getJobOpts',
             'getUsersOptsWithoutAll',
             'getGroupsOptsWithoutAll',
-            'getUsersTreeselect'])
+            'getUsersTreeselect',
+            'observationSchedule'])
     },
     methods: {
         async getGroup() {
             await this.$store.dispatch(GET_GROUP)
         },
-        async getPos(query) {
-            await this.$store.dispatch(GET_POS, query)
+        async getPos(query = null) {
+            if(query) {
+                await this.$store.dispatch(GET_POS, query)
+                return
+            }
+            await this.$store.dispatch(GET_POS)
+            
         },
-        async getJob(query) {
-            await this.$store.dispatch(GET_JOB, query)
+        async getJob(query = null) {
+            if(query) {
+                await this.$store.dispatch(GET_JOB, query)
+                return
+            }
+            await this.$store.dispatch(GET_JOB)
         },
-        async getLines(query) {
-            await this.$store.dispatch(GET_LINES, query)
+        async getLines(query = null) {
+            if(query) {
+                await this.$store.dispatch(GET_LINES, query)
+                return
+            }
+            await this.$store.dispatch(GET_LINES)
         },
-        async getUser(query) {
-            await this.$store.dispatch(GET_USERS, query)
+        async getUser(query = null) {
+            if(query) {
+                await this.$store.dispatch(GET_USERS, query)
+                return
+            }
+            await this.$store.dispatch(GET_USERS)
         },
         async postSchedule() {
-            let notAllow = []
-            for (const key in this.form) {
-                if(!this.form[key]) {
-                    notAllow.push(key)
+            try {
+                let notAllow = []
+                for (const key in this.form) {
+                    if(!this.form[key]) {
+                        notAllow.push(key)
+                    }
                 }
-            }
-            if(notAllow.length > 0) {
-                Swal.fire('Lengkapi data terlebih dahulu', '', 'info')
-                return;
-            }
-            let mapCheckers = this.checkers.map(checker => {
-                return {
-                    checker_nm: checker
+                if(notAllow.length > 0) {
+                    Swal.fire('Lengkapi data terlebih dahulu', '', 'info')
+                    return;
                 }
-            })
-            this.form.checkers = mapChecker
+                let mapCheckers = this.checkers.map(checker => {
+                    return {
+                        checker_nm: checker
+                    }
+                })
+                this.form.checkers = mapCheckers
+                this.$store.dispatch(POST_OBSERVATION_SCHEDULE, this.form)
+                .then(() => {
+                    Swal.fire('Success menambah schedule', '', 'success')
+                    this.$router.push('/schedule/observation')
+                })
+            } catch (error) {
+                Swal.fire('Gagal menambah schedule', '', 'error')
+            }
             
         },
         cancel() {
@@ -160,6 +207,14 @@ export default {
         
     },
     async mounted() {
+        if(this.$route.query.id) {
+            this.isUpdate = true
+            await this.getLines()
+            await this.getGroup()
+            await this.getPos()
+            await this.getJob()
+            await this.$store.dispatch(GET_OBSERVATION_SCHEDULE_LIST, {id: this.$route.query.id})
+        }
         await this.getLines()
         await this.getGroup()
     }

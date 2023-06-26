@@ -28,7 +28,22 @@ const getters = {
             })
             return mapPos
         }
-    }
+    },
+    getPosOpts(state) {
+        if (state.posData) {
+            const mapPos = state.posData.map(pos => {
+                return {
+                    id: pos.id,
+                    text: pos.pos_nm
+                }
+            })
+            mapPos.push({
+                id: "-1",
+                text: 'All'
+            })
+            return mapPos
+        }
+    },
 };
 
 const actions = {

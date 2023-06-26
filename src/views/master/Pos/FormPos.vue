@@ -93,10 +93,13 @@ export default {
                 let formData = new FormData()
                 for (const key in this.form) {
                     const value = this.form[key]
-                    formData.append(key, value)
+                    if(value !== 'null' || value) {
+                        formData.append(key, value)
+                    }
                 }
-                formData.append('tsk', this.tsk)
-                formData.append('tskk', this.tskk)
+                if(this.tsk) formData.append('tsk', this.tsk)
+                if(this.tskk) formData.append('tskk', this.tskk)
+                
                 await this.$store.dispatch(POST_POS, formData)
                 .then(() => {
                     Swal.fire('Berhasil menambah pos', '', 'success')

@@ -1,71 +1,73 @@
-import ApiService from "../api.service";
-
-// action
-export const GET_JOB = "getJob";
-export const POST_JOB = "postJob";
-export const PUT_JOB = "putJob";
-export const DELETE_JOB = "deleteJob";
+import ApiService from "@/store/api.service";
+export const GET_PLANTS = "getPlantsStore";
+export const POST_PLANT = "postPlants";
+export const PUT_PLANT = "putPlants";
+export const DELETE_PLANT = "deletePlants";
 
 // mutation types
-export const SET_JOB = "setJob";
-
+export const SET_PLANTS = "setPlants";
 
 const state = {
-    jobData: []
+    plants: null
 };
 
 const getters = {
-    jobData(state) {
-        return state.jobData
+    getPlants(state) {
+        return state.plants
     },
-    getJobOpts(state) {
-        if (state.jobData) {
-            const mapJob = state.jobData.map(job => {
+    getPlantsOpts(state) {
+        if (state.plants) {
+            const mapPlants = state.plants.map(plant => {
                 return {
-                    id: job.id,
-                    text: `${job.job_no}-${job.job_nm}`
+                    id: plant.id,
+                    text: plant.plant_nm
                 }
             })
-            return mapJob
+            mapPlants.push({
+                id: "-1",
+                text: 'All'
+            })
+            return mapPlants
         }
     },
-    getJobsTreeselect(state) {
-        if (state.jobData) {
-            const mapJobs = state.jobData.map(job => {
+    getPlantsOptsWithoutAll(state) {
+        if (state.plants) {
+            const mapPlants = state.plants.map(plant => {
                 return {
-                    id: job.id,
-                    label: `${job.job_no}-${job.job_nm}`
+                    id: plant.id,
+                    text: plant.plant_nm
                 }
             })
-            return mapJobs
+            return mapPlants
         }
     }
 };
 
 const actions = {
-    [GET_JOB]({ commit }, query) {
+    [GET_PLANTS]({ commit }) {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
-            ApiService.query('master/job', query)
+            ApiService.get("master/plants")
                 .then((result) => {
-                    const jobData = result.data
-                    if (jobData) {
-                        commit(SET_JOB, jobData.data)
-                        resolve(jobData.data)
+                    const plants = result.data
+                    if (plants) {
+                        commit(SET_PLANTS, plants.data)
+                        resolve(plants.data)
                     }
+                    // throw result;
                 }).catch((err) => {
                     reject(err)
                 });
 
         });
     },
-    [POST_JOB]({ commit }, data = null) {
+    [POST_PLANT]({ commit }, data = null) {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
-            ApiService.post('master/job', data)
+            ApiService.post('master/plants', data)
                 .then((result) => {
-                    const jobData = result.data
-                    resolve(jobData.data)
+                    const linesData = result.data
+                    resolve(linesData.data)
                     console.log(commit);
                 }).catch((err) => {
                     reject(err)
@@ -73,13 +75,13 @@ const actions = {
 
         });
     },
-    [PUT_JOB]({ commit }, data = null) {
+    [PUT_PLANT]({ commit }, data = null) {
         ApiService.setHeader()
         let ID = data.id
         delete data.id
         return new Promise((resolve, reject) => {
             console.log(data);
-            ApiService.put(`master/job/${ID}`, data.formData)
+            ApiService.put(`master/plants/edit/${ID}`, data.formData)
                 .then((result) => {
                     const jobData = result.data
                     resolve(jobData.data)
@@ -90,10 +92,10 @@ const actions = {
 
         });
     },
-    [DELETE_JOB]({ commit }, id) {
+    [DELETE_PLANT]({ commit }, id) {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
-            ApiService.delete(`master/job/${id}`)
+            ApiService.delete(`master/plants/delete/${id}`)
                 .then((result) => {
                     const jobData = result.data
                     resolve(jobData.data)
@@ -107,9 +109,9 @@ const actions = {
 };
 
 const mutations = {
-    [SET_JOB](state, payload) {
-        state.jobData = payload;
-    }
+    [SET_PLANTS](state, plants) {
+        state.plants = plants;
+    },
 };
 
 export default {

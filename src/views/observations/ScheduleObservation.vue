@@ -26,46 +26,33 @@
                    <th>Petugas</th>
                    <th>Member</th>
                    <th>Job Desc</th>
-                   <th>SOP</th>
                    <th>Planning</th>
                    <th>Actual</th>
                    <th colspan="2">Actions</th>
                 </tr>
-                <!-- <template v-if="jobState.length > 0">
-                    <tr v-for="(job, i) in jobState" :key="job.uuid">
+                <template v-if="observationSchedule.length > 0">
+                    <tr v-for="(obaservation, i) in observationSchedule" :key="obaservation.uuid">
                         <td>{{ i + 1 }}</td>
-                        <td>{{ job.line_nm }}</td>
-                        <td>{{ job.machine_nm }}</td>
-                        <td>{{ job.pos_nm }}</td>
-                        <td>{{ job.job_type_nm }}</td>
-                        <td>{{ job.job_no }}</td>
-                        <td>{{ job.job_nm }}</td>
-                        <td v-if="job.attachment">
-                            <CIcon
-                                icon="cil-check-circle" 
-                                class="text-success"
-                                size="xxl"
-                            />
+                        <td>{{ obaservation.line_nm }}</td>
+                        <td>{{ obaservation.pos_nm }}</td>
+                        <td>{{ obaservation.job_type_nm }}</td>
+                        <td v-if="obaservation.checkers.length > 0">
+                            <button v-for="checker in obaservation.checkers" :key="checker.id" class="btn btn-warning text-dark disabled">{{ checker.checker_nm }}</button>
                         </td>
-                        <td v-else>
-                            <CIcon
-                                icon="cil-x" 
-                                class="text-danger"
-                                size="xxl"
-                            />
-                        </td>
-                        <td>{{ job.created_by }}</td>
-                        <td>{{ job.created_dt.split('T')[0] }}</td>
-                        <td>
-                            <CButton color="warning" @click="editPos(job.uuid)">
+                        <td>{{ obaservation.member_nm }}</td>
+                        <td>{{ obaservation.job_nm }}</td>
+                        <td>{{ `${obaservation.plan_check_dt}`.split('T')[0] }}</td>
+                        <td>{{ `${obaservation.actual_check_dt}`.split('T')[0] != 'null' ? `${obaservation.actual_check_dt}`.split('T')[0] : 'belum cek'}}</td>
+                        <!-- <td>
+                            <CButton color="warning" @click="editPos(obaservation.id)">
                                 <CIcon
                                     icon="cil-pencil" 
                                     size="sm"
                                 />
                             </CButton>
-                        </td>
+                        </td> -->
                         <td>
-                            <CButton color="danger" @click="deletePos(job.uuid)">
+                            <CButton color="danger" @click="deletePos(obaservation.id)">
                                 <CIcon
                                     icon="cil-trash" 
                                     size="sm"
@@ -73,7 +60,7 @@
                             </CButton>
                         </td>
                     </tr>
-                </template> -->
+                </template>
                 <!-- <tr v-else>
                     <td colspan="6">
                         <h3>Tidak Ada Data</h3>
@@ -85,7 +72,7 @@
 </template>
 
 <script>
-import {GET_JOB, DELETE_JOB} from '@/store/modules/job.module'
+import {GET_OBSERVATION_SCHEDULE_LIST, DELETE_OBSERVATION_LIST} from '@/store/modules/observation.module'
 import { mapGetters } from 'vuex'
 import Swal from 'sweetalert2'
 
@@ -96,26 +83,25 @@ export default {
             form: {
                 line_id: null
             },
-            jobState: []
         }
     },
     watch: {
-        jobData: function() {
-            console.log(this.jobData);
-            this.jobState = this.jobData
+        observationSchedule: function() {
+            console.log(this.observationSchedule);
         }
     },
     computed: {
-        ...mapGetters(['jobData'])
+        ...mapGetters(['observationSchedule'])
     },
     methods: {
-        async getJob() {
-            await this.$store.dispatch(GET_JOB)
+        async getObservations() {
+            await this.$store.dispatch(GET_OBSERVATION_SCHEDULE_LIST)
         },
         async editPos(id) {
-            await this.$router.push(`/master/job/form?id=${id}`)
+            await this.$router.push(`/schedule/observation/form?id=${id}`)
         },
         deletePos(id) {
+            console.log(id);
             Swal.fire({
                 title: 'kamu mau menghapus data ini?',
                 showCancelButton: true,
@@ -123,10 +109,10 @@ export default {
                 denyButtonText: `Tidak`,
                 }).then(async (result) => {
                 if (result.isConfirmed) {
-                    await this.$store.dispatch(DELETE_JOB, id)
+                    await this.$store.dispatch(DELETE_OBSERVATION_LIST, id)
                     .then(async () => {
                         Swal.fire('Berhasil menghapus!', '', 'success')
-                        await this.$store.dispatch(GET_JOB)
+                        await this.$store.dispatch(GET_OBSERVATION_SCHEDULE_LIST)
                     })
                     .catch(err => {
                         console.log(err);
@@ -137,7 +123,7 @@ export default {
         }
     },
     async mounted() {
-       await this.getJob()
+       await this.getObservations()
     }
 }
 </script>

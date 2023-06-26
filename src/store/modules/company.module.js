@@ -1,58 +1,58 @@
 import ApiService from "@/store/api.service";
-export const GET_LINES = "getLines";
-export const POST_LINE = "postLines";
-export const PUT_LINE = "putLines";
-export const DELETE_LINE = "deleteLines";
+export const GET_COMPANY = "getCompaniesStore";
+export const POST_COMPANY = "postCompanies";
+export const PUT_COMPANY = "putCompanies";
+export const DELETE_COMPANY = "deleteCompanies";
 
 // mutation types
-export const SET_LINES = "setLines";
+export const SET_COMPANY = "setCompanies";
 
 const state = {
-    lines: null
+    companies: null
 };
 
 const getters = {
-    getLines(state) {
-        return state.lines
+    getCompanies(state) {
+        return state.companies
     },
-    getLinesOpts(state) {
-        if (state.lines) {
-            const mapLines = state.lines.map(line => {
+    getCompaniesOpts(state) {
+        if (state.companies) {
+            const mapCompanies = state.companies.map(company => {
                 return {
-                    id: line.id,
-                    text: line.line_nm
+                    id: company.id,
+                    text: company.company_nm
                 }
             })
-            mapLines.push({
+            mapCompanies.push({
                 id: "-1",
                 text: 'All'
             })
-            return mapLines
+            return mapCompanies
         }
     },
-    getLinesOptsWithoutAll(state) {
-        if (state.lines) {
-            const mapLines = state.lines.map(line => {
+    getCompaniesOptsWithoutAll(state) {
+        if (state.companies) {
+            const mapCompanies = state.companies.map(company => {
                 return {
-                    id: line.id,
-                    text: line.line_nm
+                    id: company.id,
+                    text: company.company_nm
                 }
             })
-            return mapLines
+            return mapCompanies
         }
     }
 };
 
 const actions = {
-    [GET_LINES]({ commit }) {
+    [GET_COMPANY]({ commit }) {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
-            ApiService.get("master/lines")
+            ApiService.get("master/companies")
                 .then((result) => {
-                    const lines = result.data
-                    if (lines) {
-                        commit(SET_LINES, lines.data)
-                        resolve(lines.data)
+                    const companies = result.data
+                    if (companies) {
+                        commit(SET_COMPANY, companies.data)
+                        resolve(companies.data)
                     }
                     // throw result;
                 }).catch((err) => {
@@ -61,10 +61,10 @@ const actions = {
 
         });
     },
-    [POST_LINE]({ commit }, data = null) {
+    [POST_COMPANY]({ commit }, data = null) {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
-            ApiService.post('master/lines', data)
+            ApiService.post('master/companies', data)
                 .then((result) => {
                     const linesData = result.data
                     resolve(linesData.data)
@@ -75,13 +75,13 @@ const actions = {
 
         });
     },
-    [PUT_LINE]({ commit }, data = null) {
+    [PUT_COMPANY]({ commit }, data = null) {
         ApiService.setHeader()
         let ID = data.id
         delete data.id
         return new Promise((resolve, reject) => {
             console.log(data);
-            ApiService.put(`master/lines/edit/${ID}`, data.formData)
+            ApiService.put(`master/companies/edit/${ID}`, data.formData)
                 .then((result) => {
                     const jobData = result.data
                     resolve(jobData.data)
@@ -92,10 +92,10 @@ const actions = {
 
         });
     },
-    [DELETE_LINE]({ commit }, id) {
+    [DELETE_COMPANY]({ commit }, id) {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
-            ApiService.delete(`master/lines/delete/${id}`)
+            ApiService.delete(`master/companies/delete/${id}`)
                 .then((result) => {
                     const jobData = result.data
                     resolve(jobData.data)
@@ -109,8 +109,8 @@ const actions = {
 };
 
 const mutations = {
-    [SET_LINES](state, lines) {
-        state.lines = lines;
+    [SET_COMPANY](state, companies) {
+        state.companies = companies;
     },
 };
 

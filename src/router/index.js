@@ -53,10 +53,35 @@ const routes = [{
                 component: () =>
                     import ('@/views/master/Job/Job.vue'),
             }, {
+                path: '/master/shop',
+                name: 'Shop',
+                component: () =>
+                    import ('@/views/master/Shops/Shops.vue'),
+            }, {
+                path: '/master/plant',
+                name: 'Plants',
+                component: () =>
+                    import ('@/views/master/Plants/Plants.vue'),
+            }, {
+                path: '/master/user',
+                name: 'Users',
+                component: () =>
+                    import ('@/views/master/Users/Users.vue'),
+            }, {
+                path: '/master/company',
+                name: 'Company',
+                component: () =>
+                    import ('@/views/master/Company/Company.vue'),
+            }, {
                 path: '/master/job/form',
                 name: 'FormJob',
                 component: () =>
                     import ('@/views/master/Job/FormJob.vue'),
+            }, {
+                path: '/master/line',
+                name: 'FormJob',
+                component: () =>
+                    import ('@/views/master/Lines/Lines.vue'),
             },
         ],
     },

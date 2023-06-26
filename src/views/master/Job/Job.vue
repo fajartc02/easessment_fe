@@ -16,11 +16,28 @@
             </div>
         </div>
         <div class="card-body text-center">
+            <div class="row">
+                <div class="col">
+                    <CInputGroup class="mb-3">
+                        <CInputGroupText>Line</CInputGroupText>
+                        <Select2 v-model="filtered.line_id" class="form-control" :options="getLinesOpts" />
+                    </CInputGroup>
+                </div>
+                <div class="col">
+                    <CInputGroup class="mb-3">
+                        <CInputGroupText>Pos</CInputGroupText>
+                        <Select2 :disabled="filtered.line_id == -1" v-model="filtered.pos_id" class="form-control" :options="getPosOpts" />
+                    </CInputGroup>
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-primary" @click="getJob()">Search</button>
+                </div>
+            </div>
             <table class="table table-bordered table-stripped">
                 <tr>
                    <th>No</th>
                    <th>Line</th> 
-                   <th>Mesin</th>
+                   <!-- <th>Mesin</th> -->
                    <th>Pos</th>
                    <th>Type Pekerjaan</th>
                    <th>Job No</th>
@@ -34,7 +51,7 @@
                     <tr v-for="(job, i) in jobState" :key="job.uuid">
                         <td>{{ i + 1 }}</td>
                         <td>{{ job.line_nm }}</td>
-                        <td>{{ job.machine_nm }}</td>
+                        <!-- <td>{{ job.machine_nm ? job.machine_nm : '-' }}</td> -->
                         <td>{{ job.pos_nm }}</td>
                         <td>{{ job.job_type_nm }}</td>
                         <td>{{ job.job_no }}</td>
@@ -74,7 +91,7 @@
                     </tr>
                 </template>
                 <tr v-else>
-                    <td colspan="6">
+                    <td colspan="10">
                         <h3>Tidak Ada Data</h3>
                     </td>
                 </tr>
@@ -84,6 +101,8 @@
 </template>
 
 <script>
+import { GET_LINES } from "@/store/modules/line.module";
+import { GET_POS } from "@/store/modules/pos.module";
 import {GET_JOB, DELETE_JOB} from '@/store/modules/job.module'
 import { mapGetters } from 'vuex'
 import Swal from 'sweetalert2'
@@ -95,20 +114,39 @@ export default {
             form: {
                 line_id: null
             },
+            filtered: {
+                line_id: -1,
+                pos_id: -1,
+                // job_type_id: null
+            },
             jobState: []
         }
     },
     watch: {
         jobData: function() {
-            console.log(this.jobData);
             this.jobState = this.jobData
+        },
+        ['filtered.line_id']: function() {
+            this.getPos({line_id: this.filtered.line_id})
         }
     },
     computed: {
-        ...mapGetters(['jobData'])
+        ...mapGetters(['jobData', 'getLinesOpts', 'getPosOpts'])
     },
     methods: {
+        async getLines() {
+            this.$store.dispatch(GET_LINES)
+        },
+        async getPos(query) {
+            this.$store.dispatch(GET_POS, query)
+        },
         async getJob() {
+            if(this.filtered.line_id || this.filtered.pos_id) {
+                let query = this.filtered
+                if(!this.filtered.pos_id) delete query.pos_id
+                await this.$store.dispatch(GET_JOB, query)
+                return;
+            }
             await this.$store.dispatch(GET_JOB)
         },
         async editPos(id) {
@@ -137,6 +175,7 @@ export default {
     },
     async mounted() {
        await this.getJob()
+       await this.getLines()
     }
 }
 </script>

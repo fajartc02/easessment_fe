@@ -1,6 +1,10 @@
 import { createStore } from 'vuex'
 import auth from "./modules/auth.module";
+import company from "./modules/company.module";
+import plant from "./modules/plant.module";
+import shop from "./modules/shop.module";
 import line from "./modules/line.module";
+
 import machine from "./modules/machine.module";
 import user from "./modules/user.module";
 import group from "./modules/group.module";
@@ -32,6 +36,9 @@ export default createStore({
         user,
         group,
 
+        company,
+        plant,
+        shop,
         line,
         machine,
 

@@ -86,7 +86,7 @@
                 <CInputGroupText>Shift</CInputGroupText>
                 <CFormSelect :disabled="isCheck" v-model="form.group_id">
                     <option>Select Shift</option>
-                    <option v-for="judg in groups" :key="judg.id" :value="judg.id">{{ judg.text }}</option>
+                    <option v-for="judg in groups" :key="judg.id" :value="judg.id">{{ judg.group_nm }}</option>
                 </CFormSelect>
             </CInputGroup>
             <table class="table table-bordered">

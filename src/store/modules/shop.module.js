@@ -1,71 +1,73 @@
-import ApiService from "../api.service";
-
-// action
-export const GET_JOB = "getJob";
-export const POST_JOB = "postJob";
-export const PUT_JOB = "putJob";
-export const DELETE_JOB = "deleteJob";
+import ApiService from "@/store/api.service";
+export const GET_SHOPS = "getShopsStore";
+export const POST_SHOP = "postShops";
+export const PUT_SHOP = "putShops";
+export const DELETE_SHOP = "deleteShops";
 
 // mutation types
-export const SET_JOB = "setJob";
-
+export const SET_SHOPS = "setShops";
 
 const state = {
-    jobData: []
+    shops: null
 };
 
 const getters = {
-    jobData(state) {
-        return state.jobData
+    getShops(state) {
+        return state.shops
     },
-    getJobOpts(state) {
-        if (state.jobData) {
-            const mapJob = state.jobData.map(job => {
+    getShopsOpts(state) {
+        if (state.shops) {
+            const mapShops = state.shops.map(shop => {
                 return {
-                    id: job.id,
-                    text: `${job.job_no}-${job.job_nm}`
+                    id: shop.id,
+                    text: shop.line_nm
                 }
             })
-            return mapJob
+            mapShops.push({
+                id: "-1",
+                text: 'All'
+            })
+            return mapShops
         }
     },
-    getJobsTreeselect(state) {
-        if (state.jobData) {
-            const mapJobs = state.jobData.map(job => {
+    getShopsOptsWithoutAll(state) {
+        if (state.shops) {
+            const mapShops = state.shops.map(shop => {
                 return {
-                    id: job.id,
-                    label: `${job.job_no}-${job.job_nm}`
+                    id: shop.id,
+                    text: shop.line_nm
                 }
             })
-            return mapJobs
+            return mapShops
         }
     }
 };
 
 const actions = {
-    [GET_JOB]({ commit }, query) {
+    [GET_SHOPS]({ commit }) {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
-            ApiService.query('master/job', query)
+            ApiService.get("master/shops")
                 .then((result) => {
-                    const jobData = result.data
-                    if (jobData) {
-                        commit(SET_JOB, jobData.data)
-                        resolve(jobData.data)
+                    const shops = result.data
+                    if (shops) {
+                        commit(SET_SHOPS, shops.data)
+                        resolve(shops.data)
                     }
+                    // throw result;
                 }).catch((err) => {
                     reject(err)
                 });
 
         });
     },
-    [POST_JOB]({ commit }, data = null) {
+    [POST_SHOP]({ commit }, data = null) {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
-            ApiService.post('master/job', data)
+            ApiService.post('master/shops', data)
                 .then((result) => {
-                    const jobData = result.data
-                    resolve(jobData.data)
+                    const linesData = result.data
+                    resolve(linesData.data)
                     console.log(commit);
                 }).catch((err) => {
                     reject(err)
@@ -73,13 +75,13 @@ const actions = {
 
         });
     },
-    [PUT_JOB]({ commit }, data = null) {
+    [PUT_SHOP]({ commit }, data = null) {
         ApiService.setHeader()
         let ID = data.id
         delete data.id
         return new Promise((resolve, reject) => {
             console.log(data);
-            ApiService.put(`master/job/${ID}`, data.formData)
+            ApiService.put(`master/shops/edit/${ID}`, data.formData)
                 .then((result) => {
                     const jobData = result.data
                     resolve(jobData.data)
@@ -90,10 +92,10 @@ const actions = {
 
         });
     },
-    [DELETE_JOB]({ commit }, id) {
+    [DELETE_SHOP]({ commit }, id) {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
-            ApiService.delete(`master/job/${id}`)
+            ApiService.delete(`master/shops/delete/${id}`)
                 .then((result) => {
                     const jobData = result.data
                     resolve(jobData.data)
@@ -107,9 +109,9 @@ const actions = {
 };
 
 const mutations = {
-    [SET_JOB](state, payload) {
-        state.jobData = payload;
-    }
+    [SET_SHOPS](state, shops) {
+        state.shops = shops;
+    },
 };
 
 export default {

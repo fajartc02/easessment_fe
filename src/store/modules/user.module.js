@@ -1,5 +1,8 @@
 import ApiService from "@/store/api.service";
 export const GET_USERS = "getUsers";
+export const POST_USER = "postUser";
+export const PUT_USER = "putUser";
+export const DELETE_USER = "deleteUser";
 
 // mutation types
 export const SET_USERS = "setUsers";
@@ -33,7 +36,7 @@ const getters = {
                 return {
                     id: user.id,
                     name: user.text,
-                    text: `${user.noreg}-${user.text}`
+                    text: `${user.text}`
                 }
             })
             return mapUsers
@@ -45,7 +48,7 @@ const getters = {
                 return {
                     id: user.text,
                     name: user.text,
-                    label: `${user.noreg}-${user.text}`
+                    label: `${user.text}`
                 }
             })
             return mapUsers
@@ -71,6 +74,52 @@ const actions = {
 
         });
     },
+
+    [POST_USER]({ commit }, data = null) {
+        ApiService.setHeader()
+        return new Promise((resolve, reject) => {
+            ApiService.post('master/users', data)
+                .then((result) => {
+                    const linesData = result.data
+                    resolve(linesData.data)
+                    console.log(commit);
+                }).catch((err) => {
+                    reject(err)
+                });
+
+        });
+    },
+    [PUT_USER]({ commit }, data = null) {
+        ApiService.setHeader()
+        let ID = data.id
+        delete data.id
+        return new Promise((resolve, reject) => {
+            console.log(data);
+            ApiService.put(`master/users/edit/${ID}`, data.formData)
+                .then((result) => {
+                    const jobData = result.data
+                    resolve(jobData.data)
+                    console.log(commit);
+                }).catch((err) => {
+                    reject(err)
+                });
+
+        });
+    },
+    [DELETE_USER]({ commit }, id) {
+        ApiService.setHeader()
+        return new Promise((resolve, reject) => {
+            ApiService.delete(`master/users/delete/${id}`)
+                .then((result) => {
+                    const jobData = result.data
+                    resolve(jobData.data)
+                    console.log(commit);
+                }).catch((err) => {
+                    reject(err)
+                });
+
+        });
+    }
 };
 
 const mutations = {
