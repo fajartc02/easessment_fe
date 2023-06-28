@@ -44,10 +44,10 @@ const getters = {
 };
 
 const actions = {
-    [GET_LINES]({ commit }) {
+    [GET_LINES]({ commit }, query) {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
-            ApiService.get("master/lines")
+            ApiService.query("master/lines", query)
                 .then((result) => {
                     const lines = result.data
                     if (lines) {
@@ -81,7 +81,7 @@ const actions = {
         delete data.id
         return new Promise((resolve, reject) => {
             console.log(data);
-            ApiService.put(`master/lines/edit/${ID}`, data.formData)
+            ApiService.put(`master/lines/edit/${ID}`, data)
                 .then((result) => {
                     const jobData = result.data
                     resolve(jobData.data)

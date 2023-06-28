@@ -2,11 +2,7 @@ export default [{
         component: 'CNavItem',
         name: 'Dashboard',
         to: '/',
-        icon: 'cil-speedometer',
-        // badge: {
-        //   color: 'primary',
-        //   text: 'NEW',
-        // },
+        icon: 'cil-speedometer'
     },
     {
         component: 'CNavItem',
@@ -21,7 +17,7 @@ export default [{
     {
         component: 'CNavItem',
         name: 'Observasi',
-        to: '/history/observasi',
+        to: '/history/observation',
         icon: 'cil-clipboard',
     },
     {
@@ -29,35 +25,52 @@ export default [{
         name: 'Master Data',
     },
     {
+        component: 'CNavGroup',
+        name: 'Locations',
+        icon: 'cil-building',
+        items: [{
+                component: 'CNavItem',
+                name: 'Company',
+                to: '/master/company',
+            },
+            {
+                component: 'CNavItem',
+                name: 'Plant',
+                to: '/master/plant',
+                // icon: 'cil-factory',
+            },
+            {
+                component: 'CNavItem',
+                name: 'Shop',
+                to: '/master/shop',
+                // icon: 'cil-double-quote-sans-right',
+            },
+            {
+                component: 'CNavItem',
+                name: 'Line',
+                to: '/master/line',
+                // icon: 'cil-border-all',
+            },
+            {
+                component: 'CNavItem',
+                name: 'Machine',
+                to: '/master/machine',
+                // icon: 'cil-border-all',
+            },
+        ]
+    },
+    {
         component: 'CNavItem',
         name: 'Users',
         to: '/master/user',
         icon: 'cil-user',
     },
-    {
-        component: 'CNavItem',
-        name: 'Company',
-        to: '/master/company',
-        icon: 'cil-building',
-    },
-    {
-        component: 'CNavItem',
-        name: 'Plant',
-        to: '/master/plant',
-        icon: 'cil-factory',
-    },
-    {
-        component: 'CNavItem',
-        name: 'Shop',
-        to: '/master/shop',
-        icon: 'cil-double-quote-sans-right',
-    },
-    {
-        component: 'CNavItem',
-        name: 'Line',
-        to: '/master/line',
-        icon: 'cil-border-all',
-    },
+    // {
+    //     component: 'CNavItem',
+    //     name: 'Group',
+    //     to: '/master/group',
+    //     icon: 'cil-layers',
+    // },
     {
         component: 'CNavItem',
         name: 'Pos',
@@ -68,7 +81,7 @@ export default [{
         component: 'CNavItem',
         name: 'Job',
         to: '/master/job',
-        icon: 'cil-border-all',
+        icon: 'cil-puzzle',
     },
     // {
     //   component: 'CNavTitle',

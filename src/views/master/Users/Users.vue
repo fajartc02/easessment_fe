@@ -6,8 +6,8 @@
                     Master Users
                 </div>
                 <div class="col">
-                    <button class="btn btn-success" @click="this.$router.push('/master/pos/form')">
-                        Add Pos<CIcon
+                    <button class="btn btn-success" @click="this.$router.push('/master/user/form')">
+                        Add User<CIcon
                                     icon="cil-plus" 
                                     size="sm"
                                 />
@@ -33,7 +33,7 @@
                         <td>{{ pos.created_by }}</td>
                         <td>{{ pos.created_dt.split('T')[0] }}</td>
                         <td>
-                            <CButton color="warning" @click="editLine(pos.id)">
+                            <CButton color="warning" @click="edit(pos.id)">
                                 <CIcon
                                     icon="cil-pencil" 
                                     size="sm"
@@ -41,7 +41,7 @@
                             </CButton>
                         </td>
                         <td>
-                            <CButton color="danger" @click="deleteLine(pos.id)">
+                            <CButton color="danger" @click="del(pos.id)">
                                 <CIcon
                                     icon="cil-trash" 
                                     size="sm"
@@ -77,7 +77,6 @@ export default {
     },
     watch: {
         getUsers: function() {
-            console.log(this.getUsers);
             this.usersState = this.getUsers
         }
     },
@@ -88,10 +87,10 @@ export default {
         async getUsersStore() {
             await this.$store.dispatch(GET_USERS)
         },
-        async editLine(id) {
-            await this.$router.push(`/master/company/form?id=${id}`)
+        async edit(id) {
+            await this.$router.push(`/master/user/form?id=${id}`)
         },
-        deleteLine(id) {
+        del(id) {
             Swal.fire({
                 title: 'kamu mau menghapus data ini?',
                 showCancelButton: true,

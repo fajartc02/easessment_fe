@@ -6,12 +6,12 @@
                     Master Plant
                 </div>
                 <div class="col">
-                    <button class="btn btn-success" @click="this.$router.push('/master/pos/form')">
-                        Add Pos<CIcon
+                    <!-- <button class="btn btn-success" @click="this.$router.push('/master/pos/form')">
+                        Add Plant<CIcon
                                     icon="cil-plus" 
                                     size="sm"
                                 />
-                    </button>
+                    </button> -->
                 </div>
             </div>
         </div>
@@ -22,7 +22,7 @@
                    <th>Plant</th>
                    <th>Pembuat</th>
                    <th>Tanggal Di buat</th>
-                   <th colspan="2">Actions</th>
+                   <!-- <th colspan="2">Actions</th> -->
                 </tr>
                 <template v-if="plantState.length > 0">
                     <tr v-for="(pos, i) in plantState" :key="pos.id">
@@ -30,7 +30,7 @@
                         <td>{{ pos.plant_nm }}</td>
                         <td>{{ pos.created_by }}</td>
                         <td>{{ pos.created_dt.split('T')[0] }}</td>
-                        <td>
+                        <!-- <td>
                             <CButton color="warning" @click="editLine(pos.id)">
                                 <CIcon
                                     icon="cil-pencil" 
@@ -45,7 +45,7 @@
                                     size="sm"
                                 />
                             </CButton>
-                        </td>
+                        </td> -->
                     </tr>
                 </template>
                 <tr v-else>

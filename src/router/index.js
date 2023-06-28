@@ -18,6 +18,12 @@ const routes = [{
                     import ('@/views/Dashboard.vue'),
             },
             {
+                path: '/history/observation',
+                name: 'HistoryObservation',
+                component: () =>
+                    import ('@/views/observations/HistoryObservation.vue'),
+            },
+            {
                 path: '/schedule/observation',
                 name: 'ScheduleObservation',
                 component: () =>
@@ -53,10 +59,20 @@ const routes = [{
                 component: () =>
                     import ('@/views/master/Job/Job.vue'),
             }, {
+                path: '/master/job/form',
+                name: 'FormJob',
+                component: () =>
+                    import ('@/views/master/Job/FormJob.vue'),
+            }, {
                 path: '/master/shop',
                 name: 'Shop',
                 component: () =>
                     import ('@/views/master/Shops/Shops.vue'),
+            }, {
+                path: '/master/shop/form',
+                name: 'FormShop',
+                component: () =>
+                    import ('@/views/master/Shops/FormShop.vue'),
             }, {
                 path: '/master/plant',
                 name: 'Plants',
@@ -68,21 +84,36 @@ const routes = [{
                 component: () =>
                     import ('@/views/master/Users/Users.vue'),
             }, {
+                path: '/master/user/form',
+                name: 'FormUser',
+                component: () =>
+                    import ('@/views/master/Users/FormUser.vue'),
+            }, {
                 path: '/master/company',
                 name: 'Company',
                 component: () =>
                     import ('@/views/master/Company/Company.vue'),
             }, {
-                path: '/master/job/form',
-                name: 'FormJob',
-                component: () =>
-                    import ('@/views/master/Job/FormJob.vue'),
-            }, {
                 path: '/master/line',
-                name: 'FormJob',
+                name: 'Lines',
                 component: () =>
                     import ('@/views/master/Lines/Lines.vue'),
-            },
+            }, {
+                path: '/master/line/form',
+                name: 'FormLine',
+                component: () =>
+                    import ('@/views/master/Lines/FormLine.vue'),
+            }, {
+                path: '/master/machine',
+                name: 'Machine',
+                component: () =>
+                    import ('@/views/master/Machine/Machine.vue'),
+            }, {
+                path: '/master/machine/form',
+                name: 'FormMachine',
+                component: () =>
+                    import ('@/views/master/Machine/FormMachine.vue'),
+            }
         ],
     },
 

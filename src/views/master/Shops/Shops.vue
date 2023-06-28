@@ -6,8 +6,8 @@
                     Master shop
                 </div>
                 <div class="col">
-                    <button class="btn btn-success" @click="this.$router.push('/master/pos/form')">
-                        Add Pos<CIcon
+                    <button class="btn btn-success" @click="this.$router.push('/master/shop/form')">
+                        Add Shop<CIcon
                                     icon="cil-plus" 
                                     size="sm"
                                 />
@@ -25,13 +25,13 @@
                    <th colspan="2">Actions</th>
                 </tr>
                 <template v-if="shopState.length > 0">
-                    <tr v-for="(pos, i) in shopState" :key="pos.id">
+                    <tr v-for="(shop, i) in shopState" :key="shop.id">
                         <td>{{ i + 1 }}</td>
-                        <td>{{ pos.shop_nm }}</td>
-                        <td>{{ pos.created_by }}</td>
-                        <td>{{ pos.created_dt.split('T')[0] }}</td>
+                        <td>{{ shop.shop_nm }}</td>
+                        <td>{{ shop.created_by }}</td>
+                        <td>{{ shop.created_dt.split('T')[0] }}</td>
                         <td>
-                            <CButton color="warning" @click="editLine(pos.id)">
+                            <CButton color="warning" @click="edit(shop.id)">
                                 <CIcon
                                     icon="cil-pencil" 
                                     size="sm"
@@ -39,7 +39,7 @@
                             </CButton>
                         </td>
                         <td>
-                            <CButton color="danger" @click="deleteLine(pos.id)">
+                            <CButton color="danger" @click="del(shop.id)">
                                 <CIcon
                                     icon="cil-trash" 
                                     size="sm"
@@ -68,7 +68,8 @@ export default {
     data() {
         return {
             form: {
-                line_id: null
+                shop_id: null,
+                shop_nm: null
             },
             shopState: []
         }
@@ -86,10 +87,10 @@ export default {
         async getShopsStore() {
             await this.$store.dispatch(GET_SHOPS)
         },
-        async editLine(id) {
-            await this.$router.push(`/master/line/form?id=${id}`)
+        async edit(id) {
+            await this.$router.push(`/master/shop/form?id=${id}`)
         },
-        deleteLine(id) {
+        del(id) {
             Swal.fire({
                 title: 'kamu mau menghapus data ini?',
                 showCancelButton: true,

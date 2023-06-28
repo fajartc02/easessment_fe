@@ -3,15 +3,15 @@
         <div class="card-header">
             <div class="d-flex row align-items-center">
                 <div class="col-10">
-                    Master Company
+                    Master Machines
                 </div>
                 <div class="col">
-                    <!-- <button class="btn btn-success" @click="this.$router.push('/master/pos/form')">
-                        Add Pos<CIcon
+                    <button class="btn btn-success" @click="this.$router.push('/master/machine/form')">
+                        Add Machine<CIcon
                                     icon="cil-plus" 
                                     size="sm"
                                 />
-                    </button> -->
+                    </button>
                 </div>
             </div>
         </div>
@@ -19,19 +19,23 @@
             <table class="table table-bordered table-stripped">
                 <tr>
                    <th>No</th>
-                   <th>Company</th>
+                   <th>Line</th>
+                   <th>Machine</th>
+                   <th>Op No</th>
                    <th>Pembuat</th>
                    <th>Tanggal Di buat</th>
-                   <!-- <th colspan="2">Actions</th> -->
+                   <th colspan="2">Actions</th>
                 </tr>
-                <template v-if="companyState.length > 0">
-                    <tr v-for="(pos, i) in companyState" :key="pos.id">
+                <template v-if="MachinesState.length > 0">
+                    <tr v-for="(machine, i) in MachinesState" :key="machine.id">
                         <td>{{ i + 1 }}</td>
-                        <td>{{ pos.company_nm }}</td>
-                        <td>{{ pos.created_by }}</td>
-                        <td>{{ pos.created_dt.split('T')[0] }}</td>
-                        <!-- <td>
-                            <CButton color="warning" @click="editLine(pos.id)">
+                        <td>{{ machine.line_nm }}</td>
+                        <td>{{ machine.machine_nm }}</td>
+                        <td>{{ machine.op_no }}</td>
+                        <td>{{ machine.created_by }}</td>
+                        <td>{{ machine.created_dt.split('T')[0] }}</td>
+                        <td>
+                            <CButton color="warning" @click="edit(machine.id)">
                                 <CIcon
                                     icon="cil-pencil" 
                                     size="sm"
@@ -39,13 +43,13 @@
                             </CButton>
                         </td>
                         <td>
-                            <CButton color="danger" @click="deleteLine(pos.id)">
+                            <CButton color="danger" @click="del(machine.id)">
                                 <CIcon
                                     icon="cil-trash" 
                                     size="sm"
                                 />
                             </CButton>
-                        </td> -->
+                        </td>
                     </tr>
                 </template>
                 <tr v-else>
@@ -59,37 +63,36 @@
 </template>
 
 <script>
-import { GET_COMPANY, DELETE_COMPANY} from '@/store/modules/company.module'
+import {GET_MACHINES, DELETE_MACHINE} from '@/store/modules/machine.module'
 import { mapGetters } from 'vuex'
 import Swal from 'sweetalert2'
 
 export default {
-    name: 'Company',
+    name: 'Machines',
     data() {
         return {
             form: {
-                line_id: null
+                machine_id: null
             },
-            companyState: []
+            MachinesState: []
         }
     },
     watch: {
-        getCompanies: function() {
-            console.log(this.getCompanies);
-            this.companyState = this.getCompanies
+        getMachines: function() {
+            this.MachinesState = this.getMachines
         }
     },
     computed: {
-        ...mapGetters(['getCompanies'])
+        ...mapGetters(['getMachines'])
     },
     methods: {
-        async getCompaniesStore() {
-            await this.$store.dispatch(GET_COMPANY)
+        async getMachinesStore() {
+            await this.$store.dispatch(GET_MACHINES)
         },
-        async editLine(id) {
-            await this.$router.push(`/master/company/form?id=${id}`)
+        async edit(id) {
+            await this.$router.push(`/master/machine/form?id=${id}`)
         },
-        deleteLine(id) {
+        del(id) {
             Swal.fire({
                 title: 'kamu mau menghapus data ini?',
                 showCancelButton: true,
@@ -97,21 +100,21 @@ export default {
                 denyButtonText: `Tidak`,
                 }).then(async (result) => {
                 if (result.isConfirmed) {
-                    await this.$store.dispatch(DELETE_COMPANY, id)
+                    await this.$store.dispatch(DELETE_MACHINE, id)
                     .then(async () => {
-                        Swal.fire('Berhasil menghapus!', '', 'success')
-                        await this.$store.dispatch(GET_COMPANY)
+                        Swal.fire('Berhasil menghapus machine', '', 'success')
+                        await this.$store.dispatch(GET_MACHINES)
                     })
                     .catch(err => {
                         console.log(err);
-                        Swal.fire('Gagal menghapus!', '', 'error')
+                        Swal.fire('Gagal menghapus machine', '', 'error')
                     })
                 }
             })
         }
     },
     async mounted() {
-       await this.getCompaniesStore()
+       await this.getMachinesStore()
     }
 }
 </script>

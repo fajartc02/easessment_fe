@@ -95,7 +95,7 @@ const actions = {
         delete data.id
         return new Promise((resolve, reject) => {
             console.log(data);
-            ApiService.put(`master/users/edit/${ID}`, data.formData)
+            ApiService.put(`master/users/edit/${ID}`, data)
                 .then((result) => {
                     const jobData = result.data
                     resolve(jobData.data)

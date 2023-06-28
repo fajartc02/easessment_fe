@@ -20,7 +20,7 @@ const getters = {
             const mapShops = state.shops.map(shop => {
                 return {
                     id: shop.id,
-                    text: shop.line_nm
+                    text: shop.shop_nm
                 }
             })
             mapShops.push({
@@ -35,7 +35,7 @@ const getters = {
             const mapShops = state.shops.map(shop => {
                 return {
                     id: shop.id,
-                    text: shop.line_nm
+                    text: shop.shop_nm
                 }
             })
             return mapShops
@@ -44,10 +44,10 @@ const getters = {
 };
 
 const actions = {
-    [GET_SHOPS]({ commit }) {
+    [GET_SHOPS]({ commit }, query) {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
-            ApiService.get("master/shops")
+            ApiService.query("master/shops", query)
                 .then((result) => {
                     const shops = result.data
                     if (shops) {
@@ -81,10 +81,10 @@ const actions = {
         delete data.id
         return new Promise((resolve, reject) => {
             console.log(data);
-            ApiService.put(`master/shops/edit/${ID}`, data.formData)
+            ApiService.put(`master/shops/edit/${ID}`, data)
                 .then((result) => {
-                    const jobData = result.data
-                    resolve(jobData.data)
+                    const shop = result.data
+                    resolve(shop.data)
                     console.log(commit);
                 }).catch((err) => {
                     reject(err)

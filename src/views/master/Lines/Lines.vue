@@ -6,8 +6,8 @@
                     Master Lines
                 </div>
                 <div class="col">
-                    <button class="btn btn-success" @click="this.$router.push('/master/pos/form')">
-                        Add Pos<CIcon
+                    <button class="btn btn-success" @click="this.$router.push('/master/line/form')">
+                        Add Line<CIcon
                                     icon="cil-plus" 
                                     size="sm"
                                 />
