@@ -19,17 +19,6 @@
                 </CFormSelect>
             </CInputGroup>
             <CInputGroup class="mb-3">
-                <CInputGroupText>Pos</CInputGroupText>
-                <CFormSelect :disabled="!selectedLine" v-model="form.pos_id">
-                    <option>Select Pos</option>
-                    <option v-for="pos in getPosOptsWithoutAll" :key="pos.id" :value="pos.id">{{ pos.text }}</option>
-                </CFormSelect>
-            </CInputGroup>
-            <CInputGroup class="mb-3">
-                <CInputGroupText>Job Name</CInputGroupText>
-                <CFormInput v-model="form.job_nm"/>
-            </CInputGroup>
-            <CInputGroup class="mb-3">
                 <CInputGroupText>Job Type</CInputGroupText>
                 <CFormSelect v-model="form.job_type_id">
                     <option>Select Job Type</option>
@@ -37,8 +26,19 @@
                 </CFormSelect>
             </CInputGroup>
             <CInputGroup class="mb-3">
+                <CInputGroupText>Pos</CInputGroupText>
+                <CFormSelect :disabled="!selectedLine" v-model="form.pos_id">
+                    <option>Select Pos</option>
+                    <option v-for="pos in getPosOptsWithoutAll" :key="pos.id" :value="pos.id">{{ pos.text }}</option>
+                </CFormSelect>
+            </CInputGroup>
+            <CInputGroup class="mb-3">
                 <CInputGroupText>Sop No</CInputGroupText>
                 <CFormInput v-model="form.job_no"/>
+            </CInputGroup>
+            <CInputGroup class="mb-3">
+                <CInputGroupText>Job Name</CInputGroupText>
+                <CFormInput v-model="form.job_nm"/>
             </CInputGroup>
             <CInputGroup class="mb-3">
                 <input class="form-control" type="file" ref="file" @change="uploadFile">
@@ -145,7 +145,9 @@ export default {
                 let formData = new FormData()
                 for (const key in this.form) {
                     const element = this.form[key];
-                    if(element != 'null' || element) {
+                    const isRequired = element != 'null' || element
+                    const excepCond = key != 'machine_id'
+                    if(isRequired && excepCond) {
                         formData.append(key, element)
                     }
                 }
