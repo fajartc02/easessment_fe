@@ -49,8 +49,8 @@
                         </td>
                         <td>{{ obaservation.member_nm }}</td>
                         <td>{{ obaservation.job_nm }}</td>
-                        <td>{{ `${obaservation.plan_check_dt}`.split('T')[0] }}</td>
-                        <td :class="`${obaservation.actual_check_dt}`.split('T')[0] == 'null' ? 'bg-danger' : ''">{{ `${obaservation.actual_check_dt}`.split('T')[0] != 'null' ? `${obaservation.actual_check_dt}`.split('T')[0] : 'belum cek'}}</td>
+                        <td>{{ `${obaservation.plan_check_dt}` }}</td>
+                        <td :class="`${obaservation.actual_check_dt}` == 'null' ? 'bg-danger' : ''">{{ `${obaservation.actual_check_dt}` != 'null' ? `${obaservation.actual_check_dt}` : 'belum cek'}}</td>
                         <td>
                             <CButton color="info" @click="details(obaservation.id)">
                                 <CIcon

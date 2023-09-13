@@ -161,7 +161,8 @@ export default {
                 let resCheckData = this.observationData[1]
                 if(resCheckData?.length > 0) this.isCheck = true
                 let actualDate = this.observationData[0].actual_check_dt
-                this.form.actual_check_dt = actualDate ? moment(actualDate).toISOString().split('T')[0] : moment().toISOString().split('T')[0]
+                console.log(actualDate);
+                this.form.actual_check_dt = actualDate ? moment(new Date(actualDate)).format('YYYY-MM-DD') : moment().toISOString().split('T')[0]
                 let actualGroup = this.observationData[0].group_id
                 this.form.group_id = actualGroup
                 this.sopFile = this.observation.sop ? `${process.env.VUE_APP_URL}/file?path=${this.observation.sop}` : null;
