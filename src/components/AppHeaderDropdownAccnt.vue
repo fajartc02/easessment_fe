@@ -4,7 +4,7 @@
       <CAvatar :src="avatar" size="md" />
     </CDropdownToggle>
     <CDropdownMenu class="pt-0">
-      <CDropdownHeader component="h6" class="bg-light fw-semibold py-2">
+      <!-- <CDropdownHeader component="h6" class="bg-light fw-semibold py-2">
         Account
       </CDropdownHeader>
       <CDropdownItem>
@@ -39,8 +39,12 @@
       <CDropdownDivider />
       <CDropdownItem>
         <CIcon icon="cil-shield-alt" /> Lock Account
+      </CDropdownItem> -->
+      <CDropdownItem> 
+        <router-link class="w-100 text-light" to="/login">
+          <CIcon icon="cil-lock-locked" /> Logout 
+        </router-link>
       </CDropdownItem>
-      <CDropdownItem> <CIcon icon="cil-lock-locked" /> Logout </CDropdownItem>
     </CDropdownMenu>
   </CDropdown>
 </template>

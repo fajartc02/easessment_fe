@@ -31,7 +31,7 @@
             </CInputGroup>
             <CInputGroup class="mb-3">
                 <CInputGroupText>Plan Date</CInputGroupText>
-                <CFormInput :value="observation.plan_check_dt.split('T')[0]" disabled/>
+                <CFormInput :value="observation.plan_check_dt" disabled/>
             </CInputGroup>
         </div>
     </div>
@@ -159,7 +159,7 @@ export default {
             if(this.observationData) {
                 this.observation = this.observationData[0]
                 let resCheckData = this.observationData[1]
-                if(resCheckData.length > 0) this.isCheck = true
+                if(resCheckData?.length > 0) this.isCheck = true
                 let actualDate = this.observationData[0].actual_check_dt
                 this.form.actual_check_dt = actualDate ? moment(actualDate).toISOString().split('T')[0] : moment().toISOString().split('T')[0]
                 let actualGroup = this.observationData[0].group_id
@@ -206,7 +206,7 @@ export default {
                 itm.judgment_id = null
                 itm.factor_id = null
                 itm.findings = null
-                if(this.resultCheck.length > 0) {
+                if(this.resultCheck?.length > 0) {
                     let result = this.resultCheck[i]
                     itm.judgment_id = result.judgment_id
                     itm.factor_id = result.factor_id

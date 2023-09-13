@@ -9,7 +9,7 @@
                     Checksheet Observasi SW
                 </div>
                 <div class="col">
-                    <CButton v-if="!ignoringExport" color="info" @click="() => { xlDemo = true }">Lihat Video</CButton>
+                    <!-- <CButton v-if="!ignoringExport" color="info" @click="() => { xlDemo = true }">Lihat Video</CButton>
                     <CModal size="xl" :visible="xlDemo" @close="() => { xlDemo = false }">
                         <CModalHeader>
                         <CModalTitle>Video Observasi SW</CModalTitle>
@@ -33,7 +33,7 @@
                             </div>
                             
                         </CModalBody>
-                    </CModal>
+                    </CModal> -->
                 </div>
             </div>
         </div>

@@ -30,7 +30,7 @@
                         <th rowspan="2">No</th>
                         <th rowspan="2">Line</th>
                         <th rowspan="2">Pos</th>
-                        <th rowspan="2">Petugas</th>
+                        <th rowspan="2">Observer</th>
                         <th :colspan="containerDate.length">{{ yearMonth }}</th>
                     </tr>
                     <tr>

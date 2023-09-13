@@ -1,7 +1,7 @@
 <template>
     <div class="card">
         <div class="card-header">
-            Master Job
+            Add Schedule Observation
         </div>
         <div class="card-body text-center">
             <CInputGroup class="mb-3">
@@ -34,15 +34,17 @@
             </CInputGroup>
             <CInputGroup class="mb-3">
                 <CInputGroupText>Member</CInputGroupText>
-                <CFormSelect :disabled="selectedLine == -1 && !form.group_id" v-model="form.member_nm">
+                <!-- <CFormSelect :disabled="selectedLine == -1 && !form.group_id" v-model="form.member_nm">
                     <option>Select Member</option>
                     <option v-for="member in getUsersOptsWithoutAll" :key="member.id" :value="member.name">{{ member.text }}</option>
                 </CFormSelect>
+                <CInputGroupText>Plan Date</CInputGroupText> -->
+                <input :disabled="selectedLine == -1 && !form.group_id" class="form-control" type="text" v-model="form.member_nm">
             </CInputGroup>
-            <!-- <CInputGroup class="mb-3">
+            <CInputGroup class="mb-3">
                 <CInputGroupText>Petugas</CInputGroupText>
                 <treeselect :disabled="selectedLine == -1" class="w-50" v-model="checkers" :multiple="true" :options="getUsersTreeselect" />
-            </CInputGroup> -->
+            </CInputGroup>
             <CInputGroup class="mb-3">
                 <CInputGroupText>Plan Date</CInputGroupText>
                 <input class="form-control" type="date" v-model="form.plan_check_dt">
@@ -73,7 +75,7 @@ import { mapGetters } from 'vuex'
 
 // import formatDate from '@/functions/formatDate'
 
-// import Treeselect from 'vue3-treeselect'
+import Treeselect from 'vue3-treeselect'
 
 import 'vue3-treeselect/dist/vue3-treeselect.css'
 import moment from 'moment'
@@ -119,14 +121,17 @@ export default {
         },
         getUsersTreeselect: async function() {
             let observation = this.observationSchedule[0]
-            this.checkers = await observation.checkers.map(checker => {
+            if(observation?.checkers.length > 0) {
+                this.checkers = await observation.checkers.map(checker => {
                 return checker.checker_nm
             })
+            }
+            
         }
 
     },
     components: {
-        // Treeselect
+        Treeselect
     },
     computed: {
         ...mapGetters([

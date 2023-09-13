@@ -41,7 +41,7 @@
                         </td>
                         <td>{{ obaservation.member_nm }}</td>
                         <td>{{ obaservation.job_nm }}</td>
-                        <td>{{ `${obaservation.plan_check_dt}`.split('T')[0] }}</td>
+                        <td>{{ `${obaservation.plan_check_dt}` }}</td>
                         <td :class="`${obaservation.actual_check_dt}`.split('T')[0] == 'null' ? 'bg-danger' : ''">{{ `${obaservation.actual_check_dt}`.split('T')[0] != 'null' ? `${obaservation.actual_check_dt}`.split('T')[0] : 'belum cek'}}</td>
                         <!-- <td>
                             <CButton color="warning" @click="editPos(obaservation.id)">
@@ -75,6 +75,7 @@
 import {GET_OBSERVATION_SCHEDULE_LIST, DELETE_OBSERVATION_LIST} from '@/store/modules/observation.module'
 import { mapGetters } from 'vuex'
 import Swal from 'sweetalert2'
+// import moment from "moment"
 
 export default {
     name: 'ScheduleObservation',

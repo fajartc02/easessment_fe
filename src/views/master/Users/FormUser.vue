@@ -5,7 +5,7 @@
                 <div class="col-10">
                     Master Users
                 </div>
-                <div class="col">
+                <div class="col"  v-if="!isUpdate">
                     <button class="btn btn-success" @click="this.$router.push('/master/pos/form')">
                         Add User<CIcon
                                     icon="cil-plus" 
@@ -42,7 +42,7 @@
                 <CInputGroupText>Noreg</CInputGroupText>
                 <CFormInput v-model="form.noreg"/>
             </CInputGroup>
-            <CInputGroup class="mb-4">
+            <CInputGroup class="mb-4" v-if="!isUpdate">
                 <CInputGroupText>
                     Password<CIcon icon="cil-lock-locked" />
                 </CInputGroupText>
@@ -122,6 +122,7 @@ export default {
                 for (const key in this.form) {
                     if(!this.form[key]) isRequired = false
                 }
+                
                 if(isRequired) {
                     await this.$store.dispatch(POST_USER, this.form)
                     .then(() => {
@@ -133,7 +134,7 @@ export default {
                 Swal.fire('Lengkapi Input data', '', 'info')
             } catch (error) {
                 console.log(error);
-                Swal.fire('Gagal menambah job', '', 'error')
+                Swal.fire('Gagal menambah User', '', 'error')
             }
         },
         async edit() {
@@ -143,6 +144,7 @@ export default {
                     if(!this.form[key]) isRequired = false
                 }
                 if(isRequired) {
+                    delete this.form.password
                     await this.$store.dispatch(PUT_USER, this.form)
                     .then(() => {
                         Swal.fire('Berhasil edit user', '', 'success')
