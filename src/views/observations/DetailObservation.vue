@@ -162,7 +162,7 @@ export default {
                 if(resCheckData?.length > 0) this.isCheck = true
                 let actualDate = this.observationData[0].actual_check_dt
                 console.log(actualDate);
-                this.form.actual_check_dt = actualDate ? moment(new Date(actualDate)).format('YYYY-MM-DD') : moment().toISOString().split('T')[0]
+                this.form.actual_check_dt = actualDate != 'Invalid date' ? moment(new Date(actualDate)).format('YYYY-MM-DD') : moment().toISOString().split('T')[0]
                 let actualGroup = this.observationData[0].group_id
                 this.form.group_id = actualGroup
                 this.sopFile = this.observation.sop ? `${process.env.VUE_APP_URL}/file?path=${this.observation.sop}` : null;
@@ -223,31 +223,32 @@ export default {
         async postCheckObs() {
             try {
                 this.resultCheck = []
-            for (let i = 0; i < this.categories.length; i++) {
-                const element = this.categories[i];
-                element.category_id = element.id
-                let newObj = {
-                    category_id: element.category_id,
-                    factor_id: element.factor_id,
-                    judgment_id: element.judgment_id,
-                    findings: element.findings
+                for (let i = 0; i < this.categories.length; i++) {
+                    const element = this.categories[i];
+                    element.category_id = element.id
+                    let newObj = {
+                        category_id: element.category_id,
+                        factor_id: element.factor_id,
+                        judgment_id: element.judgment_id,
+                        findings: element.findings
+                    }
+                    this.resultCheck.push(newObj)
                 }
-                this.resultCheck.push(newObj)
-            }
-            
-            let formInput = {
-                observation_id: this.$route.params.id,
-                actual_check_dt: this.form.actual_check_dt,
-                results_check: this.resultCheck,
-                group_id: this.form.group_id
-            }
-            await this.$store.dispatch(POST_OBSERVATION_CHECK, formInput)
-            .then(() => {
-                Swal.fire('Pengecekan berhasil di submit', '', 'success')
-                setTimeout(() => {
-                    this.$router.push('/')
-                }, 1000)
-            })
+                
+                let formInput = {
+                    observation_id: this.$route.params.id,
+                    actual_check_dt: this.form.actual_check_dt,
+                    results_check: this.resultCheck,
+                    group_id: this.form.group_id
+                }
+                console.log(formInput);
+                await this.$store.dispatch(POST_OBSERVATION_CHECK, formInput)
+                    .then(() => {
+                        Swal.fire('Pengecekan berhasil di submit', '', 'success')
+                        setTimeout(() => {
+                            this.$router.push('/')
+                        }, 1000)
+                    })
             } catch (error) {
                 console.log(error);
                 Swal.fire('Pengecekan gagal di submit', '', 'error')
