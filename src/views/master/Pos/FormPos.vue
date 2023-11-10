@@ -12,16 +12,23 @@
                 </CFormSelect>
             </CInputGroup>
             <CInputGroup class="mb-3">
+                <CInputGroupText>Type</CInputGroupText>
+                <CFormSelect v-model="selectedType">
+                    <option>Select Type</option>
+                    <option v-for="(type, i) in optsType" :key="type" :value="i">{{ type }}</option>
+                </CFormSelect>
+            </CInputGroup>
+            <CInputGroup class="mb-3">
                 <CInputGroupText>Pos Name</CInputGroupText>
                 <CFormInput v-model="form.pos_nm"/>
             </CInputGroup>
             <CInputGroup class="mb-3">
-                <CInputGroupText>TSK</CInputGroupText>
+                <CInputGroupText>{{labelTsk}}</CInputGroupText>
                 <input class="form-control" type="file" ref="tsk" @change="uploadFile('tsk')">
             </CInputGroup>
             <vue-pdf-embed v-if="displayTSK" :source="displayTSK" />
             <CInputGroup class="mb-3">
-                <CInputGroupText>TSKK</CInputGroupText>
+                <CInputGroupText>{{labelTskk}}</CInputGroupText>
                 <input class="form-control" type="file" ref="tskk" @change="uploadFile('tskk')">
             </CInputGroup>
             <vue-pdf-embed v-if="displayTSKK" :source="displayTSKK" />
@@ -61,7 +68,11 @@ export default {
             tsk: null,
             tskk: null,
             displayTSK: null,
-            displayTSKK: null
+            displayTSKK: null,
+            selectedType: null,
+            optsType: ['Type 1&2', "Type 3"],
+            labelTsk: 'TSK',
+            labelTskk: 'TSKK'
         }
     },
     watch: {
@@ -72,7 +83,16 @@ export default {
                 this.form.pos_nm = this.posData[0].pos_nm
                 this.displayTSK = this.posData[0].tsk ? `${process.env.VUE_APP_URL}/file?path=${this.posData[0].tsk}` : null
                 this.displayTSKK = this.posData[0].tskk ? `${process.env.VUE_APP_URL}/file?path=${this.posData[0].tskk}` : null
-            } 
+            }
+        },
+        selectedType: function() {
+          if (this.selectedType == 1) {
+            this.labelTsk = 'Gentan-i'
+            this.labelTskk = 'Yamazumi'
+          } else {
+            this.labelTsk = 'TSK'
+            this.labelTskk = 'TSKK'
+          }
         }
     },
     computed: {
@@ -99,13 +119,13 @@ export default {
                 }
                 if(this.tsk) formData.append('tsk', this.tsk)
                 if(this.tskk) formData.append('tskk', this.tskk)
-                
+
                 await this.$store.dispatch(POST_POS, formData)
                 .then(() => {
                     Swal.fire('Berhasil menambah pos', '', 'success')
                     this.$router.push('/master/pos')
                 })
-                
+
             } catch (error) {
                 console.log(error);
                 Swal.fire('Gagal menambah pos', '', 'error')
@@ -120,13 +140,13 @@ export default {
                 }
                 if(this.tsk) formData.append('tsk', this.tsk)
                 if(this.tskk) formData.append('tskk', this.tskk)
-                
+
                 await this.$store.dispatch(PUT_POS, {formData, id: this.$route.query.id})
                 .then(() => {
                     Swal.fire('Berhasil mengubah pos', '', 'success')
                     this.$router.push('/master/pos')
                 })
-                
+
             } catch (error) {
                 console.log(error);
                 Swal.fire('Gagal mengubah pos', '', 'error')

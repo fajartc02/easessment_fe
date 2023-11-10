@@ -8,7 +8,7 @@
                 <div class="col">
                     <button class="btn btn-success" @click="this.$router.push('/master/pos/form')">
                         Add Pos<CIcon
-                                    icon="cil-plus" 
+                                    icon="cil-plus"
                                     size="sm"
                                 />
                     </button>
@@ -19,10 +19,10 @@
             <table class="table table-bordered table-stripped">
                 <tr>
                    <th>No</th>
-                   <th>Line</th> 
+                   <th>Line</th>
                    <th>Pos Name</th>
-                   <th>TSK</th>
-                   <th>TSKK</th>
+                   <th>TSK | Gentan-i</th>
+                   <th>TSKK | Yamazumi</th>
                    <th>Pembuat</th>
                    <th>Tanggal Di buat</th>
                    <th colspan="2">Actions</th>
@@ -34,28 +34,28 @@
                         <td>{{ pos.pos_nm }}</td>
                         <td v-if="pos.tsk">
                             <CIcon
-                                icon="cil-check-circle" 
+                                icon="cil-check-circle"
                                 class="text-success"
                                 size="xxl"
                             />
                         </td>
                         <td v-else>
                             <CIcon
-                                icon="cil-x" 
+                                icon="cil-x"
                                 class="text-danger"
                                 size="xxl"
                             />
                         </td>
                         <td v-if="pos.tskk">
                             <CIcon
-                                icon="cil-check-circle" 
+                                icon="cil-check-circle"
                                 class="text-success"
                                 size="xxl"
                             />
                         </td>
                         <td v-else>
                             <CIcon
-                                icon="cil-x" 
+                                icon="cil-x"
                                 class="text-danger"
                                 size="xxl"
                             />
@@ -65,7 +65,7 @@
                         <td>
                             <CButton color="warning" @click="editPos(pos.id)">
                                 <CIcon
-                                    icon="cil-pencil" 
+                                    icon="cil-pencil"
                                     size="sm"
                                 />
                             </CButton>
@@ -73,7 +73,7 @@
                         <td>
                             <CButton color="danger" @click="deletePos(pos.id)">
                                 <CIcon
-                                    icon="cil-trash" 
+                                    icon="cil-trash"
                                     size="sm"
                                 />
                             </CButton>
@@ -147,3 +147,12 @@ export default {
     }
 }
 </script>
+
+<style>
+tr, th {
+  border: 1px solid black !important;
+}
+tr, td {
+  border: 1px solid black !important;
+}
+</style>

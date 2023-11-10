@@ -53,6 +53,7 @@ export default {
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
+    this.selectedLine = localStorage.getItem('line_id')
     this.getLines()
   },
   components: {

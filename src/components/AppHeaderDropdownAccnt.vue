@@ -1,7 +1,8 @@
 <template>
   <CDropdown variant="nav-item">
-    <CDropdownToggle placement="bottom-end" class="py-0" :caret="false">
-      <CAvatar :src="avatar" size="md" />
+    <CDropdownToggle placement="bottom-end" class="py-0">
+      <!-- <CAvatar :src="avatar" size="md" /> -->
+      <CIcon v-if="name" icon="cil-user" /> {{ name }}
     </CDropdownToggle>
     <CDropdownMenu class="pt-0">
       <!-- <CDropdownHeader component="h6" class="bg-light fw-semibold py-2">
@@ -40,24 +41,36 @@
       <CDropdownItem>
         <CIcon icon="cil-shield-alt" /> Lock Account
       </CDropdownItem> -->
-      <CDropdownItem> 
-        <router-link class="w-100 text-light" to="/login">
-          <CIcon icon="cil-lock-locked" /> Logout 
-        </router-link>
+      <CDropdownItem>
+        <button class="btn btn-outline-danger w-100" @click="logout()">
+          <CIcon icon="cil-lock-locked" /> Logout
+        </button>
       </CDropdownItem>
     </CDropdownMenu>
   </CDropdown>
 </template>
 
 <script>
-import avatar from '@/assets/images/avatars/8.jpg'
 export default {
   name: 'AppHeaderDropdownAccnt',
-  setup() {
+  data() {
     return {
-      avatar: avatar,
-      itemsCount: 42,
+      name: null,
     }
   },
+  methods: {
+    logout() {
+      localStorage.removeItem('name')
+      localStorage.removeItem('noreg')
+      localStorage.removeItem('line_id')
+      localStorage.removeItem('token')
+      this.$router.push('/login')
+    }
+  },
+  mounted() {
+    setTimeout(() => {
+      this.name = localStorage.getItem('name')
+    }, 100)
+  }
 }
 </script>

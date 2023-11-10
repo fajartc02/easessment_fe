@@ -34,7 +34,6 @@ const actions = {
         return new Promise((resolve, reject) => {
             ApiService.post("login", credentials)
                 .then(({ data }) => {
-
                     context.commit(SET_AUTH, data.data);
                     resolve(data.data);
                 })
@@ -61,14 +60,16 @@ const actions = {
     },
     [VERIFY_AUTH](context) {
         console.log('verify auth');
-        
+
         if (JwtService.getToken()) {
             ApiService.setHeader();
             ApiService.get("verify")
                 .then(({ data }) => {
                     console.log(data);
-                    
-                    // context.commit(SET_AUTH, data);
+                    localStorage.setItem('name', data.message.fullname)
+                    localStorage.setItem('noreg', data.message.noreg)
+                    localStorage.setItem('line_id', data.message.line_id)
+                        // context.commit(SET_AUTH, data);
                 })
                 .catch(({ response }) => {
                     context.commit(SET_ERROR, response.data.status);

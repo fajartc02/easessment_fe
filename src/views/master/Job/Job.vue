@@ -19,6 +19,12 @@
             <div class="row">
                 <div class="col">
                     <CInputGroup class="mb-3">
+                        <CInputGroupText>Job no</CInputGroupText>
+                        <CFormInput v-model="filtered.job_no"/>
+                    </CInputGroup>
+                </div>
+                <div class="col">
+                    <CInputGroup class="mb-3">
                         <CInputGroupText>Line</CInputGroupText>
                         <Select2 v-model="filtered.line_id" class="form-control" :options="getLinesOpts" />
                     </CInputGroup>
@@ -140,7 +146,8 @@ export default {
                 pos_id: -1,
                 limit: 5,
                 totalPage: 1,
-                currentPage: 1
+                currentPage: 1,
+                job_no: null
                 // job_type_id: null
             },
             pages: [],
@@ -162,9 +169,12 @@ export default {
     },
     watch: {
         jobData: function() {
+          this.jobState = []
+          if (this.jobData.length > 0) {
             this.jobState = this.jobData
             this.filtered.totalPage = this.jobData[0].total_page
             this.pageControl()
+          }
         },
         ['filtered.line_id']: function() {
             this.getPos({line_id: this.filtered.line_id})
@@ -173,8 +183,9 @@ export default {
           this.getJob()
         },
         ['filtered.limit']: function() {
+          this.filtered.currentPage = 1
           this.getJob()
-        }
+        },
     },
     computed: {
         ...mapGetters(['jobData', 'getLinesOpts', 'getPosOpts'])
@@ -249,9 +260,10 @@ export default {
         }
     },
     async mounted() {
-       await this.getJob()
-       await this.pageControl()
-       await this.getLines()
+      this.filtered.line_id = localStorage.getItem('line_id')
+      await this.getLines()
+      await this.getJob()
+      await this.pageControl()
     }
 }
 </script>
