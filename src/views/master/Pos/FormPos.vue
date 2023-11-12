@@ -70,7 +70,7 @@ export default {
             displayTSK: null,
             displayTSKK: null,
             selectedType: null,
-            optsType: ['Type 1&2', "Type 3"],
+            optsType: ['Type 1', 'Type 2', 'Type 3'],
             labelTsk: 'TSK',
             labelTskk: 'TSKK'
         }
@@ -86,7 +86,7 @@ export default {
             }
         },
         selectedType: function() {
-          if (this.selectedType == 1) {
+          if (this.selectedType == 2) {
             this.labelTsk = 'Gentan-i'
             this.labelTskk = 'Yamazumi'
           } else {

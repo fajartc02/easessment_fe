@@ -2,8 +2,24 @@
     <CCard class="mb-4">
         <CCardHeader>
           <div class="row">
-            <div class="col-8">
+            <div class="col-3">
                 <strong>Monthly Schedule</strong>
+            </div>
+            <div class="col-6" style="text-align: end;">
+                Type 1 & 2: <CButton color="dark rounded-circle" variant="outline">
+                    <CIcon
+                        icon="cil-circlea" 
+                        class="text-dark"
+                        size="sm"
+                    />
+                </CButton>
+                Type 3: <CButton color="dark" variant="outline">
+                    <CIcon
+                        icon="cil-circlea" 
+                        class="text-dark"
+                        size="sm"
+                    />
+                </CButton>
             </div>
             <div class="col-3 text-right">
                 OnProgress: <CIcon
@@ -89,59 +105,6 @@
                             
                         </td>
                     </tr>
-                    <!-- <tr>
-                        <td>2</td>
-                        <td>CH</td>
-                        <td>Pos 2</td>
-                        <td>Winarno</td>
-                        <td v-for="date in containerDate" :key="date">
-                            <CButton v-if="date.idx == 5" color="info" variant="outline">
-                                <CIcon icon="cil-check-circle" size="lg" class="text-success"/>
-                            </CButton>
-                            <CButton v-if="date.idx == 19" color="info" variant="outline">
-                                <CIcon icon="cil-circle" class="text-dark" size="lg"/>
-                            </CButton>
-                            <CButton v-if="date.idx == 25" color="info" variant="outline">
-                                <CIcon icon="cil-circle" class="text-dark" size="lg"/>
-                            </CButton>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>CH</td>
-                        <td>Pos 3</td>
-                        <td>Sulaeman</td>
-                        <td v-for="date in containerDate" :key="date">
-                            <CButton v-if="date.idx == 2" color="info" variant="outline">
-                                <CIcon icon="cil-check-circle" size="lg" class="text-success"/>
-                            </CButton>
-                            
-                            <CButton v-if="date.idx == 13" color="info" variant="outline">
-                                <CIcon icon="cil-circle" class="text-dark" size="lg"/>
-                            </CButton>
-                            
-                            <CButton v-if="date.idx == 25" color="info" variant="outline">
-                                <CIcon icon="cil-circle" class="text-dark" size="lg"/>
-                            </CButton>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>CH</td>
-                        <td>Pos 4</td>
-                        <td>Winarno</td>
-                        <td v-for="date in containerDate" :key="date">
-                            <CButton v-if="date.idx == 6" color="info" variant="outline">
-                                <CIcon icon="cil-check-circle" size="lg" class="text-success"/>
-                            </CButton>
-                            <CButton v-if="date.idx == 14" color="info" variant="outline">
-                                <CIcon icon="cil-circle" class="text-dark" size="lg"/>
-                            </CButton>
-                            <CButton v-if="date.idx == 27" color="info" variant="outline">
-                                <CIcon icon="cil-circle" class="text-dark" size="lg"/>
-                            </CButton>
-                        </td>
-                    </tr> -->
                 </tbody>
                 <tbody v-else>
                     <tr>
