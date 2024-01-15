@@ -42,26 +42,26 @@
                     <b>Data Observasi</b>
                 </div>
                 <div class="d-flex col-3 text-right justify-content-around">
-                    <CButton color="info" @click="() => { demoTSK = true }">TSK</CButton>
+                    <CButton color="info" @click="() => { demoTSK = true }">{{ tskLabel }}</CButton>
                     <CModal size="xl" :visible="demoTSK" @close="() => { demoTSK = false }">
                         <CModalHeader>
-                        <CModalTitle>TSK</CModalTitle>
+                        <CModalTitle v-if="observation.job_type_nm">{{tskLabel}}</CModalTitle>
                         </CModalHeader>
                         <CModalBody>
                             <vue-pdf-embed v-if="tskFile" :source="tskFile" />
-                            <h2 v-else>TIDAK ADA TSK</h2>
-                            <!-- <img style="width: 100%;" src="@/assets/TSK.png"/> -->
+                            <h2 v-else>TIDAK ADA {{tskLabel}}</h2>
+                            <!-- <img style="width: 100%;" src="@/assets/{{}}.png"/> -->
                         </CModalBody>
                     </CModal>
-                    <CButton color="info" @click="() => { demoTSKK = true }">TSKK</CButton>
+                    <CButton color="info" @click="() => { demoTSKK = true }">{{tskkLabel}}</CButton>
                     <CModal size="xl" :visible="demoTSKK" @close="() => { demoTSKK = false }">
                         <CModalHeader>
-                        <CModalTitle>TSKK</CModalTitle>
+                        <CModalTitle>{{tskkLabel}}</CModalTitle>
                         </CModalHeader>
                         <CModalBody>
                             <vue-pdf-embed v-if="tskkFile" :source="tskkFile" />
-                            <h2 v-else>TIDAK ADA TSKK</h2>
-                            <!-- <img style="width: 100%;" src="@/assets/TSK.png"/> -->
+                            <h2 v-else>TIDAK ADA {{tskkLabel}}</h2>
+                            <!-- <img style="width: 100%;" src="@/assets/{{}}.png"/> -->
                         </CModalBody>
                     </CModal>
                     <CButton color="info" @click="() => { demoSOP = true }">SOP</CButton>
@@ -151,7 +151,9 @@ export default {
             tskFile: null,
             tskkFile: null,
             demoTSKK: false,
-            demoSOP: false
+            demoSOP: false,
+            tskLabel: 'TSK',
+            tskkLabel: 'TSKK'
         }
     },
     watch: {
@@ -161,7 +163,6 @@ export default {
                 let resCheckData = this.observationData[1]
                 if(resCheckData?.length > 0) this.isCheck = true
                 let actualDate = this.observationData[0].actual_check_dt
-                console.log(actualDate);
                 this.form.actual_check_dt = actualDate != 'Invalid date' ? moment(new Date(actualDate)).format('YYYY-MM-DD') : moment().toISOString().split('T')[0]
                 let actualGroup = this.observationData[0].group_id
                 this.form.group_id = actualGroup
@@ -169,6 +170,7 @@ export default {
                 this.tskFile = this.observation.tsk ? `${process.env.VUE_APP_URL}/file?path=${this.observation.tsk}` : null;
                 this.tskkFile = this.observation.tskk ? `${process.env.VUE_APP_URL}/file?path=${this.observation.tskk}` : null;
                 this.resultCheck = resCheckData
+                this.checkLabelTypeJob(this.observation.job_type_nm)
             }
         }
     },
@@ -179,85 +181,94 @@ export default {
         VuePdfEmbed,
     },
     methods: {
-        viewReport() {
-            this.$router.push(`/observation/report/${this.observation.observation_id}`)
-        },
-        async getDetail() {
-            await this.$store.dispatch(GET_OBSERVATION_DETAIL, this.$route.params.id)
-        },
-        async getJudgments() {
-            ApiService.setHeader()
-            const judgments = await ApiService.get(`master/judgments`)
-            this.judgments = judgments.data.data
-        },
-        async getFactors() {
-            ApiService.setHeader()
-            const factors = await ApiService.get(`master/factors`)
-            this.factors = factors.data.data
-        },
-        async getGroups() {
-            ApiService.setHeader()
-            const groups = await ApiService.get(`master/groups`)
-            this.groups = groups.data.data
-        },
-        async getCategories() {
-            ApiService.setHeader()
-            const categories = await ApiService.get(`master/categories`)
-            const mapCategory = categories.data.data.map((itm, i) => {
-                itm.judgment_id = null
-                itm.factor_id = null
-                itm.findings = null
-                if(this.resultCheck?.length > 0) {
-                    let result = this.resultCheck[i]
-                    itm.judgment_id = result.judgment_id
-                    itm.factor_id = result.factor_id
-                    itm.findings = result.findings
-                }
-                return itm
-            })
-            this.categories = mapCategory
-            await this.getJudgments()
-            await this.getFactors()
-            await this.getGroups()
-        },
-        async postCheckObs() {
-            try {
-                this.resultCheck = []
-                for (let i = 0; i < this.categories.length; i++) {
-                    const element = this.categories[i];
-                    element.category_id = element.id
-                    let newObj = {
-                        category_id: element.category_id,
-                        factor_id: element.factor_id,
-                        judgment_id: element.judgment_id,
-                        findings: element.findings
-                    }
-                    this.resultCheck.push(newObj)
-                }
-                
-                let formInput = {
-                    observation_id: this.$route.params.id,
-                    actual_check_dt: this.form.actual_check_dt,
-                    results_check: this.resultCheck,
-                    group_id: this.form.group_id
-                }
-                console.log(formInput);
-                await this.$store.dispatch(POST_OBSERVATION_CHECK, formInput)
-                    .then(() => {
-                        Swal.fire('Pengecekan berhasil di submit', '', 'success')
-                        setTimeout(() => {
-                            this.$router.push('/')
-                        }, 1000)
-                    })
-            } catch (error) {
-                console.log(error);
-                Swal.fire('Pengecekan gagal di submit', '', 'error')
-            }
+      checkLabelTypeJob(jobType) {
+        if(jobType == 'Type 3') {
+          this.tskLabel = 'Gentan-i',
+          this.tskkLabel = 'Yamazumi'
+        } else {
+          this.tskLabel = 'TSK',
+          this.tskkLabel = 'TSKK'
         }
+      },
+      viewReport() {
+          this.$router.push(`/observation/report/${this.observation.observation_id}`)
+      },
+      async getDetail() {
+          await this.$store.dispatch(GET_OBSERVATION_DETAIL, this.$route.params.id)
+      },
+      async getJudgments() {
+          ApiService.setHeader()
+          const judgments = await ApiService.get(`master/judgments`)
+          this.judgments = judgments.data.data
+      },
+      async getFactors() {
+          ApiService.setHeader()
+          const factors = await ApiService.get(`master/factors`)
+          this.factors = factors.data.data
+      },
+      async getGroups() {
+          ApiService.setHeader()
+          const groups = await ApiService.get(`master/groups`)
+          this.groups = groups.data.data
+      },
+      async getCategories() {
+          ApiService.setHeader()
+          const categories = await ApiService.get(`master/categories`)
+          const mapCategory = categories.data.data.map((itm, i) => {
+              itm.judgment_id = null
+              itm.factor_id = null
+              itm.findings = null
+              if(this.resultCheck?.length > 0) {
+                  let result = this.resultCheck[i]
+                  itm.judgment_id = result.judgment_id
+                  itm.factor_id = result.factor_id
+                  itm.findings = result.findings
+              }
+              return itm
+          })
+          this.categories = mapCategory
+          await this.getJudgments()
+          await this.getFactors()
+          await this.getGroups()
+      },
+      async postCheckObs() {
+          try {
+              this.resultCheck = []
+              for (let i = 0; i < this.categories.length; i++) {
+                  const element = this.categories[i];
+                  element.category_id = element.id
+                  let newObj = {
+                      category_id: element.category_id,
+                      factor_id: element.factor_id,
+                      judgment_id: element.judgment_id,
+                      findings: element.findings
+                  }
+                  this.resultCheck.push(newObj)
+              }
+
+              let formInput = {
+                  observation_id: this.$route.params.id,
+                  actual_check_dt: this.form.actual_check_dt,
+                  results_check: this.resultCheck,
+                  group_id: this.form.group_id
+              }
+              console.log(formInput);
+              await this.$store.dispatch(POST_OBSERVATION_CHECK, formInput)
+                  .then(() => {
+                      Swal.fire('Pengecekan berhasil di submit', '', 'success')
+                      setTimeout(() => {
+                          this.$router.push('/')
+                      }, 1000)
+                  })
+          } catch (error) {
+              console.log(error);
+              Swal.fire('Pengecekan gagal di submit', '', 'error')
+          }
+      }
     },
     async mounted() {
         await this.getDetail()
-        await this.getCategories() 
+        await this.getCategories()
         // await this.getFactors()
         // await this.judgments()
     }
