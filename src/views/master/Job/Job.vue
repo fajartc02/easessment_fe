@@ -139,16 +139,16 @@ export default {
     data() {
         return {
             form: {
-                line_id: null
+              line_id: null
             },
             filtered: {
-                line_id: -1,
-                pos_id: -1,
-                limit: 5,
-                totalPage: 1,
-                currentPage: 1,
-                job_no: null
-                // job_type_id: null
+              line_id: -1,
+              pos_id: -1,
+              limit: 5,
+              totalPage: 1,
+              currentPage: 1,
+              job_no: null
+              // job_type_id: null
             },
             pages: [],
             jobState: [],
@@ -177,7 +177,7 @@ export default {
           }
         },
         ['filtered.line_id']: function() {
-            this.getPos({line_id: this.filtered.line_id})
+          this.getPos({line_id: this.filtered.line_id})
         },
         ['filtered.currentPage']: function() {
           this.getJob()
@@ -188,7 +188,7 @@ export default {
         },
     },
     computed: {
-        ...mapGetters(['jobData', 'getLinesOpts', 'getPosOpts'])
+      ...mapGetters(['jobData', 'getLinesOpts', 'getPosOpts'])
     },
     methods: {
         pageControl(state=0, page=null) {
@@ -206,14 +206,7 @@ export default {
             } else {
               obj.is_active = 'page-item'
             }
-            if(this.filtered.currentPage == 4) {
-              // this.pages = []
-            }
             this.pages.push(obj)
-
-            // if(i > 5) {
-
-            // }
           }
         },
         async getLines() {
