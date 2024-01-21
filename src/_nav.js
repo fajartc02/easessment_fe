@@ -1,4 +1,54 @@
 export default [{
+        component: 'CNavTitle', // --- HISTORY MENU
+        name: 'Main Dashboard',
+    },
+    {
+        component: 'CNavTitle', // --- HISTORY MENU
+        name: 'STW',
+    },
+    {
+        component: 'CNavItem',
+        name: 'Dashboard STW*',
+        to: '/stw/dashboard',
+        icon: 'cil-speedometer'
+    },
+    {
+        component: 'CNavItem',
+        name: 'Member Voice',
+        to: '/stw/member-voice',
+        icon: 'cil-people'
+    },
+    {
+        component: 'CNavItem',
+        name: 'Fokus Tema*',
+        to: '/stw/focus-theme',
+        icon: 'cil-clipboard'
+    },
+    {
+        component: 'CNavTitle', // --- HISTORY MENU
+        name: 'OM',
+    },
+    {
+        component: 'CNavItem',
+        name: 'Dashboard OM*',
+        to: '/om/dashboard',
+        icon: 'cil-speedometer'
+    },
+    {
+        component: 'CNavTitle', // --- HISTORY MENU
+        name: '4S',
+    },
+    {
+        component: 'CNavItem',
+        name: 'Dashboard 4S*',
+        to: '/4s/dashboard',
+        icon: 'cil-speedometer'
+    },
+    {
+        component: 'CNavTitle', // --- HISTORY MENU
+        name: 'PM (exc. prj)',
+    },
+    {
         component: 'CNavItem',
         name: 'Dashboard',
         to: '/',

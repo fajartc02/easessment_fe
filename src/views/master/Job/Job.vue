@@ -7,7 +7,7 @@
                 </div>
                 <div class="col">
                     <button class="btn btn-success" @click="this.$router.push('/master/job/form')">
-                        Add Job<CIcon
+                        Job<CIcon
                                     icon="cil-plus"
                                     size="sm"
                                 />

@@ -36,13 +36,13 @@
         </div>
     </div>
     <div class="card mt-1">
-        <div class="card-header">
+        <div class="card-header overflow-auto">
             <div class="row">
                 <div class="col-9">
                     <b>Data Observasi</b>
                 </div>
                 <div class="d-flex col-3 text-right justify-content-around">
-                    <CButton color="info" @click="() => { demoTSK = true }">{{ tskLabel }}</CButton>
+                    <CButton variant="ghost" color="info" @click="() => { demoTSK = true }">{{ tskLabel }}</CButton>
                     <CModal size="xl" :visible="demoTSK" @close="() => { demoTSK = false }">
                         <CModalHeader>
                         <CModalTitle v-if="observation.job_type_nm">{{tskLabel}}</CModalTitle>
@@ -53,7 +53,7 @@
                             <!-- <img style="width: 100%;" src="@/assets/{{}}.png"/> -->
                         </CModalBody>
                     </CModal>
-                    <CButton color="info" @click="() => { demoTSKK = true }">{{tskkLabel}}</CButton>
+                    <CButton variant="ghost" color="info" @click="() => { demoTSKK = true }">{{tskkLabel}}</CButton>
                     <CModal size="xl" :visible="demoTSKK" @close="() => { demoTSKK = false }">
                         <CModalHeader>
                         <CModalTitle>{{tskkLabel}}</CModalTitle>
@@ -64,7 +64,7 @@
                             <!-- <img style="width: 100%;" src="@/assets/{{}}.png"/> -->
                         </CModalBody>
                     </CModal>
-                    <CButton color="info" @click="() => { demoSOP = true }">SOP</CButton>
+                    <CButton variant="ghost" color="info" @click="() => { demoSOP = true }">SOP</CButton>
                     <CModal size="xl" :visible="demoSOP" @close="() => { demoSOP = false }">
                         <CModalHeader>
                         <CModalTitle>SOP</CModalTitle>
@@ -82,24 +82,24 @@
                 <CInputGroupText>Actual Date</CInputGroupText>
                 <input :disabled="isCheck" class="form-control" type="date" v-model="form.actual_check_dt"/>
             </CInputGroup>
-            <CInputGroup>
+            <CInputGroup class="mb-3">
                 <CInputGroupText>Shift</CInputGroupText>
                 <CFormSelect :disabled="isCheck" v-model="form.group_id">
                     <option>Select Shift</option>
                     <option v-for="judg in groups" :key="judg.id" :value="judg.id">{{ judg.group_nm }}</option>
                 </CFormSelect>
             </CInputGroup>
-            <table class="table table-bordered">
+            <table class="table table-responsive" style="border: 1px solid black">
                 <tr>
-                    <th>No</th>
-                    <th>Cateogry</th>
-                    <th>Judgment</th>
-                    <th>Factor</th>
-                    <th>Findings</th>
+                    <th class="text-center">No</th>
+                    <th class="p-2">Cateogry</th>
+                    <th class="p-2">Judgment</th>
+                    <th class="text-center">Factor</th>
+                    <th class="text-center">Findings</th>
                 </tr>
                 <tr v-for="(item, i) in categories" :key="i">
-                    <td>{{ i + 1 }}</td>
-                    <td>{{ item.category_nm }}</td>
+                    <td class="text-center">{{ i + 1 }}</td>
+                    <td class="p-2">{{ item.category_nm }}</td>
                     <td>
                         <CFormSelect :disabled="isCheck" v-model="item.judgment_id">
                             <option>Select Judgment</option>
@@ -124,6 +124,7 @@
 </template>
 
 <script>
+//
 import {GET_OBSERVATION_DETAIL, POST_OBSERVATION_CHECK} from '@/store/modules/observation.module'
 import { mapGetters } from 'vuex'
 import VuePdfEmbed from 'vue-pdf-embed'
@@ -131,6 +132,7 @@ import VuePdfEmbed from 'vue-pdf-embed'
 import ApiService from '@/store/api.service';
 import moment from 'moment'
 import Swal from 'sweetalert2';
+
 export default {
     name: 'DetailSchedule',
     data() {
@@ -183,7 +185,7 @@ export default {
     methods: {
       checkLabelTypeJob(jobType) {
         if(jobType == 'Type 3') {
-          this.tskLabel = 'Gentan-i',
+          this.tskLabel = 'Gentani',
           this.tskkLabel = 'Yamazumi'
         } else {
           this.tskLabel = 'TSK',
@@ -233,6 +235,7 @@ export default {
       },
       async postCheckObs() {
           try {
+              Swal.showLoading()
               this.resultCheck = []
               for (let i = 0; i < this.categories.length; i++) {
                   const element = this.categories[i];
@@ -255,6 +258,7 @@ export default {
               console.log(formInput);
               await this.$store.dispatch(POST_OBSERVATION_CHECK, formInput)
                   .then(() => {
+                      Swal.showLoading()
                       Swal.fire('Pengecekan berhasil di submit', '', 'success')
                       setTimeout(() => {
                           this.$router.push('/')
@@ -274,3 +278,11 @@ export default {
     }
 }
 </script>
+
+
+<style>
+table, th, td {
+  border: 1px solid !important;;
+}
+
+</style>

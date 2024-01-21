@@ -12,7 +12,9 @@
     "
   >
     <CSidebarBrand>
-      <img src="@/assets/obser.png" alt="obser" style="width: 90%;">
+      <h3 class="my-auto" style="font-family: 'Chakra Petch', sans-serif;
+font-family: 'Rubik Burned', system-ui;">E-Observation</h3>
+      <!-- <img src="@/assets/obser.png" alt="obser" style="width: 90%;"> -->
       <!-- <CIcon
         custom-class-name="sidebar-brand-full"
         :icon="logoNegative"

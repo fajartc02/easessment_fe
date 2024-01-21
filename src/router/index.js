@@ -113,7 +113,26 @@ const routes = [{
                 name: 'FormMachine',
                 component: () =>
                     import ('@/views/master/Machine/FormMachine.vue'),
-            }
+            },
+            // NEW PATH
+
+            {
+                path: '/stw/member-voice',
+                name: 'MemberVoice',
+                redirect: '/stw/member-voice',
+                children: [{
+                        path: '/stw/member-voice',
+                        component: () =>
+                            import ('@/views/observations/stw/MemberVoice.vue'),
+                    },
+                    {
+                        path: '/stw/member-voice/add',
+                        name: 'MemberVoiceAdd',
+                        component: () =>
+                            import ('@/views/observations/stw/MemberVoiceAdd.vue'),
+                    },
+                ]
+            },
         ],
     },
 

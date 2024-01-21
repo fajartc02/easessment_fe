@@ -7,8 +7,8 @@
                 </div>
                 <div class="col">
                     <button class="btn btn-success" @click="this.$router.push('/master/machine/form')">
-                        Add Machine<CIcon
-                                    icon="cil-plus" 
+                        Machine<CIcon
+                                    icon="cil-plus"
                                     size="sm"
                                 />
                     </button>
@@ -37,7 +37,7 @@
                         <td>
                             <CButton color="warning" @click="edit(machine.id)">
                                 <CIcon
-                                    icon="cil-pencil" 
+                                    icon="cil-pencil"
                                     size="sm"
                                 />
                             </CButton>
@@ -45,7 +45,7 @@
                         <td>
                             <CButton color="danger" @click="del(machine.id)">
                                 <CIcon
-                                    icon="cil-trash" 
+                                    icon="cil-trash"
                                     size="sm"
                                 />
                             </CButton>
