@@ -13,6 +13,9 @@ import DocsExample from '@/components/DocsExample'
 import ApiService from '@/store/api.service'
 import Select2 from 'vue3-select2-component';
 
+import VueApexCharts from "vue3-apexcharts";
+
+
 
 const app = createApp(App)
 app.use(store)
@@ -23,6 +26,8 @@ app.provide('icons', icons)
 app.component('CIcon', CIcon)
 app.component('DocsExample', DocsExample)
 app.component('Select2', Select2)
+app.use(VueApexCharts);
+
     // app.component()
 
 ApiService.init();

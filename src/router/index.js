@@ -8,14 +8,17 @@ const routes = [{
         name: 'Home',
         component: DefaultLayout,
         redirect: '/',
-        children: [{
-                path: '/',
-                name: 'Dashboard',
-                // route level code-splitting
-                // this generates a separate chunk (about.[hash].js) for this route
-                // which is lazy-loaded when the route is visited.
+        children: [
+            {
+                path: '/main-dashboard',
+                name: 'Main Dashboard', 
                 component: () =>
-                    import ('@/views/Dashboard.vue'),
+                    import ('@/views/dashboard/Dashboard.vue'),
+            },{
+                path: '/',
+                name: 'Dashboard', 
+                component: () =>
+                    import ('@/views/dashboard/MainDashboard.vue'),
             },
             {
                 path: '/history/observation',

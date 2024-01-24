@@ -1,6 +1,12 @@
 export default [{
         component: 'CNavTitle', // --- HISTORY MENU
-        name: 'Main Dashboard',
+        name: 'Main Dashboard', 
+    },
+    {
+        component: 'CNavItem',
+        name: 'Dashboard',
+        to: '/main-dashboard',
+        icon: 'cil-home'
     },
     {
         component: 'CNavTitle', // --- HISTORY MENU
