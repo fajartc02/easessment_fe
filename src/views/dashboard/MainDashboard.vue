@@ -36,46 +36,27 @@
               :options="options"
               :series="series"
               height="100%"
+              onclick="alert(123)"
             ></apexchart>
           </div>
           <div
             style="height: 300px"
-            class="col-md-10 pt-2 pb-4 bg-warning d-flex horizontal-scrollable"
+            class="col-md-10 pt-2 pb-4 d-flex horizontal-scrollable"
           >
-            <div class="col-2 m-2">
-              <div class="w-100 h-100 bg-success rounded">
+            <div
+              class="col-2 m-2"
+              v-for="detail in detailData"
+              :key="detail.id"
+            >
+              <div class="w-100 h-100 rounded chart-wrapper">
                 <apexchart
                   type="bar"
                   :options="options"
-                  :series="series"
+                  :series="detail.chartData"
                   height="100%"
                 ></apexchart>
               </div>
-              <div>label</div>
-            </div>
-            <div class="col-2 m-2">
-              <div class="w-100 h-100 bg-success rounded"></div>
-              <div>label</div>
-            </div>
-            <div class="col-2 m-2">
-              <div class="w-100 h-100 bg-success rounded"></div>
-              <div>label</div>
-            </div>
-            <div class="col-2 m-2">
-              <div class="w-100 h-100 bg-success rounded"></div>
-              <div>label</div>
-            </div>
-            <div class="col-2 m-2">
-              <div class="w-100 h-100 bg-success rounded"></div>
-              <div>label</div>
-            </div>
-            <div class="col-2 m-2">
-              <div class="w-100 h-100 bg-success rounded"></div>
-              <div>label</div>
-            </div>
-            <div class="col-2 m-2">
-              <div class="w-100 h-100 bg-success rounded"></div>
-              <div>label</div>
+              <div class="text-center mt-1">{{ detail.line }}</div>
             </div>
           </div>
         </div>
@@ -103,7 +84,12 @@ export default {
           stacked: true,
           width: '100%',
           height: '100%',
-          //   stackType: '100%',
+          events: {
+            click: function (chartContext) {
+              // The last parameter config contains additional information like `seriesIndex` and `dataPointIndex` for cartesian charts
+              console.log(chartContext)
+            },
+          },
         },
         plotOptions: {
           bar: {
@@ -117,6 +103,140 @@ export default {
             {
               x: 'Overal Precentage',
               y: 6653,
+            },
+          ],
+        },
+      ],
+      detailData: [
+        {
+          id: 1,
+          line: 'Low Pressure',
+          chartData: [
+            {
+              data: [
+                {
+                  x: 'prob',
+                  y: 6653,
+                },
+                {
+                  x: 'close',
+                  y: 5000,
+                },
+                {
+                  x: 'remain',
+                  y: 3500,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: 2,
+          line: 'Die Casting',
+          chartData: [
+            {
+              data: [
+                {
+                  x: 'prob',
+                  y: 6653,
+                },
+                {
+                  x: 'close',
+                  y: 5000,
+                },
+                {
+                  x: 'remain',
+                  y: 3500,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: 3,
+          line: 'Cyl. Head',
+          chartData: [
+            {
+              data: [
+                {
+                  x: 'prob',
+                  y: 6653,
+                },
+                {
+                  x: 'close',
+                  y: 5000,
+                },
+                {
+                  x: 'remain',
+                  y: 3500,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: 4,
+          line: 'Cyl. Block',
+          chartData: [
+            {
+              data: [
+                {
+                  x: 'prob',
+                  y: 6653,
+                },
+                {
+                  x: 'close',
+                  y: 5000,
+                },
+                {
+                  x: 'remain',
+                  y: 3500,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: 5,
+          line: 'Crank Shaft',
+          chartData: [
+            {
+              data: [
+                {
+                  x: 'prob',
+                  y: 6653,
+                },
+                {
+                  x: 'close',
+                  y: 5000,
+                },
+                {
+                  x: 'remain',
+                  y: 3500,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: 6,
+          line: 'Assyline',
+          chartData: [
+            {
+              data: [
+                {
+                  x: 'prob',
+                  y: 6653,
+                },
+                {
+                  x: 'close',
+                  y: 5000,
+                },
+                {
+                  x: 'remain',
+                  y: 3500,
+                },
+              ],
             },
           ],
         },

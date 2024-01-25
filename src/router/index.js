@@ -10,8 +10,8 @@ const routes = [{
         redirect: '/',
         children: [
             {
-                path: '/main-dashboard',
-                name: 'Main Dashboard', 
+                path: '/pm-dashboard',
+                name: 'PM Dashboard', 
                 component: () =>
                     import ('@/views/dashboard/Dashboard.vue'),
             },{
@@ -117,8 +117,26 @@ const routes = [{
                 component: () =>
                     import ('@/views/master/Machine/FormMachine.vue'),
             },
-            // NEW PATH
 
+            {
+                path: '/stw/dashboard',
+                name: 'STW Dashboard',
+                component: () =>
+                    import ('@/views/observations/stw/StwDashboard.vue'),
+            },
+            {
+                path: '/stw/member',
+                name: 'STW Member',
+                component: () =>
+                    import ('@/views/master/Machine/FormMachine.vue'),
+            },
+            {
+                path: '/stw/focus-theme',
+                name: 'STW Fokus Tema',
+                component: () =>
+                    import ('@/views/master/Machine/FormMachine.vue'),
+            },
+            // NEW PATH 
             {
                 path: '/stw/member-voice',
                 name: 'MemberVoice',

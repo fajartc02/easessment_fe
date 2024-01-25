@@ -25,13 +25,13 @@ $enable-rtl: true;
 /* ===== Scrollbar CSS ===== */
 /* Firefox */
 * {
-    scrollbar-width: auto;
+    scrollbar-width: 1px !important;
     scrollbar-color: #e0e0e0 #ffffff;
   }
   
   /* Chrome, Edge, and Safari */
   *::-webkit-scrollbar {
-    width: 0px;
+    width: 1px !important;
   }
   
   *::-webkit-scrollbar-track {
@@ -42,4 +42,8 @@ $enable-rtl: true;
     background-color: #e0e0e0;
     border-radius: 10px;
     border: 2px solid #ffffff;
+  }
+
+  .chart-wrapper {
+    background-color: #eaeaea;
   }
