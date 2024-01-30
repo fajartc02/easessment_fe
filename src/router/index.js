@@ -8,14 +8,17 @@ const routes = [{
         name: 'Home',
         component: DefaultLayout,
         redirect: '/',
-        children: [{
-                path: '/',
-                name: 'Dashboard',
-                // route level code-splitting
-                // this generates a separate chunk (about.[hash].js) for this route
-                // which is lazy-loaded when the route is visited.
+        children: [
+            {
+                path: '/pm-dashboard',
+                name: 'PM Dashboard', 
                 component: () =>
-                    import ('@/views/Dashboard.vue'),
+                    import ('@/views/dashboard/Dashboard.vue'),
+            },{
+                path: '/',
+                name: 'Dashboard', 
+                component: () =>
+                    import ('@/views/dashboard/MainDashboard.vue'),
             },
             {
                 path: '/history/observation',
@@ -114,8 +117,26 @@ const routes = [{
                 component: () =>
                     import ('@/views/master/Machine/FormMachine.vue'),
             },
-            // NEW PATH
 
+            {
+                path: '/stw/dashboard',
+                name: 'STW Dashboard',
+                component: () =>
+                    import ('@/views/observations/stw/StwDashboard.vue'),
+            },
+            {
+                path: '/stw/member',
+                name: 'STW Member',
+                component: () =>
+                    import ('@/views/master/Machine/FormMachine.vue'),
+            },
+            {
+                path: '/stw/focus-theme',
+                name: 'STW Fokus Tema',
+                component: () =>
+                    import ('@/views/master/Machine/FormMachine.vue'),
+            },
+            // NEW PATH 
             {
                 path: '/stw/member-voice',
                 name: 'MemberVoice',

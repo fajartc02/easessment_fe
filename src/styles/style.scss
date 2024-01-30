@@ -15,3 +15,35 @@ $enable-rtl: true;
 
 // If you want to add something do it here
 @import "custom";
+
+// custom css
+.horizontal-scrollable  { 
+    overflow-x: scroll;   
+    overflow-y: visible;
+}  
+
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+    scrollbar-width: 1px !important;
+    scrollbar-color: #e0e0e0 #ffffff;
+  }
+  
+  /* Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 1px !important;
+  }
+  
+  *::-webkit-scrollbar-track {
+    background: #ffffff;
+  }
+  
+  *::-webkit-scrollbar-thumb {
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    border: 2px solid #ffffff;
+  }
+
+  .chart-wrapper {
+    background-color: #eaeaea;
+  }

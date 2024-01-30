@@ -1,6 +1,12 @@
 export default [{
         component: 'CNavTitle', // --- HISTORY MENU
-        name: 'Main Dashboard',
+        name: 'Main Dashboard', 
+    },
+    {
+        component: 'CNavItem',
+        name: 'Dashboard',
+        to: '/',
+        icon: 'cil-speedometer'
     },
     {
         component: 'CNavTitle', // --- HISTORY MENU
@@ -50,8 +56,8 @@ export default [{
     },
     {
         component: 'CNavItem',
-        name: 'Dashboard',
-        to: '/',
+        name: 'PM Dashboard',
+        to: '/pm-dashboard',
         icon: 'cil-speedometer'
     },
     {
