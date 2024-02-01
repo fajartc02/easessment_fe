@@ -13,7 +13,8 @@ import DocsExample from '@/components/DocsExample'
 import ApiService from '@/store/api.service'
 import Select2 from 'vue3-select2-component';
 
-import VueApexCharts from "vue3-apexcharts";
+import VueApexCharts from "vue3-apexcharts"; 
+
 
 
 

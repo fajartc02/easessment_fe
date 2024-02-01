@@ -31,6 +31,12 @@ export default [{
         icon: 'cil-clipboard'
     },
     {
+        component: 'CNavItem',
+        name: 'Henkaten',
+        to: '/stw/henkaten',
+        icon: 'cil-clipboard'
+    },
+    {
         component: 'CNavTitle', // --- HISTORY MENU
         name: 'OM',
     },

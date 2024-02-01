@@ -134,9 +134,8 @@ const routes = [{
                 path: '/stw/focus-theme',
                 name: 'STW Fokus Tema',
                 component: () =>
-                    import ('@/views/master/Machine/FormMachine.vue'),
-            },
-            // NEW PATH 
+                import ('@/views/observations/stw/FocusTheme.vue'),
+            }, 
             {
                 path: '/stw/member-voice',
                 name: 'MemberVoice',
@@ -154,6 +153,12 @@ const routes = [{
                     },
                 ]
             },
+            {
+                path: '/stw/henkaten',
+                name: 'STW Henkaten',
+                component: () =>
+                import ('@/views/observations/stw/Henkaten.vue'),
+            }, 
         ],
     },
 
