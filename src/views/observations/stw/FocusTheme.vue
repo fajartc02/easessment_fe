@@ -37,7 +37,14 @@
               <th scope="row">1</th>
               <td>Mark</td>
               <td>Otto</td>
-              <td>@mdo</td>
+              <td>
+                <apexchart
+                  type="pie"
+                  width="380"
+                  :options="chartOptions"
+                  :series="series"
+                ></apexchart>
+              </td>
               <td>@mdo</td>
               <td>
                 <button class="btn btn-info btn-sm text-white">Detail</button>
@@ -126,6 +133,17 @@ export default {
       selectedMonth: null,
       selectedLine: '-1',
       addFocusThemeModal: false,
+      series: [50, 50, 50, 50],
+      chartOptions: {
+        chart: {
+          width: 20,
+          type: 'pie',
+        },
+        legend: {
+          show: false,
+        },
+        labels: ['Team A', 'Team B', 'Team C', 'Team D'],
+      },
     }
   },
   computed: {
