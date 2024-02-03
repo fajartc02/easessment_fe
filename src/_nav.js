@@ -20,6 +20,12 @@ export default [{
     },
     {
         component: 'CNavItem',
+        name: 'List Temuan',
+        to: '/stw/list-temuan',
+        icon: 'cil-file'
+    },
+    {
+        component: 'CNavItem',
         name: 'Member Voice',
         to: '/stw/member-voice',
         icon: 'cil-people'
@@ -36,42 +42,42 @@ export default [{
         to: '/stw/henkaten',
         icon: 'cil-clipboard'
     },
-    {
-        component: 'CNavTitle', // --- HISTORY MENU
-        name: 'OM',
-    },
-    {
-        component: 'CNavItem',
-        name: 'Dashboard OM*',
-        to: '/om/dashboard',
-        icon: 'cil-speedometer'
-    },
-    {
-        component: 'CNavTitle', // --- HISTORY MENU
-        name: '4S',
-    },
-    {
-        component: 'CNavItem',
-        name: 'Dashboard 4S*',
-        to: '/4s/dashboard',
-        icon: 'cil-speedometer'
-    },
-    {
-        component: 'CNavTitle', // --- HISTORY MENU
-        name: 'PM (exc. prj)',
-    },
-    {
-        component: 'CNavItem',
-        name: 'PM Dashboard',
-        to: '/pm-dashboard',
-        icon: 'cil-speedometer'
-    },
-    {
-        component: 'CNavItem',
-        name: 'Schedule Observasi',
-        to: '/schedule/observation',
-        icon: 'cil-clipboard',
-    },
+    // {
+    //     component: 'CNavTitle', // --- HISTORY MENU
+    //     name: 'OM',
+    // },
+    // {
+    //     component: 'CNavItem',
+    //     name: 'Dashboard OM*',
+    //     to: '/om/dashboard',
+    //     icon: 'cil-speedometer'
+    // },
+    // {
+    //     component: 'CNavTitle', // --- HISTORY MENU
+    //     name: '4S',
+    // },
+    // {
+    //     component: 'CNavItem',
+    //     name: 'Dashboard 4S*',
+    //     to: '/4s/dashboard',
+    //     icon: 'cil-speedometer'
+    // },
+    // {
+    //     component: 'CNavTitle', // --- HISTORY MENU
+    //     name: 'PM (exc. prj)',
+    // },
+    // {
+    //     component: 'CNavItem',
+    //     name: 'PM Dashboard',
+    //     to: '/pm-dashboard',
+    //     icon: 'cil-speedometer'
+    // },
+    // {
+    //     component: 'CNavItem',
+    //     name: 'Schedule Observasi',
+    //     to: '/schedule/observation',
+    //     icon: 'cil-clipboard',
+    // },
     {
         component: 'CNavTitle', // --- HISTORY MENU
         name: 'History Data',

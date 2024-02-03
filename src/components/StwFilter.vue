@@ -20,8 +20,21 @@
             v-model="selectedLineData"
             :options="lineData"
             placeholder=""
+            @select="addFilter('line')"
+            :custom-label="customLineFilterOptions"
           >
           </VueMultiselect>
+          <!-- <multiselect
+            v-model="selectedLineData"
+            placeholder=" "
+            :options="lineData"
+          >
+            <template
+              ><strong>{{ option.text }}</strong> is written in<strong>
+                {{ option.language }}</strong
+              ></template
+            >
+          </multiselect> -->
         </div>
         <div class="col-2">
           <label>Shift</label>
@@ -72,8 +85,19 @@ export default {
     },
     mapLinesData() {
       this.getLinesOpts?.map((item) => {
-        this.lineData.push(item.text)
+        this.lineData.push({ line_id: item.id, line_name: item.text })
       })
+    },
+    addFilter(filterType) {
+      if (filterType == 'line') {
+        this.$router.push(
+          `${this.$route.path}?line=${this.selectedLineData.line_id}`,
+        )
+      }
+    },
+
+    customLineFilterOptions({ line_name }) {
+      return `${line_name}`
     },
   },
   mounted() {

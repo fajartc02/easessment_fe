@@ -1,33 +1,7 @@
 <template>
   <div>
     <div class="card mb-3">
-      <div class="card-header">
-        <div class="row">
-          <div class="col-2">
-            <label>Start date</label>
-            <input type="date" class="form-control" />
-          </div>
-          <div class="col-2">
-            <label>End date</label>
-            <input type="date" class="form-control" />
-          </div>
-          <div class="col-2">
-            <label>Shop</label>
-            <input type="date" class="form-control" />
-          </div>
-          <div class="col-2">
-            <label>Line</label>
-            <input type="date" class="form-control" />
-          </div>
-          <div class="col-2">
-            <label>Shift</label>
-            <input type="date" class="form-control" />
-          </div>
-          <div class="col-2 d-flex justify-content-center align-items-end">
-            <button class="btn btn-info w-100 text-white">Search</button>
-          </div>
-        </div>
-      </div>
+      <StwFilter />
       <div
         class="card-header d-flex justify-content-between align-items-center"
       >
@@ -49,13 +23,15 @@ import moment from 'moment'
 import TableSchedule from '@/components/table/TableSchedule.vue'
 import { GET_LINES } from '@/store/modules/line.module'
 import { mapGetters } from 'vuex'
+import StwFilter from '@/components/StwFilter.vue'
 
 export default {
   name: 'STW Dashboard',
   data() {
     return {
       selectedMonth: null,
-      selectedLine: '-1',
+      selectedLine: null,
+      testWatch: this.$route.params.line,
     }
   },
   computed: {
@@ -75,11 +51,24 @@ export default {
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
-    this.selectedLine = localStorage.getItem('line_id')
+    this.selectedLine = this.$route.params.line
     this.getLines()
+    // alert(this.testWatch)
+    // this.selectedLine = localStorage.getItem('line_id')
+  },
+  watch: {
+    testWatch() {
+      // alert('something changed!')
+      // do something with newValue and oldValue.
+      // this.selectedLine = this.$route.params.line
+    },
+  },
+  updated() {
+    console.log(this.$route.query.line)
   },
   components: {
     TableSchedule,
+    StwFilter,
   },
 }
 </script>

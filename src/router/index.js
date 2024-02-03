@@ -125,6 +125,12 @@ const routes = [{
                     import ('@/views/observations/stw/StwDashboard.vue'),
             },
             {
+                path: '/stw/list-temuan',
+                name: 'List Temuan',
+                component: () =>
+                import ('@/views/observations/stw/ListTemuan.vue'),
+            },
+            {
                 path: '/stw/member',
                 name: 'STW Member',
                 component: () =>
