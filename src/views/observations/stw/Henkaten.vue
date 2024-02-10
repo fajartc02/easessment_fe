@@ -1,18 +1,14 @@
 <template>
   <div>
     <div class="card mb-3">
-      <StwFilter />
+      <Filter filter-type="henkaten" />
       <div
         class="card-header d-flex justify-content-between align-items-center"
       >
         <h5>Henkaten List</h5>
         <button
           class="btn btn-info text-white"
-          @click="
-            () => {
-              addHenkatenModal = true
-            }
-          "
+          @click="addHenkatenModal = true"
         >
           Add henkaten
         </button>
@@ -43,7 +39,6 @@
               <td>@mdo</td>
               <td>@mdo</td>
               <td>
-                <button class="btn btn-info btn-sm text-white">Detail</button>
                 <button class="btn btn-danger btn-sm text-white mx-2">
                   Delete
                 </button>
@@ -60,11 +55,7 @@
       backdrop="static"
       alignment="center"
       :visible="addHenkatenModal"
-      @close="
-        () => {
-          addHenkatenModal = false
-        }
-      "
+      @close="addHenkatenModal = false"
     >
       <CModalHeader>
         <CModalTitle>Add henkaten</CModalTitle>
@@ -106,14 +97,7 @@
         </div>
       </CModalBody>
       <CModalFooter>
-        <CButton
-          color="secondary"
-          @click="
-            () => {
-              addHenkatenModal = false
-            }
-          "
-        >
+        <CButton color="secondary" @click="addHenkatenModal = false">
           Close
         </CButton>
         <CButton color="primary">Save changes</CButton>
@@ -126,7 +110,7 @@
 import moment from 'moment'
 import { GET_USERS } from '@/store/modules/user.module'
 import { mapGetters } from 'vuex'
-import StwFilter from '@/components/StwFilter.vue'
+import Filter from '@/components/Filter.vue'
 import VueMultiselect from 'vue-multiselect'
 
 export default {
@@ -167,7 +151,7 @@ export default {
     this.selectedLine = localStorage.getItem('line_id')
     this.getUsers()
   },
-  components: { StwFilter, VueMultiselect },
+  components: { Filter, VueMultiselect },
 }
 </script>
 

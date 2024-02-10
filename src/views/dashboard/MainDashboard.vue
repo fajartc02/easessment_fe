@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="card mb-3">
-      <StwFilter />
+      <Filter filterType="default" />
       <div class="card-body px-4">
         <div v-if="cond == 1">
           <MainDashboardChart />
@@ -20,7 +20,7 @@ import { GET_LINES } from '@/store/modules/line.module'
 import { mapGetters } from 'vuex'
 import MainDashboardChart from '@/components/charts/MainDashboardChart.vue'
 import MainDashboardChartDetail from '@/components/charts/MainDashboardChartDetail.vue'
-import StwFilter from '@/components/StwFilter.vue'
+import Filter from '@/components/Filter.vue'
 
 export default {
   name: 'Main Dashboard',
@@ -51,6 +51,6 @@ export default {
     this.selectedLine = localStorage.getItem('line_id')
     this.getLines()
   },
-  components: { MainDashboardChart, MainDashboardChartDetail, StwFilter },
+  components: { MainDashboardChart, MainDashboardChartDetail, Filter },
 }
 </script>

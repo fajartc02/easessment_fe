@@ -20,7 +20,7 @@ export default [{
     },
     {
         component: 'CNavItem',
-        name: 'List Temuan',
+        name: 'List Temuan*',
         to: '/stw/list-temuan',
         icon: 'cil-file'
     },
@@ -38,9 +38,15 @@ export default [{
     },
     {
         component: 'CNavItem',
-        name: 'Henkaten',
+        name: 'Henkaten*',
         to: '/stw/henkaten',
         icon: 'cil-clipboard'
+    },
+    {
+        component: 'CNavItem',
+        name: 'Observasi history*',
+        to: '/history/observation',
+        icon: 'cil-clipboard',
     },
     // {
     //     component: 'CNavTitle', // --- HISTORY MENU
@@ -72,22 +78,12 @@ export default [{
     //     to: '/pm-dashboard',
     //     icon: 'cil-speedometer'
     // },
-    // {
-    //     component: 'CNavItem',
-    //     name: 'Schedule Observasi',
-    //     to: '/schedule/observation',
-    //     icon: 'cil-clipboard',
-    // },
-    {
-        component: 'CNavTitle', // --- HISTORY MENU
-        name: 'History Data',
-    },
     {
         component: 'CNavItem',
-        name: 'Observasi',
-        to: '/history/observation',
+        name: 'Schedule Observasi*',
+        to: '/schedule/observation',
         icon: 'cil-clipboard',
-    },
+    }, 
     {
         component: 'CNavTitle', // --- MASTER MENU
         name: 'Master Data',

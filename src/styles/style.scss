@@ -23,27 +23,35 @@ $enable-rtl: true;
 }  
 
 /* ===== Scrollbar CSS ===== */
-/* Firefox */
-* {
-    scrollbar-width: 1px !important;
-    scrollbar-color: #e0e0e0 #ffffff;
+@mixin hideScrollbar {
+  // https://blogs.msdn.microsoft.com/kurlak/2013/11/03/hiding-vertical-scrollbars-with-pure-css-in-chrome-ie-6-firefox-opera-and-safari/
+  // There is a CSS rule that can hide scrollbars in Webkit-based browsers (Chrome and Safari).
+  &::-webkit-scrollbar {
+    width: 0 !important
   }
+  // There is a CSS rule that can hide scrollbars in IE 10+.
+  -ms-overflow-style: none;
   
-  /* Chrome, Edge, and Safari */
-  *::-webkit-scrollbar {
-    width: 1px !important;
-  }
+  // Use -ms-autohiding-scrollbar if you wish to display on hover.
+  // -ms-overflow-style: -ms-autohiding-scrollbar;
   
-  *::-webkit-scrollbar-track {
-    background: #ffffff;
-  }
-  
-  *::-webkit-scrollbar-thumb {
-    background-color: #e0e0e0;
-    border-radius: 10px;
-    border: 2px solid #ffffff;
-  }
+  // There used to be a CSS rule that could hide scrollbars in Firefox, but it has since been deprecated.
+  scrollbar-width: none;
+}
 
   .chart-wrapper {
     background-color: #eaeaea;
   }
+
+  .circle-fill { 
+      width: 20px;
+      height: 20px;
+      background-color: #0ea5e9;
+      border-radius: 100%;
+  }
+
+td,
+th,
+tr {
+  border: 1px solid #eaeaea;
+}

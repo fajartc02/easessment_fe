@@ -1,18 +1,14 @@
 <template>
   <div>
     <div class="card mb-3">
-      <StwFilter />
+      <Filter filterType="focus-theme" />
       <div
         class="card-header d-flex justify-content-between align-items-center"
       >
         <h5>Fokus Tema</h5>
         <button
           class="btn btn-info text-white"
-          @click="
-            () => {
-              addFocusThemeModal = true
-            }
-          "
+          @click="addFocusThemeModal = true"
         >
           Add fokus tema
         </button>
@@ -38,16 +34,12 @@
               <td>Mark</td>
               <td>Otto</td>
               <td>
-                <apexchart
-                  type="pie"
-                  width="380"
-                  :options="chartOptions"
-                  :series="series"
-                ></apexchart>
+                <div class="d-flex justify-content-center align-items-center">
+                  <FocusThemeIndicatorVue total="3"></FocusThemeIndicatorVue>
+                </div>
               </td>
               <td>@mdo</td>
               <td>
-                <button class="btn btn-info btn-sm text-white">Detail</button>
                 <button class="btn btn-danger btn-sm text-white mx-2">
                   Delete
                 </button>
@@ -64,11 +56,7 @@
       backdrop="static"
       alignment="center"
       :visible="addFocusThemeModal"
-      @close="
-        () => {
-          addFocusThemeModal = false
-        }
-      "
+      @close="addFocusThemeModal = false"
     >
       <CModalHeader>
         <CModalTitle>Add fokus tema</CModalTitle>
@@ -104,14 +92,7 @@
         </div>
       </CModalBody>
       <CModalFooter>
-        <CButton
-          color="secondary"
-          @click="
-            () => {
-              addFocusThemeModal = false
-            }
-          "
-        >
+        <CButton color="secondary" @click="addFocusThemeModal = false">
           Close
         </CButton>
         <CButton color="primary">Save changes</CButton>
@@ -124,7 +105,8 @@
 import moment from 'moment'
 import { GET_LINES } from '@/store/modules/line.module'
 import { mapGetters } from 'vuex'
-import StwFilter from '@/components/StwFilter.vue'
+import Filter from '@/components/Filter.vue'
+import FocusThemeIndicatorVue from '@/components/FocusThemeIndicator.vue'
 
 export default {
   name: 'Focus Theme',
@@ -133,17 +115,6 @@ export default {
       selectedMonth: null,
       selectedLine: '-1',
       addFocusThemeModal: false,
-      series: [50, 50, 50, 50],
-      chartOptions: {
-        chart: {
-          width: 20,
-          type: 'pie',
-        },
-        legend: {
-          show: false,
-        },
-        labels: ['Team A', 'Team B', 'Team C', 'Team D'],
-      },
     }
   },
   computed: {
@@ -166,7 +137,7 @@ export default {
     this.selectedLine = localStorage.getItem('line_id')
     this.getLines()
   },
-  components: { StwFilter },
+  components: { Filter, FocusThemeIndicatorVue },
 }
 </script>
     

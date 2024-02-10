@@ -1,21 +1,14 @@
 <template>
   <div>
     <div class="card mb-3">
-      <StwFilter />
+      <Filter filterType="list-temuan" />
       <div
         class="card-header d-flex justify-content-between align-items-center"
       >
         <h5>List temuan</h5>
-        <button
-          class="btn btn-info text-white"
-          @click="
-            () => {
-              addTemuanModal = true
-            }
-          "
-        >
-          Add list
-        </button>
+        <router-link to="list-temuan/add">
+          <button class="btn btn-info text-white">Add list</button>
+        </router-link>
       </div>
       <div style="width: 100%; overflow-x: scroll">
         <table class="table table-striped table-bordered text-center">
@@ -136,10 +129,7 @@
                 >
                   Detail
                 </button>
-                <button class="btn btn-danger btn-sm text-white mx-2">
-                  Delete
-                </button>
-                <button class="btn btn-info btn-sm text-white">Edit</button>
+                <button class="btn btn-info btn-sm text-white">Download</button>
               </td>
             </tr>
           </tbody>
@@ -206,43 +196,160 @@
       alignment="center"
       :visible="detailTemuanModal"
       @close="detailTemuanModal = false"
+      size="lg"
+      fullscreen
     >
       <CModalHeader>
         <CModalTitle>Detail temuan</CModalTitle>
       </CModalHeader>
       <CModalBody>
         <div>
-          <div class="mb-2">
-            <label class="mb-1">Start date</label>
-            <input type="date" class="form-control" />
-          </div>
-          <div class="mb-2">
-            <label class="mb-1">Machine</label>
-            <input type="text" class="form-control" />
-          </div>
-          <div class="mb-2">
-            <label class="mb-1">PIC</label>
-            <VueMultiselect v-model="selectedPIC" :options="picData">
-            </VueMultiselect>
-          </div>
-          <div class="mb-2">
-            <label class="mb-1">Perubahan</label>
-            <textarea type="text" class="form-control"> </textarea>
-          </div>
-          <div class="mb-2">
-            <label class="mb-1">Tujuan</label>
-            <textarea type="text" class="form-control"> </textarea>
-          </div>
-          <span style="font-weight: bold" class="mb-2"
-            >Follow (2 weeks) item</span
-          >
-          <div class="mb-2">
-            <label class="mb-1">Safety</label>
-            <input type="text" class="form-control" />
-          </div>
           <div>
-            <label class="mb-1">Quality</label>
-            <input type="text" class="form-control" />
+            <div class="mb-2">
+              <label class="mb-1">Source Category</label>
+              <input type="text" class="form-control" />
+            </div>
+            <div class="mb-2">
+              <label class="mb-1">Tanggal temuan</label>
+              <input type="date" class="form-control" />
+            </div>
+            <div class="mb-2">
+              <label class="mb-1">Pos</label>
+              <input type="text" class="form-control" />
+            </div>
+            <div class="mb-2">
+              <label class="mb-1">Temuan problem</label>
+              <textarea cols="30" rows="5" class="form-control"></textarea>
+            </div>
+            <div class="mb-2">
+              <label class="mb-1">Rencana perbaikan</label>
+              <textarea cols="30" rows="5" class="form-control"></textarea>
+            </div>
+            <div class="mb-2">
+              <label class="mb-1">Priority</label>
+              <input type="text" class="form-control" />
+            </div>
+            <div class="mb-2">
+              <label class="mb-1"
+                >Stop 6
+                <span class="badge rounded-pill bg-primary text-white"
+                  >Safety</span
+                ></label
+              >
+              <input type="text" class="form-control" />
+            </div>
+            <div class="mb-2">
+              <label class="mb-1"
+                >Rank WRAS
+                <span class="badge rounded-pill bg-primary text-white"
+                  >Safety</span
+                >
+              </label>
+              <input type="text" class="form-control" />
+            </div>
+            <div class="row mb-2">
+              <div class="col">
+                <label class="mb-1"
+                  >SOP/EIS
+                  <span class="badge rounded-pill bg-primary text-white"
+                    >Method</span
+                  >
+                </label>
+                <input type="text" class="form-control" />
+              </div>
+              <div class="col">
+                <label class="mb-1"
+                  >TSKK
+                  <span class="badge rounded-pill bg-primary text-white"
+                    >Man</span
+                  >
+                </label>
+                <input type="text" class="form-control" />
+              </div>
+              <div class="col">
+                <label class="mb-1"
+                  >TSK
+                  <span class="badge rounded-pill bg-primary text-white"
+                    >Man</span
+                  >
+                </label>
+                <input type="text" class="form-control" />
+              </div>
+            </div>
+            <div class="mb-2">
+              <label class="mb-1"
+                >PCI/ECI
+                <span class="badge rounded-pill bg-primary text-white"
+                  >Material</span
+                >
+              </label>
+              <input type="text" class="form-control" />
+            </div>
+            <div class="mb-2">
+              <label class="mb-1"
+                >MT/KZ/ENG
+                <span class="badge rounded-pill bg-primary text-white"
+                  >Machine</span
+                >
+              </label>
+              <input type="text" class="form-control" />
+            </div>
+            <div class="mb-2">
+              <label class="mb-1">PIC Schedule </label>
+              <input type="date" class="form-control" />
+            </div>
+
+            <hr />
+
+            <div class="row mb-2">
+              <div class="col">
+                <label class="mb-1">LH Red </label>
+                <input type="text" class="form-control" />
+              </div>
+              <div class="col">
+                <label class="mb-1">LH White </label>
+                <input type="text" class="form-control" />
+              </div>
+              <div class="col">
+                <label class="mb-1">SH </label>
+                <input type="text" class="form-control" />
+              </div>
+            </div>
+            <div class="mb-2">
+              <label class="mb-1">Comments</label>
+              <input type="text" class="form-control" />
+            </div>
+            <div class="mb-2">
+              <label class="mb-1">Adjusment</label>
+              <input type="text" class="form-control" />
+            </div>
+
+            <hr />
+
+            <div class="mb-2">
+              <label class="mb-1">Factor result</label>
+              <input type="text" class="form-control" />
+            </div>
+            <div class="mb-2">
+              <label class="mb-1">Plan date training</label>
+              <input type="date" class="form-control" />
+            </div>
+            <div class="mb-2">
+              <label class="mb-1">Actual date training</label>
+              <input type="date" class="form-control" />
+            </div>
+            <div class="mb-2">
+              <label class="mb-1">Comments</label>
+              <input type="text" class="form-control" />
+            </div>
+            <div class="mb-2">
+              <label class="mb-1">Sign upload</label>
+              <input type="file" class="form-control" />
+            </div>
+            <div class="mb-2">
+              <label class="mb-1">Kaizen report upload</label>
+              <input type="file" class="form-control" />
+            </div>
           </div>
         </div>
       </CModalBody>
@@ -259,8 +366,9 @@
     <script>
 import moment from 'moment'
 import { GET_USERS } from '@/store/modules/user.module'
+import { GET_FINDINGS } from '@/store/modules/finding.module'
 import { mapGetters } from 'vuex'
-import StwFilter from '@/components/StwFilter.vue'
+import Filter from '@/components/Filter.vue'
 import VueMultiselect from 'vue-multiselect'
 
 export default {
@@ -275,7 +383,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getUsersOpts']),
+    ...mapGetters(['getUsersOpts', 'getFindings']),
   },
   methods: {
     async getUsers() {
@@ -284,6 +392,14 @@ export default {
         if (this.getUsersOpts) {
           this.mapUsersData()
         }
+      } catch (error) {
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
+      }
+    },
+    async getFindingsFunc() {
+      try {
+        this.$store.dispatch(GET_FINDINGS)
       } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
@@ -301,8 +417,9 @@ export default {
     this.selectedMonth = `${year}-${month}`
     this.selectedLine = localStorage.getItem('line_id')
     this.getUsers()
+    this.getFindingsFunc()
   },
-  components: { StwFilter, VueMultiselect },
+  components: { Filter, VueMultiselect },
 }
 </script>
   

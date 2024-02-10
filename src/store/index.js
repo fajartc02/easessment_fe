@@ -14,6 +14,8 @@ import pos from "./modules/pos.module"
 import job from "./modules/job.module"
 import jobType from "./modules/jobType.module"
 
+import finding from './modules/finding.module';
+
 export default createStore({
     state: {
         sidebarVisible: '',
@@ -45,6 +47,8 @@ export default createStore({
         observations,
         pos,
         job,
-        jobType
+        jobType,
+        
+        finding
     },
 })

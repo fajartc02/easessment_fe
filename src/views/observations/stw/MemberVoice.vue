@@ -2,7 +2,7 @@
 <template>
   <div>
     <div class="card mb-3">
-      <StwFilter />
+      <Filter filter-type="member-voice" />
       <div
         class="card-header d-flex justify-content-between align-items-center"
       >
@@ -169,7 +169,7 @@ import moment from 'moment'
 import { GET_LINES } from '@/store/modules/line.module'
 import { GET_USERS } from '@/store/modules/user.module'
 import { mapGetters } from 'vuex'
-import StwFilter from '@/components/StwFilter.vue'
+import Filter from '@/components/Filter.vue'
 import VueMultiselect from 'vue-multiselect'
 
 export default {
@@ -220,7 +220,7 @@ export default {
     this.getLines()
     this.getUsers()
   },
-  components: { StwFilter, VueMultiselect },
+  components: { Filter, VueMultiselect },
 }
 </script>
     

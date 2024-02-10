@@ -128,7 +128,13 @@ const routes = [{
                 path: '/stw/list-temuan',
                 name: 'List Temuan',
                 component: () =>
-                import ('@/views/observations/stw/ListTemuan.vue'),
+                import ('@/views/observations/stw/ListTemuan.vue'), 
+            },
+            {
+                path: '/stw/list-temuan/add',
+                name: 'List Temuan Add',
+                component: () =>
+                import ('@/views/observations/stw/ListTemuanAdd.vue'), 
             },
             {
                 path: '/stw/member',

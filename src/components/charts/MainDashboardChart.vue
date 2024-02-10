@@ -6,7 +6,6 @@
         :options="defaultOptions"
         :series="series"
         height="100%"
-        onclick="alert(123)"
       ></apexchart>
     </div>
     <div
@@ -42,6 +41,11 @@ export default {
           toolbar: {
             show: false,
           },
+          events: {
+            dataPointSelection: () => {
+              console.log(123)
+            },
+          },
         },
         plotOptions: {
           bar: {
@@ -58,6 +62,11 @@ export default {
           height: '100%',
           toolbar: {
             show: false,
+          },
+          events: {
+            dataPointSelection: (event, chartContext, config) => {
+              console.log(event, chartContext, config)
+            },
           },
         },
         legend: {
@@ -83,7 +92,144 @@ export default {
           ],
         },
       ],
+
       detailData: [
+        {
+          id: 1,
+          line: 'Low Pressure',
+          chartData: [
+            {
+              name: 'Member Voice',
+              type: 'bar',
+              data: [44, 55, 41],
+            },
+            {
+              name: 'Observation',
+              type: 'bar',
+              data: [44, 55, 41],
+            },
+            {
+              name: 'Fokus Tema',
+              type: 'bar',
+              data: [44, 55, 41],
+            },
+            {
+              name: 'Henkaten',
+              type: 'bar',
+              data: [44, 55, 41],
+            },
+          ],
+        },
+        {
+          id: 1,
+          line: 'Low Pressure',
+          chartData: [
+            {
+              name: 'Member Voice',
+              data: [44, 55, 41],
+            },
+            {
+              name: 'Observation',
+              data: [44, 55, 41],
+            },
+            {
+              name: 'Fokus Tema',
+              data: [44, 55, 41],
+            },
+            {
+              name: 'Henkaten',
+              data: [44, 55, 41],
+            },
+          ],
+        },
+        {
+          id: 1,
+          line: 'Low Pressure',
+          chartData: [
+            {
+              name: 'Member Voice',
+              data: [44, 55, 41],
+            },
+            {
+              name: 'Observation',
+              data: [44, 55, 41],
+            },
+            {
+              name: 'Fokus Tema',
+              data: [44, 55, 41],
+            },
+            {
+              name: 'Henkaten',
+              data: [44, 55, 41],
+            },
+          ],
+        },
+        {
+          id: 1,
+          line: 'Low Pressure',
+          chartData: [
+            {
+              name: 'Member Voice',
+              data: [44, 55, 41],
+            },
+            {
+              name: 'Observation',
+              data: [44, 55, 41],
+            },
+            {
+              name: 'Fokus Tema',
+              data: [44, 55, 41],
+            },
+            {
+              name: 'Henkaten',
+              data: [44, 55, 41],
+            },
+          ],
+        },
+        {
+          id: 1,
+          line: 'Low Pressure',
+          chartData: [
+            {
+              name: 'Member Voice',
+              data: [44, 55, 41],
+            },
+            {
+              name: 'Observation',
+              data: [44, 55, 41],
+            },
+            {
+              name: 'Fokus Tema',
+              data: [44, 55, 41],
+            },
+            {
+              name: 'Henkaten',
+              data: [44, 55, 41],
+            },
+          ],
+        },
+        {
+          id: 1,
+          line: 'Low Pressure',
+          chartData: [
+            {
+              name: 'Member Voice',
+              data: [44, 55, 41],
+            },
+            {
+              name: 'Observation',
+              data: [44, 55, 41],
+            },
+            {
+              name: 'Fokus Tema',
+              data: [44, 55, 41],
+            },
+            {
+              name: 'Henkaten',
+              data: [44, 55, 41],
+            },
+          ],
+        },
         {
           id: 1,
           line: 'Low Pressure',
