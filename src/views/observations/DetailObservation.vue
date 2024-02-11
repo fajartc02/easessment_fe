@@ -201,11 +201,8 @@
               "
               class="mx-2"
             >
-              <select
-                class="form-select"
-                :disabled="isCheck"
-                v-model="item.factor_id"
-              >
+              <select class="form-select" v-model="selectedFactor">
+                <option disabled>Select Factor</option>
                 <option
                   v-for="factor in factors"
                   :key="factor.text"
@@ -227,7 +224,10 @@
                 <div
                   class="card-body p-1 d-flex justify-content-between align-items-center"
                 >
-                  <button class="btn btn-info btn-sm text-white">
+                  <button
+                    class="btn btn-info btn-sm text-white"
+                    @click="addFindingsModal = true"
+                  >
                     Add findings
                   </button>
                   <span
@@ -242,14 +242,14 @@
         </tr>
       </table>
       <button
-        class="btn btn-primary mr-1"
-        :disabled="isCheck"
+        class="btn btn-primary text-white"
+        :disabled="observationsData.findings.length < 1"
         @click="postCheckObs()"
       >
         Submit
       </button>
       <button
-        class="btn btn-info ml-1"
+        class="btn btn-info mx-2 text-white"
         :disabled="!isCheck"
         @click="viewReport()"
       >
@@ -257,25 +257,137 @@
       </button>
     </div>
   </div>
+
+  <!-- Modals -->
+  <CModal
+    scrollable
+    backdrop="static"
+    alignment="center"
+    :visible="addFindingsModal"
+    @close="addFindingsModal = false"
+  >
+    <CModalHeader>
+      <CModalTitle>Add temuan</CModalTitle>
+    </CModalHeader>
+    <CModalBody>
+      <div>
+        <div class="mb-2">
+          <label class="mb-1">Tanggal temuan</label>
+          <input type="date" class="form-control" v-model="finding_date" />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">Pos</label>
+          <input type="text" class="form-control" v-model="finding_location" />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">Finding description</label>
+          <textarea
+            cols="30"
+            rows="5"
+            class="form-control"
+            v-model="finding_desc"
+          ></textarea>
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM description</label>
+          <textarea
+            cols="30"
+            rows="5"
+            class="form-control"
+            v-model="cm_desc"
+          ></textarea>
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">Priority</label>
+          <input type="text" class="form-control" v-model="cm_priority" />
+        </div>
+
+        <div class="mb-2">
+          <label class="mb-1">PIC </label>
+          <VueMultiselect v-model="selectedPIC" :options="picData">
+          </VueMultiselect>
+        </div>
+
+        <div class="mb-2">
+          <label class="mb-1">CM Start Plan Date </label>
+          <input type="date" class="form-control" v-model="cm_str_plan_date" />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM End Plan Date </label>
+          <input type="date" class="form-control" v-model="cm_end_plan_date" />
+        </div>
+
+        <hr />
+
+        <div class="mb-2">
+          <label class="mb-1">CM Start actual date</label>
+          <input type="date" class="form-control" v-model="cm_str_act_date" />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM End actual date</label>
+          <input type="date" class="form-control" v-model="cm_end_act_date" />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM Training date</label>
+          <input type="date" class="form-control" v-model="cm_training_date" />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM Judge</label>
+          <input type="text" class="form-control" v-model="cm_judg" />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM Sign LH Red</label>
+          <input type="file" class="form-control" />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM Sign LH White</label>
+          <input type="file" class="form-control" />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM Sign SH</label>
+          <input type="file" class="form-control" />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM Comments</label>
+          <input type="text" class="form-control" v-model="cm_comments" />
+        </div>
+      </div>
+    </CModalBody>
+    <CModalFooter>
+      <CButton
+        color="secondary"
+        class="text-white mx-2"
+        @click="addFindingsModal = false"
+      >
+        Cancel
+      </CButton>
+      <CButton color="primary" class="text-white" @click="addFindingsData"
+        >Save finding data</CButton
+      >
+    </CModalFooter>
+  </CModal>
 </template>
 
 <script>
-//
 import {
   GET_OBSERVATION_DETAIL,
   POST_OBSERVATION_CHECK,
 } from '@/store/modules/observation.module'
+import { GET_USERS } from '@/store/modules/user.module'
 import { mapGetters } from 'vuex'
 import VuePdfEmbed from 'vue-pdf-embed'
-
 import ApiService from '@/store/api.service'
 import moment from 'moment'
 import Swal from 'sweetalert2'
+import VueMultiselect from 'vue-multiselect'
 
 export default {
   name: 'DetailSchedule',
   data() {
     return {
+      selectedLine: this.observation?.line_id,
+      picData: [],
+      selectedPIC: null,
       observation: null,
       form: {
         actual_check_dt: moment().toISOString().split('T')[0],
@@ -296,6 +408,8 @@ export default {
       tskLabel: 'TSK',
       tskkLabel: 'TSKK',
       selectedCategoryToAddJudgement: null,
+      selectedFactor: null,
+      judgementID: '',
       judgementVal: {
         stw_ct1: 50,
         stw_ct2: 30,
@@ -305,6 +419,33 @@ export default {
       },
       judgementAverage: 0,
       judgementPrecentage: 0,
+      addFindingsModal: false,
+      // findings data
+      finding_date: '',
+      finding_location: '',
+      finding_desc: '',
+      cm_desc: '',
+      cm_priority: 0,
+      cm_str_plan_date: '',
+      cm_end_plan_date: '',
+      cm_str_act_date: null,
+      cm_end_act_date: null,
+      cm_training_date: null,
+      cm_judg: true,
+      cm_sign_lh_red: null,
+      cm_sign_lh_white: null,
+      cm_sign_sh: null,
+      cm_comments: null,
+      // end findings data
+      observationsData: {
+        observation_id: this.$route.params.id,
+        actual_check_dt: this.observation?.actual_check_dt,
+        group_id: this.observation?.group_id,
+        comment_sh: this.observation?.comment_sh,
+        comment_ammgr: this.observation?.comment_ammgr,
+        results_check: [],
+        findings: [],
+      },
     }
   },
   watch: {
@@ -335,21 +476,32 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['observationData']),
+    ...mapGetters(['observationData', 'getUsersOpts']),
   },
   components: {
     VuePdfEmbed,
+    VueMultiselect,
   },
   methods: {
     resetData() {
       this.selectedCategoryToAddJudgement = null
+      this.selectedFactor = null
       this.judgementVal.stw_ct1 = 0
       this.judgementVal.stw_ct2 = 0
       this.judgementVal.stw_ct3 = 0
       this.judgementVal.stw_ct4 = 0
       this.judgementVal.stw_ct5 = 0
     },
+    initData() {
+      this.observationsData.observation_id = this.$route.params.id
+      this.observationsData.actual_check_dt = this.observation?.actual_check_dt
+      this.observationsData.group_id = this.observation?.group_id
+      this.observationsData.comment_sh = this.observation?.comment_sh
+      this.observationsData.comment_ammgr = this.observation?.comment_ammgr
+    },
     calculateJudgementAverageAndPrecentage() {
+      const OK_ID = 'c4f5ff30-1b95-4ad8-8af8-e3e9d90bd942'
+      const NG_ID = '2e247c66-3e9c-44b6-951a-0a26791ad37d'
       const stw_ct1 = +this.judgementVal.stw_ct1
       const stw_ct2 = +this.judgementVal.stw_ct2
       const stw_ct3 = +this.judgementVal.stw_ct3
@@ -368,11 +520,50 @@ export default {
 
       this.judgementAverage = totalAvg
       this.judgementPrecentage = totalPrecentage.toFixed()
+      this.judgementID = totalPrecentage.toFixed() > 20 ? NG_ID : OK_ID
+
+      // add judgement data
+      let resultCheckData = {
+        category_id: this.selectedCategoryToAddJudgement,
+        judgment_id: this.judgementID,
+        stw_ct1: stw_ct1,
+        stw_ct2: stw_ct2,
+        stw_ct3: stw_ct3,
+        stw_ct4: stw_ct4,
+        stw_ct5: stw_ct5,
+      }
+
+      this.observationsData.results_check.push(resultCheckData)
     },
-    calculateJudgementPrecentage() {
-      let totalAvg =
-        this.stw_ct1 + this.stw_ct2 + this.stw_ct3 + this.stw_ct4 + this.stw_ct5
-      this.judgementAverage = totalAvg
+    addFindingsData() {
+      let data = {
+        line_id: this.observation?.line_id,
+        finding_date: this.finding_date,
+        finding_location: this.finding_location,
+        finding_desc: this.finding_desc,
+        cm_desc: this.cm_desc,
+        cm_priority: +this.cm_priority,
+        category_id: this.selectedCategoryToAddJudgement,
+        factor_id: this.selectedFactor,
+        cm_pic_id: this.selectedPIC,
+        cm_str_plan_date: this.cm_str_plan_date,
+        cm_end_plan_date: this.cm_end_plan_date,
+        cm_result_factor_id: this.selectedFactor,
+        // additionals
+        cm_str_act_date: this.cm_str_act_date,
+        cm_end_act_date: this.cm_end_act_date,
+        cm_training_date: this.cm_training_date,
+        cm_judg: this.cm_judg,
+        cm_sign_lh_red: null,
+        cm_sign_lh_white: null,
+        cm_sign_sh: null,
+        cm_comments: this.cm_comments,
+      }
+
+      this.observationsData.findings.push(data)
+
+      alert('Finding saved')
+      this.addFindingsModal = false
     },
     checkLabelTypeJob(jobType) {
       if (jobType == 'Type 3') {
@@ -427,28 +618,28 @@ export default {
     async postCheckObs() {
       try {
         Swal.showLoading()
-        this.resultCheck = []
-        for (let i = 0; i < this.categories.length; i++) {
-          const element = this.categories[i]
-          element.category_id = element.id
-          let newObj = {
-            category_id: element.category_id,
-            factor_id: element.factor_id,
-            judgment_id: element.judgment_id,
-            findings: element.findings,
-          }
-          this.resultCheck.push(newObj)
-        }
+        // this.resultCheck = []
+        // for (let i = 0; i < this.categories.length; i++) {
+        //   const element = this.categories[i]
+        //   element.category_id = element.id
+        //   let newObj = {
+        //     category_id: element.category_id,
+        //     factor_id: element.factor_id,
+        //     judgment_id: element.judgment_id,
+        //     findings: element.findings,
+        //   }
+        //   this.resultCheck.push(newObj)
+        // }
 
-        let formInput = {
-          observation_id: this.$route.params.id,
-          actual_check_dt: this.form.actual_check_dt,
-          results_check: this.resultCheck,
-          group_id: this.form.group_id,
-        }
-        console.log(formInput)
+        // let formInput = {
+        //   observation_id: this.$route.params.id,
+        //   actual_check_dt: this.form.actual_check_dt,
+        //   results_check: this.resultCheck,
+        //   group_id: this.form.group_id,
+        // }
+        // console.log(formInput)
         await this.$store
-          .dispatch(POST_OBSERVATION_CHECK, formInput)
+          .dispatch(POST_OBSERVATION_CHECK, this.observationsData)
           .then(() => {
             Swal.showLoading()
             Swal.fire('Pengecekan berhasil di submit', '', 'success')
@@ -461,12 +652,31 @@ export default {
         Swal.fire('Pengecekan gagal di submit', '', 'error')
       }
     },
+    async getUsers() {
+      try {
+        this.$store.dispatch(GET_USERS)
+        if (this.getUsersOpts) {
+          this.mapUsersData()
+        }
+      } catch (error) {
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
+      }
+    },
+    mapUsersData() {
+      this.getUsersOpts?.map((item) => {
+        this.picData.push(item.id)
+      })
+    },
   },
   async mounted() {
     await this.getDetail()
     await this.getCategories()
-    // await this.getFactors()
-    // await this.judgments()
+    await this.getUsers()
+    this.initData()
+  },
+  updated() {
+    console.log(this.picData)
   },
 }
 </script>
@@ -479,3 +689,5 @@ td {
   border: 1px solid !important;
 }
 </style>
+
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>

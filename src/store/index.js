@@ -15,6 +15,7 @@ import job from "./modules/job.module"
 import jobType from "./modules/jobType.module"
 
 import finding from './modules/finding.module';
+import membervoice from './modules/membervoice.module';
 
 export default createStore({
     state: {
@@ -49,6 +50,7 @@ export default createStore({
         job,
         jobType,
         
-        finding
+        finding,
+        membervoice
     },
 })

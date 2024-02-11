@@ -77,54 +77,47 @@
               <th>IV</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody v-if="isLoading">
             <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
+              <td colspan="40" class="text-center">Loading....</td>
+            </tr>
+          </tbody>
+          <tbody v-else>
+            <tr v-for="finding in getFindings" :key="finding.no">
+              <th scope="row">{{ +finding.no }}</th>
+              <td>{{ finding.source_category }}</td>
+              <td>{{ finding.finding_date }}</td>
+              <td>{{ finding.finding_location }}</td>
+              <td>{{ finding.finding_desc }}</td>
               <td>@</td>
+              <td>{{ finding.cm_priority }}</td>
+              <td colspan="2">
+                {{ finding.factor_nm == 'Safety' ? 'v' : ' ' }}
+              </td>
+              <td>{{ finding.factor_nm == 'Method' ? 'v' : ' ' }}</td>
+              <td colspan="2">
+                {{ finding.factor_nm == 'Man' ? 'v' : ' ' }}
+              </td>
+              <td>{{ finding.factor_nm == 'Material' ? 'v' : ' ' }}</td>
+              <td>{{ finding.factor_nm == 'Machine' ? 'v' : ' ' }}</td>
               <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
-              <td>@</td>
+              <td v-for="n in num" :key="n">
+                <div
+                  v-if="
+                    (n >= finding.w_str_plan_date) &
+                    (n <= finding.w_end_plan_date)
+                  "
+                  style="
+                    width: 100%;
+                    height: 20px;
+                    border-radius: 4px;
+                    background-color: coral;
+                  "
+                ></div>
+              </td>
               <td>
                 <button
-                  class="btn btn-info btn-sm text-white"
+                  class="btn btn-info btn-sm text-white w-full my-1"
                   @click="detailTemuanModal = true"
                 >
                   Detail
@@ -375,6 +368,8 @@ export default {
   name: 'List Temuan',
   data() {
     return {
+      isLoading: false,
+      num: 28,
       selectedMonth: null,
       addTemuanModal: false,
       detailTemuanModal: false,
@@ -398,9 +393,20 @@ export default {
       }
     },
     async getFindingsFunc() {
+      let objQuery = {
+        start_date: '2024-02-01',
+        end_date: '2024-02-29',
+        // start_date: this.selectedMonth.split('-')[1],
+        // end_date: this.selectedMonth.split('-')[0],
+      }
+
+      this.isLoading = true
+
       try {
-        this.$store.dispatch(GET_FINDINGS)
+        this.$store.dispatch(GET_FINDINGS, objQuery)
+        this.isLoading = false
       } catch (error) {
+        this.isLoading = false
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
