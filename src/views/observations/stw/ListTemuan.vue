@@ -396,12 +396,9 @@ export default {
       let objQuery = {
         start_date: '2024-02-01',
         end_date: '2024-02-29',
-        // start_date: this.selectedMonth.split('-')[1],
-        // end_date: this.selectedMonth.split('-')[0],
       }
 
       this.isLoading = true
-
       try {
         this.$store.dispatch(GET_FINDINGS, objQuery)
         this.isLoading = false

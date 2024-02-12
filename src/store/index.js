@@ -17,6 +17,9 @@ import jobType from "./modules/jobType.module"
 import finding from './modules/finding.module';
 import membervoice from './modules/membervoice.module';
 
+import focustheme from './modules/focustheme.module';
+import henkaten from './modules/henkaten.module';
+
 export default createStore({
     state: {
         sidebarVisible: '',
@@ -51,6 +54,8 @@ export default createStore({
         jobType,
         
         finding,
-        membervoice
+        membervoice,
+        focustheme,
+        henkaten
     },
 })
