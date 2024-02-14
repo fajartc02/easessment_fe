@@ -8,7 +8,12 @@
         <h5>Henkaten List</h5>
         <button
           class="btn btn-info text-white"
-          @click="addHenkatenModal = true"
+          @click="
+            () => {
+              addHenkatenModal = true
+              mapUsersData()
+            }
+          "
         >
           Add henkaten
         </button>
@@ -361,7 +366,10 @@ export default {
   },
   methods: {
     initData() {
-      this.selectedLineID = this.getHenkatens[0]?.henkaten_line_id
+      if (this.getHenkatens) {
+        this.selectedLineID = this.getHenkatens[0]?.henkaten_line_id
+      }
+      console.log(this.getHenkatens)
     },
     async getUsers() {
       try {
@@ -375,8 +383,10 @@ export default {
       }
     },
     addHenkatenData() {
-      this.henkatenData.henkaten_line_id = this.selectedLineID
-      this.findingsData.line_id = this.selectedLineID
+      this.henkatenData.henkaten_line_id =
+        '882eaf19-d355-4f62-918d-00cec01cd639'
+      this.findingsData.line_id = '882eaf19-d355-4f62-918d-00cec01cd639'
+      // this.findingsData.line_id = this.getHenkatens[0]?.henkaten_line_id
       this.findingsData.cm_result_factor_id = this.findingsData.factor_id
 
       let data = {
