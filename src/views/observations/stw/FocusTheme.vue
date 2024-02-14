@@ -1,107 +1,55 @@
- 
 <template>
   <div>
     <div class="card mb-3">
-      <Filter filter-type="member-voice" />
+      <Filter filterType="focus-theme" />
       <div
         class="card-header d-flex justify-content-between align-items-center"
       >
-        <h5>Member Voice List</h5>
+        <h5>Fokus Tema</h5>
         <button
           class="btn btn-info text-white"
-          @click="
-            () => {
-              addMemberVoiceModal = true
-              mapUsersData()
-            }
-          "
+          @click=";(addFocusThemeModal = true), mapUsersData()"
         >
-          Add member voice
+          Add fokus tema
         </button>
       </div>
       <div>
-        <table class="table table-bordered table-stripped">
-          <thead class="text-center">
+        <div class="border-bottom text-center py-2">
+          <span>Periode Jan-Mar 2023</span>
+        </div>
+        <table class="table table-striped text-center">
+          <thead>
             <tr>
-              <th rowspan="3">No</th>
-              <th rowspan="3">Tanggal</th>
-              <th rowspan="3">Lokasi</th>
-              <th rowspan="3">Problem</th>
-              <th rowspan="3">No Proses</th>
-              <th rowspan="3">Kategori</th>
-              <th rowspan="3">Penanggulangan</th>
-              <th rowspan="3">Evaluasi Hasil</th>
-              <th colspan="24">Waktu Pelaksanaan</th>
-              <th rowspan="3">PIC</th>
-            </tr>
-            <tr>
-              <th colspan="4">Jan</th>
-              <th colspan="4">Feb</th>
-              <th colspan="4">Mar</th>
-              <th colspan="4">Apr</th>
-              <th colspan="4">Mei</th>
-              <th colspan="4">Jun</th>
-            </tr>
-            <tr>
-              <th>I</th>
-              <th>II</th>
-              <th>III</th>
-              <th>IV</th>
-              <th>I</th>
-              <th>II</th>
-              <th>III</th>
-              <th>IV</th>
-              <th>I</th>
-              <th>II</th>
-              <th>III</th>
-              <th>IV</th>
-              <th>I</th>
-              <th>II</th>
-              <th>III</th>
-              <th>IV</th>
-              <th>I</th>
-              <th>II</th>
-              <th>III</th>
-              <th>IV</th>
-              <th>I</th>
-              <th>II</th>
-              <th>III</th>
-              <th>IV</th>
+              <th>No</th>
+              <th>Fokus tema</th>
+              <th>Pilar</th>
+              <th>Evaluasi</th>
+              <th>Remark</th>
+              <th>Actions</th>
             </tr>
           </thead>
-          <tbody v-if="isLoading">
-            <tr>
-              <td colspan="40" class="text-center">Loading....</td>
-            </tr>
-          </tbody>
-          <tbody v-else>
+          <tbody>
             <tr
-              v-for="(membervoice, index) in getMemberVoice"
-              :key="membervoice.mv_id"
+              v-for="(focustheme, index) in getFocusTheme"
+              :key="focustheme.ft_id"
             >
-              <td>{{ index + 1 }}</td>
-              <td>{{ membervoice.mv_date_finding }}</td>
-              <td>{{ membervoice.mv_location }}</td>
-              <td>{{ membervoice.mv_problem }}</td>
-              <td>{{ membervoice.mv_process_no }}</td>
-              <td>{{ membervoice.mv_category }}</td>
-              <td>{{ membervoice.mv_countermeasure }}</td>
-              <td>{{ membervoice.mv_evaluation }}</td>
-              <td v-for="n in num" :key="n" width="40px">
-                <div
-                  v-if="
-                    (n >= membervoice.w_mv_plan_date) &
-                    (n <= membervoice.w_mv_actual_date)
-                  "
-                  style="
-                    width: 100%;
-                    height: 20px;
-                    border-radius: 4px;
-                    background-color: coral;
-                  "
-                ></div>
+              <th scope="row">{{ index + 1 }}</th>
+              <td>{{ focustheme.ft_desc }}</td>
+              <td>{{ focustheme.ft_pillar }}</td>
+              <td>
+                <div class="d-flex justify-content-center align-items-center">
+                  <FocusThemeIndicatorVue
+                    :total="focustheme.ft_evaluation_num"
+                  ></FocusThemeIndicatorVue>
+                </div>
               </td>
-              <td>{{ membervoice.mv_pic_nm }}</td>
+              <td>{{ focustheme.ft_remark }}</td>
+              <td>
+                <button class="btn btn-danger btn-sm text-white mx-2">
+                  Delete
+                </button>
+                <button class="btn btn-info btn-sm text-white">Edit</button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -111,119 +59,60 @@
     <!-- modals -->
     <CModal
       scrollable
-      size="lg"
       backdrop="static"
       alignment="center"
-      :visible="addMemberVoiceModal"
-      @close="addMemberVoiceModal = false"
+      :visible="addFocusThemeModal"
+      @close="addFocusThemeModal = false"
     >
       <CModalHeader>
-        <CModalTitle>Add member voice</CModalTitle>
+        <CModalTitle>Add fokus tema</CModalTitle>
       </CModalHeader>
       <CModalBody>
         <CAccordion :active-item-key="1" always-open>
           <CAccordionItem :item-key="1">
-            <CAccordionHeader> Member voice input </CAccordionHeader>
+            <CAccordionHeader> Focus theme input </CAccordionHeader>
             <CAccordionBody>
               <div>
                 <div class="mb-2">
-                  <label class="mb-1">Tanggal temuan</label>
-                  <input
-                    type="date"
-                    v-model="memberVoiceData.mv_date_finding"
-                    class="form-control"
-                  />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">Lokasi</label>
+                  <label class="mb-1">Fokus tema</label>
                   <input
                     type="text"
                     class="form-control"
-                    v-model="memberVoiceData.mv_location"
+                    v-model="focusThemeData.ft_desc"
                   />
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">Problem</label>
+                  <label class="mb-1">Pilar</label>
                   <input
                     type="text"
                     class="form-control"
-                    v-model="memberVoiceData.mv_problem"
+                    v-model="focusThemeData.ft_pillar"
                   />
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">No Proses</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="memberVoiceData.mv_process_no"
-                  />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">Category </label>
+                  <label class="mb-1">Evaluasi</label>
                   <select
                     class="form-select"
-                    v-model="memberVoiceData.mv_category"
+                    v-model="focusThemeData.ft_evaluation_num"
                   >
-                    <option selected>Select category</option>
-                    <option value="safety">Safety</option>
-                    <option value="kesulitan kerja">Kesulitan kerja</option>
+                    <option selected>Select evaluasi</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
                   </select>
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">Faktor </label>
-                  <select
-                    class="form-select"
-                    v-model="memberVoiceData.mv_factor_id"
-                  >
-                    <option disabled>Select Factor</option>
-                    <option
-                      v-for="factor in factors"
-                      :key="factor.text"
-                      :value="factor.id"
-                    >
-                      {{ factor.text }}
-                    </option>
-                  </select>
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">Penanggulangan</label>
+                  <label class="mb-1">Remark</label>
                   <input
                     type="text"
                     class="form-control"
-                    v-model="memberVoiceData.mv_countermeasure"
+                    v-model="focusThemeData.ft_remark"
                   />
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">Eval hasil</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="memberVoiceData.mv_evaluation"
-                  />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">Plan tgl penganggulangan</label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    v-model="memberVoiceData.mv_plan_date"
-                  />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">Aktual tgl penganggulangan</label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    v-model="memberVoiceData.mv_actual_date"
-                  />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">PIC</label>
-                  <VueMultiselect
-                    v-model="memberVoiceData.mv_pic_id"
-                    :options="picData"
-                  >
-                  </VueMultiselect>
+                  <label class="mb-1">Kaizen report</label>
+                  <input type="file" class="form-control" />
                 </div>
               </div>
             </CAccordionBody>
@@ -391,12 +280,11 @@
           </CAccordionItem>
         </CAccordion>
       </CModalBody>
-
       <CModalFooter>
-        <CButton color="secondary" @click="addMemberVoiceModal = false">
+        <CButton color="secondary" @click="addFocusThemeModal = false">
           Close
         </CButton>
-        <CButton color="primary" @click="addMemberVoiceData"
+        <CButton color="primary" @click="addFocusThemeData"
           >Save changes</CButton
         >
       </CModalFooter>
@@ -407,47 +295,36 @@
     <script>
 import moment from 'moment'
 import { GET_LINES } from '@/store/modules/line.module'
-import { GET_USERS } from '@/store/modules/user.module'
 import {
-  GET_MEMBERVOICE,
-  POST_MEMBERVOICE,
-} from '@/store/modules/membervoice.module'
+  GET_FOCUSTHEME,
+  POST_FOCUSTHEME,
+} from '@/store/modules/focustheme.module'
+import { GET_USERS } from '@/store/modules/user.module'
 import { mapGetters } from 'vuex'
 import Filter from '@/components/Filter.vue'
+import FocusThemeIndicatorVue from '@/components/FocusThemeIndicator.vue'
 import VueMultiselect from 'vue-multiselect'
 import Swal from 'sweetalert2'
 import ApiService from '@/store/api.service'
 
 export default {
-  name: 'Member Voice',
+  name: 'Focus Theme',
   data() {
     return {
       isLoading: false,
-      num: 24,
       selectedMonth: null,
       selectedLine: '-1',
-      addMemberVoiceModal: false,
-      picData: [],
-      selectedPIC: null,
-      selectedFactor: null,
-      selectedLineID: null,
+      addFocusThemeModal: false,
       factors: [],
       categories: [],
-      memberVoiceData: {
-        mv_date_finding: '',
-        mv_location: '',
-        mv_problem: '',
-        mv_process_no: '',
-        mv_category: '',
-        mv_factor_id: '',
-        mv_countermeasure: '',
-        mv_evaluation: '',
-        mv_plan_date: '',
-        mv_actual_date: '',
-        mv_pic_id: '',
-        line_id: '',
+      picData: [],
+      focusThemeData: {
+        ft_desc: '',
+        ft_evaluation_num: 0,
+        ft_pillar: '',
+        ft_remark: '',
+        ft_line_id: '',
       },
-      // findings data
       findingsData: {
         line_id: '',
         finding_date: '2024-02-05',
@@ -470,27 +347,12 @@ export default {
         cm_sign_sh: null,
         cm_comments: null,
       },
-      memberVoiceDataReadyToUpload: {},
     }
   },
   computed: {
-    ...mapGetters(['getLinesOpts', 'getUsersOpts', 'getMemberVoice']),
+    ...mapGetters(['getLinesOpts', 'getUsersOpts', 'getFocusTheme']),
   },
   methods: {
-    initData() {
-      this.selectedLineID = this.getMemberVoice[0]?.line_id
-    },
-    addMemberVoiceData() {
-      this.memberVoiceData.line_id = this.selectedLineID
-      this.findingsData.line_id = this.selectedLineID
-      this.findingsData.cm_result_factor_id = this.findingsData.factor_id
-
-      let data = {
-        ...this.memberVoiceData,
-        findings: this.findingsData,
-      }
-      this.addMemberVoice(data)
-    },
     async getLines() {
       try {
         this.$store.dispatch(GET_LINES)
@@ -499,44 +361,41 @@ export default {
         console.log(error)
       }
     },
-    async getUsers() {
-      try {
-        this.$store.dispatch(GET_USERS)
-        if (this.getUsersOpts) {
-          this.mapUsersData()
-        }
-      } catch (error) {
-        if (error.response.status == 401) this.$router.push('/login')
-        console.log(error)
-      }
-    },
-    async getMemberVoices() {
+    async getFocusThemes() {
       this.isLoading = true
       try {
-        this.$store.dispatch(GET_MEMBERVOICE)
+        this.$store.dispatch(GET_FOCUSTHEME)
         this.isLoading = false
-
-        if (this.getMemberVoice) {
-          this.isLoading = false
-        }
       } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
-        console.log(error)
         this.isLoading = false
+        console.log(error)
       }
     },
-    async addMemberVoice(data) {
+    addFocusThemeData() {
+      this.focusThemeData.ft_line_id = '4a411c19-700d-4e1f-aa23-2e49df60e12e'
+      this.findingsData.line_id = '4a411c19-700d-4e1f-aa23-2e49df60e12e'
+      this.findingsData.cm_result_factor_id = this.findingsData.factor_id
+
+      let data = {
+        ...this.focusThemeData,
+        findings: this.findingsData,
+      }
+
+      this.addFocusTheme(data)
+    },
+    async addFocusTheme(data) {
       try {
-        await this.$store.dispatch(POST_MEMBERVOICE, data).then(() => {
+        await this.$store.dispatch(POST_FOCUSTHEME, data).then(() => {
           Swal.showLoading()
-          Swal.fire('Pengecekan berhasil di submit', '', 'success')
-          this.addMemberVoiceModal = false
-          this.getMemberVoices()
+          Swal.fire('Success to add focus theme data', '', 'success')
+          this.addFocusThemeModal = false
+          this.getFocusThemes()
         })
       } catch (error) {
         console.log(error)
         Swal.fire('Pengecekan gagal di submit', '', 'error')
-        this.addMemberVoiceModal = false
+        this.addFocusThemeModal = false
       }
     },
     async getFactors() {
@@ -558,6 +417,17 @@ export default {
 
       this.categories = category
     },
+    async getUsers() {
+      try {
+        this.$store.dispatch(GET_USERS)
+        if (this.getUsersOpts) {
+          this.mapUsersData()
+        }
+      } catch (error) {
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
+      }
+    },
     mapUsersData() {
       this.getUsersOpts?.map((item) => {
         this.picData.push(item.id)
@@ -570,20 +440,12 @@ export default {
     this.selectedMonth = `${year}-${month}`
     this.selectedLine = localStorage.getItem('line_id')
     await this.getLines()
-    await this.getUsers()
-    await this.getMemberVoices()
+    await this.getFocusThemes()
     await this.getFactors()
     await this.getCategories()
-    this.initData()
+    await this.getUsers()
   },
-  updated() {
-    if (this.getMemberVoice) {
-      this.isLoading = false
-    }
-  },
-  components: { Filter, VueMultiselect },
+  components: { Filter, FocusThemeIndicatorVue, VueMultiselect },
 }
 </script>
     
-
-<style src="vue-multiselect/dist/vue-multiselect.css"></style>

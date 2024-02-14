@@ -1,29 +1,31 @@
 <template>
   <CCard class="mb-4">
     <CCardHeader>
-      <div class="row">
-        <div class="col-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
           <strong>Monthly Schedule</strong>
         </div>
-        <div class="col-6" style="text-align: end">
-          Type 1 & 2:
-          <CButton color="dark rounded-circle" variant="outline">
-            <CIcon icon="cil-circlea" class="text-dark" size="sm" />
-          </CButton>
-          Type 3:
-          <CButton color="dark" variant="outline">
-            <CIcon icon="cil-circlea" class="text-dark" size="sm" />
-          </CButton>
-        </div>
-        <div class="col-3 text-right">
-          OnProgress: <CIcon icon="cil-circle" class="text-dark" size="sm" />,
-          Done:
-          <CIcon icon="cil-check-circle" class="text-success" size="sm" />,
-          Delay: <CIcon icon="cil-circle" class="text-danger" size="sm" />
+        <div class="d-flex align-items-center">
+          <div style="margin-right: 20px">
+            Type 1 & 2
+            <CButton color="dark rounded-circle" variant="outline" disabled>
+              <CIcon icon="cil-circlea" class="text-dark" size="sm" />
+            </CButton>
+            Type 3
+            <CButton color="dark" variant="outline" disabled>
+              <CIcon icon="cil-circlea" class="text-dark" size="sm" />
+            </CButton>
+          </div>
+          <div>
+            OnProgress: <CIcon icon="cil-circle" class="text-dark" size="sm" />,
+            Done:
+            <CIcon icon="cil-check-circle" class="text-success" size="sm" />,
+            Delay: <CIcon icon="cil-circle" class="text-danger" size="sm" />
+          </div>
         </div>
       </div>
     </CCardHeader>
-    <CCardBody class="overflow-auto">
+    <div class="overflow-auto">
       <table class="table table-bordered text-center">
         <thead>
           <tr>
@@ -31,6 +33,7 @@
             <th rowspan="2">Line</th>
             <th rowspan="2">Pos</th>
             <th rowspan="2">Observer</th>
+            <th rowspan="2">Shift</th>
             <th :colspan="containerDate.length">{{ yearMonth }}</th>
           </tr>
           <tr>
@@ -48,12 +51,12 @@
             <td>{{ observation.line_snm }}</td>
             <td>{{ observation.pos_nm }}</td>
             <td>{{ observation.checkers[0] }}</td>
+            <td>{{ observation.group_nm }}</td>
             <td
               v-for="item in containerDate"
               :key="item.idx"
               style="min-width: 63px"
             >
-              <!-- {{ observation.children }} -->
               <template
                 v-for="child in observation.children"
                 :key="child.observation_id"
@@ -61,41 +64,56 @@
                 <template v-if="child.idxdate === String(item.idx)">
                   <CButton
                     v-c-tooltip="
-                      `<table class='table table-bordered text-light'>
-                                            <tr>
-                                                <th>SOP No.</th>
-                                                <td>${child.job_no}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Member</th>
-                                                <td>${child.member_nm}</td>
-                                            </tr>
-                                        </table>`
+                      `
+                      <div class='card'>
+                        <div class='card-header'>Detail data</div>
+                        <div class='card-body'>
+                          SOP No:  ${child.job_no} </br>
+                          Member: ${child.member_nm}
+                        </div>
+                      </div>
+                      `
                     "
-                    html="true"
-                    :color="`${child.job_type_color}`"
-                    variant="outline"
                     v-if="child"
+                    :color="`${child.job_type_color}`"
+                    html="true"
+                    variant="outline"
+                    style="position: relative"
                     @click="() => detailSchedule(child)"
                   >
+                    <button
+                      disabled
+                      :v-if="observation.comment_sh"
+                      style="
+                        position: absolute;
+                        margin-left: 20px;
+                        background-color: #e0f2fe;
+                        border: none;
+                        border: 1px solid #7dd3fc;
+                        color: #0369a1;
+                        border-radius: 6px;
+                      "
+                    >
+                      1
+                    </button>
                     <CIcon
                       v-if="child.actual_check_dt"
                       icon="cil-check-circle"
                       class="text-success"
-                      size="lg"
+                      size="md"
                     />
                     <CIcon
                       v-else-if="+currentDate <= +child.idxdate"
                       icon="cil-circle"
                       class="text-dark"
-                      size="lg"
+                      size="md"
                     />
 
                     <CIcon
                       v-else
                       icon="cil-circle"
                       class="text-danger"
-                      size="lg"
+                      size="md"
                     />
                   </CButton>
                 </template>
@@ -111,7 +129,7 @@
           </tr>
         </tbody>
       </table>
-    </CCardBody>
+    </div>
   </CCard>
 </template>
 

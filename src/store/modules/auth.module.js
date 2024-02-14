@@ -65,7 +65,7 @@ const actions = {
             ApiService.setHeader();
             ApiService.get("verify")
                 .then(({ data }) => {
-                    console.log(data);
+                    // console.log(data);
                     localStorage.setItem('name', data.message.fullname)
                     localStorage.setItem('noreg', data.message.noreg)
                     localStorage.setItem('line_id', data.message.line_id)

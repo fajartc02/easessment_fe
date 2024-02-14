@@ -1,107 +1,54 @@
- 
 <template>
   <div>
     <div class="card mb-3">
-      <Filter filter-type="member-voice" />
+      <Filter filter-type="henkaten" />
       <div
         class="card-header d-flex justify-content-between align-items-center"
       >
-        <h5>Member Voice List</h5>
+        <h5>Henkaten List</h5>
         <button
           class="btn btn-info text-white"
           @click="
             () => {
-              addMemberVoiceModal = true
+              addHenkatenModal = true
               mapUsersData()
             }
           "
         >
-          Add member voice
+          Add henkaten
         </button>
       </div>
       <div>
-        <table class="table table-bordered table-stripped">
-          <thead class="text-center">
+        <table class="table table-striped text-center">
+          <thead>
             <tr>
-              <th rowspan="3">No</th>
-              <th rowspan="3">Tanggal</th>
-              <th rowspan="3">Lokasi</th>
-              <th rowspan="3">Problem</th>
-              <th rowspan="3">No Proses</th>
-              <th rowspan="3">Kategori</th>
-              <th rowspan="3">Penanggulangan</th>
-              <th rowspan="3">Evaluasi Hasil</th>
-              <th colspan="24">Waktu Pelaksanaan</th>
-              <th rowspan="3">PIC</th>
-            </tr>
-            <tr>
-              <th colspan="4">Jan</th>
-              <th colspan="4">Feb</th>
-              <th colspan="4">Mar</th>
-              <th colspan="4">Apr</th>
-              <th colspan="4">Mei</th>
-              <th colspan="4">Jun</th>
-            </tr>
-            <tr>
-              <th>I</th>
-              <th>II</th>
-              <th>III</th>
-              <th>IV</th>
-              <th>I</th>
-              <th>II</th>
-              <th>III</th>
-              <th>IV</th>
-              <th>I</th>
-              <th>II</th>
-              <th>III</th>
-              <th>IV</th>
-              <th>I</th>
-              <th>II</th>
-              <th>III</th>
-              <th>IV</th>
-              <th>I</th>
-              <th>II</th>
-              <th>III</th>
-              <th>IV</th>
-              <th>I</th>
-              <th>II</th>
-              <th>III</th>
-              <th>IV</th>
+              <th>No</th>
+              <th>Date</th>
+              <th>Machine</th>
+              <th>PIC</th>
+              <th>Perubahan</th>
+              <th>Tujuan</th>
+              <th>Safety</th>
+              <th>Quality</th>
+              <th>Actions</th>
             </tr>
           </thead>
-          <tbody v-if="isLoading">
-            <tr>
-              <td colspan="40" class="text-center">Loading....</td>
-            </tr>
-          </tbody>
-          <tbody v-else>
-            <tr
-              v-for="(membervoice, index) in getMemberVoice"
-              :key="membervoice.mv_id"
-            >
-              <td>{{ index + 1 }}</td>
-              <td>{{ membervoice.mv_date_finding }}</td>
-              <td>{{ membervoice.mv_location }}</td>
-              <td>{{ membervoice.mv_problem }}</td>
-              <td>{{ membervoice.mv_process_no }}</td>
-              <td>{{ membervoice.mv_category }}</td>
-              <td>{{ membervoice.mv_countermeasure }}</td>
-              <td>{{ membervoice.mv_evaluation }}</td>
-              <td v-for="n in num" :key="n" width="40px">
-                <div
-                  v-if="
-                    (n >= membervoice.w_mv_plan_date) &
-                    (n <= membervoice.w_mv_actual_date)
-                  "
-                  style="
-                    width: 100%;
-                    height: 20px;
-                    border-radius: 4px;
-                    background-color: coral;
-                  "
-                ></div>
+          <tbody>
+            <tr v-for="(henkaten, index) in getHenkatens" :key="index">
+              <th scope="row">{{ index + 1 }}</th>
+              <td>{{ henkaten.henkaten_date }}</td>
+              <td>@</td>
+              <td>{{ henkaten.henkaten_pic }}</td>
+              <td>{{ henkaten.henkaten_desc }}</td>
+              <td>{{ henkaten.henkaten_purpose }}</td>
+              <td>{{ henkaten.henkaten_flw_safety }}</td>
+              <td>{{ henkaten.henkaten_flw_quality }}</td>
+              <td>
+                <button class="btn btn-danger btn-sm text-white mx-2">
+                  Delete
+                </button>
+                <button class="btn btn-info btn-sm text-white">Edit</button>
               </td>
-              <td>{{ membervoice.mv_pic_nm }}</td>
             </tr>
           </tbody>
         </table>
@@ -111,119 +58,76 @@
     <!-- modals -->
     <CModal
       scrollable
-      size="lg"
       backdrop="static"
       alignment="center"
-      :visible="addMemberVoiceModal"
-      @close="addMemberVoiceModal = false"
+      :visible="addHenkatenModal"
+      @close="addHenkatenModal = false"
     >
       <CModalHeader>
-        <CModalTitle>Add member voice</CModalTitle>
+        <CModalTitle>Add henkaten</CModalTitle>
       </CModalHeader>
       <CModalBody>
         <CAccordion :active-item-key="1" always-open>
           <CAccordionItem :item-key="1">
-            <CAccordionHeader> Member voice input </CAccordionHeader>
+            <CAccordionHeader> Henkaten input </CAccordionHeader>
             <CAccordionBody>
               <div>
                 <div class="mb-2">
-                  <label class="mb-1">Tanggal temuan</label>
-                  <input
-                    type="date"
-                    v-model="memberVoiceData.mv_date_finding"
-                    class="form-control"
-                  />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">Lokasi</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="memberVoiceData.mv_location"
-                  />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">Problem</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="memberVoiceData.mv_problem"
-                  />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">No Proses</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="memberVoiceData.mv_process_no"
-                  />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">Category </label>
-                  <select
-                    class="form-select"
-                    v-model="memberVoiceData.mv_category"
-                  >
-                    <option selected>Select category</option>
-                    <option value="safety">Safety</option>
-                    <option value="kesulitan kerja">Kesulitan kerja</option>
-                  </select>
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">Faktor </label>
-                  <select
-                    class="form-select"
-                    v-model="memberVoiceData.mv_factor_id"
-                  >
-                    <option disabled>Select Factor</option>
-                    <option
-                      v-for="factor in factors"
-                      :key="factor.text"
-                      :value="factor.id"
-                    >
-                      {{ factor.text }}
-                    </option>
-                  </select>
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">Penanggulangan</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="memberVoiceData.mv_countermeasure"
-                  />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">Eval hasil</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="memberVoiceData.mv_evaluation"
-                  />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">Plan tgl penganggulangan</label>
+                  <label class="mb-1">Start date</label>
                   <input
                     type="date"
                     class="form-control"
-                    v-model="memberVoiceData.mv_plan_date"
+                    v-model="henkatenData.henkaten_date"
                   />
                 </div>
-                <div class="mb-2">
-                  <label class="mb-1">Aktual tgl penganggulangan</label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    v-model="memberVoiceData.mv_actual_date"
-                  />
-                </div>
+                <!-- <div class="mb-2">
+                  <label class="mb-1">Machine</label>
+                  <input type="text" class="form-control" />
+                </div> -->
                 <div class="mb-2">
                   <label class="mb-1">PIC</label>
                   <VueMultiselect
-                    v-model="memberVoiceData.mv_pic_id"
+                    v-model="henkatenData.henkaten_pic"
                     :options="picData"
                   >
                   </VueMultiselect>
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Perubahan</label>
+                  <textarea
+                    type="text"
+                    class="form-control"
+                    v-model="henkatenData.henkaten_desc"
+                  >
+                  </textarea>
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Tujuan</label>
+                  <textarea
+                    type="text"
+                    class="form-control"
+                    v-model="henkatenData.henkaten_purpose"
+                  >
+                  </textarea>
+                </div>
+                <span style="font-weight: bold" class="mb-2"
+                  >Follow (2 weeks) item</span
+                >
+                <div class="mb-2">
+                  <label class="mb-1">Safety</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="henkatenData.henkaten_flw_safety"
+                  />
+                </div>
+                <div>
+                  <label class="mb-1">Quality</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="henkatenData.henkaten_flw_quality"
+                  />
                 </div>
               </div>
             </CAccordionBody>
@@ -391,27 +295,20 @@
           </CAccordionItem>
         </CAccordion>
       </CModalBody>
-
       <CModalFooter>
-        <CButton color="secondary" @click="addMemberVoiceModal = false">
+        <CButton color="secondary" @click="addHenkatenModal = false">
           Close
         </CButton>
-        <CButton color="primary" @click="addMemberVoiceData"
-          >Save changes</CButton
-        >
+        <CButton color="primary" @click="addHenkatenData">Save changes</CButton>
       </CModalFooter>
     </CModal>
   </div>
 </template>
-    
-    <script>
+  
+  <script>
 import moment from 'moment'
-import { GET_LINES } from '@/store/modules/line.module'
 import { GET_USERS } from '@/store/modules/user.module'
-import {
-  GET_MEMBERVOICE,
-  POST_MEMBERVOICE,
-} from '@/store/modules/membervoice.module'
+import { GET_HENKATEN, POST_HENKATEN } from '@/store/modules/henkaten.module'
 import { mapGetters } from 'vuex'
 import Filter from '@/components/Filter.vue'
 import VueMultiselect from 'vue-multiselect'
@@ -419,33 +316,25 @@ import Swal from 'sweetalert2'
 import ApiService from '@/store/api.service'
 
 export default {
-  name: 'Member Voice',
+  name: 'Henkaten',
   data() {
     return {
       isLoading: false,
-      num: 24,
       selectedMonth: null,
-      selectedLine: '-1',
-      addMemberVoiceModal: false,
+      addHenkatenModal: false,
+      selectedLineID: '',
       picData: [],
-      selectedPIC: null,
-      selectedFactor: null,
-      selectedLineID: null,
       factors: [],
       categories: [],
-      memberVoiceData: {
-        mv_date_finding: '',
-        mv_location: '',
-        mv_problem: '',
-        mv_process_no: '',
-        mv_category: '',
-        mv_factor_id: '',
-        mv_countermeasure: '',
-        mv_evaluation: '',
-        mv_plan_date: '',
-        mv_actual_date: '',
-        mv_pic_id: '',
-        line_id: '',
+      selectedPIC: null,
+      henkatenData: {
+        henkaten_date: '',
+        henkaten_pic: '',
+        henkaten_desc: '',
+        henkaten_purpose: '',
+        henkaten_flw_safety: '',
+        henkaten_flw_quality: '',
+        henkaten_line_id: '',
       },
       // findings data
       findingsData: {
@@ -470,34 +359,17 @@ export default {
         cm_sign_sh: null,
         cm_comments: null,
       },
-      memberVoiceDataReadyToUpload: {},
     }
   },
   computed: {
-    ...mapGetters(['getLinesOpts', 'getUsersOpts', 'getMemberVoice']),
+    ...mapGetters(['getUsersOpts', 'getHenkatens']),
   },
   methods: {
     initData() {
-      this.selectedLineID = this.getMemberVoice[0]?.line_id
-    },
-    addMemberVoiceData() {
-      this.memberVoiceData.line_id = this.selectedLineID
-      this.findingsData.line_id = this.selectedLineID
-      this.findingsData.cm_result_factor_id = this.findingsData.factor_id
-
-      let data = {
-        ...this.memberVoiceData,
-        findings: this.findingsData,
+      if (this.getHenkatens) {
+        this.selectedLineID = this.getHenkatens[0]?.henkaten_line_id
       }
-      this.addMemberVoice(data)
-    },
-    async getLines() {
-      try {
-        this.$store.dispatch(GET_LINES)
-      } catch (error) {
-        if (error.response.status == 401) this.$router.push('/login')
-        console.log(error)
-      }
+      console.log(this.getHenkatens)
     },
     async getUsers() {
       try {
@@ -510,13 +382,26 @@ export default {
         console.log(error)
       }
     },
-    async getMemberVoices() {
+    addHenkatenData() {
+      this.henkatenData.henkaten_line_id =
+        '882eaf19-d355-4f62-918d-00cec01cd639'
+      this.findingsData.line_id = '882eaf19-d355-4f62-918d-00cec01cd639'
+      // this.findingsData.line_id = this.getHenkatens[0]?.henkaten_line_id
+      this.findingsData.cm_result_factor_id = this.findingsData.factor_id
+
+      let data = {
+        ...this.henkatenData,
+        findings: this.findingsData,
+      }
+      this.addHenkaten(data)
+    },
+    async getHenkaten() {
       this.isLoading = true
       try {
-        this.$store.dispatch(GET_MEMBERVOICE)
+        this.$store.dispatch(GET_HENKATEN)
         this.isLoading = false
 
-        if (this.getMemberVoice) {
+        if (this.getHenkatens) {
           this.isLoading = false
         }
       } catch (error) {
@@ -525,18 +410,18 @@ export default {
         this.isLoading = false
       }
     },
-    async addMemberVoice(data) {
+    async addHenkaten(data) {
       try {
-        await this.$store.dispatch(POST_MEMBERVOICE, data).then(() => {
+        await this.$store.dispatch(POST_HENKATEN, data).then(() => {
           Swal.showLoading()
-          Swal.fire('Pengecekan berhasil di submit', '', 'success')
-          this.addMemberVoiceModal = false
-          this.getMemberVoices()
+          Swal.fire('Success to add henkaten data', '', 'success')
+          this.addHenkatenModal = false
+          this.getHenkaten()
         })
       } catch (error) {
         console.log(error)
-        Swal.fire('Pengecekan gagal di submit', '', 'error')
-        this.addMemberVoiceModal = false
+        Swal.fire('Failed to add henkaten data', '', 'error')
+        this.addHenkatenModal = false
       }
     },
     async getFactors() {
@@ -569,21 +454,16 @@ export default {
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
     this.selectedLine = localStorage.getItem('line_id')
-    await this.getLines()
     await this.getUsers()
-    await this.getMemberVoices()
-    await this.getFactors()
     await this.getCategories()
+    await this.getFactors()
+    await this.getHenkaten()
     this.initData()
-  },
-  updated() {
-    if (this.getMemberVoice) {
-      this.isLoading = false
-    }
   },
   components: { Filter, VueMultiselect },
 }
 </script>
-    
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
+
+  

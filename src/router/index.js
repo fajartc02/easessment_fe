@@ -125,6 +125,18 @@ const routes = [{
                     import ('@/views/observations/stw/StwDashboard.vue'),
             },
             {
+                path: '/stw/list-temuan',
+                name: 'List Temuan',
+                component: () =>
+                import ('@/views/observations/stw/ListTemuan.vue'), 
+            },
+            {
+                path: '/stw/list-temuan/add',
+                name: 'List Temuan Add',
+                component: () =>
+                import ('@/views/observations/stw/ListTemuanAdd.vue'), 
+            },
+            {
                 path: '/stw/member',
                 name: 'STW Member',
                 component: () =>
@@ -134,9 +146,8 @@ const routes = [{
                 path: '/stw/focus-theme',
                 name: 'STW Fokus Tema',
                 component: () =>
-                    import ('@/views/master/Machine/FormMachine.vue'),
-            },
-            // NEW PATH 
+                import ('@/views/observations/stw/FocusTheme.vue'),
+            }, 
             {
                 path: '/stw/member-voice',
                 name: 'MemberVoice',
@@ -154,6 +165,12 @@ const routes = [{
                     },
                 ]
             },
+            {
+                path: '/stw/henkaten',
+                name: 'STW Henkaten',
+                component: () =>
+                import ('@/views/observations/stw/Henkaten.vue'),
+            }, 
         ],
     },
 
