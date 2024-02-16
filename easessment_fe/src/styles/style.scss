@@ -1,0 +1,63 @@
+// If you want to override variables do it here
+@import "variables";
+
+$enable-ltr: true;
+$enable-rtl: true;
+
+// Import styles
+@import "~@coreui/coreui/scss/coreui";
+
+// Import Chart.js Tooltips
+@import "~@coreui/chartjs/scss/tooltips";
+
+@import "layout";
+@import "example";
+
+// If you want to add something do it here
+@import "custom";
+
+// custom css
+.horizontal-scrollable  { 
+    overflow-x: scroll;   
+    overflow-y: visible;
+}  
+
+/* ===== Scrollbar CSS ===== */
+@mixin hideScrollbar {
+  // https://blogs.msdn.microsoft.com/kurlak/2013/11/03/hiding-vertical-scrollbars-with-pure-css-in-chrome-ie-6-firefox-opera-and-safari/
+  // There is a CSS rule that can hide scrollbars in Webkit-based browsers (Chrome and Safari).
+  &::-webkit-scrollbar {
+    width: 0 !important
+  }
+  // There is a CSS rule that can hide scrollbars in IE 10+.
+  -ms-overflow-style: none;
+  
+  // Use -ms-autohiding-scrollbar if you wish to display on hover.
+  // -ms-overflow-style: -ms-autohiding-scrollbar;
+  
+  // There used to be a CSS rule that could hide scrollbars in Firefox, but it has since been deprecated.
+  scrollbar-width: none;
+}
+
+  .chart-wrapper {
+    background-color: #eaeaea;
+  }
+
+  .circle-fill { 
+      width: 20px;
+      height: 20px;
+      background-color: #0ea5e9;
+      border-radius: 100%;
+  }
+  .fill-overlay {
+    width: 20px;
+      height: 20px;
+      background-color: #bae6fd;
+      border-radius: 100%;
+  }
+
+td,
+th,
+tr {
+  border: 1px solid #eaeaea;
+}
