@@ -1018,10 +1018,6 @@ export default {
     await this.getUsers()
     this.initData()
   },
-
-  updated() {
-    console.log(this.observation)
-  },
 }
 </script>
 

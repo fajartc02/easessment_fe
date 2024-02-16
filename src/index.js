@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import 'vue-loading-overlay/dist/css/index.css'; 
+import 'vue-multiselect/dist/vue-multiselect.css'
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 

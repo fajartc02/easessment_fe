@@ -20,6 +20,8 @@ import membervoice from './modules/membervoice.module';
 import focustheme from './modules/focustheme.module';
 import henkaten from './modules/henkaten.module';
 
+import graph from './modules/graph.module';
+
 export default createStore({
     state: {
         sidebarVisible: '',
@@ -56,6 +58,7 @@ export default createStore({
         finding,
         membervoice,
         focustheme,
-        henkaten
+        henkaten,
+        graph
     },
 })

@@ -11,10 +11,6 @@
           <input type="date" class="form-control" />
         </div>
         <div class="col">
-          <label>Shop</label>
-          <input type="date" class="form-control" />
-        </div>
-        <div class="col">
           <label>Line</label>
           <VueMultiselect
             v-model="selectedLineData"
@@ -28,7 +24,7 @@
         <div class="col">
           <label>Shift</label>
           <select class="form-select" aria-label="Default select example">
-            <option selected>Select Shift</option>
+            <option selected disabled>Select Shift</option>
             <option value="1">RED</option>
             <option value="2">WHITE</option>
           </select>
@@ -105,7 +101,6 @@
             <option value="false">Belum</option>
           </select>
         </div>
-        
       </div>
     </div>
     <div
@@ -168,8 +163,11 @@ export default {
   methods: {
     async getLines() {
       try {
-        this.$store.dispatch(GET_LINES)
-        if (this.getLinesOpts) this.mapLinesData()
+        this.$store.dispatch(GET_LINES).then((res) => {
+          if (res) {
+            this.mapLinesData()
+          }
+        })
       } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
@@ -186,17 +184,16 @@ export default {
         `${this.$route.path}?line=${this.selectedLineData.line_id} `,
       )
     },
-
     customLineFilterOptions({ line_name }) {
       return `${line_name}`
     },
   },
-  mounted() {
+  async mounted() {
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
     this.selectedLine = localStorage.getItem('line_id')
-    this.getLines()
+    await this.getLines()
   },
   components: { VueMultiselect },
 }
