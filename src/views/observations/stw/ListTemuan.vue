@@ -90,7 +90,7 @@
             </tr>
             <tr
               v-else
-              v-for="finding in getFindings"
+              v-for="(finding, findingIndex) in getFindings"
               :key="finding.no"
               :style="`${
                 formatTheDate(finding.cm_str_plan_date) <= this.todayDate &&
@@ -134,10 +134,15 @@
                   "
                 ></div>
               </td>
-              <td>
+              <td class="px-1">
                 <button
-                  class="btn btn-info btn-sm text-white w-full my-1"
-                  @click="detailTemuanModal = true"
+                  class="btn btn-info btn-sm text-white w-full my-1 w-100"
+                  @click="
+                    () => {
+                      getDetailTemuan(findingIndex)
+                      detailTemuanModal = true
+                    }
+                  "
                 >
                   Detail
                 </button>
@@ -209,167 +214,166 @@
       :visible="detailTemuanModal"
       @close="detailTemuanModal = false"
       size="lg"
-      fullscreen
+      scrollable
     >
       <CModalHeader>
         <CModalTitle>Detail temuan</CModalTitle>
       </CModalHeader>
       <CModalBody>
-        <div>
-          <div>
-            <div class="mb-2">
-              <label class="mb-1">Source Category</label>
-              <input type="text" class="form-control" />
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">Tanggal temuan</label>
-              <input type="date" class="form-control" />
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">Pos</label>
-              <input type="text" class="form-control" />
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">Temuan problem</label>
-              <textarea cols="30" rows="5" class="form-control"></textarea>
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">Rencana perbaikan</label>
-              <textarea cols="30" rows="5" class="form-control"></textarea>
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">Priority</label>
-              <input type="text" class="form-control" />
-            </div>
-            <div class="mb-2">
-              <label class="mb-1"
-                >Stop 6
-                <span class="badge rounded-pill bg-primary text-white"
-                  >Safety</span
-                ></label
-              >
-              <input type="text" class="form-control" />
-            </div>
-            <div class="mb-2">
-              <label class="mb-1"
-                >Rank WRAS
-                <span class="badge rounded-pill bg-primary text-white"
-                  >Safety</span
+        <CAccordion :active-item-key="1" always-open>
+          <CAccordionItem :item-key="1">
+            <CAccordionHeader> Henkaten input </CAccordionHeader>
+            <CAccordionBody>
+              <div class="mb-2">
+                <label class="mb-1">Tanggal temuan</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  :value="formatTheDate(findingDetail?.finding_date)"
+                />
+              </div>
+              <div class="mb-2">
+                <label class="mb-1">Pos</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  :value="findingDetail?.finding_location"
+                />
+              </div>
+              <div class="mb-2">
+                <label class="mb-1">Finding description</label>
+                <textarea
+                  cols="30"
+                  rows="5"
+                  class="form-control"
+                  :value="findingDetail?.finding_desc"
+                ></textarea>
+              </div>
+              <div class="mb-2">
+                <label class="mb-1">CM description</label>
+                <textarea
+                  cols="30"
+                  rows="5"
+                  class="form-control"
+                  :value="findingDetail?.cm_desc"
+                ></textarea>
+              </div>
+              <div class="mb-2">
+                <label class="mb-1">Priority</label>
+                <select
+                  class="form-select"
+                  :defaultValue="findingDetail?.cm_priority"
                 >
-              </label>
-              <input type="text" class="form-control" />
-            </div>
-            <div class="row mb-2">
-              <div class="col">
-                <label class="mb-1"
-                  >SOP/EIS
-                  <span class="badge rounded-pill bg-primary text-white"
-                    >Method</span
-                  >
-                </label>
-                <input type="text" class="form-control" />
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
               </div>
-              <div class="col">
-                <label class="mb-1"
-                  >TSKK
-                  <span class="badge rounded-pill bg-primary text-white"
-                    >Man</span
-                  >
-                </label>
-                <input type="text" class="form-control" />
-              </div>
-              <div class="col">
-                <label class="mb-1"
-                  >TSK
-                  <span class="badge rounded-pill bg-primary text-white"
-                    >Man</span
-                  >
-                </label>
-                <input type="text" class="form-control" />
-              </div>
-            </div>
-            <div class="mb-2">
-              <label class="mb-1"
-                >PCI/ECI
-                <span class="badge rounded-pill bg-primary text-white"
-                  >Material</span
+
+              <div class="mb-2">
+                <label class="mb-1">PIC </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  :value="findingDetail?.cm_pic_nm"
+                />
+                <!-- <VueMultiselect
+                  :options="picData"
+                  :custom-label="customPicOptions"
                 >
-              </label>
-              <input type="text" class="form-control" />
-            </div>
-            <div class="mb-2">
-              <label class="mb-1"
-                >MT/KZ/ENG
-                <span class="badge rounded-pill bg-primary text-white"
-                  >Machine</span
+                </VueMultiselect> -->
+              </div>
+              <div class="mb-2">
+                <label class="mb-1">CM Start Plan Date </label>
+                <input
+                  type="date"
+                  class="form-control"
+                  :value="formatTheDate(findingDetail?.cm_str_plan_date)"
+                />
+              </div>
+              <div class="mb-2">
+                <label class="mb-1">CM End Plan Date </label>
+                <input
+                  type="date"
+                  class="form-control"
+                  :value="formatTheDate(findingDetail?.cm_end_plan_date)"
+                />
+              </div>
+            </CAccordionBody>
+          </CAccordionItem>
+          <CAccordionItem :item-key="2">
+            <CAccordionHeader> Findings </CAccordionHeader>
+            <CAccordionBody>
+              <div class="mb-2">
+                <label class="mb-1">CM Start actual date</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  :value="formatTheDate(findingDetail?.cm_str_act_date)"
+                  disabled
+                />
+              </div>
+              <div class="mb-2">
+                <label class="mb-1">CM End actual date</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  :value="formatTheDate(findingDetail?.cm_end_act_date)"
+                  disabled
+                />
+              </div>
+              <div class="mb-2">
+                <label class="mb-1">CM Training date</label>
+                <input type="date" class="form-control" disabled />
+              </div>
+              <div class="mb-2">
+                <label class="mb-1">CM Judge</label>
+                <select
+                  class="form-select"
+                  :value="findingDetail?.cm_judg"
+                  disabled
                 >
-              </label>
-              <input type="text" class="form-control" />
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">PIC Schedule </label>
-              <input type="date" class="form-control" />
-            </div>
-
-            <hr />
-
-            <div class="row mb-2">
-              <div class="col">
-                <label class="mb-1">LH Red </label>
-                <input type="text" class="form-control" />
+                  <option value="true">Sudah</option>
+                  <option value="false">Belum</option>
+                </select>
               </div>
-              <div class="col">
-                <label class="mb-1">LH White </label>
-                <input type="text" class="form-control" />
+              <div class="mb-2">
+                <label class="mb-1">CM Sign LH Red</label>
+                <input type="file" class="form-control" disabled />
               </div>
-              <div class="col">
-                <label class="mb-1">SH </label>
-                <input type="text" class="form-control" />
+              <div class="mb-2">
+                <label class="mb-1">CM Sign LH White</label>
+                <input type="file" class="form-control" disabled />
               </div>
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">Comments</label>
-              <input type="text" class="form-control" />
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">Adjusment</label>
-              <input type="text" class="form-control" />
-            </div>
-
-            <hr />
-
-            <div class="mb-2">
-              <label class="mb-1">Factor result</label>
-              <input type="text" class="form-control" />
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">Plan date training</label>
-              <input type="date" class="form-control" />
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">Actual date training</label>
-              <input type="date" class="form-control" />
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">Comments</label>
-              <input type="text" class="form-control" />
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">Sign upload</label>
-              <input type="file" class="form-control" />
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">Kaizen report upload</label>
-              <input type="file" class="form-control" />
-            </div>
-          </div>
-        </div>
+              <div class="mb-2">
+                <label class="mb-1">CM Sign SH</label>
+                <input type="file" class="form-control" disabled />
+              </div>
+              <div class="mb-2">
+                <label class="mb-1">CM Comments</label>
+                <input type="text" class="form-control" disabled />
+              </div>
+            </CAccordionBody>
+          </CAccordionItem>
+        </CAccordion>
+        <div></div>
       </CModalBody>
       <CModalFooter>
-        <CButton color="secondary" @click="detailTemuanModal = false">
+        <router-link
+          v-if="findingDetail?.observation_id !== null"
+          :to="`/observation/${findingDetail?.observation_id}`"
+        >
+          <CButton color="primary" class="text-white"> More details </CButton>
+        </router-link>
+
+        <CButton
+          color="secondary"
+          class="text-white"
+          @click="detailTemuanModal = false"
+        >
           Close
         </CButton>
-        <CButton color="primary">Save changes</CButton>
       </CModalFooter>
     </CModal>
   </div>
@@ -391,6 +395,7 @@ export default {
       isLoading: false,
       num: 28,
       selectedMonth: null,
+      findingDetail: null,
       addTemuanModal: false,
       detailTemuanModal: false,
       picData: [],
@@ -432,6 +437,11 @@ export default {
         console.log(error)
       }
     },
+    getDetailTemuan(findingIndex) {
+      const data = this.getFindings[findingIndex]
+      this.findingDetail = data
+      console.log(data)
+    },
     mapUsersData() {
       this.getUsersOpts?.map((item) => {
         this.picData.push(item.text)
@@ -463,6 +473,10 @@ export default {
 <style>
 .week {
   width: 20px;
+}
+th,
+td {
+  padding: 8px;
 }
 </style>
   
