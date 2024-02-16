@@ -16,14 +16,15 @@
             }
           "
         >
-          Add member voice
+          Add member voices
         </button>
       </div>
-      <div>
-        <table class="table table-bordered table-stripped">
+      <div style="width: 100%; overflow-x: scroll">
+        <table class="table table-bordered overflow-auto table-stripped">
           <thead class="text-center">
             <tr>
               <th rowspan="3">No</th>
+              <th rowspan="3">Line name</th>
               <th rowspan="3">Tanggal</th>
               <th rowspan="3">Lokasi</th>
               <th rowspan="3">Problem</th>
@@ -33,6 +34,7 @@
               <th rowspan="3">Evaluasi Hasil</th>
               <th colspan="24">Waktu Pelaksanaan</th>
               <th rowspan="3">PIC</th>
+              <th rowspan="3">Actions</th>
             </tr>
             <tr>
               <th colspan="4">Jan</th>
@@ -69,18 +71,27 @@
               <th>IV</th>
             </tr>
           </thead>
-          <tbody v-if="isLoading">
-            <tr>
-              <td colspan="40" class="text-center">Loading....</td>
+          <tbody>
+            <tr v-if="isLoading">
+              <td colspan="40" class="p-0" style="height: 200px">
+                <div class="vl-parent p-0" style="height: 100%">
+                  <loading
+                    v-model:active="isLoading"
+                    :can-cancel="true"
+                    :is-full-page="false"
+                    :on-cancel="onCancel"
+                  />
+                </div>
+              </td>
             </tr>
-          </tbody>
-          <tbody v-else>
             <tr
+              v-else
               v-for="(membervoice, index) in getMemberVoice"
               :key="membervoice.mv_id"
             >
               <td>{{ index + 1 }}</td>
-              <td>{{ membervoice.mv_date_finding }}</td>
+              <td>{{ membervoice.line_nm }}</td>
+              <td>{{ formatTheDate(membervoice.mv_date_finding) }}</td>
               <td>{{ membervoice.mv_location }}</td>
               <td>{{ membervoice.mv_problem }}</td>
               <td>{{ membervoice.mv_process_no }}</td>
@@ -102,6 +113,12 @@
                 ></div>
               </td>
               <td>{{ membervoice.mv_pic_nm }}</td>
+              <td>
+                <button class="btn btn-info btn-sm text-white w-full my-1">
+                  Detail
+                </button>
+                <button class="btn btn-danger btn-sm text-white">Delete</button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -135,6 +152,17 @@
                   />
                 </div>
                 <div class="mb-2">
+                  <label class="mb-1">Line</label>
+                  <VueMultiselect
+                    v-model="memberVoiceData.line_id"
+                    :options="lineData"
+                    placeholder=""
+                    :custom-label="customLineFilterOptions"
+                  >
+                  </VueMultiselect>
+                </div>
+
+                <div class="mb-2">
                   <label class="mb-1">Lokasi</label>
                   <input
                     type="text"
@@ -164,7 +192,7 @@
                     class="form-select"
                     v-model="memberVoiceData.mv_category"
                   >
-                    <option selected>Select category</option>
+                    <option disabled>Select category</option>
                     <option value="safety">Safety</option>
                     <option value="kesulitan kerja">Kesulitan kerja</option>
                   </select>
@@ -222,6 +250,7 @@
                   <VueMultiselect
                     v-model="memberVoiceData.mv_pic_id"
                     :options="picData"
+                    :custom-label="customPicOptions"
                   >
                   </VueMultiselect>
                 </div>
@@ -268,11 +297,16 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Priority</label>
-                  <input
-                    type="text"
-                    class="form-control"
+                  <select
+                    class="form-select"
                     v-model="findingsData.cm_priority"
-                  />
+                  >
+                    <option selected>Select priority</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                  </select>
                 </div>
 
                 <div class="mb-2">
@@ -311,6 +345,7 @@
                   <VueMultiselect
                     v-model="findingsData.cm_pic_id"
                     :options="picData"
+                    :custom-label="customPicOptions"
                   >
                   </VueMultiselect>
                 </div>
@@ -340,6 +375,7 @@
                     type="date"
                     class="form-control"
                     v-model="findingsData.cm_str_act_date"
+                    disabled
                   />
                 </div>
                 <div class="mb-2">
@@ -348,6 +384,7 @@
                     type="date"
                     class="form-control"
                     v-model="findingsData.cm_end_act_date"
+                    disabled
                   />
                 </div>
                 <div class="mb-2">
@@ -356,27 +393,32 @@
                     type="date"
                     class="form-control"
                     v-model="findingsData.cm_training_date"
+                    disabled
                   />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Judge</label>
-                  <input
-                    type="text"
-                    class="form-control"
+                  <select
+                    class="form-select"
                     v-model="findingsData.cm_judg"
-                  />
+                    disabled
+                  >
+                    <option selected>Select judgement</option>
+                    <option value="true">Sudah</option>
+                    <option value="false">Belum</option>
+                  </select>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Sign LH Red</label>
-                  <input type="file" class="form-control" />
+                  <input type="file" class="form-control" disabled />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Sign LH White</label>
-                  <input type="file" class="form-control" />
+                  <input type="file" class="form-control" disabled />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Sign SH</label>
-                  <input type="file" class="form-control" />
+                  <input type="file" class="form-control" disabled />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Comments</label>
@@ -384,6 +426,7 @@
                     type="text"
                     class="form-control"
                     v-model="findingsData.cm_comments"
+                    disabled
                   />
                 </div>
               </div>
@@ -417,6 +460,7 @@ import Filter from '@/components/Filter.vue'
 import VueMultiselect from 'vue-multiselect'
 import Swal from 'sweetalert2'
 import ApiService from '@/store/api.service'
+import Loading from 'vue-loading-overlay'
 
 export default {
   name: 'Member Voice',
@@ -424,6 +468,7 @@ export default {
     return {
       isLoading: false,
       num: 24,
+      lineData: [],
       selectedMonth: null,
       selectedLine: '-1',
       addMemberVoiceModal: false,
@@ -434,7 +479,7 @@ export default {
       factors: [],
       categories: [],
       memberVoiceData: {
-        mv_date_finding: '',
+        mv_date_finding: moment().format('YYYY-MM-DD'),
         mv_location: '',
         mv_problem: '',
         mv_process_no: '',
@@ -464,7 +509,7 @@ export default {
         cm_str_act_date: '2024-02-02',
         cm_end_act_date: '2024-03-04',
         cm_training_date: '2024-03-06',
-        cm_judg: true,
+        cm_judg: false,
         cm_sign_lh_red: null,
         cm_sign_lh_white: null,
         cm_sign_sh: null,
@@ -477,9 +522,6 @@ export default {
     ...mapGetters(['getLinesOpts', 'getUsersOpts', 'getMemberVoice']),
   },
   methods: {
-    initData() {
-      this.selectedLineID = this.getMemberVoice[0]?.line_id
-    },
     addMemberVoiceData() {
       this.memberVoiceData.line_id = this.selectedLineID
       this.findingsData.line_id = this.selectedLineID
@@ -494,6 +536,9 @@ export default {
     async getLines() {
       try {
         this.$store.dispatch(GET_LINES)
+        if (this.getLines) {
+          this.mapLinesData()
+        }
       } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
@@ -513,12 +558,12 @@ export default {
     async getMemberVoices() {
       this.isLoading = true
       try {
-        this.$store.dispatch(GET_MEMBERVOICE)
-        this.isLoading = false
-
-        if (this.getMemberVoice) {
-          this.isLoading = false
-        }
+        this.$store.dispatch(GET_MEMBERVOICE).then((res) => {
+          if (res) {
+            this.isLoading = false
+            this.selectedLineID = this.getMemberVoice[0]?.line_id
+          }
+        })
       } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
@@ -558,10 +603,29 @@ export default {
 
       this.categories = category
     },
+    mapLinesData() {
+      this.getLinesOpts?.map((item) => {
+        this.lineData.push({ line_id: item.id, line_name: item.text })
+      })
+    },
     mapUsersData() {
       this.getUsersOpts?.map((item) => {
-        this.picData.push(item.id)
+        this.picData.push({ pic_id: item.id, pic_name: item.text })
       })
+    },
+    customLineFilterOptions({ line_name }) {
+      return `${line_name}`
+    },
+    customPicOptions({ pic_name }) {
+      return `${pic_name}`
+    },
+
+    formatTheDate(val) {
+      const year = val.split('T')[0].split('-')[0]
+      const month = val.split('T')[0].split('-')[1]
+      const day = val.split('T')[0].split('-')[2]
+
+      return `${year}-${month}-${day}`
     },
   },
   async mounted() {
@@ -574,14 +638,8 @@ export default {
     await this.getMemberVoices()
     await this.getFactors()
     await this.getCategories()
-    this.initData()
   },
-  updated() {
-    if (this.getMemberVoice) {
-      this.isLoading = false
-    }
-  },
-  components: { Filter, VueMultiselect },
+  components: { Filter, VueMultiselect, Loading },
 }
 </script>
     

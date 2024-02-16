@@ -21,6 +21,7 @@
           <thead>
             <tr>
               <th>No</th>
+              <th>Line</th>
               <th>Fokus tema</th>
               <th>Pilar</th>
               <th>Evaluasi</th>
@@ -29,11 +30,25 @@
             </tr>
           </thead>
           <tbody>
+            <tr v-if="isLoading">
+              <td colspan="7" class="p-0" style="height: 200px">
+                <div class="vl-parent p-0" style="height: 100%">
+                  <loading
+                    v-model:active="isLoading"
+                    :can-cancel="true"
+                    :is-full-page="false"
+                    :on-cancel="onCancel"
+                  />
+                </div>
+              </td>
+            </tr>
             <tr
+              v-else
               v-for="(focustheme, index) in getFocusTheme"
               :key="focustheme.ft_id"
             >
               <th scope="row">{{ index + 1 }}</th>
+              <td>{{ focustheme.line_nm }}</td>
               <td>{{ focustheme.ft_desc }}</td>
               <td>{{ focustheme.ft_pillar }}</td>
               <td>
@@ -45,6 +60,12 @@
               </td>
               <td>{{ focustheme.ft_remark }}</td>
               <td>
+                <button
+                  class="btn btn-warning btn-sm text-white"
+                  @click="focusThemeDetailData(index)"
+                >
+                  Problems
+                </button>
                 <button class="btn btn-danger btn-sm text-white mx-2">
                   Delete
                 </button>
@@ -63,6 +84,7 @@
       alignment="center"
       :visible="addFocusThemeModal"
       @close="addFocusThemeModal = false"
+      size="lg"
     >
       <CModalHeader>
         <CModalTitle>Add fokus tema</CModalTitle>
@@ -80,6 +102,16 @@
                     class="form-control"
                     v-model="focusThemeData.ft_desc"
                   />
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Line</label>
+                  <VueMultiselect
+                    v-model="focusThemeData.ft_line_id"
+                    :options="lineData"
+                    placeholder=""
+                    :custom-label="customLineFilterOptions"
+                  >
+                  </VueMultiselect>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Pilar</label>
@@ -157,11 +189,16 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Priority</label>
-                  <input
-                    type="text"
-                    class="form-control"
+                  <select
+                    class="form-select"
                     v-model="findingsData.cm_priority"
-                  />
+                  >
+                    <option selected>Select priority</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                  </select>
                 </div>
 
                 <div class="mb-2">
@@ -200,6 +237,7 @@
                   <VueMultiselect
                     v-model="findingsData.cm_pic_id"
                     :options="picData"
+                    :custom-label="customPicOptions"
                   >
                   </VueMultiselect>
                 </div>
@@ -229,6 +267,7 @@
                     type="date"
                     class="form-control"
                     v-model="findingsData.cm_str_act_date"
+                    disabled
                   />
                 </div>
                 <div class="mb-2">
@@ -237,6 +276,7 @@
                     type="date"
                     class="form-control"
                     v-model="findingsData.cm_end_act_date"
+                    disabled
                   />
                 </div>
                 <div class="mb-2">
@@ -245,27 +285,32 @@
                     type="date"
                     class="form-control"
                     v-model="findingsData.cm_training_date"
+                    disabled
                   />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Judge</label>
-                  <input
-                    type="text"
-                    class="form-control"
+                  <select
+                    class="form-select"
                     v-model="findingsData.cm_judg"
-                  />
+                    disabled
+                  >
+                    <option selected>Select judgement</option>
+                    <option value="true">Sudah</option>
+                    <option value="false">Belum</option>
+                  </select>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Sign LH Red</label>
-                  <input type="file" class="form-control" />
+                  <input type="file" class="form-control" disabled />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Sign LH White</label>
-                  <input type="file" class="form-control" />
+                  <input type="file" class="form-control" disabled />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Sign SH</label>
-                  <input type="file" class="form-control" />
+                  <input type="file" class="form-control" disabled />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Comments</label>
@@ -273,6 +318,7 @@
                     type="text"
                     class="form-control"
                     v-model="findingsData.cm_comments"
+                    disabled
                   />
                 </div>
               </div>
@@ -287,6 +333,62 @@
         <CButton color="primary" @click="addFocusThemeData"
           >Save changes</CButton
         >
+      </CModalFooter>
+    </CModal>
+
+    <CModal
+      scrollable
+      backdrop="static"
+      alignment="center"
+      :visible="focusThemeDetailModal"
+      @close="focusThemeDetailModal = false"
+      size="lg"
+    >
+      <CModalHeader>
+        <CModalTitle>Detail fokus tema</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <div>
+          <table class="table table-striped table-bordered">
+            <thead>
+              <th>No</th>
+              <th>Line name</th>
+              <th>Finding date</th>
+              <th>Finding desc</th>
+              <th>CM Desc</th>
+              <th>CM Judge</th>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(findingDetail, index) in selectedFocusTheme.findings"
+                :key="index"
+              >
+                <td>{{ index + 1 }}</td>
+                <td>{{ findingDetail.line_nm }}</td>
+                <td>{{ formatTheDate(findingDetail.finding_date) }}</td>
+                <td>{{ findingDetail.finding_desc }}</td>
+                <td>{{ findingDetail.cm_desc }}</td>
+                <td>
+                  {{ findingDetail.cm_judge == true ? 'Sudah' : 'Belum' }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </CModalBody>
+      <CModalFooter>
+        <CButton
+          color="secondary"
+          class="text-white"
+          @click="
+            () => {
+              focusThemeDetailModal = false
+              this.selectedFocusTheme = null
+            }
+          "
+        >
+          Close
+        </CButton>
       </CModalFooter>
     </CModal>
   </div>
@@ -306,6 +408,7 @@ import FocusThemeIndicatorVue from '@/components/FocusThemeIndicator.vue'
 import VueMultiselect from 'vue-multiselect'
 import Swal from 'sweetalert2'
 import ApiService from '@/store/api.service'
+import Loading from 'vue-loading-overlay'
 
 export default {
   name: 'Focus Theme',
@@ -315,9 +418,12 @@ export default {
       selectedMonth: null,
       selectedLine: '-1',
       addFocusThemeModal: false,
+      focusThemeDetailModal: false,
       factors: [],
       categories: [],
+      lineData: [],
       picData: [],
+      selectedFocusTheme: null,
       focusThemeData: {
         ft_desc: '',
         ft_evaluation_num: 0,
@@ -341,7 +447,7 @@ export default {
         cm_str_act_date: '2024-02-02',
         cm_end_act_date: '2024-03-04',
         cm_training_date: '2024-03-06',
-        cm_judg: true,
+        cm_judg: false,
         cm_sign_lh_red: null,
         cm_sign_lh_white: null,
         cm_sign_sh: null,
@@ -353,9 +459,19 @@ export default {
     ...mapGetters(['getLinesOpts', 'getUsersOpts', 'getFocusTheme']),
   },
   methods: {
+    formatTheDate(val) {
+      const year = val.split('T')[0].split('-')[0]
+      const month = val.split('T')[0].split('-')[1]
+      const day = val.split('T')[0].split('-')[2]
+
+      return `${year}-${month}-${day}`
+    },
     async getLines() {
       try {
         this.$store.dispatch(GET_LINES)
+        if (this.getLines) {
+          this.mapLinesData()
+        }
       } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
@@ -364,8 +480,11 @@ export default {
     async getFocusThemes() {
       this.isLoading = true
       try {
-        this.$store.dispatch(GET_FOCUSTHEME)
-        this.isLoading = false
+        this.$store.dispatch(GET_FOCUSTHEME).then((res) => {
+          if (res) {
+            this.isLoading = false
+          }
+        })
       } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         this.isLoading = false
@@ -373,7 +492,7 @@ export default {
       }
     },
     addFocusThemeData() {
-      this.focusThemeData.ft_line_id = '4a411c19-700d-4e1f-aa23-2e49df60e12e'
+      // this.focusThemeData.ft_line_id = '4a411c19-700d-4e1f-aa23-2e49df60e12e'
       this.findingsData.line_id = '4a411c19-700d-4e1f-aa23-2e49df60e12e'
       this.findingsData.cm_result_factor_id = this.findingsData.factor_id
 
@@ -394,8 +513,14 @@ export default {
         })
       } catch (error) {
         console.log(error)
-        Swal.fire('Pengecekan gagal di submit', '', 'error')
+        Swal.fire('Failed', '', 'error')
         this.addFocusThemeModal = false
+      }
+    },
+    focusThemeDetailData(index) {
+      this.focusThemeDetailModal = true
+      if (this.getFocusTheme) {
+        this.selectedFocusTheme = this.getFocusTheme[index]
       }
     },
     async getFactors() {
@@ -428,10 +553,21 @@ export default {
         console.log(error)
       }
     },
+    mapLinesData() {
+      this.getLinesOpts?.map((item) => {
+        this.lineData.push({ line_id: item.id, line_name: item.text })
+      })
+    },
     mapUsersData() {
       this.getUsersOpts?.map((item) => {
-        this.picData.push(item.id)
+        this.picData.push({ pic_id: item.id, pic_name: item.text })
       })
+    },
+    customLineFilterOptions({ line_name }) {
+      return `${line_name}`
+    },
+    customPicOptions({ pic_name }) {
+      return `${pic_name}`
     },
   },
   async mounted() {
@@ -445,7 +581,7 @@ export default {
     await this.getCategories()
     await this.getUsers()
   },
-  components: { Filter, FocusThemeIndicatorVue, VueMultiselect },
+  components: { Filter, FocusThemeIndicatorVue, VueMultiselect, Loading },
 }
 </script>
     

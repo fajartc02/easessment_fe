@@ -6,15 +6,13 @@
         class="card-header d-flex justify-content-between align-items-center"
       >
         <h5>List temuan</h5>
-        <router-link to="list-temuan/add">
-          <button class="btn btn-info text-white">Add list</button>
-        </router-link>
       </div>
       <div style="width: 100%; overflow-x: scroll">
-        <table class="table table-striped table-bordered text-center">
+        <table style="border: 1px solid black" class="text-center">
           <thead class="text-center">
             <tr>
               <th rowspan="3">No</th>
+              <th rowspan="3">Line name</th>
               <th rowspan="3">Source cat</th>
               <th rowspan="3">Tanggal</th>
               <th rowspan="3">Pos</th>
@@ -47,49 +45,70 @@
               <th colspan="2">Man</th>
               <th>Material</th>
               <th>Machine</th>
-              <th>I</th>
-              <th>II</th>
-              <th>III</th>
-              <th>IV</th>
-              <th>I</th>
-              <th>II</th>
-              <th>III</th>
-              <th>IV</th>
-              <th>I</th>
-              <th>II</th>
-              <th>III</th>
-              <th>IV</th>
-              <th>I</th>
-              <th>II</th>
-              <th>III</th>
-              <th>IV</th>
-              <th>I</th>
-              <th>II</th>
-              <th>III</th>
-              <th>IV</th>
-              <th>I</th>
-              <th>II</th>
-              <th>III</th>
-              <th>IV</th>
-              <th>I</th>
-              <th>II</th>
-              <th>III</th>
-              <th>IV</th>
+              <th class="week">I</th>
+              <th class="week">II</th>
+              <th class="week">III</th>
+              <th class="week">IV</th>
+              <th class="week">I</th>
+              <th class="week">II</th>
+              <th class="week">III</th>
+              <th class="week">IV</th>
+              <th class="week">I</th>
+              <th class="week">II</th>
+              <th class="week">III</th>
+              <th class="week">IV</th>
+              <th class="week">I</th>
+              <th class="week">II</th>
+              <th class="week">III</th>
+              <th class="week">IV</th>
+              <th class="week">I</th>
+              <th class="week">II</th>
+              <th class="week">III</th>
+              <th class="week">IV</th>
+              <th class="week">I</th>
+              <th class="week">II</th>
+              <th class="week">III</th>
+              <th class="week">IV</th>
+              <th class="week">I</th>
+              <th class="week">II</th>
+              <th class="week">III</th>
+              <th class="week">IV</th>
             </tr>
           </thead>
-          <tbody v-if="isLoading">
-            <tr>
-              <td colspan="40" class="text-center">Loading....</td>
+          <tbody>
+            <tr v-if="isLoading">
+              <td colspan="50" class="p-0" style="height: 200px">
+                <div class="vl-parent p-0" style="height: 100%">
+                  <loading
+                    v-model:active="isLoading"
+                    :can-cancel="true"
+                    :is-full-page="false"
+                    :on-cancel="onCancel"
+                  />
+                </div>
+              </td>
             </tr>
-          </tbody>
-          <tbody v-else>
-            <tr v-for="finding in getFindings" :key="finding.no">
-              <th scope="row">{{ +finding.no }}</th>
+            <tr
+              v-else
+              v-for="finding in getFindings"
+              :key="finding.no"
+              :style="`${
+                formatTheDate(finding.cm_str_plan_date) <= this.todayDate &&
+                finding.cm_judg == false
+                  ? 'background-color: #fee2e2'
+                  : ''
+              }
+              ${finding.cm_judg == true ? 'background-color: #f0fdf4' : ''}  
+              ${finding.cm_judg == false ? 'background-color: #fff' : ''} 
+              `"
+            >
+              <th>{{ +finding.no }}</th>
+              <th>{{ finding.line_nm }}</th>
               <td>{{ finding.source_category }}</td>
-              <td>{{ finding.finding_date }}</td>
+              <td>{{ formatTheDate(finding.finding_date) }}</td>
               <td>{{ finding.finding_location }}</td>
               <td>{{ finding.finding_desc }}</td>
-              <td>@</td>
+              <td>{{ formatTheDate(finding.cm_str_plan_date) }}</td>
               <td>{{ finding.cm_priority }}</td>
               <td colspan="2">
                 {{ finding.factor_nm == 'Safety' ? 'v' : ' ' }}
@@ -100,7 +119,7 @@
               </td>
               <td>{{ finding.factor_nm == 'Material' ? 'v' : ' ' }}</td>
               <td>{{ finding.factor_nm == 'Machine' ? 'v' : ' ' }}</td>
-              <td>@</td>
+              <td>{{ finding.cm_pic_nm }}</td>
               <td v-for="n in num" :key="n">
                 <div
                   v-if="
@@ -363,6 +382,7 @@ import { GET_FINDINGS } from '@/store/modules/finding.module'
 import { mapGetters } from 'vuex'
 import Filter from '@/components/Filter.vue'
 import VueMultiselect from 'vue-multiselect'
+import Loading from 'vue-loading-overlay'
 
 export default {
   name: 'List Temuan',
@@ -375,6 +395,7 @@ export default {
       detailTemuanModal: false,
       picData: [],
       selectedPIC: null,
+      todayDate: '2024-02-16',
     }
   },
   computed: {
@@ -400,8 +421,11 @@ export default {
 
       this.isLoading = true
       try {
-        this.$store.dispatch(GET_FINDINGS, objQuery)
-        this.isLoading = false
+        this.$store.dispatch(GET_FINDINGS, objQuery).then((res) => {
+          if (res) {
+            this.isLoading = false
+          }
+        })
       } catch (error) {
         this.isLoading = false
         if (error.response.status == 401) this.$router.push('/login')
@@ -413,19 +437,33 @@ export default {
         this.picData.push(item.text)
       })
     },
+    formatTheDate(val) {
+      const year = val.split('T')[0].split('-')[0]
+      const month = val.split('T')[0].split('-')[1]
+      const day = val.split('T')[0].split('-')[2]
+
+      return `${year}-${month}-${day}`
+    },
   },
   mounted() {
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
+
     this.selectedMonth = `${year}-${month}`
     this.selectedLine = localStorage.getItem('line_id')
     this.getUsers()
     this.getFindingsFunc()
   },
-  components: { Filter, VueMultiselect },
+  components: { Filter, VueMultiselect, Loading },
 }
 </script>
   
-  <style src="vue-multiselect/dist/vue-multiselect.css"></style>
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>
+
+<style>
+.week {
+  width: 20px;
+}
+</style>
   
     

@@ -36,51 +36,57 @@
           <th>Actual</th>
           <th>Actions</th>
         </tr>
-        <template v-if="observationSchedule.length > 0">
-          <tr
-            v-for="(obaservation, i) in observationSchedule"
-            :key="obaservation.uuid"
-          >
-            <td>{{ i + 1 }}</td>
-            <td>{{ obaservation.line_nm }}</td>
-            <td>{{ obaservation.pos_nm }}</td>
-            <td>{{ obaservation.job_type_nm }}</td>
-            <td v-if="obaservation.checkers.length > 0">
-              <button
-                v-for="checker in obaservation.checkers"
-                :key="checker.id"
-                class="btn btn-warning text-dark disabled"
-              >
-                {{ checker.checker_nm }}
-              </button>
-            </td>
-            <td>{{ obaservation.member_nm }}</td>
-            <td>{{ obaservation.job_nm }}</td>
-            <td>{{ `${obaservation.plan_check_dt}` }}</td>
-            <td
-              :class="
-                `${obaservation.actual_check_dt}` == 'null' ? 'bg-danger' : ''
-              "
+        <tr v-if="isLoading">
+          <td colspan="10" class="p-0" style="height: 200px">
+            <div class="vl-parent p-0" style="height: 100%">
+              <loading
+                v-model:active="isLoading"
+                :can-cancel="true"
+                :is-full-page="false"
+                :on-cancel="onCancel"
+              />
+            </div>
+          </td>
+        </tr>
+        <tr
+          v-else
+          v-for="(obaservation, i) in observationSchedule"
+          :key="obaservation.uuid"
+        >
+          <td>{{ i + 1 }}</td>
+          <td>{{ obaservation.line_nm }}</td>
+          <td>{{ obaservation.pos_nm }}</td>
+          <td>{{ obaservation.job_type_nm }}</td>
+          <td v-if="obaservation.checkers.length > 0">
+            <button
+              v-for="checker in obaservation.checkers"
+              :key="checker.id"
+              class="btn btn-warning text-black disabled"
             >
-              {{
-                `${obaservation.actual_check_dt}` != 'null'
-                  ? `${obaservation.actual_check_dt}`
-                  : 'belum cek'
-              }}
-            </td>
-            <td>
-              <button
-                class="btn btn-info btn-sm"
-                @click="details(obaservation.id)"
-              >
-                detail
-              </button>
-            </td>
-          </tr>
-        </template>
-        <tr v-else>
-          <td colspan="10">
-            <h3>Tidak Ada Data</h3>
+              {{ checker.checker_nm }}
+            </button>
+          </td>
+          <td>{{ obaservation.member_nm }}</td>
+          <td>{{ obaservation.job_nm }}</td>
+          <td>{{ `${obaservation.plan_check_dt}` }}</td>
+          <td
+            :class="
+              `${obaservation.actual_check_dt}` == 'null' ? 'bg-danger' : ''
+            "
+          >
+            {{
+              `${obaservation.actual_check_dt}` != 'null'
+                ? `${obaservation.actual_check_dt}`
+                : 'belum cek'
+            }}
+          </td>
+          <td>
+            <button
+              class="btn btn-info btn-sm"
+              @click="details(obaservation.id)"
+            >
+              detail
+            </button>
           </td>
         </tr>
       </table>
@@ -90,14 +96,16 @@
 
 <script>
 import moment from 'moment'
-import { GET_OBSERVATION_SCHEDULE_LIST } from '@/store/modules/observation.module'
 import { mapGetters } from 'vuex'
+import { GET_OBSERVATION_SCHEDULE_LIST } from '@/store/modules/observation.module'
 import { GET_LINES } from '@/store/modules/line.module'
+import Loading from 'vue-loading-overlay'
 
 export default {
   name: 'ScheduleObservation',
   data() {
     return {
+      isLoading: false,
       selectedMonth: null,
       selectedLine: '-1',
       idxMonth: [
@@ -148,12 +156,19 @@ export default {
       }
     },
     async getObservations() {
+      this.isLoading = true
       let objQuery = {
         month: this.selectedMonth.split('-')[1],
         year: this.selectedMonth.split('-')[0],
       }
       if (this.selectedLine != '0') objQuery.line = this.selectedLine
-      await this.$store.dispatch(GET_OBSERVATION_SCHEDULE_LIST, objQuery)
+      await this.$store
+        .dispatch(GET_OBSERVATION_SCHEDULE_LIST, objQuery)
+        .then((res) => {
+          if (res) {
+            this.isLoading = false
+          }
+        })
     },
     details(id) {
       this.$router.push(`/observation/${id}`)
@@ -166,5 +181,6 @@ export default {
     await this.getLines()
     await this.getObservations()
   },
+  components: { Loading },
 }
 </script>

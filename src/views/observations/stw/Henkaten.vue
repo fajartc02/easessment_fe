@@ -23,6 +23,7 @@
           <thead>
             <tr>
               <th>No</th>
+              <th>Line</th>
               <th>Date</th>
               <th>Machine</th>
               <th>PIC</th>
@@ -34,11 +35,24 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(henkaten, index) in getHenkatens" :key="index">
+            <tr v-if="isLoading">
+              <td colspan="10" class="p-0" style="height: 200px">
+                <div class="vl-parent p-0" style="height: 100%">
+                  <loading
+                    v-model:active="isLoading"
+                    :can-cancel="true"
+                    :is-full-page="false"
+                    :on-cancel="onCancel"
+                  />
+                </div>
+              </td>
+            </tr>
+            <tr v-else v-for="(henkaten, index) in getHenkatens" :key="index">
               <th scope="row">{{ index + 1 }}</th>
-              <td>{{ henkaten.henkaten_date }}</td>
-              <td>@</td>
-              <td>{{ henkaten.henkaten_pic }}</td>
+              <td>{{ henkaten.line_nm }}</td>
+              <td>{{ formatTheDate(henkaten.henkaten_date) }}</td>
+              <td>{{ henkaten.henkaten_location }}</td>
+              <td>{{ henkaten.henkaten_pic_nm }}</td>
               <td>{{ henkaten.henkaten_desc }}</td>
               <td>{{ henkaten.henkaten_purpose }}</td>
               <td>{{ henkaten.henkaten_flw_safety }}</td>
@@ -62,6 +76,7 @@
       alignment="center"
       :visible="addHenkatenModal"
       @close="addHenkatenModal = false"
+      size="lg"
     >
       <CModalHeader>
         <CModalTitle>Add henkaten</CModalTitle>
@@ -80,15 +95,29 @@
                     v-model="henkatenData.henkaten_date"
                   />
                 </div>
-                <!-- <div class="mb-2">
-                  <label class="mb-1">Machine</label>
-                  <input type="text" class="form-control" />
-                </div> -->
+                <div class="mb-2">
+                  <label class="mb-1">Henkaten location</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="henkatenData.henkaten_location"
+                  />
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Line</label>
+                  <VueMultiselect
+                    v-model="henkatenData.henkaten_line_id"
+                    :options="lineData"
+                    :custom-label="customLineFilterOptions"
+                  >
+                  </VueMultiselect>
+                </div>
                 <div class="mb-2">
                   <label class="mb-1">PIC</label>
                   <VueMultiselect
                     v-model="henkatenData.henkaten_pic"
                     :options="picData"
+                    :custom-label="customPicOptions"
                   >
                   </VueMultiselect>
                 </div>
@@ -172,11 +201,16 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Priority</label>
-                  <input
-                    type="text"
-                    class="form-control"
+                  <select
+                    class="form-select"
                     v-model="findingsData.cm_priority"
-                  />
+                  >
+                    <option selected>Select priority</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                  </select>
                 </div>
 
                 <div class="mb-2">
@@ -215,6 +249,7 @@
                   <VueMultiselect
                     v-model="findingsData.cm_pic_id"
                     :options="picData"
+                    :custom-label="customPicOptions"
                   >
                   </VueMultiselect>
                 </div>
@@ -244,6 +279,7 @@
                     type="date"
                     class="form-control"
                     v-model="findingsData.cm_str_act_date"
+                    disabled
                   />
                 </div>
                 <div class="mb-2">
@@ -252,6 +288,7 @@
                     type="date"
                     class="form-control"
                     v-model="findingsData.cm_end_act_date"
+                    disabled
                   />
                 </div>
                 <div class="mb-2">
@@ -260,27 +297,32 @@
                     type="date"
                     class="form-control"
                     v-model="findingsData.cm_training_date"
+                    disabled
                   />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Judge</label>
-                  <input
-                    type="text"
-                    class="form-control"
+                  <select
+                    class="form-select"
                     v-model="findingsData.cm_judg"
-                  />
+                    disabled
+                  >
+                    <option selected>Select judgement</option>
+                    <option value="true">Sudah</option>
+                    <option value="false">Belum</option>
+                  </select>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Sign LH Red</label>
-                  <input type="file" class="form-control" />
+                  <input type="file" class="form-control" disabled />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Sign LH White</label>
-                  <input type="file" class="form-control" />
+                  <input type="file" class="form-control" disabled />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Sign SH</label>
-                  <input type="file" class="form-control" />
+                  <input type="file" class="form-control" disabled />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Comments</label>
@@ -288,6 +330,7 @@
                     type="text"
                     class="form-control"
                     v-model="findingsData.cm_comments"
+                    disabled
                   />
                 </div>
               </div>
@@ -307,13 +350,15 @@
   
   <script>
 import moment from 'moment'
+import { mapGetters } from 'vuex'
 import { GET_USERS } from '@/store/modules/user.module'
 import { GET_HENKATEN, POST_HENKATEN } from '@/store/modules/henkaten.module'
-import { mapGetters } from 'vuex'
+import { GET_LINES } from '@/store/modules/line.module'
 import Filter from '@/components/Filter.vue'
 import VueMultiselect from 'vue-multiselect'
 import Swal from 'sweetalert2'
 import ApiService from '@/store/api.service'
+import Loading from 'vue-loading-overlay'
 
 export default {
   name: 'Henkaten',
@@ -324,11 +369,13 @@ export default {
       addHenkatenModal: false,
       selectedLineID: '',
       picData: [],
+      lineData: [],
       factors: [],
       categories: [],
       selectedPIC: null,
       henkatenData: {
         henkaten_date: '',
+        henkaten_location: '',
         henkaten_pic: '',
         henkaten_desc: '',
         henkaten_purpose: '',
@@ -353,7 +400,7 @@ export default {
         cm_str_act_date: '2024-02-02',
         cm_end_act_date: '2024-03-04',
         cm_training_date: '2024-03-06',
-        cm_judg: true,
+        cm_judg: false,
         cm_sign_lh_red: null,
         cm_sign_lh_white: null,
         cm_sign_sh: null,
@@ -362,31 +409,26 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getUsersOpts', 'getHenkatens']),
+    ...mapGetters(['getUsersOpts', 'getHenkatens', 'getLinesOpts']),
   },
   methods: {
+    formatTheDate(val) {
+      const year = val.split('T')[0].split('-')[0]
+      const month = val.split('T')[0].split('-')[1]
+      const day = val.split('T')[0].split('-')[2]
+
+      return `${year}-${month}-${day}`
+    },
     initData() {
       if (this.getHenkatens) {
         this.selectedLineID = this.getHenkatens[0]?.henkaten_line_id
       }
-      console.log(this.getHenkatens)
-    },
-    async getUsers() {
-      try {
-        this.$store.dispatch(GET_USERS)
-        if (this.getUsersOpts) {
-          this.mapUsersData()
-        }
-      } catch (error) {
-        if (error.response.status == 401) this.$router.push('/login')
-        console.log(error)
-      }
     },
     addHenkatenData() {
-      this.henkatenData.henkaten_line_id =
-        '882eaf19-d355-4f62-918d-00cec01cd639'
-      this.findingsData.line_id = '882eaf19-d355-4f62-918d-00cec01cd639'
+      // this.henkatenData.henkaten_line_id =
+      //   '882eaf19-d355-4f62-918d-00cec01cd639'
       // this.findingsData.line_id = this.getHenkatens[0]?.henkaten_line_id
+      this.findingsData.line_id = '882eaf19-d355-4f62-918d-00cec01cd639'
       this.findingsData.cm_result_factor_id = this.findingsData.factor_id
 
       let data = {
@@ -398,12 +440,11 @@ export default {
     async getHenkaten() {
       this.isLoading = true
       try {
-        this.$store.dispatch(GET_HENKATEN)
-        this.isLoading = false
-
-        if (this.getHenkatens) {
-          this.isLoading = false
-        }
+        this.$store.dispatch(GET_HENKATEN).then((res) => {
+          if (res) {
+            this.isLoading = false
+          }
+        })
       } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
@@ -443,10 +484,43 @@ export default {
 
       this.categories = category
     },
+    async getLines() {
+      try {
+        this.$store.dispatch(GET_LINES)
+        if (this.getLinesOpts) {
+          this.mapLinesData()
+        }
+      } catch (error) {
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
+      }
+    },
+    async getUsers() {
+      try {
+        this.$store.dispatch(GET_USERS)
+        if (this.getUsersOpts) {
+          this.mapUsersData()
+        }
+      } catch (error) {
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
+      }
+    },
+    mapLinesData() {
+      this.getLinesOpts?.map((item) => {
+        this.lineData.push({ line_id: item.id, line_name: item.text })
+      })
+    },
     mapUsersData() {
       this.getUsersOpts?.map((item) => {
-        this.picData.push(item.id)
+        this.picData.push({ pic_id: item.id, pic_name: item.text })
       })
+    },
+    customLineFilterOptions({ line_name }) {
+      return `${line_name}`
+    },
+    customPicOptions({ pic_name }) {
+      return `${pic_name}`
     },
   },
   async mounted() {
@@ -454,13 +528,18 @@ export default {
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
     this.selectedLine = localStorage.getItem('line_id')
+    await this.getLines()
     await this.getUsers()
     await this.getCategories()
     await this.getFactors()
     await this.getHenkaten()
     this.initData()
   },
-  components: { Filter, VueMultiselect },
+  updated() {
+    this.mapLinesData()
+    this.mapUsersData()
+  },
+  components: { Filter, VueMultiselect, Loading },
 }
 </script>
 

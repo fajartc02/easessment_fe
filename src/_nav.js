@@ -14,13 +14,13 @@ export default [{
     },
     {
         component: 'CNavItem',
-        name: 'Dashboard STW*',
+        name: 'Dashboard STW',
         to: '/stw/dashboard',
         icon: 'cil-speedometer'
     },
     {
         component: 'CNavItem',
-        name: 'List Temuan*',
+        name: 'List Temuan',
         to: '/stw/list-temuan',
         icon: 'cil-file'
     },
@@ -32,19 +32,19 @@ export default [{
     },
     {
         component: 'CNavItem',
-        name: 'Fokus Tema*',
+        name: 'Fokus Tema',
         to: '/stw/focus-theme',
         icon: 'cil-clipboard'
     },
     {
         component: 'CNavItem',
-        name: 'Henkaten*',
+        name: 'Henkaten',
         to: '/stw/henkaten',
         icon: 'cil-clipboard'
     },
     {
         component: 'CNavItem',
-        name: 'Observasi history*',
+        name: 'Observasi history',
         to: '/history/observation',
         icon: 'cil-clipboard',
     },
@@ -54,7 +54,7 @@ export default [{
     // },
     // {
     //     component: 'CNavItem',
-    //     name: 'Dashboard OM*',
+    //     name: 'Dashboard OM',
     //     to: '/om/dashboard',
     //     icon: 'cil-speedometer'
     // },
@@ -64,7 +64,7 @@ export default [{
     // },
     // {
     //     component: 'CNavItem',
-    //     name: 'Dashboard 4S*',
+    //     name: 'Dashboard 4S',
     //     to: '/4s/dashboard',
     //     icon: 'cil-speedometer'
     // },
@@ -80,7 +80,7 @@ export default [{
     // },
     {
         component: 'CNavItem',
-        name: 'Schedule Observasi*',
+        name: 'Schedule Observasi',
         to: '/schedule/observation',
         icon: 'cil-clipboard',
     }, 

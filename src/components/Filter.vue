@@ -77,14 +77,6 @@
           <input type="date" class="form-control" />
         </div>
         <div class="col">
-          <label>Category</label>
-          <input type="text" class="form-control" />
-        </div>
-        <div class="col">
-          <label>Status</label>
-          <input type="text" class="form-control" />
-        </div>
-        <div class="col">
           <label>Line</label>
           <VueMultiselect
             v-model="selectedLineData"
@@ -95,6 +87,25 @@
           >
           </VueMultiselect>
         </div>
+        <div class="col">
+          <label>Category</label>
+          <select class="form-select" id="">
+            <option selected>All</option>
+            <option value="H">Henkaten</option>
+            <option value="MV">Member Voice</option>
+            <option value="Obs">Observation</option>
+            <option value="FT">Focus theme</option>
+          </select>
+        </div>
+        <div class="col">
+          <label>Status</label>
+          <select class="form-select" id="">
+            <option>All</option>
+            <option value="true">Sudah</option>
+            <option value="false">Belum</option>
+          </select>
+        </div>
+        
       </div>
     </div>
     <div

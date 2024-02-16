@@ -50,8 +50,21 @@
               </th>
             </tr>
           </thead>
-          <tbody v-if="observationSchedule.length > 0">
+          <tbody>
+            <tr v-if="isLoading">
+              <td colspan="40" class="p-0" style="height: 200px">
+                <div class="vl-parent p-0" style="height: 100%">
+                  <loading
+                    v-model:active="isLoading"
+                    :can-cancel="true"
+                    :is-full-page="false"
+                    :on-cancel="onCancel"
+                  />
+                </div>
+              </td>
+            </tr>
             <tr
+              v-else
               v-for="(observation, i) in observationSchedule"
               :key="observation.pos_id"
             >
@@ -82,8 +95,14 @@
                       </div>
                       `
                       "
-                      v-if="child"
-                      :color="`${child.job_type_color}`"
+                      v-if="child && child.is_wajik == false"
+                      class="mt-1"
+                      :color="`${
+                        child.job_type_nm == 'Type 1' ||
+                        child.job_type_nm == 'Type 2'
+                          ? 'dark rounded-circle'
+                          : 'dark rounded'
+                      }`"
                       html="true"
                       variant="outline"
                       style="position: relative"
@@ -91,7 +110,62 @@
                     >
                       <button
                         disabled
-                        :v-if="observation.comment_sh"
+                        v-if="observation.comment_sh !== null"
+                        style="
+                          position: absolute;
+                          margin-left: 20px;
+                          background-color: #e0f2fe;
+                          border: none;
+                          border: 1px solid #7dd3fc;
+                          color: #0369a1;
+                          border-radius: 6px;
+                        "
+                      >
+                        1
+                      </button>
+                      <CIcon
+                        v-if="child.actual_check_dt"
+                        icon="cil-check-circle"
+                        class="text-success"
+                        size="md"
+                      />
+                      <CIcon
+                        v-else-if="+currentDate <= +child.idxdate"
+                        icon="cil-circle"
+                        class="text-dark"
+                        size="md"
+                      />
+
+                      <CIcon
+                        v-else
+                        icon="cil-circle"
+                        class="text-danger"
+                        size="md"
+                      />
+                    </CButton>
+                    <CButton
+                      v-c-tooltip="
+                        `
+                      <div class='card'>
+                        <div class='card-header'>Detail data</div>
+                        <div class='card-body'>
+                          SOP No:  ${child.job_no} </br>
+                          Member: ${child.member_nm}
+                        </div>
+                      </div>
+                      `
+                      "
+                      v-if="child && child.is_wajik == true"
+                      class="mt-3"
+                      :color="`dark rounded`"
+                      html="true"
+                      variant="outline"
+                      style="transform: rotate(50deg)"
+                      @click="() => detailSchedule(child)"
+                    >
+                      <button
+                        disabled
+                        v-if="observation.comment_sh !== null"
                         style="
                           position: absolute;
                           margin-left: 20px;
@@ -129,13 +203,6 @@
               </td>
             </tr>
           </tbody>
-          <tbody v-else>
-            <tr>
-              <td :colspan="3 + containerDate.length + 1">
-                <b class="text-danger">Tidak Ada Data</b>
-              </td>
-            </tr>
-          </tbody>
         </table>
       </div>
     </div>
@@ -148,11 +215,13 @@ import { GET_LINES } from '@/store/modules/line.module'
 import { GET_OBSERVATION_SCHEDULE } from '@/store/modules/observation.module'
 import { mapGetters } from 'vuex'
 import Filter from '@/components/Filter.vue'
+import Loading from 'vue-loading-overlay'
 
 export default {
   name: 'STW Dashboard',
   data() {
     return {
+      isLoading: false,
       selectedMonth: null,
       selectedLine: '0',
       containerDate: [],
@@ -238,13 +307,20 @@ export default {
       }
     },
     async getObsSchedule() {
+      this.isLoading = true
       let objQuery = {
         line: this.selectedLine,
         month: this.selectedMonth.split('-')[1],
         year: this.selectedMonth.split('-')[0],
       }
       if (this.selectedLine != '0') objQuery.line = this.selectedLine
-      await this.$store.dispatch(GET_OBSERVATION_SCHEDULE, objQuery)
+      await this.$store
+        .dispatch(GET_OBSERVATION_SCHEDULE, objQuery)
+        .then((res) => {
+          if (res) {
+            this.isLoading = false
+          }
+        })
     },
     detailSchedule(obser) {
       console.log(obser.observation_id)
@@ -264,6 +340,7 @@ export default {
   },
   components: {
     Filter,
+    Loading,
   },
 }
 </script>

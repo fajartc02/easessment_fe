@@ -28,8 +28,21 @@
           <th>Actual</th>
           <th>Actions</th>
         </tr>
-        <template v-if="observationSchedule.length > 0">
+        <tbody>
+          <tr v-if="isLoading">
+            <td colspan="10" class="p-0" style="height: 200px">
+              <div class="vl-parent p-0" style="height: 100%">
+                <loading
+                  v-model:active="isLoading"
+                  :can-cancel="true"
+                  :is-full-page="false"
+                  :on-cancel="onCancel"
+                />
+              </div>
+            </td>
+          </tr>
           <tr
+            v-else
             v-for="(obaservation, i) in observationSchedule"
             :key="obaservation.uuid"
           >
@@ -79,29 +92,26 @@
               </div>
             </td>
           </tr>
-        </template>
-        <tr v-else>
-          <td colspan="6">
-            <h3>Tidak Ada Data</h3>
-          </td>
-        </tr>
+        </tbody>
       </table>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import {
   GET_OBSERVATION_SCHEDULE_LIST,
   DELETE_OBSERVATION_LIST,
 } from '@/store/modules/observation.module'
-import { mapGetters } from 'vuex'
 import Swal from 'sweetalert2'
+import Loading from 'vue-loading-overlay'
 
 export default {
   name: 'ScheduleObservation',
   data() {
     return {
+      isLoading: false,
       form: {
         line_id: null,
       },
@@ -117,7 +127,12 @@ export default {
   },
   methods: {
     async getObservations() {
-      await this.$store.dispatch(GET_OBSERVATION_SCHEDULE_LIST)
+      this.isLoading = true
+      await this.$store.dispatch(GET_OBSERVATION_SCHEDULE_LIST).then((res) => {
+        if (res) {
+          this.isLoading = false
+        }
+      })
     },
     async editPos(id) {
       await this.$router.push(`/schedule/observation/form?id=${id}`)
@@ -148,6 +163,7 @@ export default {
   async mounted() {
     await this.getObservations()
   },
+  components: { Loading },
 }
 </script>
  
