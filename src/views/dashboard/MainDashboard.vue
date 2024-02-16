@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="card mb-3">
+      <!-- filter -->
       <div class="card-header">
         <div class="row">
           <div class="col">
@@ -23,24 +24,39 @@
           </div>
           <div class="col">
             <label>Line</label>
-            <VueMultiselect
+            <select
+              class="form-select"
               v-model="selectedLine"
-              :options="lineData"
-              @select="addFilter('line')"
-              :custom-label="customLineFilterOptions"
+              @change="addFilter('line')"
             >
-            </VueMultiselect>
+              <option
+                v-for="(line, index) in getLinesOpts"
+                :key="index"
+                :value="line.id"
+              >
+                {{ line.text }}
+              </option>
+            </select>
           </div>
           <div class="col">
             <label>Shift</label>
-            <select class="form-select" @select="addFilter('shift')">
-              <option selected disabled>Select Shift</option>
-              <option value="1">RED</option>
-              <option value="2">WHITE</option>
+            <select
+              class="form-select"
+              v-model="selectedFilterShift"
+              @change="addFilter('shift')"
+            >
+              <option
+                v-for="(group, index) in getGroupsOpts"
+                :key="index"
+                :value="group.id"
+              >
+                {{ group.text }}
+              </option>
             </select>
           </div>
         </div>
       </div>
+      <!-- end filter -->
       <div class="card-body px-4">
         <div v-if="cond == 1">
           <div class="row">
@@ -127,9 +143,9 @@
 import moment from 'moment'
 import { GET_LINES } from '@/store/modules/line.module'
 import { GET_GRAPH } from '@/store/modules/graph.module'
+import { GET_GROUP } from '@/store/modules/group.module'
 import { mapGetters } from 'vuex'
 import Loading from 'vue-loading-overlay'
-import VueMultiselect from 'vue-multiselect'
 
 export default {
   name: 'Main Dashboard',
@@ -142,7 +158,7 @@ export default {
       selectedFilterStartDate: '2024-02-01',
       selectedFilterEndDate: '2024-02-29',
       selectedLine: '-1',
-      selectedFilterShift: null,
+      selectedFilterShift: '-1',
       defaultOptions: {
         chart: {
           type: 'bar',
@@ -206,32 +222,32 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getLinesOpts', 'getGraphs']),
+    ...mapGetters(['getLinesOpts', 'getGraphs', 'getGroupsOpts']),
   },
   methods: {
-    async getLines() {
+    async getGroup() {
       try {
-        this.$store.dispatch(GET_LINES).then((res) => {
-          if (res) {
-            this.mapLinesData()
-          }
-        })
+        this.$store.dispatch(GET_GROUP)
       } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
-    mapLinesData() {
-      this.getLinesOpts?.map((item) => {
-        this.lineData.push({ line_id: item.id, line_name: item.text })
-      })
-    },
-    customLineFilterOptions({ line_name }) {
-      return `${line_name}`
+    async getLines() {
+      try {
+        this.$store.dispatch(GET_LINES)
+      } catch (error) {
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
+      }
     },
     addFilter() {
       this.getGraph()
-      this.cond = 2
+      if (this.selectedLine == '-1' || this.selectedFilterShift == '-1') {
+        this.cond = 2
+      } else {
+        this.cond = 1
+      }
     },
     async getGraph() {
       this.isLoading = true
@@ -239,7 +255,7 @@ export default {
       let objQuery = {
         start_date: this.selectedFilterStartDate,
         end_date: this.selectedFilterEndDate,
-        line_id: this.selectedLine.line_id,
+        line_id: this.selectedLine,
         group_id: this.selectedFilterShift,
       }
 
@@ -262,8 +278,12 @@ export default {
     this.selectedMonth = `${year}-${month}`
     await this.getLines()
     await this.getGraph()
+    await this.getGroup()
   },
-  components: { Loading, VueMultiselect },
+  components: { Loading },
+  updated() {
+    console.log(this.selectedLine + ' ' + this.selectedFilterShift)
+  },
 }
 </script>
 

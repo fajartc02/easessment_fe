@@ -15,12 +15,10 @@ const getters = {
 };
 
 const actions = {
-    [GET_GRAPH]({ commit }, query ) {
-
-        console.log(query)
+    [GET_GRAPH]({ commit }, query ) {  
 
         let filterOpt;
-        if(query.line_id !== undefined ){
+        if(query.line_id !== '-1' || query.group_id !== '-1' ){
             filterOpt = `?start_date=${query.start_date}&end_date=${query.end_date}&line_id=${query.line_id}&group_id=${query.group_id}`
         } else { 
             filterOpt = `?start_date=${query.start_date}&end_date=${query.end_date}`
