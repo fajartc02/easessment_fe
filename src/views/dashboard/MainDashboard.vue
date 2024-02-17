@@ -58,7 +58,7 @@
       </div>
       <!-- end filter -->
       <div class="card-body px-4">
-        <div v-if="cond == 1">
+        <div v-if="cond == 'default'">
           <div class="row">
             <div class="col-md-2 mr-2">
               <apexchart
@@ -100,7 +100,7 @@
             </div>
           </div>
         </div>
-        <div v-else>
+        <div v-else-if="cond == 'detail'">
           <div class="row">
             <div
               style="height: 300px"
@@ -153,7 +153,7 @@ export default {
     return {
       selectedMonth: null,
       lineData: [],
-      cond: 1,
+      cond: 'default',
       isLoading: false,
       selectedFilterStartDate: '2024-02-01',
       selectedFilterEndDate: '2024-02-29',
@@ -243,10 +243,10 @@ export default {
     },
     addFilter() {
       this.getGraph()
-      if (this.selectedLine == '-1' || this.selectedFilterShift == '-1') {
-        this.cond = 2
-      } else {
-        this.cond = 1
+      if (this.selectedLine == '-1') {
+        this.cond = 'default'
+      } else if (this.selectedLine !== '-1') {
+        this.cond = 'detail'
       }
     },
     async getGraph() {
