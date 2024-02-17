@@ -1,7 +1,38 @@
 <template>
   <div>
     <div class="card mb-3">
-      <Filter filterType="stw-dashboard" />
+      <!-- filter -->
+      <div class="card-header">
+        <div class="row">
+          <div class="col">
+            <label>Select month</label>
+            <input
+              type="month"
+              class="form-control"
+              v-model="selectedMonth"
+              @change="addFilter()"
+            />
+          </div>
+          <div class="col">
+            <label>Line</label>
+            <select
+              class="form-select"
+              v-model="selectedLine"
+              @change="addFilter()"
+            >
+              <option
+                v-for="(line, index) in getLinesOpts"
+                :key="index"
+                :value="line.id"
+              >
+                {{ line.text }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <!-- end filter -->
+
       <div
         class="card-header d-flex justify-content-between align-items-center"
       >
@@ -214,7 +245,6 @@ import moment from 'moment'
 import { GET_LINES } from '@/store/modules/line.module'
 import { GET_OBSERVATION_SCHEDULE } from '@/store/modules/observation.module'
 import { mapGetters } from 'vuex'
-import Filter from '@/components/Filter.vue'
 import Loading from 'vue-loading-overlay'
 
 export default {
@@ -223,7 +253,9 @@ export default {
     return {
       isLoading: false,
       selectedMonth: null,
-      selectedLine: '0',
+      selectedFilterStartDate: '',
+      selectedFilterEndDate: '',
+      selectedLine: '-1',
       containerDate: [],
       schedules: [],
       idxMonth: [
@@ -326,6 +358,9 @@ export default {
       console.log(obser.observation_id)
       this.$router.push(`/observation/${obser.observation_id}`)
     },
+    addFilter() {
+      this.getObsSchedule()
+    },
   },
   mounted() {
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
@@ -339,7 +374,6 @@ export default {
     }
   },
   components: {
-    Filter,
     Loading,
   },
 }

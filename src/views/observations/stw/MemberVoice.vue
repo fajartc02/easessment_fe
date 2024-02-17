@@ -2,7 +2,44 @@
 <template>
   <div>
     <div class="card mb-3">
-      <Filter filter-type="member-voice" />
+      <div class="card-header">
+        <div class="row">
+          <div class="col">
+            <label>Start date</label>
+            <input
+              type="date"
+              class="form-control"
+              v-model="selectedFilterStartDate"
+              @change="addFilter()"
+            />
+          </div>
+          <div class="col">
+            <label>End date</label>
+            <input
+              type="date"
+              class="form-control"
+              v-model="selectedFilterEndDate"
+              @change="addFilter()"
+            />
+          </div>
+          <div class="col">
+            <label>Line</label>
+            <select
+              class="form-select"
+              v-model="selectedFilterLineID"
+              @change="addFilter()"
+            >
+              <option
+                v-for="(line, index) in getLinesOpts"
+                :key="index"
+                :value="line.id"
+              >
+                {{ line.text }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
       <div
         class="card-header d-flex justify-content-between align-items-center"
       >
@@ -602,7 +639,6 @@ import {
   POST_MEMBERVOICE,
 } from '@/store/modules/membervoice.module'
 import { mapGetters } from 'vuex'
-import Filter from '@/components/Filter.vue'
 import VueMultiselect from 'vue-multiselect'
 import Swal from 'sweetalert2'
 import ApiService from '@/store/api.service'
@@ -616,8 +652,11 @@ export default {
       num: 24,
       lineData: [],
       selectedMonth: null,
-      selectedLine: '-1',
+      selectedFilterStartDate: '',
+      selectedFilterEndDate: '',
+      selectedFilterLineID: '-1',
       addMemberVoiceModal: false,
+      selectedLine: null,
       detailMVModal: false,
       picData: [],
       selectedPIC: null,
@@ -705,8 +744,21 @@ export default {
     },
     async getMemberVoices() {
       this.isLoading = true
+
+      let objQuery = {
+        start_date:
+          this.selectedFilterStartDate !== ''
+            ? this.selectedFilterStartDate
+            : this.selectedMonth + '-01',
+        end_date:
+          this.selectedFilterEndDate !== ''
+            ? this.selectedFilterEndDate
+            : this.selectedMonth + '-29',
+        line_id: this.selectedFilterLineID,
+      }
+
       try {
-        this.$store.dispatch(GET_MEMBERVOICE).then((res) => {
+        this.$store.dispatch(GET_MEMBERVOICE, objQuery).then((res) => {
           if (res) {
             this.isLoading = false
             this.selectedLineID = this.getMemberVoice[0]?.line_id
@@ -779,6 +831,9 @@ export default {
       const data = this.getMemberVoice[MVIndex]
       this.detailMVData = data
     },
+    addFilter() {
+      this.getMemberVoices()
+    },
   },
   async mounted() {
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
@@ -791,7 +846,7 @@ export default {
     await this.getFactors()
     await this.getCategories()
   },
-  components: { Filter, VueMultiselect, Loading },
+  components: { VueMultiselect, Loading },
 }
 </script>
     

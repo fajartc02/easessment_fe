@@ -1,7 +1,70 @@
 <template>
   <div>
     <div class="card mb-3">
-      <Filter filterType="list-temuan" />
+      <div class="card-header">
+        <div class="row">
+          <div class="col">
+            <label>Start date</label>
+            <input
+              type="date"
+              class="form-control"
+              v-model="selectedFilterStartDate"
+              @change="addFilter()"
+            />
+          </div>
+          <div class="col">
+            <label>End date</label>
+            <input
+              type="date"
+              class="form-control"
+              v-model="selectedFilterEndDate"
+              @change="addFilter()"
+            />
+          </div>
+          <div class="col">
+            <label>Line</label>
+            <select
+              class="form-select"
+              v-model="selectedLine"
+              @change="addFilter()"
+            >
+              <option
+                v-for="(line, index) in getLinesOpts"
+                :key="index"
+                :value="line.id"
+              >
+                {{ line.text }}
+              </option>
+            </select>
+          </div>
+          <div class="col">
+            <label>Category</label>
+            <select
+              class="form-select"
+              @change="addFilter()"
+              v-model="selectedFilterSourceCat"
+            >
+              <option selected>All</option>
+              <option value="H">Henkaten</option>
+              <option value="MV">Member Voice</option>
+              <option value="Obs">Observation</option>
+              <option value="FT">Focus theme</option>
+            </select>
+          </div>
+          <div class="col">
+            <label>Status</label>
+            <select
+              class="form-select"
+              @change="addFilter()"
+              v-model="selectedFilterJudge"
+            >
+              <option selected>All</option>
+              <option value="true">Sudah</option>
+              <option value="false">Belum</option>
+            </select>
+          </div>
+        </div>
+      </div>
       <div
         class="card-header d-flex justify-content-between align-items-center"
       >
@@ -102,7 +165,7 @@
               ${finding.cm_judg == false ? 'background-color: #fff' : ''} 
               `"
             >
-              <th>{{ +finding.no }}</th>
+              <th>{{ findingIndex + 1 }}</th>
               <th>{{ finding.line_nm }}</th>
               <td>{{ finding.source_category }}</td>
               <td>{{ formatTheDate(finding.finding_date) }}</td>
@@ -383,8 +446,8 @@
 import moment from 'moment'
 import { GET_USERS } from '@/store/modules/user.module'
 import { GET_FINDINGS } from '@/store/modules/finding.module'
+import { GET_LINES } from '@/store/modules/line.module'
 import { mapGetters } from 'vuex'
-import Filter from '@/components/Filter.vue'
 import VueMultiselect from 'vue-multiselect'
 import Loading from 'vue-loading-overlay'
 
@@ -394,6 +457,11 @@ export default {
     return {
       isLoading: false,
       num: 28,
+      selectedFilterStartDate: '',
+      selectedFilterEndDate: '',
+      selectedFilterSourceCat: '',
+      selectedFilterJudge: '',
+      selectedLine: '-1',
       selectedMonth: null,
       findingDetail: null,
       addTemuanModal: false,
@@ -404,9 +472,17 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getUsersOpts', 'getFindings']),
+    ...mapGetters(['getUsersOpts', 'getFindings', 'getLinesOpts']),
   },
   methods: {
+    async getLines() {
+      try {
+        this.$store.dispatch(GET_LINES)
+      } catch (error) {
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
+      }
+    },
     async getUsers() {
       try {
         this.$store.dispatch(GET_USERS)
@@ -420,8 +496,17 @@ export default {
     },
     async getFindingsFunc() {
       let objQuery = {
-        start_date: '2024-02-01',
-        end_date: '2024-02-29',
+        start_date:
+          this.selectedFilterStartDate !== ''
+            ? this.selectedFilterStartDate
+            : this.selectedMonth + '-01',
+        end_date:
+          this.selectedFilterEndDate !== ''
+            ? this.selectedFilterEndDate
+            : this.selectedMonth + '-29',
+        line_id: this.selectedLine,
+        source_category: 'Obs',
+        cm_judg: true,
       }
 
       this.isLoading = true
@@ -454,17 +539,21 @@ export default {
 
       return `${year}-${month}-${day}`
     },
+    addFilter() {
+      this.getFindingsFunc()
+    },
   },
-  mounted() {
+  async mounted() {
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
 
     this.selectedMonth = `${year}-${month}`
-    this.selectedLine = localStorage.getItem('line_id')
-    this.getUsers()
-    this.getFindingsFunc()
+    // this.selectedLine = localStorage.getItem('line_id')
+    await this.getUsers()
+    await this.getFindingsFunc()
+    await this.getLines()
   },
-  components: { Filter, VueMultiselect, Loading },
+  components: { VueMultiselect, Loading },
 }
 </script>
   

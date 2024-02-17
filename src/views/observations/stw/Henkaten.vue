@@ -1,7 +1,44 @@
 <template>
   <div>
     <div class="card mb-3">
-      <Filter filter-type="henkaten" />
+      <div class="card-header">
+        <div class="row">
+          <div class="col">
+            <label>Start date</label>
+            <input
+              type="date"
+              class="form-control"
+              v-model="selectedFilterStartDate"
+              @change="addFilter()"
+            />
+          </div>
+          <div class="col">
+            <label>End date</label>
+            <input
+              type="date"
+              class="form-control"
+              v-model="selectedFilterEndDate"
+              @change="addFilter()"
+            />
+          </div>
+          <div class="col">
+            <label>Line</label>
+            <select
+              class="form-select"
+              v-model="selectedFilterLineID"
+              @change="addFilter()"
+            >
+              <option
+                v-for="(line, index) in getLinesOpts"
+                :key="index"
+                :value="line.id"
+              >
+                {{ line.text }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
       <div
         class="card-header d-flex justify-content-between align-items-center"
       >
@@ -354,7 +391,6 @@ import { mapGetters } from 'vuex'
 import { GET_USERS } from '@/store/modules/user.module'
 import { GET_HENKATEN, POST_HENKATEN } from '@/store/modules/henkaten.module'
 import { GET_LINES } from '@/store/modules/line.module'
-import Filter from '@/components/Filter.vue'
 import VueMultiselect from 'vue-multiselect'
 import Swal from 'sweetalert2'
 import ApiService from '@/store/api.service'
@@ -373,6 +409,9 @@ export default {
       factors: [],
       categories: [],
       selectedPIC: null,
+      selectedFilterStartDate: '',
+      selectedFilterEndDate: '',
+      selectedFilterLineID: '-1',
       henkatenData: {
         henkaten_date: '',
         henkaten_location: '',
@@ -439,8 +478,21 @@ export default {
     },
     async getHenkaten() {
       this.isLoading = true
+
+      let objQuery = {
+        start_date:
+          this.selectedFilterStartDate !== ''
+            ? this.selectedFilterStartDate
+            : this.selectedMonth + '-01',
+        end_date:
+          this.selectedFilterEndDate !== ''
+            ? this.selectedFilterEndDate
+            : this.selectedMonth + '-29',
+        line_id: this.selectedFilterLineID,
+      }
+
       try {
-        this.$store.dispatch(GET_HENKATEN).then((res) => {
+        this.$store.dispatch(GET_HENKATEN, objQuery).then((res) => {
           if (res) {
             this.isLoading = false
           }
@@ -522,6 +574,9 @@ export default {
     customPicOptions({ pic_name }) {
       return `${pic_name}`
     },
+    addFilter() {
+      this.getHenkaten()
+    },
   },
   async mounted() {
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
@@ -539,7 +594,7 @@ export default {
     this.mapLinesData()
     this.mapUsersData()
   },
-  components: { Filter, VueMultiselect, Loading },
+  components: { VueMultiselect, Loading },
 }
 </script>
 

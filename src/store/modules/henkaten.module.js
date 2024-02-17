@@ -16,10 +16,19 @@ const getters = {
 };
 
 const actions = {
-    [GET_HENKATEN]({ commit } ) {
+    [GET_HENKATEN]({ commit }, query ) {
+
+        let reqQuery
+
+        if(query.start_date !== ' ' || query.end_date !== ' ' || query.line_id !== ' '){
+            reqQuery = `operational/henkaten/get?line_id=${query.line_id}&start_date=${query.start_date}&end_date=${query.end_date}`
+        } else {
+            reqQuery = `operational/henkaten/get`
+        }
+
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
-            ApiService.get(`operational/henkaten/get`,)
+            ApiService.get(reqQuery)
                 .then((result) => { 
                     const res = result.data
                     if (res) {
