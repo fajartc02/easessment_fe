@@ -296,7 +296,11 @@
           </td>
           <td style="width: 300px">
             <div
-              v-if="judgementPrecentage > 20 && selectedCategoryID == item.id"
+              v-if="
+                judgementPrecentage > 20 &&
+                selectedCategoryID == item.id &&
+                item.category_nm == 'Standarize Work'
+              "
               class="mx-2"
             >
               <select class="form-select" v-model="selectedFactor">
@@ -330,21 +334,23 @@
           </td>
           <td>
             <div
-              v-if="judgementPrecentage > 20 && selectedCategoryID == item.id"
+              v-if="
+                judgementPrecentage > 20 &&
+                selectedCategoryID == item.id &&
+                item.category_nm == 'Standarize Work'
+              "
             >
-              <div class="card">
-                <button
-                  class="btn btn-info text-white"
-                  @click="
-                    () => {
-                      addFindingsModal = true
-                      mapUsersData()
-                    }
-                  "
-                >
-                  Add findings
-                </button>
-              </div>
+              <button
+                class="btn btn-info text-white"
+                @click="
+                  () => {
+                    addFindingsModal = true
+                    mapUsersData()
+                  }
+                "
+              >
+                Add findings
+              </button>
             </div>
             <div
               v-else-if="
@@ -359,6 +365,15 @@
                   Add findings
                 </button>
               </div>
+            </div>
+            <div
+              v-if="
+                observationsData?.findings?.length >= 1 &&
+                selectedCategoryID == item.id &&
+                selectedJudgeName == 'NG'
+              "
+            >
+              ada
             </div>
           </td>
         </tr>
@@ -774,6 +789,23 @@ export default {
       this.judgementVal.stw_ct3 = 0
       this.judgementVal.stw_ct4 = 0
       this.judgementVal.stw_ct5 = 0
+
+      // reset finding state
+      this.finding_date = moment().format('YYYY-MM-DD')
+      this.finding_location = ''
+      this.finding_desc = ''
+      this.cm_desc = ''
+      this.cm_priority = 0
+      this.cm_str_plan_date = ''
+      this.cm_end_plan_date = ''
+      this.cm_str_act_date = null
+      this.cm_end_act_date = null
+      this.cm_training_date = null
+      this.cm_judg = false
+      this.cm_sign_lh_red = null
+      this.cm_sign_lh_white = null
+      this.cm_sign_sh = null
+      this.cm_comments = null
     },
     initData() {
       this.observationsData.observation_id = this.$route.params.id
@@ -1017,6 +1049,9 @@ export default {
     await this.getCategories()
     await this.getUsers()
     this.initData()
+  },
+  updated() {
+    console.log(this.selectedCategoryID + ' ' + this.selectedJudgeName)
   },
 }
 </script>
