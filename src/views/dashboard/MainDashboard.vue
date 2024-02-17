@@ -144,7 +144,8 @@ export default {
             formatter: undefined,
             title: {
               formatter: (seriesName, index) => {
-                return `<p> Total : ${this.overallGraphData[index.seriesIndex].count
+                console.log(seriesName);
+                return `<p> Total ${seriesName} : ${this.overallGraphData[index.seriesIndex].count
                   } </p>`
               },
             },
@@ -216,7 +217,7 @@ export default {
       }
 
       this.$router.push(
-        `/stw/list-temuan?source_category=${source_category}&cm_judg=${cm_judg}&line_id=${this.selectedLineID.line_id}`,
+        `/stw/list-temuan?source_category=${source_category}&cm_judg=${cm_judg}&line_id=${this.selectedLineID?.line_id ? this.selectedLineID.line_id : this.selectedLine}`,
       )
 
       // kalau seriesIndex == 0 = cm_judg = false
