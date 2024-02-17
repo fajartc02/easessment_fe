@@ -459,7 +459,7 @@
       alignment="center"
       :visible="detailMVModal"
       @close="detailMVModal = false"
-      size="lg"
+      size="xl"
       scrollable
     >
       <CModalHeader>
@@ -478,133 +478,103 @@
                   :value="formatTheDate(detailMVData?.mv_date_finding)"
                 />
               </div>
-              <!-- <div class="mb-2">
-                <label class="mb-1">Pos</label>
+              <div class="mb-2">
+                <label class="mb-1">Line</label>
                 <input
                   type="text"
                   class="form-control"
-                  :value="detailMVData?.finding_location"
+                  :value="detailMVData?.line_nm"
                 />
               </div>
               <div class="mb-2">
-                <label class="mb-1">Finding description</label>
+                <label class="mb-1">MV Problem</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  :value="detailMVData?.mv_problem"
+                />
+              </div>
+              <div class="mb-2">
+                <label class="mb-1">MV Location</label>
                 <textarea
                   cols="30"
                   rows="5"
                   class="form-control"
-                  :value="detailMVData?.finding_desc"
+                  :value="detailMVData?.mv_location"
                 ></textarea>
               </div>
               <div class="mb-2">
-                <label class="mb-1">CM description</label>
+                <label class="mb-1">MV No process</label>
                 <textarea
                   cols="30"
                   rows="5"
                   class="form-control"
-                  :value="detailMVData?.cm_desc"
+                  :value="detailMVData?.mv_process_no"
                 ></textarea>
               </div>
               <div class="mb-2">
-                <label class="mb-1">Priority</label>
-                <select
-                  class="form-select"
-                  :defaultValue="detailMVData?.cm_priority"
-                >
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                </select>
-              </div> -->
-
-              <!-- <div class="mb-2">
-                <label class="mb-1">PIC </label>
-                <input
-                  type="text"
+                <label class="mb-1">MV Category</label>
+                <textarea
+                  cols="30"
+                  rows="5"
                   class="form-control"
-                  :value="detailMVData?.cm_pic_nm"
-                />
-                <VueMultiselect
-                  :options="picData"
-                  :custom-label="customPicOptions"
-                >
-                </VueMultiselect>
+                  :value="detailMVData?.mv_category"
+                ></textarea>
               </div>
               <div class="mb-2">
-                <label class="mb-1">CM Start Plan Date </label>
-                <input
-                  type="date"
+                <label class="mb-1">Penanggulangan</label>
+                <textarea
+                  cols="30"
+                  rows="5"
                   class="form-control"
-                  :value="formatTheDate(detailMVData?.cm_str_plan_date)"
-                />
+                  :value="detailMVData?.mv_countermeasure"
+                ></textarea>
               </div>
               <div class="mb-2">
-                <label class="mb-1">CM End Plan Date </label>
-                <input
-                  type="date"
+                <label class="mb-1">PIC</label>
+                <textarea
+                  cols="30"
+                  rows="5"
                   class="form-control"
-                  :value="formatTheDate(detailMVData?.cm_end_plan_date)"
-                />
-              </div> -->
+                  :value="detailMVData?.mv_pic_nm"
+                ></textarea>
+              </div>
             </CAccordionBody>
           </CAccordionItem>
           <CAccordionItem :item-key="2">
             <CAccordionHeader> Findings </CAccordionHeader>
             <CAccordionBody>
-              <div class="mb-2">
-                <label class="mb-1">CM Start actual date</label>
-                <input
-                  type="date"
-                  class="form-control"
-                  :value="formatTheDate(detailMVData?.cm_str_act_date)"
-                  disabled
-                />
-              </div>
-              <div class="mb-2">
-                <label class="mb-1">CM End actual date</label>
-                <input
-                  type="date"
-                  class="form-control"
-                  :value="formatTheDate(detailMVData?.cm_end_act_date)"
-                  disabled
-                />
-              </div>
-              <div class="mb-2">
-                <label class="mb-1">CM Training date</label>
-                <input type="date" class="form-control" disabled />
-              </div>
-              <div class="mb-2">
-                <label class="mb-1">CM Judge</label>
-                <select
-                  class="form-select"
-                  :value="detailMVData?.cm_judg"
-                  disabled
-                >
-                  <option value="true">Sudah</option>
-                  <option value="false">Belum</option>
-                </select>
-              </div>
-              <div class="mb-2">
-                <label class="mb-1">CM Sign LH Red</label>
-                <input type="file" class="form-control" disabled />
-              </div>
-              <div class="mb-2">
-                <label class="mb-1">CM Sign LH White</label>
-                <input type="file" class="form-control" disabled />
-              </div>
-              <div class="mb-2">
-                <label class="mb-1">CM Sign SH</label>
-                <input type="file" class="form-control" disabled />
-              </div>
-              <div class="mb-2">
-                <label class="mb-1">CM Comments</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  :value="detailMVData?.cm_comments"
-                  disabled
-                />
-              </div>
+              <table class="table table-striped table-bordered">
+                <thead>
+                  <th>No</th>
+                  <th>Line</th>
+                  <th>Location</th>
+                  <th>Desc</th>
+                  <th>Priority</th>
+                  <th>CM act str date</th>
+                  <th>CM act end date</th>
+                  <th>CM judge</th>
+                  <th>CM comments</th>
+                  <th>Status</th>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="(finding, findingIndex) in detailMVData?.findings"
+                    :key="findingIndex"
+                  >
+                    <td>{{ findingIndex + 1 }}</td>
+                    <td>{{ finding?.line_nm }}</td>
+                    <td>{{ finding?.finding_location }}</td>
+                    <td>{{ finding?.finding_desc }}</td>
+                    <td>{{ finding?.cm_priority }}</td>
+                    <td>{{ formatTheDate(finding?.cm_str_act_date) }}</td>
+                    <td>{{ formatTheDate(finding?.cm_end_act_date) }}</td>
+                    <td>{{ finding?.cm_judg }}</td>
+                    <td>{{ finding?.cm_comments }}</td>
+                    <td>{{ finding?.status_finding }}</td>
+                  </tr>
+                </tbody>
+              </table>
             </CAccordionBody>
           </CAccordionItem>
         </CAccordion>
