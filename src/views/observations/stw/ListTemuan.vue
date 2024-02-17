@@ -44,7 +44,7 @@
               @change="addFilter()"
               v-model="selectedFilterSourceCat"
             >
-              <option selected>All</option>
+              <option value="-1" selected>All</option>
               <option value="H">Henkaten</option>
               <option value="MV">Member Voice</option>
               <option value="Obs">Observation</option>
@@ -58,7 +58,7 @@
               @change="addFilter()"
               v-model="selectedFilterJudge"
             >
-              <option selected>All</option>
+              <option value="-1" selected>All</option>
               <option value="true">Sudah</option>
               <option value="false">Belum</option>
             </select>
@@ -70,17 +70,24 @@
       >
         <h5>List temuan</h5>
       </div>
-      <div style="width: 100%; overflow-x: scroll">
-        <table style="border: 1px solid black" class="text-center">
+      <div
+        style="
+          width: 100%;
+          display: block;
+          overflow-x: auto;
+          white-space: nowrap;
+        "
+      >
+        <table style="border: 1px solid black; width: 100%" class="text-center">
           <thead class="text-center">
             <tr>
               <th rowspan="3">No</th>
-              <th rowspan="3">Line name</th>
+              <th rowspan="3" width="120">Line name</th>
               <th rowspan="3">Source cat</th>
-              <th rowspan="3">Tanggal</th>
-              <th rowspan="3">Pos</th>
-              <th rowspan="3">Temuan prob</th>
-              <th rowspan="3">Rencana perbaikan</th>
+              <th rowspan="3" width="120">Tanggal</th>
+              <th rowspan="3" width="180">Pos</th>
+              <th rowspan="3" width="120">Temuan prob</th>
+              <th rowspan="3" width="120">Rencana perbaikan</th>
               <th rowspan="3">priority</th>
               <th>Stop 6</th>
               <th>Rank WRAS</th>
@@ -108,9 +115,9 @@
               <th colspan="2">Man</th>
               <th>Material</th>
               <th>Machine</th>
-              <th class="week">I</th>
-              <th class="week">II</th>
-              <th class="week">III</th>
+              <th width="100">I</th>
+              <th width="100">II</th>
+              <th width="100">III</th>
               <th class="week">IV</th>
               <th class="week">I</th>
               <th class="week">II</th>
@@ -166,13 +173,15 @@
               `"
             >
               <th>{{ findingIndex + 1 }}</th>
-              <th>{{ finding.line_nm }}</th>
-              <td>{{ finding.source_category }}</td>
-              <td>{{ formatTheDate(finding.finding_date) }}</td>
-              <td>{{ finding.finding_location }}</td>
-              <td>{{ finding.finding_desc }}</td>
-              <td>{{ formatTheDate(finding.cm_str_plan_date) }}</td>
-              <td>{{ finding.cm_priority }}</td>
+              <td class="px-2">{{ finding.line_nm }}</td>
+              <td class="px-2">{{ finding.source_category }}</td>
+              <td class="px-2">{{ formatTheDate(finding.finding_date) }}</td>
+              <td class="px-2">{{ finding.finding_location }}</td>
+              <td class="px-2">{{ finding.finding_desc }}</td>
+              <td class="px-2">
+                {{ formatTheDate(finding.cm_str_plan_date) }}
+              </td>
+              <td class="px-2">{{ finding.cm_priority }}</td>
               <td colspan="2">
                 {{ finding.factor_nm == 'Safety' ? 'v' : ' ' }}
               </td>
@@ -198,18 +207,19 @@
                 ></div>
               </td>
               <td class="px-1">
-                <button
-                  class="btn btn-info btn-sm text-white w-full my-1 w-100"
-                  @click="
-                    () => {
-                      getDetailTemuan(findingIndex)
-                      detailTemuanModal = true
-                    }
-                  "
-                >
-                  Detail
-                </button>
-                <button class="btn btn-info btn-sm text-white">Download</button>
+                <div class="px-2 d-flex">
+                  <button
+                    class="btn btn-info btn-sm text-white w-full my-1"
+                    @click="
+                      () => {
+                        getDetailTemuan(findingIndex)
+                        detailTemuanModal = true
+                      }
+                    "
+                  >
+                    Detail
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -283,144 +293,160 @@
         <CModalTitle>Detail temuan</CModalTitle>
       </CModalHeader>
       <CModalBody>
-        <CAccordion :active-item-key="1" always-open>
-          <CAccordionItem :item-key="1">
-            <CAccordionHeader> Henkaten input </CAccordionHeader>
-            <CAccordionBody>
-              <div class="mb-2">
-                <label class="mb-1">Tanggal temuan</label>
-                <input
-                  type="date"
-                  class="form-control"
-                  :value="formatTheDate(findingDetail?.finding_date)"
-                />
-              </div>
-              <div class="mb-2">
-                <label class="mb-1">Pos</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  :value="findingDetail?.finding_location"
-                />
-              </div>
-              <div class="mb-2">
-                <label class="mb-1">Finding description</label>
-                <textarea
-                  cols="30"
-                  rows="5"
-                  class="form-control"
-                  :value="findingDetail?.finding_desc"
-                ></textarea>
-              </div>
-              <div class="mb-2">
-                <label class="mb-1">CM description</label>
-                <textarea
-                  cols="30"
-                  rows="5"
-                  class="form-control"
-                  :value="findingDetail?.cm_desc"
-                ></textarea>
-              </div>
-              <div class="mb-2">
-                <label class="mb-1">Priority</label>
-                <select
-                  class="form-select"
-                  :defaultValue="findingDetail?.cm_priority"
-                >
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                </select>
-              </div>
+        <div class="mb-2">
+          <label class="mb-1">Line</label>
+          <input
+            type="text"
+            class="form-control"
+            :value="findingDetail?.line_nm"
+            disabled
+          />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">Source cat</label>
+          <input
+            type="text"
+            class="form-control"
+            :value="findingDetail?.source_category"
+            disabled
+          />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">Tanggal temuan</label>
+          <input
+            type="date"
+            class="form-control"
+            :value="formatTheDate(findingDetail?.finding_date)"
+            disabled
+          />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">Pos</label>
+          <input
+            type="text"
+            class="form-control"
+            :value="findingDetail?.finding_location"
+            disabled
+          />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">Finding description / problem</label>
+          <textarea
+            cols="30"
+            rows="5"
+            class="form-control"
+            :value="findingDetail?.finding_desc"
+            disabled
+          ></textarea>
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">Rencana perbaikan</label>
+          <input
+            type="date"
+            class="form-control"
+            :value="formatTheDate(findingDetail?.cm_str_plan_date)"
+            disabled
+          />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">Priority</label>
+          <select
+            class="form-select"
+            :defaultValue="findingDetail?.cm_priority"
+            disabled
+          >
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">PIC </label>
+          <input
+            type="text"
+            class="form-control"
+            :value="findingDetail?.cm_pic_nm"
+            disabled
+          />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM description</label>
+          <textarea
+            cols="30"
+            rows="5"
+            class="form-control"
+            :value="findingDetail?.cm_desc"
+            disabled
+          ></textarea>
+        </div>
 
-              <div class="mb-2">
-                <label class="mb-1">PIC </label>
-                <input
-                  type="text"
-                  class="form-control"
-                  :value="findingDetail?.cm_pic_nm"
-                />
-                <!-- <VueMultiselect
-                  :options="picData"
-                  :custom-label="customPicOptions"
-                >
-                </VueMultiselect> -->
-              </div>
-              <div class="mb-2">
-                <label class="mb-1">CM Start Plan Date </label>
-                <input
-                  type="date"
-                  class="form-control"
-                  :value="formatTheDate(findingDetail?.cm_str_plan_date)"
-                />
-              </div>
-              <div class="mb-2">
-                <label class="mb-1">CM End Plan Date </label>
-                <input
-                  type="date"
-                  class="form-control"
-                  :value="formatTheDate(findingDetail?.cm_end_plan_date)"
-                />
-              </div>
-            </CAccordionBody>
-          </CAccordionItem>
-          <CAccordionItem :item-key="2">
-            <CAccordionHeader> Findings </CAccordionHeader>
-            <CAccordionBody>
-              <div class="mb-2">
-                <label class="mb-1">CM Start actual date</label>
-                <input
-                  type="date"
-                  class="form-control"
-                  :value="formatTheDate(findingDetail?.cm_str_act_date)"
-                  disabled
-                />
-              </div>
-              <div class="mb-2">
-                <label class="mb-1">CM End actual date</label>
-                <input
-                  type="date"
-                  class="form-control"
-                  :value="formatTheDate(findingDetail?.cm_end_act_date)"
-                  disabled
-                />
-              </div>
-              <div class="mb-2">
-                <label class="mb-1">CM Training date</label>
-                <input type="date" class="form-control" disabled />
-              </div>
-              <div class="mb-2">
-                <label class="mb-1">CM Judge</label>
-                <select
-                  class="form-select"
-                  :value="findingDetail?.cm_judg"
-                  disabled
-                >
-                  <option value="true">Sudah</option>
-                  <option value="false">Belum</option>
-                </select>
-              </div>
-              <div class="mb-2">
-                <label class="mb-1">CM Sign LH Red</label>
-                <input type="file" class="form-control" disabled />
-              </div>
-              <div class="mb-2">
-                <label class="mb-1">CM Sign LH White</label>
-                <input type="file" class="form-control" disabled />
-              </div>
-              <div class="mb-2">
-                <label class="mb-1">CM Sign SH</label>
-                <input type="file" class="form-control" disabled />
-              </div>
-              <div class="mb-2">
-                <label class="mb-1">CM Comments</label>
-                <input type="text" class="form-control" disabled />
-              </div>
-            </CAccordionBody>
-          </CAccordionItem>
-        </CAccordion>
-        <div></div>
+        <div class="mb-2">
+          <label class="mb-1">CM Start Plan Date </label>
+          <input
+            type="date"
+            class="form-control"
+            :value="formatTheDate(findingDetail?.cm_str_plan_date)"
+            disabled
+          />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM End Plan Date </label>
+          <input
+            type="date"
+            class="form-control"
+            :value="formatTheDate(findingDetail?.cm_end_plan_date)"
+            disabled
+          />
+        </div>
+
+        <hr />
+
+        <div class="mb-2">
+          <label class="mb-1">CM Start actual date</label>
+          <input
+            type="date"
+            class="form-control"
+            :value="formatTheDate(findingDetail?.cm_str_act_date)"
+            disabled
+          />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM End actual date</label>
+          <input
+            type="date"
+            class="form-control"
+            :value="formatTheDate(findingDetail?.cm_end_act_date)"
+            disabled
+          />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM Training date</label>
+          <input type="date" class="form-control" disabled />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM Judge</label>
+          <select class="form-select" :value="findingDetail?.cm_judg" disabled>
+            <option value="true">Sudah</option>
+            <option value="false">Belum</option>
+          </select>
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM Sign LH Red</label>
+          <input type="file" class="form-control" disabled />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM Sign LH White</label>
+          <input type="file" class="form-control" disabled />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM Sign SH</label>
+          <input type="file" class="form-control" disabled />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM Comments</label>
+          <input type="text" class="form-control" disabled />
+        </div>
       </CModalBody>
       <CModalFooter>
         <router-link
@@ -457,10 +483,11 @@ export default {
     return {
       isLoading: false,
       num: 28,
+      thisYear: '',
       selectedFilterStartDate: '',
       selectedFilterEndDate: '',
-      selectedFilterSourceCat: '',
-      selectedFilterJudge: '',
+      selectedFilterSourceCat: '-1',
+      selectedFilterJudge: '-1',
       selectedLine: '-1',
       selectedMonth: null,
       findingDetail: null,
@@ -505,8 +532,8 @@ export default {
             ? this.selectedFilterEndDate
             : this.selectedMonth + '-29',
         line_id: this.selectedLine,
-        source_category: 'Obs',
-        cm_judg: true,
+        source_category: this.selectedFilterSourceCat,
+        cm_judg: this.selectedFilterJudge,
       }
 
       this.isLoading = true
@@ -525,7 +552,6 @@ export default {
     getDetailTemuan(findingIndex) {
       const data = this.getFindings[findingIndex]
       this.findingDetail = data
-      console.log(data)
     },
     mapUsersData() {
       this.getUsersOpts?.map((item) => {
@@ -544,10 +570,22 @@ export default {
     },
   },
   async mounted() {
+    this.selectedFilterSourceCat = this.$route.query.source_category
+      ? this.$route.query.source_category
+      : '-1'
+    this.selectedFilterJudge = this.$route.query.cm_judg
+      ? this.$route.query.cm_judg
+      : '-1'
+    this.selectedLine = this.$route.query.line_id
+      ? this.$route.query.line_id
+      : '-1'
+
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
 
     this.selectedMonth = `${year}-${month}`
+    this.selectedFilterStartDate = `${year}-${month}-01`
+    this.selectedFilterEndDate = `${year}-12-31`
     // this.selectedLine = localStorage.getItem('line_id')
     await this.getUsers()
     await this.getFindingsFunc()
@@ -561,11 +599,7 @@ export default {
 
 <style>
 .week {
-  width: 20px;
-}
-th,
-td {
-  padding: 8px;
+  width: 20px !important;
 }
 </style>
   

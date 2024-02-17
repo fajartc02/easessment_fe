@@ -60,11 +60,11 @@
       <div class="card-body px-4">
         <div v-if="cond == 'default'">
           <div class="row">
-            <div class="col-md-2 mr-2">
+            <div class="col-md-2 mr-2" v-if="overallGraphData">
               <apexchart
                 type="bar"
                 :options="defaultOptions"
-                :series="series"
+                :series="overallGraphData"
                 height="100%"
               ></apexchart>
             </div>
@@ -93,6 +93,12 @@
                     :options="options"
                     :series="detailGraph.chartData"
                     height="100%"
+                    @click="
+                      (event, chartContext, config) => {
+                        selectedLineID = detailGraph
+                        clickHandler(event, chartContext, config)
+                      }
+                    "
                   ></apexchart>
                 </div>
                 <div class="text-center mt-1">{{ detailGraph.line_nm }}</div>
@@ -102,9 +108,17 @@
         </div>
         <div v-else-if="cond == 'detail'">
           <div class="row">
+            <div class="col-md-2 mr-2" v-if="overallGraphData">
+              <apexchart
+                type="bar"
+                :options="defaultOptions"
+                :series="overallGraphData"
+                height="100%"
+              ></apexchart>
+            </div>
             <div
               style="height: 300px"
-              class="col-md-12 pt-2 pb-4 d-flex horizontal-scrollable"
+              class="col-md-10 pt-2 pb-4 d-flex horizontal-scrollable"
             >
               <div v-if="isLoading">
                 <loading
@@ -127,6 +141,7 @@
                     :options="options"
                     :series="detailGraph.chartData"
                     height="100%"
+                    @click="clickHandler"
                   ></apexchart>
                 </div>
                 <div class="text-center mt-1">{{ detailGraph.month }}</div>
@@ -146,6 +161,7 @@ import { GET_GRAPH } from '@/store/modules/graph.module'
 import { GET_GROUP } from '@/store/modules/group.module'
 import { mapGetters } from 'vuex'
 import Loading from 'vue-loading-overlay'
+import ApiService from '@/store/api.service'
 
 export default {
   name: 'Main Dashboard',
@@ -155,10 +171,18 @@ export default {
       lineData: [],
       cond: 'default',
       isLoading: false,
-      selectedFilterStartDate: '2024-02-01',
-      selectedFilterEndDate: '2024-02-29',
+      selectedLineID: null,
+      selectedFilterStartDate: '',
+      selectedFilterEndDate: '',
       selectedLine: '-1',
       selectedFilterShift: '-1',
+      yearNow: '',
+      overallGraphData: [
+        {
+          name: '',
+          data: [0],
+        },
+      ],
       defaultOptions: {
         chart: {
           type: 'bar',
@@ -169,17 +193,42 @@ export default {
             show: false,
           },
           events: {
-            dataPointSelection: () => {
-              console.log(123)
+            dataPointSelection: function (event, chartContext, config) {
+              console.log(chartContext, config, event)
             },
           },
         },
         plotOptions: {
           bar: {
             vertical: true,
-            borderRadius: 10,
           },
         },
+        xaxis: {
+          categories: ['Overall graph'],
+        },
+        yaxis: {
+          min: 0,
+          max: 100,
+          title: {
+            text: '%',
+          },
+        },
+        tooltip: {
+          y: {
+            formatter: undefined,
+            title: {
+              formatter: (seriesName, index) => {
+                return `<p> Total : ${
+                  this.overallGraphData[index.seriesIndex].count
+                } </p>`
+              },
+            },
+          },
+        },
+        legend: {
+          show: false,
+        },
+        colors: ['#b91c1c', '#15803d', '#a16207'],
       },
       options: {
         chart: {
@@ -190,11 +239,6 @@ export default {
           toolbar: {
             show: false,
           },
-          events: {
-            dataPointSelection: (event, chartContext, config) => {
-              console.log(event, chartContext, config)
-            },
-          },
         },
         legend: {
           show: false,
@@ -202,29 +246,63 @@ export default {
         plotOptions: {
           bar: {
             vertical: true,
-            borderRadius: 10,
           },
         },
         xaxis: {
-          categories: ['Prob', 'Close', 'Remain'],
+          categories: ['problem', 'closed', 'remain'],
+        },
+        dataLabels: {
+          enabled: [true, true, true],
         },
       },
-      series: [
-        {
-          data: [
-            {
-              x: 'Overal Precentage',
-              y: 6653,
-            },
-          ],
-        },
-      ],
     }
   },
   computed: {
     ...mapGetters(['getLinesOpts', 'getGraphs', 'getGroupsOpts']),
   },
   methods: {
+    clickHandler(event, chartContext, config) {
+      console.log(event)
+      console.log(chartContext)
+      console.log(config)
+
+      const currentSeriesIndex = config.seriesIndex
+      const currentDataPointIndex = config.dataPointIndex
+      let cm_judg = false
+      let source_category
+
+      currentSeriesIndex == 1 ? (cm_judg = true) : null
+
+      switch (currentDataPointIndex) {
+        case 0:
+          source_category = 'MV'
+          break
+        case 1:
+          source_category = 'Obs'
+          break
+        case 2:
+          source_category = 'H'
+          break
+        case 3:
+          source_category = 'FT'
+          break
+        default:
+          break
+      }
+
+      this.$router.push(
+        `/stw/list-temuan?source_category=${source_category}&cm_judg=${cm_judg}&line_id=${this.selectedLineID.line_id}`,
+      )
+
+      // kalau seriesIndex == 0 = cm_judg = false
+      // kalau seriesIndex == 1 = cm_judg = true
+      // kalau seriesIndex == 2 = cm_judg = false
+
+      // kalau dataPointIndex == 0 = source_category = "MV"
+      // kalau dataPointIndex == 1 = source_category = "Obs"
+      // kalau dataPointIndex == 2 = source_category = "H"
+      // kalau dataPointIndex == 3 = source_category = "FT"
+    },
     async getGroup() {
       try {
         this.$store.dispatch(GET_GROUP)
@@ -243,6 +321,7 @@ export default {
     },
     addFilter() {
       this.getGraph()
+      this.getOverallGraph()
       if (this.selectedLine == '-1') {
         this.cond = 'default'
       } else if (this.selectedLine !== '-1') {
@@ -271,19 +350,37 @@ export default {
           this.isLoading = false
         })
     },
+    async getOverallGraph() {
+      let objQuery = {
+        start_date: this.selectedFilterStartDate,
+        end_date: this.selectedFilterEndDate,
+        line_id: this.selectedLine,
+        group_id: this.selectedFilterShift,
+      }
+
+      await ApiService.setHeader()
+      await ApiService.query('operational/graph/overall', objQuery)
+        .then((res) => {
+          this.overallGraphData = res.data.data
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
   },
   async mounted() {
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
+
+    this.selectedFilterStartDate = `${year}-${month}-01`
+    this.selectedFilterEndDate = `${year}-12-31`
     await this.getLines()
     await this.getGraph()
     await this.getGroup()
+    await this.getOverallGraph()
   },
   components: { Loading },
-  updated() {
-    console.log(this.selectedLine + ' ' + this.selectedFilterShift)
-  },
 }
 </script>
 

@@ -104,6 +104,9 @@
           </tbody>
         </table>
       </div>
+
+      <!-- pagination -->
+      <Pagination />
     </div>
 
     <!-- modals -->
@@ -395,6 +398,7 @@ import VueMultiselect from 'vue-multiselect'
 import Swal from 'sweetalert2'
 import ApiService from '@/store/api.service'
 import Loading from 'vue-loading-overlay'
+import Pagination from '@/components/Pagination.vue'
 
 export default {
   name: 'Henkaten',
@@ -594,7 +598,7 @@ export default {
     this.mapLinesData()
     this.mapUsersData()
   },
-  components: { VueMultiselect, Loading },
+  components: { VueMultiselect, Loading, Pagination },
 }
 </script>
 

@@ -16,11 +16,10 @@ const getters = {
 };
 
 const actions = {
-    [GET_FINDINGS]({ commit }, query) {
-        console.log(query)
+    [GET_FINDINGS]({ commit }, query) { 
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
-            ApiService.get(`operational/findingCm?start_date=${query.start_date}&end_date=${query.end_date}`,)
+            ApiService.query(`operational/findingCm`, query)
                 .then((result) => {
                     console.log(result)
                     const findingRes = result.data
