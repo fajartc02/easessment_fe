@@ -124,6 +124,9 @@ export default {
             },
           },
         },
+        title: {
+          text: 'Summary Percentage'
+        },
         plotOptions: {
           bar: {
             vertical: true,
@@ -135,24 +138,31 @@ export default {
         yaxis: {
           min: 0,
           max: 100,
-          title: {
-            text: '%',
-          },
         },
         tooltip: {
           y: {
-            formatter: undefined,
+            formatter: (value, { series, seriesIndex, dataPointIndex, w }) => {
+              console.log(series, dataPointIndex, w);
+              return `${this.overallGraphData[seriesIndex].count} Temuan`;
+            },
             title: {
-              formatter: (seriesName, index) => {
-                console.log(seriesName);
-                return `<p> Total ${seriesName} : ${this.overallGraphData[index.seriesIndex].count
-                  } </p>`
+              formatter: (seriesName) => {
+                return `Total ${seriesName} :`
               },
             },
           },
+          fixed: {
+            enabled: true,
+            offsetX: 100,
+          },
+        },
+        dataLabels: {
+          formatter: function (val) {
+            return `${val} %`
+          },
         },
         legend: {
-          show: false,
+          show: true,
         },
         colors: ['#b91c1c', '#15803d', '#a16207'],
       },
@@ -174,11 +184,25 @@ export default {
             vertical: true,
           },
         },
+        tooltip: {
+          y: {
+            formatter: (value, { series, seriesIndex, dataPointIndex, w }) => {
+              console.log(series, dataPointIndex, w, seriesIndex);
+              return `${value} Temuan`;
+            },
+            title: {
+              formatter: (seriesName) => {
+                return `${seriesName} :`
+              },
+            },
+          },
+          fixed: {
+            enabled: true,
+            offsetX: 100,
+          },
+        },
         xaxis: {
           categories: ['problem', 'closed', 'remain'],
-        },
-        dataLabels: {
-          enabled: [true, true, true],
         },
       },
     }
