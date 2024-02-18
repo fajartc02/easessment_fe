@@ -225,6 +225,14 @@
           </tbody>
         </table>
       </div>
+      <!-- pagination -->
+      <Pagination
+        :totalPages="10"
+        :perPage="10"
+        :currentPage="currentPage"
+        @changePage="onPageChange"
+        @changeLimit="onPageChangeLimit"
+      />
     </div>
 
     <!-- modals -->
@@ -477,11 +485,15 @@ import { mapGetters } from 'vuex'
 import VueMultiselect from 'vue-multiselect'
 import Loading from 'vue-loading-overlay'
 
+import Pagination from '@/components/Pagination.vue'
+
 export default {
   name: 'List Temuan',
   data() {
     return {
       isLoading: false,
+      currentPage: 1,
+      currentPageLimit: 5,
       num: 28,
       thisYear: '',
       selectedFilterStartDate: '',
@@ -502,6 +514,19 @@ export default {
     ...mapGetters(['getUsersOpts', 'getFindings', 'getLinesOpts']),
   },
   methods: {
+    onPageChange(page) {
+      if (page == -1) {
+        this.currentPage = this.currentPage - 1
+        this.getFindingsFunc()
+      } else {
+        this.currentPage = this.currentPage + 1
+        this.getFindingsFunc()
+      }
+    },
+    onPageChangeLimit(limit) {
+      this.currentPageLimit = limit
+      this.getFindingsFunc()
+    },
     async getLines() {
       try {
         this.$store.dispatch(GET_LINES)
@@ -534,6 +559,8 @@ export default {
         line_id: this.selectedLine,
         source_category: this.selectedFilterSourceCat,
         cm_judg: this.selectedFilterJudge,
+        limit: this.currentPageLimit,
+        currentPage: this.currentPage,
       }
 
       this.isLoading = true
@@ -591,7 +618,7 @@ export default {
     await this.getFindingsFunc()
     await this.getLines()
   },
-  components: { VueMultiselect, Loading },
+  components: { VueMultiselect, Loading, Pagination },
 }
 </script>
   

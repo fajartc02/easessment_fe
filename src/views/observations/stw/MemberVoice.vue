@@ -168,6 +168,14 @@
           </tbody>
         </table>
       </div>
+      <!-- pagination -->
+      <Pagination
+        :totalPages="10"
+        :perPage="10"
+        :currentPage="currentPage"
+        @changePage="onPageChange"
+        @changeLimit="onPageChangeLimit"
+      />
     </div>
 
     <!-- Add MV modal -->
@@ -644,11 +652,15 @@ import Swal from 'sweetalert2'
 import ApiService from '@/store/api.service'
 import Loading from 'vue-loading-overlay'
 
+import Pagination from '@/components/Pagination.vue'
+
 export default {
   name: 'Member Voice',
   data() {
     return {
       isLoading: false,
+      currentPage: 1,
+      currentPageLimit: 5,
       num: 24,
       lineData: [],
       selectedMonth: null,
@@ -709,6 +721,19 @@ export default {
     ...mapGetters(['getLinesOpts', 'getUsersOpts', 'getMemberVoice']),
   },
   methods: {
+    onPageChange(page) {
+      if (page == -1) {
+        this.currentPage = this.currentPage - 1
+        this.getMemberVoices()
+      } else {
+        this.currentPage = this.currentPage + 1
+        this.getMemberVoices()
+      }
+    },
+    onPageChangeLimit(limit) {
+      this.currentPageLimit = limit
+      this.getMemberVoices()
+    },
     addMemberVoiceData() {
       this.memberVoiceData.line_id = this.selectedLineID
       this.findingsData.line_id = this.selectedLineID
@@ -755,6 +780,8 @@ export default {
             ? this.selectedFilterEndDate
             : this.selectedMonth + '-29',
         line_id: this.selectedFilterLineID,
+        limit: this.currentPageLimit,
+        currentPage: this.currentPage,
       }
 
       try {
@@ -846,7 +873,7 @@ export default {
     await this.getFactors()
     await this.getCategories()
   },
-  components: { VueMultiselect, Loading },
+  components: { VueMultiselect, Loading, Pagination },
 }
 </script>
     

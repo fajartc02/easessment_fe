@@ -236,6 +236,15 @@
           </tbody>
         </table>
       </div>
+
+      <!-- pagination -->
+      <Pagination
+        :totalPages="10"
+        :perPage="10"
+        :currentPage="currentPage"
+        @changePage="onPageChange"
+        @changeLimit="onPageChangeLimit"
+      />
     </div>
   </div>
 </template>
@@ -246,12 +255,15 @@ import { GET_LINES } from '@/store/modules/line.module'
 import { GET_OBSERVATION_SCHEDULE } from '@/store/modules/observation.module'
 import { mapGetters } from 'vuex'
 import Loading from 'vue-loading-overlay'
+import Pagination from '@/components/Pagination.vue'
 
 export default {
   name: 'STW Dashboard',
   data() {
     return {
       isLoading: false,
+      currentPage: 1,
+      currentPageLimit: 5,
       selectedMonth: null,
       selectedFilterStartDate: '',
       selectedFilterEndDate: '',
@@ -309,6 +321,19 @@ export default {
     },
   },
   methods: {
+    onPageChange(page) {
+      if (page == -1) {
+        this.currentPage = this.currentPage - 1
+        this.getObsSchedule()
+      } else {
+        this.currentPage = this.currentPage + 1
+        this.getObsSchedule()
+      }
+    },
+    onPageChangeLimit(limit) {
+      this.currentPageLimit = limit
+      this.getObsSchedule()
+    },
     async getLines() {
       try {
         this.$store.dispatch(GET_LINES)
@@ -344,6 +369,8 @@ export default {
         line: this.selectedLine,
         month: this.selectedMonth.split('-')[1],
         year: this.selectedMonth.split('-')[0],
+        limit: this.currentPageLimit,
+        currentPage: this.currentPage,
       }
       if (this.selectedLine != '0') objQuery.line = this.selectedLine
       await this.$store
@@ -375,6 +402,7 @@ export default {
   },
   components: {
     Loading,
+    Pagination,
   },
 }
 </script>

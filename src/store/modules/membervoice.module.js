@@ -18,17 +18,9 @@ const getters = {
 const actions = {
     [GET_MEMBERVOICE]({ commit }, query) {
 
-        let reqQuery
-
-        if(query.start_date !== ' ' || query.end_date !== ' ' || query.line_id !== ' '){
-            reqQuery = `operational/member-voice/get?&line_id=${query.line_id}&start_date=${query.start_date}&end_date=${query.end_date}`
-        } else {
-            reqQuery = `operational/member-voice/get`
-        }
-
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
-            ApiService.get(reqQuery)
+            ApiService.query('operational/member-voice/get', query)
                 .then((result) => { 
                     console.log(result)
                     const res = result.data

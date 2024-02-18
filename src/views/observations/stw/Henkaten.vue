@@ -106,7 +106,13 @@
       </div>
 
       <!-- pagination -->
-      <Pagination />
+      <Pagination
+        :totalPages="10"
+        :perPage="10"
+        :currentPage="currentPage"
+        @changePage="onPageChange"
+        @changeLimit="onPageChangeLimit"
+      />
     </div>
 
     <!-- modals -->
@@ -405,6 +411,8 @@ export default {
   data() {
     return {
       isLoading: false,
+      currentPage: 1,
+      currentPageLimit: 5,
       selectedMonth: null,
       addHenkatenModal: false,
       selectedLineID: '',
@@ -455,6 +463,19 @@ export default {
     ...mapGetters(['getUsersOpts', 'getHenkatens', 'getLinesOpts']),
   },
   methods: {
+    onPageChange(page) {
+      if (page == -1) {
+        this.currentPage = this.currentPage - 1
+        this.getHenkaten()
+      } else {
+        this.currentPage = this.currentPage + 1
+        this.getHenkaten()
+      }
+    },
+    onPageChangeLimit(limit) {
+      this.currentPageLimit = limit
+      this.getHenkaten()
+    },
     formatTheDate(val) {
       const year = val.split('T')[0].split('-')[0]
       const month = val.split('T')[0].split('-')[1]
@@ -493,6 +514,8 @@ export default {
             ? this.selectedFilterEndDate
             : this.selectedMonth + '-29',
         line_id: this.selectedFilterLineID,
+        limit: this.currentPageLimit,
+        currentPage: this.currentPage,
       }
 
       try {

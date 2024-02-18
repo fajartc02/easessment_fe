@@ -112,6 +112,14 @@
           </tbody>
         </table>
       </div>
+      <!-- pagination -->
+      <Pagination
+        :totalPages="10"
+        :perPage="10"
+        :currentPage="currentPage"
+        @changePage="onPageChange"
+        @changeLimit="onPageChangeLimit"
+      />
     </div>
 
     <!-- modals -->
@@ -446,11 +454,15 @@ import Swal from 'sweetalert2'
 import ApiService from '@/store/api.service'
 import Loading from 'vue-loading-overlay'
 
+import Pagination from '@/components/Pagination.vue'
+
 export default {
   name: 'Focus Theme',
   data() {
     return {
       isLoading: false,
+      currentPage: 1,
+      currentPageLimit: 5,
       selectedMonth: null,
       selectedLine: '-1',
       addFocusThemeModal: false,
@@ -498,6 +510,19 @@ export default {
     ...mapGetters(['getLinesOpts', 'getUsersOpts', 'getFocusTheme']),
   },
   methods: {
+    onPageChange(page) {
+      if (page == -1) {
+        this.currentPage = this.currentPage - 1
+        this.getFocusThemes()
+      } else {
+        this.currentPage = this.currentPage + 1
+        this.getFocusThemes()
+      }
+    },
+    onPageChangeLimit(limit) {
+      this.currentPageLimit = limit
+      this.getFocusThemes()
+    },
     formatTheDate(val) {
       const year = val.split('T')[0].split('-')[0]
       const month = val.split('T')[0].split('-')[1]
@@ -529,6 +554,8 @@ export default {
             ? this.selectedFilterEndDate
             : this.selectedMonth + '-29',
         line_id: this.selectedFilterLineID,
+        limit: this.currentPageLimit,
+        currentPage: this.currentPage,
       }
 
       try {
@@ -635,7 +662,7 @@ export default {
     await this.getCategories()
     await this.getUsers()
   },
-  components: { FocusThemeIndicatorVue, VueMultiselect, Loading },
+  components: { FocusThemeIndicatorVue, VueMultiselect, Loading, Pagination },
 }
 </script>
     
