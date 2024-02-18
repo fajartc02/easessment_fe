@@ -35,6 +35,7 @@ const actions = {
             ApiService.post("login", credentials)
                 .then(({ data }) => {
                     context.commit(SET_AUTH, data.data);
+                    localStorage.setItem('group_id', data.data.data.group_id)
                     resolve(data.data);
                 })
                 .catch(({ response }) => {
@@ -65,7 +66,6 @@ const actions = {
             ApiService.setHeader();
             ApiService.get("verify")
                 .then(({ data }) => {
-                    // console.log(data);
                     localStorage.setItem('name', data.message.fullname)
                     localStorage.setItem('noreg', data.message.noreg)
                     localStorage.setItem('line_id', data.message.line_id)

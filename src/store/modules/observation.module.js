@@ -4,6 +4,7 @@ import ApiService from "../api.service";
 
 export const GET_OBSERVATION_SCHEDULE_LIST = "getObservationScheduleList";
 export const GET_OBSERVATION_SCHEDULE = "getObservationSchedule";
+export const GET_OBSERVATION_SCHEDULE_RED_SHIFT= "getObservationScheduleRedShift";
 export const POST_OBSERVATION_SCHEDULE = "postObservationSchedule";
 export const GET_OBSERVATION_SUMMARY = "getObservationSummary";
 export const GET_OBSERVATION_DETAIL = "getObservationDetail";
@@ -14,11 +15,13 @@ export const DELETE_OBSERVATION_LIST = "deleteObservationList";
 // mutation types
 export const SET_POST_SCHEDULE = "setPostSchedule";
 export const SET_OBSERVATION_SCHEDULE = "setObservationSchedule";
+export const SET_OBSERVATION_SCHEDULE_RED_SHIFT = "setObservationScheduleRedShift";
 export const SET_OBSERVATION_SUMMARY = "setObservationSummary";
 export const SET_OBSERVATION_DETAIL = "setObservationDetail";
 
 const state = {
     observationSchedules: [],
+    observationSchedulesRedShift: [],
     summaryData: null,
     observationData: null
 };
@@ -26,6 +29,9 @@ const state = {
 const getters = {
     observationSchedule(state) {
         return state.observationSchedules
+    },
+    observationScheduleRedShift(state) {
+        return state.observationSchedulesRedShift
     },
     observationSummary(state) {
         return state.summaryData
@@ -65,7 +71,7 @@ const actions = {
                 });
 
         });
-    },
+    }, 
     [GET_OBSERVATION_SCHEDULE]({ commit }, query) {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
@@ -74,6 +80,22 @@ const actions = {
                     const observationsSchedule = result.data
                     if (observationsSchedule) {
                         commit(SET_OBSERVATION_SCHEDULE, observationsSchedule.data)
+                        resolve(observationsSchedule.data)
+                    }
+                }).catch((err) => {
+                    reject(err)
+                });
+
+        });
+    },
+    [GET_OBSERVATION_SCHEDULE_RED_SHIFT]({ commit }, query) {
+        ApiService.setHeader()
+        return new Promise((resolve, reject) => {
+            ApiService.query('operational/observation/schedule', query)
+                .then((result) => {
+                    const observationsSchedule = result.data
+                    if (observationsSchedule) {
+                        commit(SET_OBSERVATION_SCHEDULE_RED_SHIFT, observationsSchedule.data)
                         resolve(observationsSchedule.data)
                     }
                 }).catch((err) => {
@@ -145,6 +167,9 @@ const actions = {
 const mutations = {
     [SET_OBSERVATION_SCHEDULE](state, payload) {
         state.observationSchedules = payload;
+    },
+    [SET_OBSERVATION_SCHEDULE_RED_SHIFT](state, payload) {
+        state.observationSchedulesRedShift = payload;
     },
     [SET_OBSERVATION_SUMMARY](state, payload) {
         state.summaryData = payload;

@@ -36,34 +36,54 @@
       <div
         class="card-header d-flex justify-content-between align-items-center"
       >
-        <h5>Schedule Observation</h5>
-        <button class="btn btn-info text-white">Add schedule</button>
-      </div>
-      <div
-        class="card-header d-flex justify-content-between align-items-center"
-      >
-        <div>
-          <strong>Monthly Schedule</strong>
-        </div>
+        <h6>Schedule Observation</h6>
         <div class="d-flex align-items-center">
-          <div style="margin-right: 20px">
-            Type 1 & 2
+          <div class="d-flex" style="margin-right: 20px">
+            <div>
+              Type 1 & 2
             <CButton color="dark rounded-circle" variant="outline" disabled>
               <CIcon icon="cil-circlea" class="text-dark" size="sm" />
             </CButton>
-            Type 3
+            </div>
+            <div class="mx-2">
+              Type 3
             <CButton color="dark" variant="outline" disabled>
               <CIcon icon="cil-circlea" class="text-dark" size="sm" />
             </CButton>
+            </div>
+            <div>
+              Is 2 TL
+            <CButton color="dark" variant="outline" disabled style="margin-left: 5px; width: 35px; height: 35px; transform: rotate(50deg);">
+              <CIcon icon="cil-circlea" class="text-dark" size="sm" />
+            </CButton>
+            </div>
           </div>
           <div>
-            OnProgress: <CIcon icon="cil-circle" class="text-dark" size="sm" />,
+            OnProgress: <CIcon icon="cil-circle" class="text-dark" size="sm" />
             Done:
-            <CIcon icon="cil-check-circle" class="text-success" size="sm" />,
+            <CIcon icon="cil-check-circle" class="text-success" size="sm" />
             Delay: <CIcon icon="cil-circle" class="text-danger" size="sm" />
+            Is Finding: <CIcon
+                        icon="cil-bell"
+                        class="text-warning"
+                        size="md"
+                      />
           </div>
         </div>
       </div>
+
+
+      <div v-if="isLoading">
+        <loading
+          v-model:active="isLoading"
+          :can-cancel="true"
+          :is-full-page="false"
+          :on-cancel="onCancel"
+        />
+      </div>
+
+
+      <!-- white shift -->
       <div class="overflow-auto">
         <table class="table table-bordered text-center">
           <thead>
@@ -118,8 +138,8 @@
                       v-c-tooltip="
                         `
                       <div class='card'>
-                        <div class='card-header'>Detail data</div>
-                        <div class='card-body'>
+                        <div class='card-header text-dark'>Detail data</div>
+                        <div class='card-body text-dark'>
                           SOP No:  ${child.job_no} </br>
                           Member: ${child.member_nm}
                         </div>
@@ -166,6 +186,12 @@
                         class="text-dark"
                         size="md"
                       />
+                      <CIcon
+                        v-else-if="child.is_finding"
+                        icon="cil-bell"
+                        class="text-warning"
+                        size="md"
+                      />
 
                       <CIcon
                         v-else
@@ -178,8 +204,8 @@
                       v-c-tooltip="
                         `
                       <div class='card'>
-                        <div class='card-header'>Detail data</div>
-                        <div class='card-body'>
+                        <div class='card-header text-dark'>Detail data</div>
+                        <div class='card-body text-dark'>
                           SOP No:  ${child.job_no} </br>
                           Member: ${child.member_nm}
                         </div>
@@ -205,6 +231,117 @@
                           border: 1px solid #7dd3fc;
                           color: #0369a1;
                           border-radius: 6px;
+                          transform: rotate(-50deg)
+                        "
+                      >
+                        1
+                      </button>
+                      <CIcon
+                        v-if="child.actual_check_dt"
+                        icon="cil-check-circle"
+                        class="text-success"
+                        size="md"
+                        style="transform: rotate(-50deg)"
+                      />
+                      <CIcon
+                        v-else-if="+currentDate <= +child.idxdate"
+                        icon="cil-circle"
+                        class="text-dark"
+                        size="md"
+                        style="transform: rotate(-50deg)"
+                      />
+
+                      <CIcon
+                        v-else
+                        icon="cil-circle"
+                        class="text-danger"
+                        size="md"
+                        style="transform: rotate(-50deg)"
+                      />
+                    </CButton>
+                  </template>
+                </template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      
+      <!-- Red shift table -->
+      <div class="overflow-auto">
+        <table class="table table-bordered text-center">
+          <thead>
+            <tr>
+              <th rowspan="2">No</th>
+              <th rowspan="2">Line</th>
+              <th rowspan="2">Pos</th>
+              <th rowspan="2">Observer</th>
+              <th rowspan="2">Shift</th>
+              <th :colspan="containerDate.length">{{ yearMonth }}</th>
+            </tr>
+            <tr>
+              <th v-for="date in containerDate" :key="date" :class="date.bg">
+                {{ date.idx }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(observationRedShift, i) in observationScheduleRedShift"
+              :key="observationRedShift.pos_id"
+            >
+              <td>{{ i + 1 }}</td>
+              <td>{{ observationRedShift.line_snm }}</td>
+              <td>{{ observationRedShift.pos_nm }}</td>
+              <td>{{ observationRedShift.checkers[0] }}</td>
+              <td>{{ observationRedShift.group_nm }}</td>
+              <td
+                v-for="item in containerDate"
+                :key="item.idx"
+                style="min-width: 63px"
+              >
+                <template
+                  v-for="child in observationRedShift.children"
+                  :key="child.observation_id"
+                >
+                  <template v-if="child.idxdate === String(item.idx)">
+                    <CButton
+                      v-c-tooltip="
+                        `
+                      <div class='card'>
+                        <div class='card-header text-dark'>Detail data</div>
+                        <div class='card-body text-dark'>
+                          SOP No:  ${child.job_no} </br>
+                          Member: ${child.member_nm}
+                        </div>
+                      </div>
+                      `
+                      "
+                      v-if="child && child.is_wajik == false"
+                      class="mt-1"
+                      :color="`${
+                        child.job_type_nm == 'Type 1' ||
+                        child.job_type_nm == 'Type 2'
+                          ? 'dark rounded-circle'
+                          : 'dark rounded'
+                      }`"
+                      html="true"
+                      variant="outline"
+                      style="position: relative"
+                      @click="() => detailSchedule(child)"
+                    >
+                      <button
+                        disabled
+                        v-if="observationRedShift.comment_sh !== null"
+                        style="
+                          position: absolute;
+                          margin-left: 20px;
+                          background-color: #e0f2fe;
+                          border: none;
+                          border: 1px solid #7dd3fc;
+                          color: #0369a1;
+                          border-radius: 6px;
                         "
                       >
                         1
@@ -221,12 +358,77 @@
                         class="text-dark"
                         size="md"
                       />
+                      <CIcon
+                        v-else-if="child.is_finding"
+                        icon="cil-bell"
+                        class="text-warning"
+                        size="md"
+                      />
 
                       <CIcon
                         v-else
                         icon="cil-circle"
                         class="text-danger"
                         size="md"
+                      />
+                    </CButton>
+                    <CButton
+                      v-c-tooltip="
+                        `
+                      <div class='card'>
+                        <div class='card-header text-dark'>Detail data</div>
+                        <div class='card-body text-dark'>
+                          SOP No:  ${child.job_no} </br>
+                          Member: ${child.member_nm}
+                        </div>
+                      </div>
+                      `
+                      "
+                      v-if="child && child.is_wajik == true"
+                      class="mt-3"
+                      :color="`dark rounded`"
+                      html="true"
+                      variant="outline"
+                      style="transform: rotate(50deg)"
+                      @click="() => detailSchedule(child)"
+                    >
+                      <button
+                        disabled
+                        v-if="observationRedShift.comment_sh !== null"
+                        style="
+                          position: absolute;
+                          margin-left: 20px;
+                          background-color: #e0f2fe;
+                          border: none;
+                          border: 1px solid #7dd3fc;
+                          color: #0369a1;
+                          border-radius: 6px;
+                          transform: rotate(-50deg)
+                        "
+                      >
+                        1
+                      </button>
+                      <CIcon
+                        v-if="child.actual_check_dt"
+                        icon="cil-check-circle"
+                        class="text-success"
+                        size="md"
+                        style="transform: rotate(-50deg)"
+                      />
+                      <CIcon
+                        v-else-if="+currentDate <= +child.idxdate"
+                        icon="cil-circle"
+                        class="text-dark"
+                        size="md"
+                        style="transform: rotate(-50deg)"
+                      />
+
+                      <CIcon
+                        v-else
+                        icon="cil-circle"
+                        class="text-danger"
+                        size="md"
+                        style="transform: rotate(-50deg)"
                       />
                     </CButton>
                   </template>
@@ -252,7 +454,7 @@
   <script>
 import moment from 'moment'
 import { GET_LINES } from '@/store/modules/line.module'
-import { GET_OBSERVATION_SCHEDULE } from '@/store/modules/observation.module'
+import { GET_OBSERVATION_SCHEDULE, GET_OBSERVATION_SCHEDULE_RED_SHIFT } from '@/store/modules/observation.module'
 import { mapGetters } from 'vuex'
 import Loading from 'vue-loading-overlay'
 import Pagination from '@/components/Pagination.vue'
@@ -267,7 +469,7 @@ export default {
       selectedMonth: null,
       selectedFilterStartDate: '',
       selectedFilterEndDate: '',
-      selectedLine: '-1',
+      selectedLine: '',
       containerDate: [],
       schedules: [],
       idxMonth: [
@@ -299,11 +501,13 @@ export default {
         'Dec',
       ],
       yearMonth: '',
+      whiteShiftID: 'cb7e9c37-b39c-49b4-b34d-b0a8f9f462df',
+      redShiftID: '36ad3451-e2fe-4b50-84b0-2d6ca942ae1e',
       currentDate: `${new Date().getDate()}`,
     }
   },
   computed: {
-    ...mapGetters(['getLinesOpts', 'observationSchedule']),
+    ...mapGetters(['getLinesOpts', 'observationSchedule', 'observationScheduleRedShift']),
   },
   watch: {
     selectedLine: function () {
@@ -317,6 +521,7 @@ export default {
           this.selectedMonth.split('-')[0]
         }`
         this.getObsSchedule()
+        this.getObsScheduleRedShift()
       }
     },
   },
@@ -371,6 +576,7 @@ export default {
         year: this.selectedMonth.split('-')[0],
         limit: this.currentPageLimit,
         currentPage: this.currentPage,
+        group_id: this.whiteShiftID
       }
       if (this.selectedLine != '0') objQuery.line = this.selectedLine
       await this.$store
@@ -381,19 +587,42 @@ export default {
           }
         })
     },
+    async getObsScheduleRedShift() {
+      this.isLoading = true
+      let objQuery = {
+        line: this.selectedLine,
+        month: this.selectedMonth.split('-')[1],
+        year: this.selectedMonth.split('-')[0],
+        limit: this.currentPageLimit,
+        currentPage: this.currentPage,
+        group_id: this.redShiftID
+      }
+      if (this.selectedLine != '0') objQuery.line = this.selectedLine
+      await this.$store
+        .dispatch(GET_OBSERVATION_SCHEDULE_RED_SHIFT, objQuery)
+        .then((res) => {
+          if (res) {
+            this.isLoading = false
+          }
+        })
+    },
     detailSchedule(obser) {
-      console.log(obser.observation_id)
       this.$router.push(`/observation/${obser.observation_id}`)
     },
     addFilter() {
       this.getObsSchedule()
     },
   },
-  mounted() {
+  async mounted() {
+    await this.getLines()
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
-    this.getLines()
+    this.selectedLine = localStorage.getItem('line_id')
+
+    await this.getObsSchedule()
+    await this.getObsScheduleRedShift()
+
   },
   updated() {
     if (this.$route.query.line) {
@@ -407,3 +636,9 @@ export default {
 }
 </script>
   
+
+<style>
+.fixed-td {
+  position: absolute;
+}
+</style>
