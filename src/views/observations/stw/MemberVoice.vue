@@ -26,7 +26,7 @@
             <label>Line</label>
             <select
               class="form-select"
-              v-model="selectedFilterLineID"
+              v-model="selectedLine"
               @change="addFilter()"
             >
               <option
@@ -69,7 +69,7 @@
               <th rowspan="3">Kategori</th>
               <th rowspan="3">Penanggulangan</th>
               <th rowspan="3">Evaluasi Hasil</th>
-              <th colspan="24">Waktu Pelaksanaan</th>
+              <th colspan="52">Waktu Pelaksanaan</th>
               <th rowspan="3">PIC</th>
               <th rowspan="3">Actions</th>
             </tr>
@@ -79,9 +79,39 @@
               <th colspan="4">Mar</th>
               <th colspan="4">Apr</th>
               <th colspan="4">Mei</th>
-              <th colspan="4">Jun</th>
+              <th colspan="4">Juny</th>
+              <th colspan="4">July</th>
+              <th colspan="4">Aug</th>
+              <th colspan="4">Sept</th>
+              <th colspan="4">Oct</th>
+              <th colspan="4">Nov</th>
+              <th colspan="4">Dec</th>
             </tr>
             <tr>
+              <th>I</th>
+              <th>II</th>
+              <th>III</th>
+              <th>IV</th>
+              <th>I</th>
+              <th>II</th>
+              <th>III</th>
+              <th>IV</th>
+              <th>I</th>
+              <th>II</th>
+              <th>III</th>
+              <th>IV</th>
+              <th>I</th>
+              <th>II</th>
+              <th>III</th>
+              <th>IV</th>
+              <th>I</th>
+              <th>II</th>
+              <th>III</th>
+              <th>IV</th>
+              <th>I</th>
+              <th>II</th>
+              <th>III</th>
+              <th>IV</th>
               <th>I</th>
               <th>II</th>
               <th>III</th>
@@ -135,11 +165,15 @@
               <td>{{ membervoice.mv_category }}</td>
               <td>{{ membervoice.mv_countermeasure }}</td>
               <td>{{ membervoice.mv_evaluation }}</td>
-              <td v-for="n in num" :key="n" width="40px">
+              <td
+                v-for="week in totalWeek"
+                :key="week"
+                style="min-width: 30px !important; padding: 5px"
+              >
                 <div
                   v-if="
-                    (n >= membervoice.w_mv_plan_date) &
-                    (n <= membervoice.w_mv_actual_date)
+                    (week >= membervoice.w_mv_plan_date) &
+                    (week <= membervoice.w_mv_actual_date)
                   "
                   style="
                     width: 100%;
@@ -275,14 +309,6 @@
                   />
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">Eval hasil</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="memberVoiceData.mv_evaluation"
-                  />
-                </div>
-                <div class="mb-2">
                   <label class="mb-1">Plan tgl penganggulangan</label>
                   <input
                     type="date"
@@ -290,14 +316,7 @@
                     v-model="memberVoiceData.mv_plan_date"
                   />
                 </div>
-                <div class="mb-2">
-                  <label class="mb-1">Aktual tgl penganggulangan</label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    v-model="memberVoiceData.mv_actual_date"
-                  />
-                </div>
+
                 <div class="mb-2">
                   <label class="mb-1">PIC</label>
                   <VueMultiselect
@@ -306,6 +325,24 @@
                     :custom-label="customPicOptions"
                   >
                   </VueMultiselect>
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Aktual tgl penganggulangan</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    v-model="memberVoiceData.mv_actual_date"
+                    disabled
+                  />
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Eval hasil</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="memberVoiceData.mv_evaluation"
+                    disabled
+                  />
                 </div>
               </div>
             </CAccordionBody>
@@ -355,10 +392,9 @@
                     v-model="findingsData.cm_priority"
                   >
                     <option selected>Select priority</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
+                    <option value="P1">Safety & Quality Issue</option>
+                    <option value="P2">Productivity Issue</option>
+                    <option value="P3">Cost Issue</option>
                   </select>
                 </div>
 
@@ -661,12 +697,11 @@ export default {
       isLoading: false,
       currentPage: 1,
       currentPageLimit: 5,
-      num: 24,
+      totalWeek: 52,
       lineData: [],
       selectedMonth: null,
       selectedFilterStartDate: '',
       selectedFilterEndDate: '',
-      selectedFilterLineID: '-1',
       addMemberVoiceModal: false,
       selectedLine: null,
       detailMVModal: false,
@@ -779,7 +814,7 @@ export default {
           this.selectedFilterEndDate !== ''
             ? this.selectedFilterEndDate
             : this.selectedMonth + '-29',
-        line_id: this.selectedFilterLineID,
+        line_id: this.selectedLineID,
         limit: this.currentPageLimit,
         currentPage: this.currentPage,
       }
@@ -788,7 +823,6 @@ export default {
         this.$store.dispatch(GET_MEMBERVOICE, objQuery).then((res) => {
           if (res) {
             this.isLoading = false
-            this.selectedLineID = this.getMemberVoice[0]?.line_id
           }
         })
       } catch (error) {
@@ -867,6 +901,9 @@ export default {
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
     this.selectedLine = localStorage.getItem('line_id')
+    this.selectedFilterStartDate = `${year}-${month}-01`
+    this.selectedFilterEndDate = `${year}-12-31`
+
     await this.getLines()
     await this.getUsers()
     await this.getMemberVoices()

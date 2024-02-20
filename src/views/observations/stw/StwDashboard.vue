@@ -261,9 +261,16 @@
                 </template>
               </td>
             </tr>
+            <tr v-if="observationSchedule?.length < 1">
+              <td colspan="50">
+                <h3 class="my-2">Data kosong</h3>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
+
+      <hr />
 
       <!-- Red shift table -->
       <div class="tableFixHead">
@@ -442,6 +449,11 @@
                     </CButton>
                   </template>
                 </template>
+              </td>
+            </tr>
+            <tr v-if="observationScheduleRedShift?.length < 1">
+              <td colspan="50">
+                <h3 class="my-2">Data kosong</h3>
               </td>
             </tr>
           </tbody>

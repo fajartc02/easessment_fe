@@ -69,6 +69,38 @@
         class="card-header d-flex justify-content-between align-items-center"
       >
         <h5>List temuan</h5>
+        <div class="d-flex align-items-center">
+          <div class="mx-2 d-flex align-items-center">
+            <div class="d-flex align-items-center">
+              <div
+                style="background-color: #fee2e2; width: 20px; height: 20px"
+              ></div>
+              <span class="mx-2">Delay</span>
+            </div>
+            <div class="d-flex align-items-center">
+              <div
+                style="background-color: #dcfce7; width: 20px; height: 20px"
+              ></div>
+              <span class="mx-2">Closed</span>
+            </div>
+            <div class="d-flex align-items-center">
+              <div
+                style="
+                  background-color: #fff;
+                  border: 1px solid #eaeaea;
+                  width: 20px;
+                  height: 20px;
+                "
+              ></div>
+              <span class="mx-2">On progress</span>
+            </div>
+          </div>
+          <div>
+            <span class="badge bg-info"> P1: Safety & Quality Issue </span>
+            <span class="badge bg-info mx-2"> P2: Productivity Issue </span>
+            <span class="badge bg-info"> P3: Cost Issue </span>
+          </div>
+        </div>
       </div>
       <div
         style="
@@ -163,13 +195,18 @@
               v-for="(finding, findingIndex) in getFindings"
               :key="finding.no"
               :style="`${
-                formatTheDate(finding.cm_str_plan_date) <= this.todayDate &&
+                this.todayDate > formatTheDate(finding.cm_str_plan_date) &&
                 finding.cm_judg == false
                   ? 'background-color: #fee2e2'
                   : ''
               }
               ${finding.cm_judg == true ? 'background-color: #f0fdf4' : ''}  
-              ${finding.cm_judg == false ? 'background-color: #fff' : ''} 
+              ${
+                finding.cm_judg == false &&
+                this.todayDate < formatTheDate(finding.cm_str_plan_date)
+                  ? 'background-color: #fff'
+                  : ''
+              } 
               `"
             >
               <th>{{ findingIndex + 1 }}</th>
@@ -192,7 +229,11 @@
               <td>{{ finding.factor_nm == 'Material' ? 'v' : ' ' }}</td>
               <td>{{ finding.factor_nm == 'Machine' ? 'v' : ' ' }}</td>
               <td>{{ finding.cm_pic_nm }}</td>
-              <td v-for="n in num" :key="n">
+              <td
+                v-for="n in num"
+                :key="n"
+                style="min-width: 30px !important; padding: 5px"
+              >
                 <div
                   v-if="
                     (n >= finding.w_str_plan_date) &
@@ -210,6 +251,7 @@
                 <div class="px-2 d-flex">
                   <button
                     class="btn btn-info btn-sm text-white w-full my-1"
+                    style="margin-right: 10px"
                     @click="
                       () => {
                         getDetailTemuan(findingIndex)
@@ -219,7 +261,23 @@
                   >
                     Detail
                   </button>
+                  <button class="btn btn-info btn-sm text-white w-full my-1">
+                    Edit
+                  </button>
+                  <button
+                    class="btn btn-danger mx-2 btn-sm text-white w-full my-1"
+                  >
+                    Delete
+                  </button>
+                  <button class="btn btn-info btn-sm text-white w-full my-1">
+                    Download
+                  </button>
                 </div>
+              </td>
+            </tr>
+            <tr v-if="getFindings?.length < 1">
+              <td colspan="50">
+                <h3 class="my-2">Data kosong</h3>
               </td>
             </tr>
           </tbody>
@@ -500,7 +558,7 @@ export default {
       selectedFilterEndDate: '',
       selectedFilterSourceCat: '-1',
       selectedFilterJudge: '-1',
-      selectedLine: '-1',
+      selectedLine: '',
       selectedMonth: null,
       findingDetail: null,
       addTemuanModal: false,
@@ -597,15 +655,22 @@ export default {
     },
   },
   async mounted() {
-    this.selectedFilterSourceCat = this.$route.query.source_category
-      ? this.$route.query.source_category
-      : '-1'
-    this.selectedFilterJudge = this.$route.query.cm_judg
-      ? this.$route.query.cm_judg
-      : '-1'
-    this.selectedLine = this.$route.query.line_id
-      ? this.$route.query.line_id
-      : '-1'
+    // cek kalau ada params di url (dari dashboard)
+    if (
+      this.$route.query.line_id &&
+      this.$route.query.source_category &&
+      this.$route.query.cm_judg
+    ) {
+      this.selectedFilterSourceCat = this.$route.query.source_category
+        ? this.$route.query.source_category
+        : '-1'
+      this.selectedFilterJudge = this.$route.query.cm_judg
+        ? this.$route.query.cm_judg
+        : '-1'
+      this.selectedLine = this.$route.query.line_id
+        ? this.$route.query.line_id
+        : '-1'
+    }
 
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
@@ -613,7 +678,7 @@ export default {
     this.selectedMonth = `${year}-${month}`
     this.selectedFilterStartDate = `${year}-${month}-01`
     this.selectedFilterEndDate = `${year}-12-31`
-    // this.selectedLine = localStorage.getItem('line_id')
+    this.selectedLine = localStorage.getItem('line_id')
     await this.getUsers()
     await this.getFindingsFunc()
     await this.getLines()
