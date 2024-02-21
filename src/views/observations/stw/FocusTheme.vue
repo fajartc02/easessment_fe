@@ -575,7 +575,6 @@ export default {
       }
     },
     addFocusThemeData() {
-      this.findingsData.line_id = '4a411c19-700d-4e1f-aa23-2e49df60e12e'
       this.findingsData.cm_result_factor_id = this.findingsData.factor_id
 
       let data = {
