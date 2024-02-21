@@ -25,7 +25,7 @@
             <label>Line</label>
             <select
               class="form-select"
-              v-model="selectedFilterLineID"
+              v-model="selectedLine"
               @change="addFilter()"
             >
               <option
@@ -107,6 +107,11 @@
                   Delete
                 </button>
                 <button class="btn btn-info btn-sm text-white">Edit</button>
+              </td>
+            </tr>
+            <tr v-if="getFocusTheme?.length < 1">
+              <td colspan="50">
+                <h3 class="my-2">Data kosong</h3>
               </td>
             </tr>
           </tbody>
@@ -239,10 +244,9 @@
                     v-model="findingsData.cm_priority"
                   >
                     <option selected>Select priority</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
+                    <option value="P1">P1: Safety & Quality Issue</option>
+                    <option value="P2">P2: Productivity Issue</option>
+                    <option value="P3">P3: Cost Issue</option>
                   </select>
                 </div>
 
@@ -464,7 +468,7 @@ export default {
       currentPage: 1,
       currentPageLimit: 5,
       selectedMonth: null,
-      selectedLine: '-1',
+      selectedLine: '',
       addFocusThemeModal: false,
       focusThemeDetailModal: false,
       factors: [],
@@ -484,20 +488,20 @@ export default {
       },
       findingsData: {
         line_id: '',
-        finding_date: '2024-02-05',
-        finding_location: 'location finding test',
-        finding_desc: 'ini adalah temuanku',
-        cm_desc: 'temuan akan di perbaiki',
+        finding_date: '',
+        finding_location: '',
+        finding_desc: '',
+        cm_desc: '',
         cm_priority: 0,
         category_id: '',
         factor_id: '',
         cm_pic_id: '',
-        cm_str_plan_date: '2024-02-12',
-        cm_end_plan_date: '2024-03-02',
+        cm_str_plan_date: '',
+        cm_end_plan_date: '',
         cm_result_factor_id: '',
-        cm_str_act_date: '2024-02-02',
-        cm_end_act_date: '2024-03-04',
-        cm_training_date: '2024-03-06',
+        cm_str_act_date: '',
+        cm_end_act_date: '',
+        cm_training_date: '',
         cm_judg: false,
         cm_sign_lh_red: null,
         cm_sign_lh_white: null,
@@ -553,7 +557,7 @@ export default {
           this.selectedFilterEndDate !== ''
             ? this.selectedFilterEndDate
             : this.selectedMonth + '-29',
-        line_id: this.selectedFilterLineID,
+        line_id: this.selectedLine,
         limit: this.currentPageLimit,
         currentPage: this.currentPage,
       }
@@ -655,7 +659,10 @@ export default {
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
+
     this.selectedLine = localStorage.getItem('line_id')
+    this.selectedFilterStartDate = `${year}-${month}-01`
+    this.selectedFilterEndDate = `${year}-12-31`
     await this.getLines()
     await this.getFocusThemes()
     await this.getFactors()

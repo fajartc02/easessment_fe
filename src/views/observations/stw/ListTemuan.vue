@@ -261,15 +261,28 @@
                   >
                     Detail
                   </button>
-                  <button class="btn btn-info btn-sm text-white w-full my-1">
+                  <button
+                    @click="
+                      () => {
+                        getDetailTemuan(findingIndex)
+                        editTemuanModal = true
+                      }
+                    "
+                    class="btn btn-info btn-sm text-white w-full my-1"
+                  >
                     Edit
                   </button>
                   <button
+                    @click="deleteFinding()"
                     class="btn btn-danger mx-2 btn-sm text-white w-full my-1"
                   >
                     Delete
                   </button>
-                  <button class="btn btn-info btn-sm text-white w-full my-1">
+                  <button
+                    :disabled="finding.file_pinksheet == null"
+                    @click="downloadPinkSheet(finding.file_pinksheet)"
+                    class="btn btn-info btn-sm text-white w-full my-1"
+                  >
                     Download
                   </button>
                 </div>
@@ -294,59 +307,7 @@
     </div>
 
     <!-- modals -->
-    <CModal
-      backdrop="static"
-      alignment="center"
-      :visible="addTemuanModal"
-      @close="addTemuanModal = false"
-    >
-      <CModalHeader>
-        <CModalTitle>Add temuan</CModalTitle>
-      </CModalHeader>
-      <CModalBody>
-        <div>
-          <div class="mb-2">
-            <label class="mb-1">Start date</label>
-            <input type="date" class="form-control" />
-          </div>
-          <div class="mb-2">
-            <label class="mb-1">Machine</label>
-            <input type="text" class="form-control" />
-          </div>
-          <div class="mb-2">
-            <label class="mb-1">PIC</label>
-            <VueMultiselect v-model="selectedPIC" :options="picData">
-            </VueMultiselect>
-          </div>
-          <div class="mb-2">
-            <label class="mb-1">Perubahan</label>
-            <textarea type="text" class="form-control"> </textarea>
-          </div>
-          <div class="mb-2">
-            <label class="mb-1">Tujuan</label>
-            <textarea type="text" class="form-control"> </textarea>
-          </div>
-          <span style="font-weight: bold" class="mb-2"
-            >Follow (2 weeks) item</span
-          >
-          <div class="mb-2">
-            <label class="mb-1">Safety</label>
-            <input type="text" class="form-control" />
-          </div>
-          <div>
-            <label class="mb-1">Quality</label>
-            <input type="text" class="form-control" />
-          </div>
-        </div>
-      </CModalBody>
-      <CModalFooter>
-        <CButton color="secondary" @click="addTemuanModal = false">
-          Close
-        </CButton>
-        <CButton color="primary">Save changes</CButton>
-      </CModalFooter>
-    </CModal>
-
+    <!-- modal detail -->
     <CModal
       backdrop="static"
       alignment="center"
@@ -418,13 +379,13 @@
           <label class="mb-1">Priority</label>
           <select
             class="form-select"
-            :defaultValue="findingDetail?.cm_priority"
+            :value="findingDetail?.cm_priority"
             disabled
           >
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
+            <option selected>Select priority</option>
+            <option value="P1">P1: Safety and Quality Issue</option>
+            <option value="P2">P2: Productivity Issue</option>
+            <option value="P3">P3: Cost Issue</option>
           </select>
         </div>
         <div class="mb-2">
@@ -531,6 +492,187 @@
         </CButton>
       </CModalFooter>
     </CModal>
+
+    <!-- modal edit -->
+    <CModal
+      backdrop="static"
+      alignment="center"
+      :visible="editTemuanModal"
+      @close="editTemuanModal = false"
+      size="lg"
+      scrollable
+    >
+      <CModalHeader>
+        <CModalTitle>Edit temuan</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <div class="mb-2">
+          <label class="mb-1">Line</label>
+          <input
+            type="text"
+            class="form-control"
+            :value="findingDetail?.line_nm"
+          />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">Source cat</label>
+          <input
+            type="text"
+            class="form-control"
+            :value="findingDetail?.source_category"
+          />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">Tanggal temuan</label>
+          <input
+            type="date"
+            class="form-control"
+            :value="formatTheDate(findingDetail?.finding_date)"
+          />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">Pos</label>
+          <input
+            type="text"
+            class="form-control"
+            :value="findingDetail?.finding_location"
+          />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">Finding description / problem</label>
+          <textarea
+            cols="30"
+            rows="5"
+            class="form-control"
+            :value="findingDetail?.finding_desc"
+          ></textarea>
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">Rencana perbaikan</label>
+          <input
+            type="date"
+            class="form-control"
+            :value="formatTheDate(findingDetail?.cm_str_plan_date)"
+          />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">Priority</label>
+          <select class="form-select" :value="findingDetail?.cm_priority">
+            <option selected>Select priority</option>
+            <option value="P1">P1: Safety and Quality Issue</option>
+            <option value="P2">P2: Productivity Issue</option>
+            <option value="P3">P3: Cost Issue</option>
+          </select>
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">PIC </label>
+          <input
+            type="text"
+            class="form-control"
+            :value="findingDetail?.cm_pic_nm"
+            disabled
+          />
+          <VueMultiselect
+            v-model="selectedPIC"
+            :options="picData"
+            :custom-label="customPicOptions"
+          >
+          </VueMultiselect>
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM description</label>
+          <textarea
+            cols="30"
+            rows="5"
+            class="form-control"
+            :value="findingDetail?.cm_desc"
+          ></textarea>
+        </div>
+
+        <div class="mb-2">
+          <label class="mb-1">CM Start Plan Date </label>
+          <input
+            type="date"
+            class="form-control"
+            :value="formatTheDate(findingDetail?.cm_str_plan_date)"
+          />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM End Plan Date </label>
+          <input
+            type="date"
+            class="form-control"
+            :value="formatTheDate(findingDetail?.cm_end_plan_date)"
+          />
+        </div>
+
+        <hr />
+
+        <div class="mb-2">
+          <label class="mb-1">CM Start actual date</label>
+          <input
+            type="date"
+            class="form-control"
+            :value="formatTheDate(findingDetail?.cm_str_act_date)"
+          />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM End actual date</label>
+          <input
+            type="date"
+            class="form-control"
+            :value="formatTheDate(findingDetail?.cm_end_act_date)"
+          />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM Training date</label>
+          <input type="date" class="form-control" />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM Judge</label>
+          <select class="form-select" :value="findingDetail?.cm_judg">
+            <option value="true">Sudah</option>
+            <option value="false">Belum</option>
+          </select>
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM Sign LH Red</label>
+          <input type="file" class="form-control" />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM Sign LH White</label>
+          <input type="file" class="form-control" />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM Sign SH</label>
+          <input type="file" class="form-control" />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">Upload pink sheet</label>
+          <input type="file" class="form-control" />
+        </div>
+        <div class="mb-2">
+          <label class="mb-1">CM Comments</label>
+          <input type="text" class="form-control" />
+        </div>
+      </CModalBody>
+      <CModalFooter>
+        <CButton
+          color="info"
+          class="text-white"
+          @click="editTemuanModal = false"
+        >
+          Update data
+        </CButton>
+        <CButton
+          color="secondary"
+          class="text-white"
+          @click="editTemuanModal = false"
+        >
+          Close
+        </CButton>
+      </CModalFooter>
+    </CModal>
   </div>
 </template>
     
@@ -542,8 +684,9 @@ import { GET_LINES } from '@/store/modules/line.module'
 import { mapGetters } from 'vuex'
 import VueMultiselect from 'vue-multiselect'
 import Loading from 'vue-loading-overlay'
-
+import ApiService from '@/store/api.service'
 import Pagination from '@/components/Pagination.vue'
+import Swal from 'sweetalert2'
 
 export default {
   name: 'List Temuan',
@@ -562,6 +705,7 @@ export default {
       selectedMonth: null,
       findingDetail: null,
       addTemuanModal: false,
+      editTemuanModal: false,
       detailTemuanModal: false,
       picData: [],
       selectedPIC: null,
@@ -634,9 +778,26 @@ export default {
         console.log(error)
       }
     },
+    deleteFinding() {
+      Swal.fire({
+        title: 'Are you sure to delete this finding?',
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'Sure',
+        denyButtonText: `No`,
+      }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          Swal.fire('Data deleted!', '', 'success')
+        } else if (result.isDenied) {
+          Swal.fire('Canceled', '', 'info')
+        }
+      })
+    },
     getDetailTemuan(findingIndex) {
       const data = this.getFindings[findingIndex]
       this.findingDetail = data
+      console.log(data)
     },
     mapUsersData() {
       this.getUsersOpts?.map((item) => {
@@ -644,14 +805,23 @@ export default {
       })
     },
     formatTheDate(val) {
-      const year = val.split('T')[0].split('-')[0]
-      const month = val.split('T')[0].split('-')[1]
-      const day = val.split('T')[0].split('-')[2]
+      if (val) {
+        const year = val.split('T')[0].split('-')[0]
+        const month = val.split('T')[0].split('-')[1]
+        const day = val.split('T')[0].split('-')[2]
 
-      return `${year}-${month}-${day}`
+        return `${year}-${month}-${day}`
+      } else {
+        return null
+      }
     },
     addFilter() {
       this.getFindingsFunc()
+    },
+    async downloadPinkSheet(filePath) {
+      ApiService.setHeader()
+      const fileData = await ApiService.get(`file?path=${filePath}`)
+      console.log(fileData)
     },
   },
   async mounted() {

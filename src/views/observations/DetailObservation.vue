@@ -192,22 +192,235 @@
               item.judgment_id
             "
           >
-            <!-- <textarea
-              :disabled="isCheck"
-              v-model="item.findings"
-              class="w-100"
-            ></textarea> -->
             <div>
+              <div
+                v-if="
+                  findings.filter((find) => {
+                    return find.category_id == item.id
+                  }).length > 0
+                "
+              >
+                <button
+                  :disabled="isCheck"
+                  class="btn btn-info"
+                  @click="
+                    () => {
+                      addFindingsModal = true
+                      mapUsersData()
+                      editFinding(
+                        findings.filter((find) => {
+                          return find.category_id == item.id
+                        }),
+                        item.id,
+                      )
+                    }
+                  "
+                >
+                  Edit finding
+                </button>
+                <button :disabled="isCheck" class="btn btn-warning">
+                  Delete finding
+                </button>
+              </div>
               <button
+                v-else
                 :disabled="isCheck"
                 class="btn btn-info"
-                @click="addFindingsModal = true"
+                @click="
+                  () => {
+                    addFindingsModal = true
+                    mapUsersData()
+                  }
+                "
               >
                 Add findings
               </button>
             </div>
+
+            <!-- modal -->
+            <CModal
+              scrollable
+              backdrop="static"
+              alignment="center"
+              :visible="addFindingsModal"
+              size="xl"
+            >
+              <CModalHeader>
+                <CModalTitle>Add temuan</CModalTitle>
+              </CModalHeader>
+              <CModalBody>
+                <div>
+                  <div class="finding-list mt-3">
+                    <h5>Finding data</h5>
+                    <div class="mt-2">
+                      <div class="mb-2">
+                        <label class="mb-1">Tanggal temuan</label>
+                        <input
+                          type="date"
+                          class="form-control"
+                          v-model="finding.finding_date"
+                        />
+                      </div>
+                      <div class="mb-2">
+                        <label class="mb-1">Pos</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          v-model="finding.finding_location"
+                        />
+                      </div>
+                      <div class="mb-2">
+                        <label class="mb-1">Finding description</label>
+                        <textarea
+                          cols="30"
+                          rows="5"
+                          class="form-control"
+                          v-model="finding.finding_desc"
+                        ></textarea>
+                      </div>
+                      <div class="mb-2">
+                        <label class="mb-1">CM description</label>
+                        <textarea
+                          cols="30"
+                          rows="5"
+                          class="form-control"
+                          v-model="finding.cm_desc"
+                        ></textarea>
+                      </div>
+                      <div class="mb-2">
+                        <label class="mb-1">Priority</label>
+                        <select
+                          class="form-select"
+                          v-model="finding.cm_priority"
+                        >
+                          <option selected>Select priority</option>
+                          <option value="P1">
+                            P1: Safety and Quality Issue
+                          </option>
+                          <option value="P2">P2: Productivity Issue</option>
+                          <option value="P3">P3: Cost Issue</option>
+                        </select>
+                      </div>
+
+                      <div class="mb-2">
+                        <label class="mb-1">PIC </label>
+                        <VueMultiselect
+                          v-model="selectedPIC"
+                          :options="picData"
+                          :custom-label="customPicOptions"
+                        >
+                        </VueMultiselect>
+                      </div>
+                      <div class="mb-2">
+                        <label class="mb-1">CM Start Plan Date </label>
+                        <input
+                          type="date"
+                          class="form-control"
+                          v-model="finding.cm_str_plan_date"
+                        />
+                      </div>
+                      <div class="mb-2">
+                        <label class="mb-1">CM End Plan Date </label>
+                        <input
+                          type="date"
+                          class="form-control"
+                          v-model="finding.cm_end_plan_date"
+                        />
+                      </div>
+
+                      <hr />
+
+                      <div class="mb-2">
+                        <label class="mb-1">CM Start actual date</label>
+                        <input
+                          type="date"
+                          class="form-control"
+                          v-model="finding.cm_str_act_date"
+                          disabled
+                        />
+                      </div>
+                      <div class="mb-2">
+                        <label class="mb-1">CM End actual date</label>
+                        <input
+                          type="date"
+                          class="form-control"
+                          v-model="finding.cm_end_act_date"
+                          disabled
+                        />
+                      </div>
+                      <div class="mb-2">
+                        <label class="mb-1">CM Training date</label>
+                        <input
+                          type="date"
+                          class="form-control"
+                          v-model="finding.cm_training_date"
+                          disabled
+                        />
+                      </div>
+                      <div class="mb-2">
+                        <label class="mb-1">CM Judge</label>
+                        <select
+                          class="form-select"
+                          v-model="finding.cm_judg"
+                          disabled
+                        >
+                          <option>Select judgement</option>
+                          <option value="true">Sudah</option>
+                          <option value="false">Belum</option>
+                        </select>
+                      </div>
+                      <div class="mb-2">
+                        <label class="mb-1">CM Sign LH Red</label>
+                        <input type="file" class="form-control" disabled />
+                      </div>
+                      <div class="mb-2">
+                        <label class="mb-1">CM Sign LH White</label>
+                        <input type="file" class="form-control" disabled />
+                      </div>
+                      <div class="mb-2">
+                        <label class="mb-1">CM Sign SH</label>
+                        <input type="file" class="form-control" disabled />
+                      </div>
+                      <div class="mb-2">
+                        <label class="mb-1">Kaizen report</label>
+                        <input type="file" class="form-control" disabled />
+                      </div>
+                      <div class="mb-2">
+                        <label class="mb-1">CM Comments</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          disabled
+                          v-model="finding.cm_comments"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CModalBody>
+              <CModalFooter>
+                <CButton
+                  color="primary"
+                  class="text-white"
+                  @click="updateFindingData(item.id, item.factor_id, finding)"
+                  >Update finding data</CButton
+                >
+                <CButton
+                  color="primary"
+                  class="text-white"
+                  @click="addFindingData(item.id, item.factor_id, finding)"
+                  >Save finding data</CButton
+                >
+                <CButton
+                  color="secondary"
+                  class="text-white mx-2"
+                  @click="addFindingsModal = false"
+                >
+                  Cancel
+                </CButton>
+              </CModalFooter>
+            </CModal>
           </td>
-          <td v-else></td>
         </tr>
       </table>
       <button
@@ -228,174 +441,6 @@
   </div>
 
   <!-- modals -->
-  <CModal
-    scrollable
-    backdrop="static"
-    alignment="center"
-    :visible="addFindingsModal"
-    size="xl"
-  >
-    <CModalHeader>
-      <CModalTitle>Add temuan</CModalTitle>
-    </CModalHeader>
-    <CModalBody>
-      <div>
-        <div class="finding-list mt-3">
-          <h5>Finding data</h5>
-          <div class="mt-2">
-            <div class="mb-2">
-              <label class="mb-1">Tanggal temuan</label>
-              <input
-                type="date"
-                class="form-control"
-                v-model="finding.finding_date"
-              />
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">Pos</label>
-              <input
-                type="text"
-                class="form-control"
-                v-model="finding.finding_location"
-              />
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">Finding description</label>
-              <textarea
-                cols="30"
-                rows="5"
-                class="form-control"
-                v-model="finding.finding_desc"
-              ></textarea>
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">CM description</label>
-              <textarea
-                cols="30"
-                rows="5"
-                class="form-control"
-                v-model="finding.cm_desc"
-              ></textarea>
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">Priority</label>
-              <select class="form-select" v-model="finding.cm_priority">
-                <option selected>Select priority</option>
-                <option value="1">Safety and Quality Issue</option>
-                <option value="2">Productivity Issue</option>
-                <option value="3">Cost Issue</option>
-                <option value="4">4</option>
-              </select>
-            </div>
-
-            <div class="mb-2">
-              <label class="mb-1">PIC </label>
-              <VueMultiselect
-                v-model="finding.cm_pic_id"
-                :options="picData"
-                :custom-label="customPicOptions"
-              >
-              </VueMultiselect>
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">CM Start Plan Date </label>
-              <input
-                type="date"
-                class="form-control"
-                v-model="finding.cm_str_plan_date"
-              />
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">CM End Plan Date </label>
-              <input
-                type="date"
-                class="form-control"
-                v-model="finding.cm_end_plan_date"
-              />
-            </div>
-
-            <hr />
-
-            <div class="mb-2">
-              <label class="mb-1">CM Start actual date</label>
-              <input
-                type="date"
-                class="form-control"
-                v-model="finding.cm_str_act_date"
-                disabled
-              />
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">CM End actual date</label>
-              <input
-                type="date"
-                class="form-control"
-                v-model="finding.cm_end_act_date"
-                disabled
-              />
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">CM Training date</label>
-              <input
-                type="date"
-                class="form-control"
-                v-model="finding.cm_training_date"
-                disabled
-              />
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">CM Judge</label>
-              <select class="form-select" v-model="finding.cm_judg" disabled>
-                <option>Select judgement</option>
-                <option value="true">Sudah</option>
-                <option value="false">Belum</option>
-              </select>
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">CM Sign LH Red</label>
-              <input type="file" class="form-control" disabled />
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">CM Sign LH White</label>
-              <input type="file" class="form-control" disabled />
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">CM Sign SH</label>
-              <input type="file" class="form-control" disabled />
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">Kaizen report</label>
-              <input type="file" class="form-control" disabled />
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">CM Comments</label>
-              <input
-                type="text"
-                class="form-control"
-                disabled
-                v-model="finding.cm_comments"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </CModalBody>
-    <CModalFooter>
-      <CButton color="primary" class="text-white" @click="updateFindingsData"
-        >Update finding data</CButton
-      >
-      <CButton color="primary" class="text-white" @click="addFindingsData"
-        >Save finding data</CButton
-      >
-      <CButton
-        color="secondary"
-        class="text-white mx-2"
-        @click="addFindingsModal = false"
-      >
-        Cancel
-      </CButton>
-    </CModalFooter>
-  </CModal>
 </template>
 
 <script>
@@ -435,6 +480,7 @@ export default {
       tskLabel: 'TSK',
       tskkLabel: 'TSKK',
       addFindingsModal: false,
+      selectedPIC: null,
       judgementVal: {
         stw_ct1: 50,
         stw_ct2: 50,
@@ -528,18 +574,84 @@ export default {
       const groups = await ApiService.get(`master/groups`)
       this.groups = groups.data.data
     },
+    resetData() {
+      this.finding_date = moment().format('YYYY-MM-DD')
+      // this.finding_location = ''
+      this.finding_desc = ''
+      this.cm_desc = ''
+      this.cm_priority = 0
+      this.cm_str_plan_date = ''
+      this.cm_end_plan_date = ''
+      this.cm_str_act_date = null
+      this.cm_end_act_date = null
+      this.cm_training_date = null
+      this.cm_judg = false
+      this.cm_sign_lh_red = null
+      this.cm_sign_lh_white = null
+      this.cm_sign_sh = null
+      this.cm_comments = null
+    },
+    addFindingData(categoryID, factorID, findings) {
+      let data = {
+        line_id: this.observation?.line_id,
+        category_id: categoryID,
+        factor_id: factorID,
+        cm_pic_id: this.selectedPIC.pic_id,
+        cm_result_factor_id: this.selectedFactor,
+        ...findings,
+      }
+
+      this.findings.push(data)
+      this.addFindingsModal = false
+      this.resetData()
+    },
+    editFinding(categoryID, data) {
+      // const index = this.findings.findIndex((object) => {
+      //   return object.category_id === `${categoryID}`
+      // })
+
+      const index = this.findings.findIndex(
+        (Obj) => Obj.category_id === categoryID,
+      )
+
+      console.log('index' + index)
+      console.log('data' + data)
+
+      console.log(this.findings)
+      console.log(categoryID)
+
+      // this.findings = data
+    },
+    updateFindingData(categoryID, factorID, findings) {
+      let data = {
+        line_id: this.observation?.line_id,
+        category_id: categoryID,
+        factor_id: factorID,
+        cm_pic_id: this.selectedPIC.pic_id,
+        cm_result_factor_id: this.selectedFactor,
+        ...findings,
+      }
+
+      console.log(data)
+
+      const index = this.findings.findIndex((object) => {
+        return object.category_id === categoryID
+      })
+
+      console.log(index)
+    },
     async getCategories() {
       ApiService.setHeader()
       const categories = await ApiService.get(`master/categories`)
       const mapCategory = categories.data.data.map((itm, i) => {
         itm.judgment_id = null
         itm.factor_id = null
-        itm.findings = null
+
         if (this.resultCheck?.length > 0) {
           let result = this.resultCheck[i]
+
           itm.judgment_id = result.judgment_id
           itm.factor_id = result.factor_id
-          itm.findings = result.findings
         }
         return itm
       })
@@ -550,7 +662,7 @@ export default {
     },
     async postCheckObs() {
       try {
-        Swal.showLoading()
+        // Swal.showLoading()
         this.resultCheck = []
         for (let i = 0; i < this.categories.length; i++) {
           const element = this.categories[i]
@@ -563,8 +675,6 @@ export default {
             stw_ct3: 0,
             stw_ct4: 0,
             stw_ct5: 0,
-            // factor_id: element.factor_id,
-            // findings: element.findings,
           }
           this.resultCheck.push(newObj)
         }
@@ -576,7 +686,7 @@ export default {
           comment_sh: '',
           comment_ammgr: '',
           results_check: this.resultCheck,
-          findings: [],
+          findings: this.findings,
         }
         console.log(formInput)
         // await this.$store
