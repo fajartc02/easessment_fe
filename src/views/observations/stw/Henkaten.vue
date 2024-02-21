@@ -493,10 +493,6 @@ export default {
       }
     },
     addHenkatenData() {
-      // this.henkatenData.henkaten_line_id =
-      //   '882eaf19-d355-4f62-918d-00cec01cd639'
-      // this.findingsData.line_id = this.getHenkatens[0]?.henkaten_line_id
-      this.findingsData.line_id = '882eaf19-d355-4f62-918d-00cec01cd639'
       this.findingsData.cm_result_factor_id = this.findingsData.factor_id
 
       let data = {
