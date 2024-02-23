@@ -15,7 +15,8 @@
           <div class="col">
             <label>Line</label>
             <select class="form-select" v-model="selectedLine" @change="addFilter('line')">
-              <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
+              <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id"
+                :selected="line.id == this.selectedLineID">
                 {{ line.text }}
               </option>
             </select>
@@ -43,7 +44,7 @@
               </div>
 
               <div class="col-2 m-2" v-else v-for="detailGraph in getGraphs" :key="detailGraph.id">
-                <div class="w-100 h-100 rounded chart-wrapper">
+                <div class="w-100 h-100 rounded">
                   <apexchart type="bar" :options="options" :series="detailGraph.chartData" height="100%" @click="(event, chartContext, config) => {
                     selectedLineID = detailGraph
                     clickHandler(event, chartContext, config)
@@ -66,7 +67,7 @@
               </div>
 
               <div class="col-2 m-2" v-else v-for="detailGraph in getGraphs" :key="detailGraph.id">
-                <div class="w-100 h-100 rounded chart-wrapper">
+                <div class="w-100 h-100 rounded">
                   <apexchart type="bar" :options="options" :series="detailGraph.chartData" height="100%"
                     @click="clickHandler"></apexchart>
                 </div>
@@ -124,6 +125,9 @@ export default {
             },
           },
         },
+        grid: {
+          show: false
+        },
         title: {
           text: 'Summary Percentage'
         },
@@ -136,6 +140,7 @@ export default {
           categories: ['Overall graph'],
         },
         yaxis: {
+          show: false,
           min: 0,
           max: 100,
         },
@@ -157,6 +162,9 @@ export default {
           },
         },
         dataLabels: {
+          style: {
+            fontSize: '20px',
+          },
           formatter: function (val) {
             return `${val} %`
           },
@@ -178,6 +186,9 @@ export default {
         },
         legend: {
           show: false,
+        },
+        grid: {
+          show: false
         },
         plotOptions: {
           bar: {
@@ -204,6 +215,9 @@ export default {
         xaxis: {
           categories: ['problem', 'closed', 'remain'],
         },
+        yaxis: {
+          show: false
+        }
       },
     }
   },
@@ -269,9 +283,9 @@ export default {
         console.log(error)
       }
     },
-    addFilter() {
-      this.getGraph()
-      this.getOverallGraph()
+    async addFilter() {
+      await this.getGraph()
+      await this.getOverallGraph()
       if (this.selectedLine == '-1') {
         this.cond = 'default'
       } else if (this.selectedLine !== '-1') {
@@ -319,13 +333,20 @@ export default {
     },
   },
   async mounted() {
+    await this.getLines()
+    if (localStorage.getItem('line_id')) {
+      this.selectedLineID = localStorage.getItem('line_id')
+      this.selectedLine = localStorage.getItem('line_id')
+    } else {
+      this.selectedLineID = -1
+      this.selectedLine = -1
+    }
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
 
     this.selectedFilterStartDate = `${year}-${month}-01`
     this.selectedFilterEndDate = `${year}-12-31`
-    await this.getLines()
     await this.getGraph()
     await this.getGroup()
     await this.getOverallGraph()
