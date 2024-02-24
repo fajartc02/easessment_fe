@@ -224,6 +224,7 @@
                         <div v-if="selectedFindingImage">
                           <img :src="selectedFindingImage" width="300" alt="">
                         </div>
+
                       </div>
                       <div class="mb-2">
                         <label class="mb-1">CM description</label>
@@ -345,6 +346,7 @@
 
 <script>
 import { GET_OBSERVATION_DETAIL } from '@/store/modules/observation.module'
+// import { POST_OBSERVATION_CHECK } from '@/store/modules/observation.module'
 import { GET_USERS } from '@/store/modules/user.module'
 import { mapGetters } from 'vuex'
 import VuePdfEmbed from 'vue-pdf-embed'
@@ -567,6 +569,7 @@ export default {
       this.selectedFindingImage = `${process.env.VUE_APP_URL}/file?path=${uploadImage.data.data}`
       console.log(this.selectedFindingImage)
       this.finding.finding_img = uploadImage.data.data
+      console.log(uploadImage)
 
     },
     calculateJudgement(newValue) {
@@ -608,8 +611,10 @@ export default {
 
       if (totalPrecentage.toFixed() > 20) {
         this.judgementID = NG_ID
+        // result.factor_id = NG_ID
       } else {
         this.judgementID = OK_ID
+        // result.factor_id = OK_ID
       }
     },
     async getCategories() {
@@ -667,21 +672,23 @@ export default {
           observation_id: this.$route.params.id,
           group_id: this.observation?.group_id,
           actual_check_dt: this.form.actual_check_dt,
-          comment_sh: '',
-          comment_ammgr: '',
+          comment_sh: this.observation?.comment_sh,
+          comment_ammgr: this.observation?.comment_ammgr,
           results_check: this.resultCheck,
           findings: this.findings,
         }
+
         console.log(formInput)
-        // await this.$store
-        //   .dispatch(POST_OBSERVATION_CHECK, formInput)
-        //   .then(() => {
-        //     Swal.showLoading()
-        //     Swal.fire('Pengecekan berhasil di submit', '', 'success')
-        //     setTimeout(() => {
-        //       this.$router.push('/')
-        //     }, 1000)
-        //   })
+
+        //   await this.$store
+        //     .dispatch(POST_OBSERVATION_CHECK, formInput)
+        //     .then(() => {
+        //       Swal.showLoading()
+        //       Swal.fire('Pengecekan berhasil di submit', '', 'success')
+        //       setTimeout(() => {
+        //         this.$router.push('/')
+        //       }, 1000)
+        //     })
       } catch (error) {
         console.log(error)
         Swal.fire('Pengecekan gagal di submit', '', 'error')
@@ -715,6 +722,8 @@ export default {
     await this.getUsers()
     // await this.getFactors()
     // await this.judgments()
+
+    this.finding.finding_location = await this.observation?.pos_nm
   },
 }
 </script>

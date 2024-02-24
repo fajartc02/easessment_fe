@@ -12,6 +12,8 @@ import ApiService from '@/store/api.service'
 import Select2 from 'vue3-select2-component'; 
 import VueApexCharts from "vue3-apexcharts";  
 import { OhVueIcon  } from "oh-vue-icons";
+import VueSignaturePad  from "vue-signature-pad";
+
 
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css"; 
@@ -25,6 +27,7 @@ app.use(router)
 app.use(VueAxios, axios);
 app.use(CoreuiVue)
 app.use(Toast);
+app.use(VueSignaturePad);
 
 app.provide('icons', icons)
 app.component('CIcon', CIcon)
