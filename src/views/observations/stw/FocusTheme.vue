@@ -5,48 +5,25 @@
         <div class="row">
           <div class="col">
             <label>Start date</label>
-            <input
-              type="date"
-              class="form-control"
-              v-model="selectedFilterStartDate"
-              @change="addFilter()"
-            />
+            <input type="date" class="form-control" v-model="selectedFilterStartDate" @change="addFilter()" />
           </div>
           <div class="col">
             <label>End date</label>
-            <input
-              type="date"
-              class="form-control"
-              v-model="selectedFilterEndDate"
-              @change="addFilter()"
-            />
+            <input type="date" class="form-control" v-model="selectedFilterEndDate" @change="addFilter()" />
           </div>
           <div class="col">
             <label>Line</label>
-            <select
-              class="form-select"
-              v-model="selectedLine"
-              @change="addFilter()"
-            >
-              <option
-                v-for="(line, index) in getLinesOpts"
-                :key="index"
-                :value="line.id"
-              >
+            <select class="form-select" v-model="selectedLine" @change="addFilter()">
+              <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
                 {{ line.text }}
               </option>
             </select>
           </div>
         </div>
       </div>
-      <div
-        class="card-header d-flex justify-content-between align-items-center"
-      >
+      <div class="card-header d-flex justify-content-between align-items-center">
         <h5>Fokus Tema</h5>
-        <button
-          class="btn btn-info text-white"
-          @click=";(addFocusThemeModal = true), mapUsersData()"
-        >
+        <button class="btn btn-info text-white" @click="; (addFocusThemeModal = true), mapUsersData()">
           Add fokus tema
         </button>
       </div>
@@ -70,40 +47,26 @@
             <tr v-if="isLoading">
               <td colspan="7" class="p-0" style="height: 200px">
                 <div class="vl-parent p-0" style="height: 100%">
-                  <loading
-                    v-model:active="isLoading"
-                    :can-cancel="true"
-                    :is-full-page="false"
-                    :on-cancel="onCancel"
-                  />
+                  <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false" :on-cancel="onCancel" />
                 </div>
               </td>
             </tr>
-            <tr
-              v-else
-              v-for="(focustheme, index) in getFocusTheme"
-              :key="focustheme.ft_id"
-            >
+            <tr v-else v-for="(focustheme, index) in getFocusTheme" :key="focustheme.ft_id">
               <th scope="row">{{ index + 1 }}</th>
               <td>{{ focustheme.line_nm }}</td>
               <td>{{ focustheme.ft_desc }}</td>
               <td>{{ focustheme.ft_pillar }}</td>
               <td>
                 <div class="d-flex justify-content-center align-items-center">
-                  <FocusThemeIndicatorVue
-                    :total="focustheme.ft_evaluation_num"
-                  ></FocusThemeIndicatorVue>
+                  <FocusThemeIndicatorVue :total="focustheme.ft_evaluation_num"></FocusThemeIndicatorVue>
                 </div>
               </td>
               <td>{{ focustheme.ft_remark }}</td>
               <td>
-                <button
-                  class="btn btn-warning btn-sm text-white"
-                  @click="focusThemeDetailData(index)"
-                >
+                <button class="btn btn-warning btn-sm text-white" @click="focusThemeDetailData(index)">
                   Problems
                 </button>
-                <button class="btn btn-danger btn-sm text-white mx-2">
+                <button class="btn btn-danger btn-sm text-white mx-2" @click="deleteFT()">
                   Delete
                 </button>
                 <button class="btn btn-info btn-sm text-white">Edit</button>
@@ -118,24 +81,13 @@
         </table>
       </div>
       <!-- pagination -->
-      <Pagination
-        :totalPages="10"
-        :perPage="10"
-        :currentPage="currentPage"
-        @changePage="onPageChange"
-        @changeLimit="onPageChangeLimit"
-      />
+      <Pagination :totalPages="10" :perPage="10" :currentPage="currentPage" @changePage="onPageChange"
+        @changeLimit="onPageChangeLimit" />
     </div>
 
     <!-- modals -->
-    <CModal
-      scrollable
-      backdrop="static"
-      alignment="center"
-      :visible="addFocusThemeModal"
-      @close="addFocusThemeModal = false"
-      size="lg"
-    >
+    <CModal scrollable backdrop="static" alignment="center" :visible="addFocusThemeModal"
+      @close="addFocusThemeModal = false" size="lg">
       <CModalHeader>
         <CModalTitle>Add fokus tema</CModalTitle>
       </CModalHeader>
@@ -147,36 +99,21 @@
               <div>
                 <div class="mb-2">
                   <label class="mb-1">Fokus tema</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="focusThemeData.ft_desc"
-                  />
+                  <input type="text" class="form-control" v-model="focusThemeData.ft_desc" />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Line</label>
-                  <VueMultiselect
-                    v-model="focusThemeData.ft_line_id"
-                    :options="lineData"
-                    placeholder=""
-                    :custom-label="customLineFilterOptions"
-                  >
+                  <VueMultiselect v-model="focusThemeData.ft_line_id" :options="lineData" placeholder=""
+                    :custom-label="customLineFilterOptions">
                   </VueMultiselect>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Pilar</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="focusThemeData.ft_pillar"
-                  />
+                  <input type="text" class="form-control" v-model="focusThemeData.ft_pillar" />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Evaluasi</label>
-                  <select
-                    class="form-select"
-                    v-model="focusThemeData.ft_evaluation_num"
-                  >
+                  <select class="form-select" v-model="focusThemeData.ft_evaluation_num">
                     <option selected>Select evaluasi</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -186,15 +123,7 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Remark</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="focusThemeData.ft_remark"
-                  />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">Kaizen report</label>
-                  <input type="file" class="form-control" />
+                  <input type="text" class="form-control" v-model="focusThemeData.ft_remark" />
                 </div>
               </div>
             </CAccordionBody>
@@ -205,44 +134,23 @@
               <div>
                 <div class="mb-2">
                   <label class="mb-1">Tanggal temuan</label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    v-model="findingsData.finding_date"
-                  />
+                  <input type="date" class="form-control" v-model="findingsData.finding_date" />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Pos</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="findingsData.finding_location"
-                  />
+                  <input type="text" class="form-control" v-model="findingsData.finding_location" />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Finding description</label>
-                  <textarea
-                    cols="30"
-                    rows="5"
-                    class="form-control"
-                    v-model="findingsData.finding_desc"
-                  ></textarea>
+                  <textarea cols="30" rows="5" class="form-control" v-model="findingsData.finding_desc"></textarea>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM description</label>
-                  <textarea
-                    cols="30"
-                    rows="5"
-                    class="form-control"
-                    v-model="findingsData.cm_desc"
-                  ></textarea>
+                  <textarea cols="30" rows="5" class="form-control" v-model="findingsData.cm_desc"></textarea>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Priority</label>
-                  <select
-                    class="form-select"
-                    v-model="findingsData.cm_priority"
-                  >
+                  <select class="form-select" v-model="findingsData.cm_priority">
                     <option selected>Select priority</option>
                     <option value="P1">P1: Safety & Quality Issue</option>
                     <option value="P2">P2: Productivity Issue</option>
@@ -252,16 +160,9 @@
 
                 <div class="mb-2">
                   <label class="mb-1">Category </label>
-                  <select
-                    class="form-select"
-                    v-model="findingsData.category_id"
-                  >
+                  <select class="form-select" v-model="findingsData.category_id">
                     <option selected>Select category</option>
-                    <option
-                      v-for="category in categories"
-                      :key="category.id"
-                      :value="category.id"
-                    >
+                    <option v-for="category in categories" :key="category.id" :value="category.id">
                       {{ category.name }}
                     </option>
                   </select>
@@ -271,11 +172,7 @@
                   <label class="mb-1">Faktor </label>
                   <select class="form-select" v-model="findingsData.factor_id">
                     <option disabled>Select Factor</option>
-                    <option
-                      v-for="factor in factors"
-                      :key="factor.text"
-                      :value="factor.id"
-                    >
+                    <option v-for="factor in factors" :key="factor.text" :value="factor.id">
                       {{ factor.text }}
                     </option>
                   </select>
@@ -283,67 +180,36 @@
 
                 <div class="mb-2">
                   <label class="mb-1">PIC </label>
-                  <VueMultiselect
-                    v-model="findingsData.cm_pic_id"
-                    :options="picData"
-                    :custom-label="customPicOptions"
-                  >
+                  <VueMultiselect v-model="findingsData.cm_pic_id" :options="picData" :custom-label="customPicOptions">
                   </VueMultiselect>
                 </div>
 
                 <div class="mb-2">
                   <label class="mb-1">CM Start Plan Date </label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    v-model="findingsData.cm_str_plan_date"
-                  />
+                  <input type="date" class="form-control" v-model="findingsData.cm_str_plan_date" />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM End Plan Date </label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    v-model="findingsData.cm_end_plan_date"
-                  />
+                  <input type="date" class="form-control" v-model="findingsData.cm_end_plan_date" />
                 </div>
 
                 <hr />
 
                 <div class="mb-2">
                   <label class="mb-1">CM Start actual date</label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    v-model="findingsData.cm_str_act_date"
-                    disabled
-                  />
+                  <input type="date" class="form-control" v-model="findingsData.cm_str_act_date" disabled />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM End actual date</label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    v-model="findingsData.cm_end_act_date"
-                    disabled
-                  />
+                  <input type="date" class="form-control" v-model="findingsData.cm_end_act_date" disabled />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Training date</label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    v-model="findingsData.cm_training_date"
-                    disabled
-                  />
+                  <input type="date" class="form-control" v-model="findingsData.cm_training_date" disabled />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Judge</label>
-                  <select
-                    class="form-select"
-                    v-model="findingsData.cm_judg"
-                    disabled
-                  >
+                  <select class="form-select" v-model="findingsData.cm_judg" disabled>
                     <option selected>Select judgement</option>
                     <option value="true">Sudah</option>
                     <option value="false">Belum</option>
@@ -363,12 +229,7 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Comments</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="findingsData.cm_comments"
-                    disabled
-                  />
+                  <input type="text" class="form-control" v-model="findingsData.cm_comments" disabled />
                 </div>
               </div>
             </CAccordionBody>
@@ -379,20 +240,12 @@
         <CButton color="secondary" @click="addFocusThemeModal = false">
           Close
         </CButton>
-        <CButton color="primary" @click="addFocusThemeData"
-          >Save changes</CButton
-        >
+        <CButton color="primary" @click="addFocusThemeData">Save changes</CButton>
       </CModalFooter>
     </CModal>
 
-    <CModal
-      scrollable
-      backdrop="static"
-      alignment="center"
-      :visible="focusThemeDetailModal"
-      @close="focusThemeDetailModal = false"
-      size="lg"
-    >
+    <CModal scrollable backdrop="static" alignment="center" :visible="focusThemeDetailModal"
+      @close="focusThemeDetailModal = false" size="lg">
       <CModalHeader>
         <CModalTitle>Detail fokus tema</CModalTitle>
       </CModalHeader>
@@ -408,10 +261,7 @@
               <th>CM Judge</th>
             </thead>
             <tbody>
-              <tr
-                v-for="(findingDetail, index) in selectedFocusTheme.findings"
-                :key="index"
-              >
+              <tr v-for="(findingDetail, index) in selectedFocusTheme.findings" :key="index">
                 <td>{{ index + 1 }}</td>
                 <td>{{ findingDetail.line_nm }}</td>
                 <td>{{ formatTheDate(findingDetail.finding_date) }}</td>
@@ -426,16 +276,11 @@
         </div>
       </CModalBody>
       <CModalFooter>
-        <CButton
-          color="secondary"
-          class="text-white"
-          @click="
-            () => {
-              focusThemeDetailModal = false
-              this.selectedFocusTheme = null
-            }
-          "
-        >
+        <CButton color="secondary" class="text-white" @click="() => {
+          focusThemeDetailModal = false
+          this.selectedFocusTheme = null
+        }
+          ">
           Close
         </CButton>
       </CModalFooter>
@@ -443,7 +288,7 @@
   </div>
 </template>
     
-    <script>
+<script>
 import moment from 'moment'
 import { GET_LINES } from '@/store/modules/line.module'
 import {
@@ -603,6 +448,22 @@ export default {
       if (this.getFocusTheme) {
         this.selectedFocusTheme = this.getFocusTheme[index]
       }
+    },
+    deleteFT() {
+      Swal.fire({
+        title: 'Are you sure to delete this focus theme?',
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'Sure',
+        denyButtonText: `No`,
+      }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          Swal.fire('Data deleted!', '', 'success')
+        } else if (result.isDenied) {
+          Swal.fire('Canceled', '', 'info')
+        }
+      })
     },
     async getFactors() {
       ApiService.setHeader()

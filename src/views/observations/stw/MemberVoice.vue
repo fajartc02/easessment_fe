@@ -25,9 +25,9 @@
       <div class="card-header d-flex justify-content-between align-items-center">
         <h5>Member Voice List</h5>
         <button class="btn btn-info text-white" @click="() => {
-            addMemberVoiceModal = true
-            mapUsersData()
-          }
+          addMemberVoiceModal = true
+          mapUsersData()
+        }
           ">
           Add member voices
         </button>
@@ -145,13 +145,13 @@
               <td>{{ membervoice.mv_pic_nm }}</td>
               <td>
                 <button class="btn btn-info btn-sm text-white w-full my-1" @click="() => {
-                    detailMVModal = true
-                    getDetailMVData(index)
-                  }
+                  detailMVModal = true
+                  getDetailMVData(index)
+                }
                   ">
                   Detail
                 </button>
-                <button class="btn btn-danger btn-sm text-white">Delete</button>
+                <button class="btn btn-danger btn-sm text-white" @click="deleteMV()">Delete</button>
               </td>
             </tr>
             <tr v-if="getMemberVoice?.length < 1">
@@ -622,6 +622,22 @@ export default {
         this.addMemberVoiceModal = false
       }
     },
+    deleteMV() {
+      Swal.fire({
+        title: 'Are you sure to delete this member voice?',
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'Sure',
+        denyButtonText: `No`,
+      }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          Swal.fire('Data deleted!', '', 'success')
+        } else if (result.isDenied) {
+          Swal.fire('Canceled', '', 'info')
+        }
+      })
+    },
     async getFactors() {
       ApiService.setHeader()
       const factors = await ApiService.get(`master/factors`)
@@ -659,11 +675,13 @@ export default {
     },
 
     formatTheDate(val) {
-      const year = val.split('T')[0].split('-')[0]
-      const month = val.split('T')[0].split('-')[1]
-      const day = val.split('T')[0].split('-')[2]
+      if (val) {
+        const year = val.split('T')[0].split('-')[0]
+        const month = val.split('T')[0].split('-')[1]
+        const day = val.split('T')[0].split('-')[2]
 
-      return `${year}-${month}-${day}`
+        return `${year}-${month}-${day}`
+      }
     },
     getDetailMVData(MVIndex) {
       const data = this.getMemberVoice[MVIndex]
