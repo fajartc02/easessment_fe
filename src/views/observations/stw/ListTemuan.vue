@@ -154,8 +154,8 @@
               ? 'background-color: #fee2e2'
               : ''
               }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ${finding.cm_judg == true ? 'background-color: #f0fdf4' : ''}  
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ${finding.cm_judg == false &&
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ${finding.cm_judg == true ? 'background-color: #f0fdf4' : ''}  
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ${finding.cm_judg == false &&
                 this.todayDate < formatTheDate(finding.cm_str_plan_date)
                 ? 'background-color: #fff'
                 : ''
@@ -426,7 +426,7 @@
             <input type="image" v-if="updatedLHRedSign" :src="updatedLHRedSign" style="width: 100%; height: 100%;">
             <input type="image" v-else :src="findingDetail?.cm_sign_lh_red" style="width: 100%; height: 100%;">
 
-            <button class="btn btn-info my-2 btn-sm text-white" @click="() => {
+            <button class="btn btn-secondary my-2 btn-sm text-white" @click="() => {
               showSignLhRed = true
               showSignLhWhite = false
               showSignSH = false
@@ -467,7 +467,7 @@
             <input type="image" v-if="updatedLHWhiteSign" :src="updatedLHWhiteSign" style="width: 100%; height: 100%;">
             <input type="image" v-else :src="findingDetail?.cm_sign_lh_white" style="width: 100%; height: 100%;">
 
-            <button class="btn btn-info my-2 btn-sm text-white" @click="() => {
+            <button class="btn btn-secondary my-2 btn-sm text-white" @click="() => {
               showSignLhRed = false
               showSignLhWhite = true
               showSignSH = false
@@ -505,13 +505,11 @@
         <div class="mb-2 my-5">
           <label class="mb-1">CM Sign SH</label>
           <br />
-
-
           <div v-if="findingDetail?.cm_sign_sh" style="border: 1px solid #eaeaea; width: 100%; height: 100px;">
             <input type="image" v-if="updatedSHSign" :src="updatedSHSign" style="width: 100%; height: 100%;">
             <input type="image" v-else :src="findingDetail?.cm_sign_sh" style="width: 100%; height: 100%;">
 
-            <button class="btn btn-info my-2 btn-sm text-white" @click="() => {
+            <button class="btn btn-secondary my-2 btn-sm text-white" @click="() => {
               showSignLhRed = false
               showSignLhWhite = false
               showSignSH = true
@@ -545,18 +543,24 @@
         </div>
 
 
-        <div class="mb-2 my-5">
+        <div class="mb-2 my-5" style="margin-top: 40px;">
           <label class="mb-1">Upload pink sheet</label>
           <input ref="pink_sheet" type="file" class="form-control" />
 
-          <div v-if="selectedPinkSheet">
-            <router-link :to="selectedPinkSheet" target="_blank">
-              <button class="btn btn-info btn-sm my-2 text-white">View file</button>
-            </router-link>
+          <div v-if="selectedPinkSheet || findingDetail?.file_pinksheet">
+            <button @click="viewPinkSheet()" v-if="selectedPinkSheet" class="btn btn-info btn-sm my-2 text-white">View
+              updated file</button>
+            <button @click="viewPinkSheet()" v-else class="btn btn-info btn-sm my-2 text-white">View file</button>
+            <button class="btn btn-info btn-sm my-2 mx-2 text-white" :disabled="isUploadKaizenFile"
+              @click="uploadPinkSheet('pink_sheet')">
+              {{ isUploadKaizenFile ? 'Updating..' : 'Update pink sheet' }}
+            </button>
           </div>
           <div v-else>
-            <button class="btn btn-info btn-sm my-2 text-white" @click="uploadPinkSheet('pink_sheet')">Upload pink
-              sheet</button>
+            <button class="btn btn-info btn-sm my-2 text-white" :disabled="isUploadKaizenFile"
+              @click="uploadPinkSheet('pink_sheet')">
+              {{ isUploadKaizenFile ? 'Uploading..' : 'Upload pink sheet' }}
+            </button>
           </div>
         </div>
         <div class="mb-2">
@@ -599,6 +603,7 @@ export default {
   data() {
     return {
       isLoading: false,
+      isUploadKaizenFile: false,
       isUploadSignLoading: false,
       currentPage: 1,
       currentPageLimit: 5,
@@ -810,11 +815,12 @@ export default {
       })
     },
     async uploadPinkSheet(state) {
+      this.isUploadKaizenFile = true
       let findingID = await this.getFindings[this.selectedFindingIndex].finding_id;
       let is_before_path = await this.getFindings[this.selectedFindingIndex].file_pinksheet;
       let before_path;
 
-      if (is_before_path !== null) {
+      if (is_before_path == null) {
         before_path = null
       } else {
         before_path = is_before_path
@@ -829,13 +835,25 @@ export default {
       formData.append('dest', 'pinkSheet');
       formData.append('attachment', image);
 
-      const uploadImage = await ApiService.post(`/operational/findingCm/upload`, formData, {
+      const upload = await ApiService.post(`/operational/findingCm/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         }
       })
 
-      this.selectedPinkSheet = `${process.env.VUE_APP_URL}/file?path=${uploadImage.data.data}`
+      if (upload.data.data) {
+        alert('Kaizen file updated')
+        this.isUploadKaizenFile = false
+        this.selectedPinkSheet = `${process.env.VUE_APP_URL}/file?path=${upload.data.data}`
+      }
+
+    },
+    viewPinkSheet() {
+      if (this.selectedPinkSheet) {
+        window.open(`${this.selectedPinkSheet}`, '_blank')
+      } else {
+        window.open(`${process.env.VUE_APP_URL}/file?path=${this.findingDetail?.file_pinksheet}`, '_blank')
+      }
     },
     getDetailTemuan(findingIndex) {
       const data = this.getFindings[findingIndex]
@@ -866,7 +884,7 @@ export default {
     addFilter() {
       this.getFindingsFunc()
     },
-    async downloadPinkSheet(filePath) {
+    downloadPinkSheet(filePath) {
       window.location.href = `${process.env.VUE_APP_URL}/file?path=${filePath}`
     },
   },
