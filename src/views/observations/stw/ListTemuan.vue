@@ -154,8 +154,8 @@
               ? 'background-color: #fee2e2'
               : ''
               }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ${finding.cm_judg == true ? 'background-color: #f0fdf4' : ''}  
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ${finding.cm_judg == false &&
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ${finding.cm_judg == true ? 'background-color: #f0fdf4' : ''}  
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ${finding.cm_judg == false &&
                 this.todayDate < formatTheDate(finding.cm_str_plan_date)
                 ? 'background-color: #fff'
                 : ''
@@ -419,37 +419,84 @@
             <option value="false">Belum</option>
           </select>
         </div>
-        <div class="mb-2">
+        <div class="mb-5">
           <label class="mb-1">CM Sign LH Red</label>
           <br />
-          <button class="btn btn-info my-2 btn-sm text-white" @click="() => {
-            showSignLhRed = true
-            showSignLhWhite = false
-            showSignSH = false
-          }">Add signature</button>
+          <div v-if="findingDetail?.cm_sign_lh_red" style="border: 1px solid #eaeaea; width: 100%; height: 100px;">
+            <input type="image" v-if="updatedLHRedSign" :src="updatedLHRedSign" style="width: 100%; height: 100%;">
+            <input type="image" v-else :src="findingDetail?.cm_sign_lh_red" style="width: 100%; height: 100%;">
 
+            <button class="btn btn-info my-2 btn-sm text-white" @click="() => {
+              showSignLhRed = true
+              showSignLhWhite = false
+              showSignSH = false
+            }">Edit sign</button>
+          </div>
+          <!-- to add sign -->
+          <div v-else>
+            <button class="btn btn-info my-2 btn-sm text-white" @click="showAddSignature('lhred')">Add signature</button>
+
+            <div v-if="showSignLhRed" id="sign-wrapper" style="width: 100%; height: 100px; border: 1px solid #eaeaea;">
+              <vueSignature ref="cm_sign_lh_red" :sigOption="option" :w="'100%'" :h="'100px'">
+              </vueSignature>
+              <button class="btn btn-info my-2 btn-sm text-white" :disabled="isUploadSignLoading"
+                @click="saveSignature('cm_sign_lh_red')">
+                {{ isUploadSignLoading ? 'Saving..' : 'Save' }}
+              </button>
+              <button class="btn btn-info btn-sm mx-2 my-2 text-white"
+                @click="clearSignature('cm_sign_lh_red')">Clear</button>
+            </div>
+          </div>
+          <!-- to edit sign -->
           <div v-if="showSignLhRed" id="sign-wrapper" style="width: 100%; height: 100px; border: 1px solid #eaeaea;">
             <vueSignature ref="cm_sign_lh_red" :sigOption="option" :w="'100%'" :h="'100px'">
             </vueSignature>
-            <button class="btn btn-info my-2 btn-sm text-white" @click="saveSignature('cm_sign_lh_red')">Save</button>
+            <button class="btn btn-info my-2 btn-sm text-white" :disabled="isUploadSignLoading"
+              @click="saveSignature('cm_sign_lh_red')">
+              {{ isUploadSignLoading ? 'Saving..' : 'Save' }}
+            </button>
             <button class="btn btn-info btn-sm mx-2 my-2 text-white"
               @click="clearSignature('cm_sign_lh_red')">Clear</button>
           </div>
         </div>
 
-        <div class="mb-2 my-5">
+        <div class="mb-2 my-3">
           <label class="mb-1">CM Sign LH White</label>
           <br />
-          <button class="btn btn-info my-2 btn-sm text-white" @click="() => {
-            showSignLhRed = false
-            showSignLhWhite = true
-            showSignSH = false
-          }">Add signature</button>
+          <div v-if="findingDetail?.cm_sign_lh_white" style="border: 1px solid #eaeaea; width: 100%; height: 100px;">
+            <input type="image" v-if="updatedLHWhiteSign" :src="updatedLHWhiteSign" style="width: 100%; height: 100%;">
+            <input type="image" v-else :src="findingDetail?.cm_sign_lh_white" style="width: 100%; height: 100%;">
 
-          <div v-if="showSignLhWhite" id="sign-wrapper-2" style="width: 100%; height: 100px; border: 1px solid #eaeaea;">
+            <button class="btn btn-info my-2 btn-sm text-white" @click="() => {
+              showSignLhRed = false
+              showSignLhWhite = true
+              showSignSH = false
+            }">Edit sign</button>
+          </div>
+          <!-- to add sign -->
+          <div v-else>
+            <button class="btn btn-info my-2 btn-sm text-white" @click="showAddSignature('lhwhite')">Add
+              signature</button>
+
+            <div v-if="showSignLhWhite" id="sign-wrapper" style="width: 100%; height: 100px; border: 1px solid #eaeaea;">
+              <vueSignature ref="cm_sign_lh_white" :sigOption="option" :w="'100%'" :h="'100px'">
+              </vueSignature>
+              <button class="btn btn-info my-2 btn-sm text-white" :disabled="isUploadSignLoading"
+                @click="saveSignature('cm_sign_lh_white')">
+                {{ isUploadSignLoading ? 'Saving..' : 'Save' }}
+              </button>
+              <button class="btn btn-info btn-sm mx-2 my-2 text-white"
+                @click="clearSignature('cm_sign_lh_white')">Clear</button>
+            </div>
+          </div>
+          <!-- to edit sign -->
+          <div v-if="showSignLhWhite" id="sign-wrapper" style="width: 100%; height: 100px; border: 1px solid #eaeaea;">
             <vueSignature ref="cm_sign_lh_white" :sigOption="option" :w="'100%'" :h="'100px'">
             </vueSignature>
-            <button class="btn btn-info my-2 btn-sm text-white" @click="saveSignature('cm_sign_lh_white')">Save</button>
+            <button class="btn btn-info my-2 btn-sm text-white" :disabled="isUploadSignLoading"
+              @click="saveSignature('cm_sign_lh_white')">
+              {{ isUploadSignLoading ? 'Saving..' : 'Save' }}
+            </button>
             <button class="btn btn-info btn-sm mx-2 my-2 text-white"
               @click="clearSignature('cm_sign_lh_white')">Clear</button>
           </div>
@@ -458,19 +505,46 @@
         <div class="mb-2 my-5">
           <label class="mb-1">CM Sign SH</label>
           <br />
-          <button class="btn btn-info my-2 btn-sm text-white" @click="() => {
-            showSignLhRed = false
-            showSignLhWhite = false
-            showSignSH = true
-          }">Add signature</button>
 
-          <div v-if="showSignSH" id="sign-wrapper-3" style="width: 100%; height: 100px; border: 1px solid #eaeaea;">
+
+          <div v-if="findingDetail?.cm_sign_sh" style="border: 1px solid #eaeaea; width: 100%; height: 100px;">
+            <input type="image" v-if="updatedSHSign" :src="updatedSHSign" style="width: 100%; height: 100%;">
+            <input type="image" v-else :src="findingDetail?.cm_sign_sh" style="width: 100%; height: 100%;">
+
+            <button class="btn btn-info my-2 btn-sm text-white" @click="() => {
+              showSignLhRed = false
+              showSignLhWhite = false
+              showSignSH = true
+            }">Edit sign</button>
+          </div>
+          <!-- to add sign -->
+          <div v-else>
+            <button class="btn btn-info my-2 btn-sm text-white" @click="showAddSignature('sh')">Add signature</button>
+
+            <div v-if="showSignSH" id="sign-wrapper" style="width: 100%; height: 100px; border: 1px solid #eaeaea;">
+              <vueSignature ref="cm_sign_sh" :sigOption="option" :w="'100%'" :h="'100px'">
+              </vueSignature>
+              <button class="btn btn-info my-2 btn-sm text-white" :disabled="isUploadSignLoading"
+                @click="saveSignature('cm_sign_sh')">
+                {{ isUploadSignLoading ? 'Saving..' : 'Save' }}
+              </button>
+              <button class="btn btn-info btn-sm mx-2 my-2 text-white"
+                @click="clearSignature('cm_sign_sh')">Clear</button>
+            </div>
+          </div>
+          <!-- to edit sign -->
+          <div v-if="showSignSH" id="sign-wrapper" style="width: 100%; height: 100px; border: 1px solid #eaeaea;">
             <vueSignature ref="cm_sign_sh" :sigOption="option" :w="'100%'" :h="'100px'">
             </vueSignature>
-            <button class="btn btn-info btn-sm my-2 text-white" @click="saveSignature('cm_sign_sh')">Save</button>
-            <button class="btn btn-info btn-sm my-2 mx-2 text-white" @click="clearSignature('cm_sign_sh')">Clear</button>
+            <button class="btn btn-info my-2 btn-sm text-white" :disabled="isUploadSignLoading"
+              @click="saveSignature('cm_sign_sh')">
+              {{ isUploadSignLoading ? 'Saving..' : 'Save' }}
+            </button>
+            <button class="btn btn-info btn-sm mx-2 my-2 text-white" @click="clearSignature('cm_sign_sh')">Clear</button>
           </div>
         </div>
+
+
         <div class="mb-2 my-5">
           <label class="mb-1">Upload pink sheet</label>
           <input ref="pink_sheet" type="file" class="form-control" />
@@ -525,6 +599,7 @@ export default {
   data() {
     return {
       isLoading: false,
+      isUploadSignLoading: false,
       currentPage: 1,
       currentPageLimit: 5,
       num: 28,
@@ -555,7 +630,10 @@ export default {
       showSignLhWhite: false,
       showSignSH: false,
       selectedSignature: null,
-      selectedFindingID: null
+      selectedFindingID: null,
+      updatedLHWhiteSign: null,
+      updatedLHRedSign: null,
+      updatedSHSign: null,
     }
   },
   computed: {
@@ -564,7 +642,6 @@ export default {
   methods: {
     saveSignature(from) {
       var signFile;
-
       switch (from) {
         case 'cm_sign_lh_red':
           signFile = this.$refs[from].save();
@@ -592,7 +669,7 @@ export default {
           break;
       }
 
-      this.uploadSignature()
+      this.uploadSignature(from)
     },
     clearSignature(from) {
       var _this = this;
@@ -613,13 +690,46 @@ export default {
       }
 
     },
-    async uploadSignature() {
-
+    showAddSignature(from) {
+      if (from == 'lhred') {
+        this.showSignLhRed = true
+        this.showSignLhWhite = false
+        this.showSignSH = false
+      } else if (from == 'lhwhite') {
+        this.showSignLhRed = false
+        this.showSignLhWhite = true
+        this.showSignSH = false
+      } else {
+        this.showSignLhRed = false
+        this.showSignLhWhite = false
+        this.showSignSH = true
+      }
+    },
+    async uploadSignature(from) {
+      this.isUploadSignLoading = true
       ApiService.setHeader()
-
       const upload = await ApiService.put(`/operational/findingCm/upload-sign`, this.selectedSignature)
-      console.log(upload)
+      if (upload.data.message == 'success to sign finding') {
+        this.isUploadSignLoading = false
 
+        switch (from) {
+          case 'cm_sign_lh_red':
+            this.updatedLHRedSign = upload.data.data.cm_sign_lh_red
+            this.showSignLhRed = false
+            break;
+          case 'cm_sign_lh_white':
+            this.updatedLHWhiteSign = upload.data.data.cm_sign_lh_white
+            this.showSignLhWhite = false
+            break;
+          case 'cm_sign_sh':
+            this.updatedSHSign = upload.data.data.cm_sign_sh
+            this.showSignSH = false
+            break;
+          default:
+            break;
+        }
+        alert('Sign saved')
+      }
     },
     onPageChange(page) {
       if (page == -1) {
@@ -732,7 +842,10 @@ export default {
       this.selectedFindingID = data.finding_id
       this.selectedFindingIndex = findingIndex
       this.findingDetail = data
-      console.log(data)
+    },
+    refetchDetailTemuan() {
+      const data = this.getFindings[this.selectedFindingID]
+      this.findingDetail = data
     },
     mapUsersData() {
       this.getUsersOpts?.map((item) => {
@@ -754,12 +867,7 @@ export default {
       this.getFindingsFunc()
     },
     async downloadPinkSheet(filePath) {
-
       window.location.href = `${process.env.VUE_APP_URL}/file?path=${filePath}`
-
-      // ApiService.setHeader()
-      // const fileData = await ApiService.get(`file?path=${filePath}`)
-      // console.log(fileData)
     },
   },
   async mounted() {

@@ -18,6 +18,9 @@ import VueSignaturePad  from "vue-signature-pad";
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css"; 
 import 'vue-loading-overlay/dist/css/index.css';
+import "vue3-toastify/dist/index.css";
+ 
+
 
 
 
@@ -27,7 +30,7 @@ app.use(router)
 app.use(VueAxios, axios);
 app.use(CoreuiVue)
 app.use(Toast);
-app.use(VueSignaturePad);
+app.use(VueSignaturePad); 
 
 app.provide('icons', icons)
 app.component('CIcon', CIcon)
