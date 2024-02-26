@@ -39,7 +39,7 @@
               <th>Fokus tema</th>
               <th>Pilar</th>
               <th>Evaluasi</th>
-              <th>Remark</th>
+              <th>Problem / finding</th>
               <th>Actions</th>
             </tr>
           </thead>

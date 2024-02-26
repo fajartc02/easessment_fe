@@ -42,25 +42,14 @@
           <b>Data Observasi</b>
         </div>
         <div class="d-flex col-3 text-right justify-content-around">
-          <CButton
-            variant="ghost"
-            color="info"
-            @click="
-              () => {
-                demoTSK = true
-              }
-            "
-            >{{ tskLabel }}</CButton
-          >
-          <CModal
-            size="xl"
-            :visible="demoTSK"
-            @close="
-              () => {
-                demoTSK = false
-              }
-            "
-          >
+          <CButton variant="ghost" color="info" @click="() => {
+            demoTSK = true
+          }
+            ">{{ tskLabel }}</CButton>
+          <CModal size="xl" :visible="demoTSK" @close="() => {
+            demoTSK = false
+          }
+            ">
             <CModalHeader>
               <CModalTitle v-if="observation.job_type_nm">{{
                 tskLabel
@@ -72,25 +61,14 @@
               <!-- <img style="width: 100%;" src="@/assets/{{}}.png"/> -->
             </CModalBody>
           </CModal>
-          <CButton
-            variant="ghost"
-            color="info"
-            @click="
-              () => {
-                demoTSKK = true
-              }
-            "
-            >{{ tskkLabel }}</CButton
-          >
-          <CModal
-            size="xl"
-            :visible="demoTSKK"
-            @close="
-              () => {
-                demoTSKK = false
-              }
-            "
-          >
+          <CButton variant="ghost" color="info" @click="() => {
+            demoTSKK = true
+          }
+            ">{{ tskkLabel }}</CButton>
+          <CModal size="xl" :visible="demoTSKK" @close="() => {
+            demoTSKK = false
+          }
+            ">
             <CModalHeader>
               <CModalTitle>{{ tskkLabel }}</CModalTitle>
             </CModalHeader>
@@ -100,25 +78,14 @@
               <!-- <img style="width: 100%;" src="@/assets/{{}}.png"/> -->
             </CModalBody>
           </CModal>
-          <CButton
-            variant="ghost"
-            color="info"
-            @click="
-              () => {
-                demoSOP = true
-              }
-            "
-            >SOP</CButton
-          >
-          <CModal
-            size="xl"
-            :visible="demoSOP"
-            @close="
-              () => {
-                demoSOP = false
-              }
-            "
-          >
+          <CButton variant="ghost" color="info" @click="() => {
+            demoSOP = true
+          }
+            ">SOP</CButton>
+          <CModal size="xl" :visible="demoSOP" @close="() => {
+            demoSOP = false
+          }
+            ">
             <CModalHeader>
               <CModalTitle>SOP</CModalTitle>
             </CModalHeader>
@@ -133,12 +100,7 @@
     <div class="card-body overflow-auto">
       <CInputGroup class="mb-3">
         <CInputGroupText>Actual Date</CInputGroupText>
-        <input
-          :disabled="isCheck"
-          class="form-control"
-          type="date"
-          v-model="form.actual_check_dt"
-        />
+        <input :disabled="isCheck" class="form-control" type="date" v-model="form.actual_check_dt" />
       </CInputGroup>
       <CInputGroup class="mb-3">
         <CInputGroupText>Shift</CInputGroupText>
@@ -161,59 +123,27 @@
           <td class="text-center">{{ i + 1 }}</td>
           <td class="p-2">{{ item.category_nm }}</td>
           <td>
-            <div
-              v-if="
-                item.job_type_nm !== 'Type 3' &&
-                item.category_nm == 'Standarize Work'
-              "
-            >
+            <div v-if="item.job_type_nm !== 'Type 3' &&
+              item.category_nm == 'Standarize Work'
+              ">
               <div class="d-flex">
-                <input
-                  type="number"
-                  v-model="item.stw_ct1"
-                  class="form-control text-center"
-                  style="width: 70px"
-                  placeholder="CT1"
-                />
-                <input
-                  type="number"
-                  v-model="item.stw_ct2"
-                  class="form-control text-center mx-2"
-                  style="width: 70px"
-                  placeholder="CT2"
-                />
-                <input
-                  type="number"
-                  v-model="item.stw_ct3"
-                  class="form-control text-center"
-                  style="width: 70px"
-                  placeholder="CT3"
-                />
-                <input
-                  type="number"
-                  v-model="item.stw_ct4"
-                  class="form-control text-center mx-2"
-                  style="width: 70px"
-                  placeholder="CT4"
-                />
-                <input
-                  type="number"
-                  v-model="item.stw_ct5"
-                  class="form-control text-center"
-                  style="width: 70px; margin-right: 10px"
-                  placeholder="CT5"
-                />
+                <input type="number" v-model="item.stw_ct1" class="form-control text-center" style="width: 70px"
+                  placeholder="CT1" />
+                <input type="number" v-model="item.stw_ct2" class="form-control text-center mx-2" style="width: 70px"
+                  placeholder="CT2" />
+                <input type="number" v-model="item.stw_ct3" class="form-control text-center" style="width: 70px"
+                  placeholder="CT3" />
+                <input type="number" v-model="item.stw_ct4" class="form-control text-center mx-2" style="width: 70px"
+                  placeholder="CT4" />
+                <input type="number" v-model="item.stw_ct5" class="form-control text-center"
+                  style="width: 70px; margin-right: 10px" placeholder="CT5" />
                 <div class="mx-1 d-flex flex-column"></div>
                 <div class="row my-auto">
                   <div class="col-lg-6">
-                    <span class="badge bg-primary w-100 p-2"
-                      >Rata-Rata: {{ judgementAverage.toFixed(1) }}</span
-                    >
+                    <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(1) }}</span>
                   </div>
                   <div class="col-lg-6">
-                    <span class="badge bg-success mt-1 w-100"
-                      >Persentasi: {{ judgementPrecentage }} %</span
-                    >
+                    <span class="badge bg-success mt-1 w-100">Persentasi: {{ judgementPrecentage }} %</span>
                   </div>
                 </div>
               </div>
@@ -226,90 +156,55 @@
             </CFormSelect>
           </td>
           <td>
-            <div
-              v-if="
-                ((item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' ||
-                  item.judgment_id == 'dcb12fa6-0d1e-4d29-ab3d-7576c863ed2e') &&
-                  item.judgment_id) ||
-                (judgementID == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
-                  i == 0)
-              "
-            >
+            <div v-if="((item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' ||
+              item.judgment_id == 'dcb12fa6-0d1e-4d29-ab3d-7576c863ed2e') &&
+              item.judgment_id) ||
+              (judgementID == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
+                i == 0)
+              ">
               <CFormSelect :disabled="isCheck" v-model="item.factor_id">
                 <option>Select Factor</option>
-                <option
-                  v-for="factor in factors"
-                  :key="factor.text"
-                  :value="factor.id"
-                >
+                <option v-for="factor in factors" :key="factor.text" :value="factor.id">
                   {{ factor.text }}
                 </option>
               </CFormSelect>
             </div>
           </td>
-          <td
-            v-if="
-              ((item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' ||
-                item.judgment_id == 'dcb12fa6-0d1e-4d29-ab3d-7576c863ed2e') &&
-                item.judgment_id) ||
-              (judgementID == '2e247c66-3e9c-44b6-951a-0a26791ad37d' && i == 0)
-            "
-          >
+          <td v-if="((item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' ||
+            item.judgment_id == 'dcb12fa6-0d1e-4d29-ab3d-7576c863ed2e') &&
+            item.judgment_id) ||
+            (judgementID == '2e247c66-3e9c-44b6-951a-0a26791ad37d' && i == 0)
+            ">
             <div>
-              <div
-                v-if="
-                  findings.filter((find) => {
-                    return find.category_id == item.id
-                  }).length > 0
-                "
-              >
-                <button
-                  :disabled="isCheck"
-                  class="btn btn-info"
-                  @click="
-                    () => {
-                      addFindingsModal = true
-                      mapUsersData()
-                      editFinding(item.id)
-                    }
-                  "
-                >
+              <div v-if="findings.filter((find) => {
+                return find.category_id == item.id
+              }).length > 0
+                ">
+                <button :disabled="isCheck" class="btn btn-info" @click="() => {
+                  addFindingsModal = true
+                  mapUsersData()
+                  editFinding(item.id)
+                }
+                  ">
                   Edit finding
                 </button>
-                <button
-                  :disabled="isCheck"
-                  class="btn btn-warning"
-                  @click="deleteFinding(item.id)"
-                >
+                <button :disabled="isCheck" class="btn btn-warning" @click="deleteFinding(item.id)">
                   Delete finding
                 </button>
               </div>
-              <button
-                v-else
-                :disabled="isCheck"
-                class="btn btn-info"
-                :data-target="`#staticBackdrop-${i}`"
-                @click="
-                  () => {
-                    addFindingsModal = true
-                    finding.finding_location = observation.pos_nm
-                    mapUsersData()
-                  }
-                "
-              >
+              <button v-else :disabled="isCheck" class="btn btn-info" :data-target="`#staticBackdrop-${i}`" @click="() => {
+                addFindingsModal = true
+                finding.finding_location = observation.pos_nm
+                mapUsersData()
+              }
+                ">
                 Add findings
               </button>
             </div>
 
             <!-- modal -->
-            <CModal
-              :id="`#staticBackdrop-${i}`"
-              backdrop="static"
-              scrollable
-              alignment="center"
-              :visible="addFindingsModal"
-              size="xl"
-            >
+            <CModal :id="`#staticBackdrop-${i}`" backdrop="static" scrollable alignment="center"
+              :visible="addFindingsModal" size="xl">
               <CModalHeader>
                 <CModalTitle>Add temuan</CModalTitle>
               </CModalHeader>
@@ -320,45 +215,24 @@
                     <div class="mt-2">
                       <div class="mb-2">
                         <label class="mb-1">Tanggal temuan</label>
-                        <input
-                          type="date"
-                          class="form-control"
-                          v-model="finding.finding_date"
-                        />
+                        <input type="date" class="form-control" v-model="finding.finding_date" />
                       </div>
                       <div class="mb-2">
                         <label class="mb-1">Pos</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          v-model="finding.finding_location"
-                        />
+                        <input type="text" class="form-control" v-model="finding.finding_location" />
                       </div>
                       <div class="mb-2">
                         <label class="mb-1">Finding description</label>
-                        <textarea
-                          cols="30"
-                          rows="5"
-                          class="form-control"
-                          v-model="finding.finding_desc"
-                        ></textarea>
+                        <textarea cols="30" rows="5" class="form-control" v-model="finding.finding_desc"></textarea>
                       </div>
                       <div class="mb-2">
                         <div>
                           <label class="mb-1">Finding image </label>
-                          <input
-                            :ref="`finding_image-${i}`"
-                            type="file"
-                            class="form-control"
-                          />
+                          <input :ref="`finding_image-${i}`" type="file" class="form-control" />
                         </div>
-                        <button
-                          class="btn btn-info my-2 text-white"
-                          :disabled="isUploadLoading"
-                          @click="
-                            uploadFindingImage(`finding_image-${i}`, finding)
-                          "
-                        >
+                        <button class="btn btn-info my-2 text-white" :disabled="isUploadLoading" @click="
+                          uploadFindingImage(`finding_image-${i}`, finding)
+                          ">
                           {{ isUploadLoading ? 'Uploading' : 'Upload' }}
                         </button>
 
@@ -368,19 +242,11 @@
                       </div>
                       <div class="mb-2">
                         <label class="mb-1">CM description</label>
-                        <textarea
-                          cols="30"
-                          rows="5"
-                          class="form-control"
-                          v-model="finding.cm_desc"
-                        ></textarea>
+                        <textarea cols="30" rows="5" class="form-control" v-model="finding.cm_desc"></textarea>
                       </div>
                       <div class="mb-2">
                         <label class="mb-1">Priority</label>
-                        <select
-                          class="form-select"
-                          v-model="finding.cm_priority"
-                        >
+                        <select class="form-select" v-model="finding.cm_priority">
                           <option selected>Select priority</option>
                           <option value="P1">
                             P1: Safety and Quality Issue
@@ -392,47 +258,28 @@
 
                       <div class="mb-2">
                         <label class="mb-1">PIC </label>
-                        <VueMultiselect
-                          v-model="finding.cm_pic_id"
-                          :options="picData"
-                          :custom-label="customPicOptions"
-                        >
+                        <VueMultiselect v-model="finding.cm_pic_id" :options="picData" :custom-label="customPicOptions">
                         </VueMultiselect>
                       </div>
                       <div class="row">
                         <div class="col-12 col-lg-6">
                           <div class="mb-2">
                             <label class="mb-1">CM Start Plan Date </label>
-                            <input
-                              type="date"
-                              class="form-control"
-                              v-model="finding.cm_str_plan_date"
-                            />
+                            <input type="date" class="form-control" v-model="finding.cm_str_plan_date" />
                           </div>
                         </div>
                         <div class="col12 col-lg-6">
                           <div class="mb-2">
                             <label class="mb-1">CM End Plan Date </label>
-                            <input
-                              type="date"
-                              class="form-control"
-                              v-model="finding.cm_end_plan_date"
-                            />
+                            <input type="date" class="form-control" v-model="finding.cm_end_plan_date" />
                           </div>
                         </div>
                       </div>
                       <div class="mb-2">
                         <label class="mb-1">CM Factor</label>
-                        <CFormSelect
-                          :disabled="isCheck"
-                          v-model="finding.cm_result_factor_id"
-                        >
+                        <CFormSelect :disabled="isCheck" v-model="finding.cm_result_factor_id">
                           <option>Select Factor</option>
-                          <option
-                            v-for="factor in factors"
-                            :key="factor.text"
-                            :value="factor.id"
-                          >
+                          <option v-for="factor in factors" :key="factor.text" :value="factor.id">
                             {{ factor.text }}
                           </option>
                         </CFormSelect>
@@ -442,38 +289,19 @@
 
                       <div class="mb-2">
                         <label class="mb-1">CM Start actual date</label>
-                        <input
-                          type="date"
-                          class="form-control"
-                          v-model="finding.cm_str_act_date"
-                          disabled
-                        />
+                        <input type="date" class="form-control" v-model="finding.cm_str_act_date" disabled />
                       </div>
                       <div class="mb-2">
                         <label class="mb-1">CM End actual date</label>
-                        <input
-                          type="date"
-                          class="form-control"
-                          v-model="finding.cm_end_act_date"
-                          disabled
-                        />
+                        <input type="date" class="form-control" v-model="finding.cm_end_act_date" disabled />
                       </div>
                       <div class="mb-2">
                         <label class="mb-1">CM Training date</label>
-                        <input
-                          type="date"
-                          class="form-control"
-                          v-model="finding.cm_training_date"
-                          disabled
-                        />
+                        <input type="date" class="form-control" v-model="finding.cm_training_date" disabled />
                       </div>
                       <div class="mb-2">
                         <label class="mb-1">CM Judge</label>
-                        <select
-                          class="form-select"
-                          v-model="finding.cm_judg"
-                          disabled
-                        >
+                        <select class="form-select" v-model="finding.cm_judg" disabled>
                           <option>Select judgement</option>
                           <option value="true">Sudah</option>
                           <option value="false">Belum</option>
@@ -497,46 +325,25 @@
                       </div>
                       <div class="mb-2">
                         <label class="mb-1">CM Comments</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          disabled
-                          v-model="finding.cm_comments"
-                        />
+                        <input type="text" class="form-control" disabled v-model="finding.cm_comments" />
                       </div>
                     </div>
                   </div>
                 </div>
               </CModalBody>
               <CModalFooter>
-                <div
-                  v-if="
-                    findings.filter((fin) => {
-                      return fin.category_id == item.id
-                    }).length == 0
-                  "
-                >
-                  <CButton
-                    color="primary"
-                    class="text-white"
-                    @click="addFindingData(item.id, item.factor_id, finding)"
-                  >
-                    Save finding data</CButton
-                  >
+                <div v-if="findings.filter((fin) => {
+                  return fin.category_id == item.id
+                }).length == 0
+                  ">
+                  <CButton color="primary" class="text-white" @click="addFindingData(item.id, item.factor_id, finding)">
+                    Save finding data</CButton>
                 </div>
                 <div v-else>
-                  <CButton
-                    color="primary"
-                    class="text-white"
-                    @click="updateFindingData(item.id, item.factor_id, finding)"
-                    >Update finding data</CButton
-                  >
+                  <CButton color="primary" class="text-white"
+                    @click="updateFindingData(item.id, item.factor_id, finding)">Update finding data</CButton>
                 </div>
-                <CButton
-                  color="secondary"
-                  class="text-white mx-2"
-                  @click="closeFindingModal()"
-                >
+                <CButton color="secondary" class="text-white mx-2" @click="closeFindingModal()">
                   Cancel
                 </CButton>
               </CModalFooter>
@@ -556,18 +363,10 @@
         <input type="text" class="form-control" v-model="comment_ammgr" />
       </div>
 
-      <button
-        class="btn btn-primary mr-1"
-        :disabled="isCheck"
-        @click="postCheckObs()"
-      >
+      <button class="btn btn-primary mr-1" :disabled="isCheck" @click="postCheckObs()">
         Submit
       </button>
-      <button
-        class="btn btn-secondary mx-2"
-        :disabled="!isCheck"
-        @click="viewReport()"
-      >
+      <button class="btn btn-secondary mx-2" :disabled="!isCheck" @click="viewReport()">
         View Report
       </button>
     </div>
@@ -728,9 +527,9 @@ export default {
     },
     checkLabelTypeJob(jobType) {
       if (jobType == 'Type 3') {
-        ;(this.tskLabel = 'Gentani'), (this.tskkLabel = 'Yamazumi')
+        ; (this.tskLabel = 'Gentani'), (this.tskkLabel = 'Yamazumi')
       } else {
-        ;(this.tskLabel = 'TSK'), (this.tskkLabel = 'TSKK')
+        ; (this.tskLabel = 'TSK'), (this.tskkLabel = 'TSKK')
       }
     },
     viewReport() {
@@ -947,11 +746,13 @@ export default {
           comment_sh: this.comment_sh,
           comment_ammgr: this.comment_ammgr,
           results_check: JSON.stringify(this.resultCheck),
-          findings: JSON.stringify(this.findings),
+          findings: this.findings,
         }
 
+        console.log(formInput)
+
         await this.$store
-          .dispatch(POST_OBSERVATION_CHECK, formInput)
+          .dispatch(POST_OBSERVATION_CHECK)
           .then(() => {
             Swal.showLoading()
             Swal.fire('Pengecekan berhasil di submit', '', 'success')
