@@ -354,11 +354,12 @@
                         </div>
                         <button
                           class="btn btn-info my-2 text-white"
+                          :disabled="isUploadLoading"
                           @click="
                             uploadFindingImage(`finding_image-${i}`, finding)
                           "
                         >
-                          Upload
+                          {{ isUploadLoading ? 'Uploading' : 'Upload' }}
                         </button>
 
                         <div v-if="selectedFindingImage">
@@ -534,7 +535,7 @@
                 <CButton
                   color="secondary"
                   class="text-white mx-2"
-                  @click="addFindingsModal = false"
+                  @click="closeFindingModal()"
                 >
                   Cancel
                 </CButton>
@@ -592,6 +593,7 @@ export default {
   data() {
     return {
       observation: null,
+      isUploadLoading: false,
       form: {
         actual_check_dt: moment().toISOString().split('T')[0],
         group_id: null,
@@ -692,6 +694,10 @@ export default {
     VueMultiselect,
   },
   methods: {
+    closeFindingModal() {
+      this.addFindingsModal = false
+      this.getDetail()
+    },
     swalConfDel() {
       return Swal.fire({
         title: 'Kamu yakin ingin menghapus finding ini?',
@@ -700,7 +706,6 @@ export default {
         confirmButtonText: 'Ya',
         denyButtonText: `Tidak`,
       }).then((result) => {
-        /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
           return true
         } else if (result.isDenied) {
@@ -787,28 +792,29 @@ export default {
       const data = this.findings.find((obj) => {
         return obj.category_id == categoryID
       })
-
       this.finding = data
     },
     updateFindingData(categoryID, factorID, findings) {
-      let data = {
-        line_id: this.observation?.line_id,
-        category_id: categoryID,
-        factor_id: factorID,
-        cm_pic_id: this.selectedPIC.pic_id,
-        cm_result_factor_id: this.selectedFactor,
-        ...findings,
-      }
+      // let data = {
+      //   line_id: this.observation?.line_id,
+      //   category_id: categoryID,
+      //   factor_id: factorID,
+      //   cm_pic_id: this.selectedPIC,
+      //   cm_result_factor_id: this.selectedFactor,
+      //   ...findings,
+      // }
 
-      const index = this.findings.findIndex((object) => {
-        return object.category_id === categoryID
-      })
+      // const index = this.findings.filter((object) => {
+      //   return object.category_id === categoryID
+      // })
 
-      console.log(data)
-      console.log(index)
+      // // // console.log(data)
+      // console.log(index)
+      console.log(findings)
     },
     async uploadFindingImage(state, finding) {
       let before_path = null
+      this.isUploadLoading = true
 
       if (finding.finding_img) {
         before_path = finding.finding_img
@@ -833,10 +839,11 @@ export default {
         },
       )
 
-      this.selectedFindingImage = `${process.env.VUE_APP_URL}/file?path=${uploadImage.data.data}`
-      console.log(this.selectedFindingImage)
-      this.finding.finding_img = uploadImage.data.data
-      console.log(uploadImage)
+      if (uploadImage.data.data) {
+        this.isUploadLoading = false
+        this.selectedFindingImage = `${process.env.VUE_APP_URL}/file?path=${uploadImage.data.data}`
+        this.finding.finding_img = uploadImage.data.data
+      }
     },
     calculateJudgement(newValue) {
       const OK_ID = 'c4f5ff30-1b95-4ad8-8af8-e3e9d90bd942'
@@ -942,8 +949,6 @@ export default {
           results_check: JSON.stringify(this.resultCheck),
           findings: JSON.stringify(this.findings),
         }
-
-        console.log(formInput)
 
         await this.$store
           .dispatch(POST_OBSERVATION_CHECK, formInput)
