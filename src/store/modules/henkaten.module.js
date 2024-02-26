@@ -1,6 +1,7 @@
 import ApiService from "@/store/api.service";
 export const GET_HENKATEN = "getHenkatens";
 export const POST_HENKATEN = "postHenkaten"; 
+export const PUT_HENKATEN = "putHenkaten"; 
 
 // mutation types
 export const SET_HENKATEN = "setHenkaten";
@@ -46,7 +47,22 @@ const actions = {
                 });
 
         });
-    },
+    }, 
+
+    [PUT_HENKATEN]({ commit }, query, data = null) {
+        ApiService.setHeader()
+        return new Promise((resolve, reject) => {
+            ApiService.put(`operational/henkaten/edit/${query.id}`, data)
+                .then((result) => {
+                    const res = result.data
+                    resolve(res.data)
+                    console.log(commit);
+                }).catch((err) => {
+                    reject(err)
+                });
+
+        });
+    }, 
      
 };
 

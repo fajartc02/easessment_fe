@@ -14,7 +14,7 @@
           </div>
           <div class="col">
             <label>Line</label>
-            <select class="form-select" v-model="selectedLineID" @change="addFilter()">
+            <select class="form-select" v-model="selectedLine" @change="addFilter()">
               <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
                 {{ line.text }}
               </option>
@@ -24,12 +24,8 @@
       </div>
       <div class="card-header d-flex justify-content-between align-items-center">
         <h5>Member Voice List</h5>
-        <button class="btn btn-info text-white" @click="() => {
-          addMemberVoiceModal = true
-          mapUsersData()
-        }
-          ">
-          Add member voices
+        <button class="btn btn-info text-white" @click="addMemberVoiceOpenModal()">
+          Add member voice
         </button>
       </div>
       <div style="width: 100%; overflow-x: scroll">
@@ -151,7 +147,8 @@
                   ">
                   Detail
                 </button>
-                <button class="btn btn-danger btn-sm text-white" @click="deleteMV()">Delete</button>
+                <button class="btn btn-danger btn-sm text-white" @click="deleteMV(membervoice.mv_id)">Delete</button>
+                <button class="btn btn-danger btn-sm text-white" @click="getDetailMVToEdit(index)">Edit</button>
               </td>
             </tr>
             <tr v-if="getMemberVoice?.length < 1">
@@ -185,7 +182,7 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Line</label>
-                  <VueMultiselect v-model="memberVoiceData.line_id" :options="lineData" placeholder=""
+                  <VueMultiselect v-model="selectedLineID" :options="lineData" placeholder=""
                     :custom-label="customLineFilterOptions">
                   </VueMultiselect>
                 </div>
@@ -230,7 +227,7 @@
 
                 <div class="mb-2">
                   <label class="mb-1">PIC</label>
-                  <VueMultiselect v-model="memberVoiceData.mv_pic_id" :options="picData" :custom-label="customPicOptions">
+                  <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
                   </VueMultiselect>
                 </div>
                 <div class="mb-2">
@@ -257,6 +254,12 @@
                   <input type="text" class="form-control" v-model="findingsData.finding_location" />
                 </div>
                 <div class="mb-2">
+                  <label class="mb-1">Line</label>
+                  <VueMultiselect v-model="selectedFindingLineID" :options="lineData" placeholder=""
+                    :custom-label="customLineFilterOptions">
+                  </VueMultiselect>
+                </div>
+                <div class="mb-2">
                   <label class="mb-1">Finding description</label>
                   <textarea cols="30" rows="5" class="form-control" v-model="findingsData.finding_desc"></textarea>
                 </div>
@@ -275,16 +278,6 @@
                 </div>
 
                 <div class="mb-2">
-                  <label class="mb-1">Category </label>
-                  <select class="form-select" v-model="findingsData.category_id">
-                    <option selected>Select category</option>
-                    <option v-for="category in categories" :key="category.id" :value="category.id">
-                      {{ category.name }}
-                    </option>
-                  </select>
-                </div>
-
-                <div class="mb-2">
                   <label class="mb-1">Faktor </label>
                   <select class="form-select" v-model="findingsData.factor_id">
                     <option disabled>Select Factor</option>
@@ -296,7 +289,7 @@
 
                 <div class="mb-2">
                   <label class="mb-1">PIC </label>
-                  <VueMultiselect v-model="findingsData.cm_pic_id" :options="picData" :custom-label="customPicOptions">
+                  <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
                   </VueMultiselect>
                 </div>
 
@@ -358,6 +351,419 @@
           Close
         </CButton>
         <CButton color="primary" @click="addMemberVoiceData">Save changes</CButton>
+      </CModalFooter>
+    </CModal>
+
+
+    <!-- Edit MV Modal -->
+    <CModal scrollable size="lg" backdrop="static" alignment="center" :visible="editMVModal" @close="editMVModal = false">
+      <CModalHeader>
+        <CModalTitle>Edit member voice</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <CAccordion :active-item-key="1" always-open>
+          <CAccordionItem :item-key="1">
+            <CAccordionHeader> Member voice input </CAccordionHeader>
+            <CAccordionBody>
+              <div>
+                <div class="mb-2">
+                  <label class="mb-1">Tanggal temuan</label>
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" class="form-control" disabled
+                        :value="formatTheDate(memberVoiceDetail.mv_date_finding)">
+                    </div>
+                    <div class="col">
+                      <input type="date" v-model="memberVoiceDetail.mv_date_finding" class="form-control" />
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Line</label>
+
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" disabled class="form-control" :value="getLineName(memberVoiceDetail.line_id)">
+                    </div>
+                    <div class="col">
+                      <VueMultiselect v-model="selectedLineID" :options="lineData" placeholder=""
+                        :custom-label="customLineFilterOptions">
+                      </VueMultiselect>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mb-2">
+                  <label class="mb-1">Lokasi</label>
+                  <input type="text" class="form-control" v-model="memberVoiceDetail.mv_location" />
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Problem</label>
+                  <input type="text" class="form-control" v-model="memberVoiceDetail.mv_problem" />
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">No Proses</label>
+                  <input type="text" class="form-control" v-model="memberVoiceDetail.mv_process_no" />
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Category </label>
+                  <select class="form-select" v-model="memberVoiceDetail.mv_category">
+                    <option disabled>Select category</option>
+                    <option value="safety">Safety</option>
+                    <option value="kesulitan kerja">Kesulitan kerja</option>
+                  </select>
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Faktor </label>
+                  <select class="form-select" v-model="memberVoiceDetail.mv_factor_id">
+                    <option disabled>Select Factor</option>
+                    <option v-for="factor in factors" :key="factor.text" :value="factor.id">
+                      {{ factor.text }}
+                    </option>
+                  </select>
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Penanggulangan</label>
+                  <input type="text" class="form-control" v-model="memberVoiceDetail.mv_countermeasure" />
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Plan tgl penganggulangan</label>
+
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" class="form-control" disabled
+                        :value="formatTheDate(memberVoiceDetail.mv_plan_date)">
+                    </div>
+                    <div class="col">
+                      <input type="date" v-model="memberVoiceDetail.mv_plan_date" class="form-control" />
+                    </div>
+                  </div>
+                </div>
+
+
+                <div class="mb-2">
+                  <label class="mb-1">Aktual tgl penganggulangan</label>
+
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" class="form-control" disabled
+                        :value="formatTheDate(memberVoiceDetail.mv_actual_date)">
+                    </div>
+                    <div class="col">
+                      <input type="date" v-model="memberVoiceDetail.mv_actual_date" class="form-control" />
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="mb-2">
+                  <label class="mb-1">PIC</label>
+
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" disabled class="form-control" :value="getPicName(memberVoiceDetail.mv_pic_id)">
+                    </div>
+                    <div class="col">
+                      <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
+                      </VueMultiselect>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mb-2">
+                  <label class="mb-1">Eval hasil</label>
+                  <input type="text" class="form-control" v-model="memberVoiceDetail.mv_evaluation" />
+                </div>
+              </div>
+            </CAccordionBody>
+          </CAccordionItem>
+          <CAccordionItem :item-key="2">
+            <CAccordionHeader> Findings input </CAccordionHeader>
+
+
+            <CAccordionBody>
+              <div>
+                <div class="mb-2">
+                  <label class="mb-1">Tanggal temuan</label>
+
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" class="form-control" disabled
+                        :value="formatTheDate(memberVoiceDetail.findings[0].finding_date)">
+                    </div>
+                    <div class="col">
+                      <input type="date" class="form-control" v-model="memberVoiceDetail.findings[0].finding_date" />
+                    </div>
+                  </div>
+
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Line</label>
+
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" disabled class="form-control"
+                        :value="getLineName(memberVoiceDetail.findings[0].line_id)">
+                    </div>
+                    <div class="col">
+                      <VueMultiselect v-model="selectedFindingLineID" :options="lineData"
+                        :custom-label="customLineFilterOptions">
+                      </VueMultiselect>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Pos</label>
+                  <input type="text" class="form-control" v-model="memberVoiceDetail.findings[0].finding_location" />
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Finding description</label>
+                  <textarea cols="30" rows="5" class="form-control"
+                    v-model="memberVoiceDetail.findings[0].finding_desc"></textarea>
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">CM description</label>
+                  <textarea cols="30" rows="5" class="form-control"
+                    v-model="memberVoiceDetail.findings[0].cm_desc"></textarea>
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Priority</label>
+                  <select class="form-select" v-model="memberVoiceDetail.findings[0].cm_priority">
+                    <option selected>Select priority</option>
+                    <option value="P1">P1: Safety & Quality Issue</option>
+                    <option value="P2">P2: Productivity Issue</option>
+                    <option value="P3">P3: Cost Issue</option>
+                  </select>
+                </div>
+
+                <div class="mb-2">
+                  <label class="mb-1">Faktor </label>
+                  <select class="form-select" v-model="memberVoiceDetail.findings[0].factor_id">
+                    <option disabled>Select Factor</option>
+                    <option v-for="factor in factors" :key="factor.text" :value="factor.id">
+                      {{ factor.text }}
+                    </option>
+                  </select>
+                </div>
+
+                <div class="mb-2">
+                  <label class="mb-1">PIC </label>
+
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" disabled class="form-control"
+                        :value="getPicName(memberVoiceDetail.findings[0].cm_pic_id)">
+                    </div>
+                    <div class="col">
+                      <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
+                      </VueMultiselect>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="mb-2">
+                  <label class="mb-1">CM Start Plan Date </label>
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" class="form-control" disabled
+                        :value="formatTheDate(memberVoiceDetail.findings[0].cm_str_plan_date)">
+                    </div>
+                    <div class="col">
+                      <input type="date" class="form-control" v-model="memberVoiceDetail.findings[0].cm_str_plan_date" />
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">CM End Plan Date </label>
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" class="form-control" disabled
+                        :value="formatTheDate(memberVoiceDetail.findings[0].cm_end_plan_date)">
+                    </div>
+                    <div class="col">
+                      <input type="date" class="form-control" v-model="memberVoiceDetail.findings[0].cm_end_plan_date" />
+                    </div>
+                  </div>
+                </div>
+
+                <hr />
+
+                <div class="mb-2">
+                  <label class="mb-1">CM Start actual date</label>
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" class="form-control" disabled
+                        :value="formatTheDate(memberVoiceDetail.findings[0].cm_str_act_date)">
+                    </div>
+                    <div class="col">
+                      <input type="date" class="form-control" v-model="memberVoiceDetail.findings[0].cm_str_act_date" />
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">CM End actual date</label>
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" class="form-control" disabled
+                        :value="formatTheDate(memberVoiceDetail.findings[0].cm_end_act_date)">
+                    </div>
+                    <div class="col">
+                      <input type="date" class="form-control" v-model="memberVoiceDetail.findings[0].cm_end_act_date" />
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">CM Training date</label>
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" class="form-control" disabled
+                        :value="formatTheDate(memberVoiceDetail.findings[0].cm_training_date)">
+                    </div>
+                    <div class="col">
+                      <input type="date" class="form-control" v-model="memberVoiceDetail.findings[0].cm_training_date" />
+                    </div>
+                  </div>
+
+
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">CM Judge</label>
+                  <select class="form-select" v-model="memberVoiceDetail.findings[0].cm_judg">
+                    <option selected>Select judgement</option>
+                    <option value="true">Sudah</option>
+                    <option value="false">Belum</option>
+                  </select>
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">CM Sign LH Red</label>
+                  <input type="file" class="form-control" disabled />
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">CM Sign LH White</label>
+                  <input type="file" class="form-control" disabled />
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">CM Sign SH</label>
+                  <input type="file" class="form-control" disabled />
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">CM Comments</label>
+                  <input type="text" class="form-control" v-model="memberVoiceDetail.findings[0].cm_comments" />
+                </div>
+              </div>
+            </CAccordionBody>
+
+
+            <!-- <CAccordionBody>
+                <div>
+                  <div class="mb-2">
+                    <label class="mb-1">Tanggal temuan</label>
+                    <input type="date" class="form-control" v-model="findingsData.finding_date" />
+                  </div>
+                  <div class="mb-2">
+                    <label class="mb-1">Pos</label>
+                    <input type="text" class="form-control" v-model="findingsData.finding_location" />
+                  </div>
+                  <div class="mb-2">
+                    <label class="mb-1">Line</label>
+                    <VueMultiselect v-model="selectedFindingLineID" :options="lineData" placeholder=""
+                      :custom-label="customLineFilterOptions">
+                    </VueMultiselect>
+                  </div>
+                  <div class="mb-2">
+                    <label class="mb-1">Finding description</label>
+                    <textarea cols="30" rows="5" class="form-control" v-model="findingsData.finding_desc"></textarea>
+                  </div>
+                  <div class="mb-2">
+                    <label class="mb-1">CM description</label>
+                    <textarea cols="30" rows="5" class="form-control" v-model="findingsData.cm_desc"></textarea>
+                  </div>
+                  <div class="mb-2">
+                    <label class="mb-1">Priority</label>
+                    <select class="form-select" v-model="findingsData.cm_priority">
+                      <option selected>Select priority</option>
+                      <option value="P1">P1: Safety & Quality Issue</option>
+                      <option value="P2">P2: Productivity Issue</option>
+                      <option value="P3">P3: Cost Issue</option>
+                    </select>
+                  </div>
+
+                  <div class="mb-2">
+                    <label class="mb-1">Faktor </label>
+                    <select class="form-select" v-model="findingsData.factor_id">
+                      <option disabled>Select Factor</option>
+                      <option v-for="factor in factors" :key="factor.text" :value="factor.id">
+                        {{ factor.text }}
+                      </option>
+                    </select>
+                  </div>
+
+                  <div class="mb-2">
+                    <label class="mb-1">PIC </label>
+                    <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
+                    </VueMultiselect>
+                  </div>
+
+                  <div class="mb-2">
+                    <label class="mb-1">CM Start Plan Date </label>
+                    <input type="date" class="form-control" v-model="findingsData.cm_str_plan_date" />
+                  </div>
+                  <div class="mb-2">
+                    <label class="mb-1">CM End Plan Date </label>
+                    <input type="date" class="form-control" v-model="findingsData.cm_end_plan_date" />
+                  </div>
+
+                  <hr />
+
+                  <div class="mb-2">
+                    <label class="mb-1">CM Start actual date</label>
+                    <input type="date" class="form-control" v-model="findingsData.cm_str_act_date" disabled />
+                  </div>
+                  <div class="mb-2">
+                    <label class="mb-1">CM End actual date</label>
+                    <input type="date" class="form-control" v-model="findingsData.cm_end_act_date" disabled />
+                  </div>
+                  <div class="mb-2">
+                    <label class="mb-1">CM Training date</label>
+                    <input type="date" class="form-control" v-model="findingsData.cm_training_date" disabled />
+                  </div>
+                  <div class="mb-2">
+                    <label class="mb-1">CM Judge</label>
+                    <select class="form-select" v-model="findingsData.cm_judg" disabled>
+                      <option selected>Select judgement</option>
+                      <option value="true">Sudah</option>
+                      <option value="false">Belum</option>
+                    </select>
+                  </div>
+                  <div class="mb-2">
+                    <label class="mb-1">CM Sign LH Red</label>
+                    <input type="file" class="form-control" disabled />
+                  </div>
+                  <div class="mb-2">
+                    <label class="mb-1">CM Sign LH White</label>
+                    <input type="file" class="form-control" disabled />
+                  </div>
+                  <div class="mb-2">
+                    <label class="mb-1">CM Sign SH</label>
+                    <input type="file" class="form-control" disabled />
+                  </div>
+                  <div class="mb-2">
+                    <label class="mb-1">CM Comments</label>
+                    <input type="text" class="form-control" v-model="findingsData.cm_comments" disabled />
+                  </div>
+                </div>
+              </CAccordionBody> -->
+          </CAccordionItem>
+        </CAccordion>
+      </CModalBody>
+
+      <CModalFooter>
+        <CButton color="secondary" @click="editMVModal = false">
+          Close
+        </CButton>
+        <CButton color="primary" @click="updateMemberVoiceData">Update data</CButton>
       </CModalFooter>
     </CModal>
 
@@ -480,15 +886,20 @@ export default {
       selectedFilterStartDate: '',
       selectedFilterEndDate: '',
       addMemberVoiceModal: false,
-      selectedLine: null,
+      selectedLine: null, // init and filter line state
       detailMVModal: false,
+      editMVModal: false,
       picData: [],
       selectedPIC: null,
       selectedFactor: null,
       selectedLineID: null,
+      selectedFindingPIC: null,
+      selectedFindingLineID: null,
       factors: [],
       categories: [],
       detailMVData: null,
+      memberVoiceDetail: null,
+      selectedMVID: null,
       memberVoiceData: {
         mv_date_finding: moment().format('YYYY-MM-DD'),
         mv_location: '',
@@ -511,7 +922,7 @@ export default {
         finding_desc: '',
         cm_desc: '',
         cm_priority: 0,
-        category_id: '',
+        category_id: null,
         factor_id: '',
         cm_pic_id: '',
         cm_str_plan_date: '',
@@ -546,15 +957,23 @@ export default {
       this.currentPageLimit = limit
       this.getMemberVoices()
     },
+    async addMemberVoiceOpenModal() {
+      await this.getUsers()
+      await this.mapUsersData()
+      this.addMemberVoiceModal = true
+    },
     addMemberVoiceData() {
-      this.memberVoiceData.line_id = this.selectedLineID
-      this.findingsData.line_id = this.selectedLineID
+      this.memberVoiceData.line_id = this.selectedLineID.line_id
+      this.memberVoiceData.mv_pic_id = this.selectedPIC.pic_id
+      this.findingsData.line_id = this.selectedFindingLineID.line_id
       this.findingsData.cm_result_factor_id = this.findingsData.factor_id
+      this.findingsData.cm_pic_id = this.selectedFindingPIC.pic_id
 
       let data = {
         ...this.memberVoiceData,
         findings: this.findingsData,
       }
+      console.log(data)
       this.addMemberVoice(data)
     },
     async getLines() {
@@ -571,9 +990,8 @@ export default {
     async getUsers() {
       try {
         this.$store.dispatch(GET_USERS)
-        if (this.getUsersOpts) {
-          this.mapUsersData()
-        }
+        this.mapUsersData()
+
       } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
@@ -591,7 +1009,7 @@ export default {
           this.selectedFilterEndDate !== ''
             ? this.selectedFilterEndDate
             : this.selectedMonth + '-29',
-        line_id: this.selectedLineID,
+        line_id: this.selectedLine,
         limit: this.currentPageLimit,
         currentPage: this.currentPage,
       }
@@ -622,7 +1040,7 @@ export default {
         this.addMemberVoiceModal = false
       }
     },
-    deleteMV() {
+    deleteMV(MVID) {
       Swal.fire({
         title: 'Are you sure to delete this member voice?',
         showDenyButton: true,
@@ -630,14 +1048,88 @@ export default {
         confirmButtonText: 'Sure',
         denyButtonText: `No`,
       }).then((result) => {
-        /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
-          Swal.fire('Data deleted!', '', 'success')
+
+          ApiService.setHeader()
+          const deleteData = ApiService.delete(`operational/member-voice/delete/${MVID}`)
+
+          if (deleteData) {
+            Swal.fire('Data deleted!', '', 'success')
+            this.getMemberVoices()
+          } else {
+            Swal.fire('Error', '', 'warning')
+          }
         } else if (result.isDenied) {
           Swal.fire('Canceled', '', 'info')
         }
       })
     },
+    updateMemberVoiceData() {
+
+      const updateData = {
+
+        "mv_date_finding": this.formatTheDate(this.memberVoiceDetail.mv_date_finding),
+        "mv_location": this.memberVoiceDetail.mv_location,
+        "mv_problem": this.memberVoiceDetail.mv_problem,
+        "mv_process_no": this.memberVoiceDetail.mv_process_no,
+        "mv_category": this.memberVoiceDetail.mv_category,
+        "mv_factor_id": this.memberVoiceDetail.mv_factor_id,
+        "mv_countermeasure": this.memberVoiceDetail.mv_countermeasure,
+        "mv_evaluation": this.memberVoiceDetail.mv_evaluation,
+        "mv_plan_date": this.formatTheDate(this.memberVoiceDetail.mv_plan_date),
+        "mv_actual_date": this.formatTheDate(this.memberVoiceDetail.mv_actual_date),
+        "mv_pic_id": this.memberVoiceDetail.mv_pic_id,
+        "line_id": this.selectedLineID ? this.selectedLineID.line_id : this.memberVoiceDetail.line_id,
+        "findings": {
+          "line_id": this.selectedFindingLineID ? this.selectedFindingLineID.line_id : this.memberVoiceDetail.findings[0].line_id,
+          "finding_date": this.formatTheDate(this.memberVoiceDetail.findings[0].finding_date),
+          "finding_location": this.memberVoiceDetail.findings[0].finding_location,
+          "finding_desc": this.memberVoiceDetail.findings[0].finding_desc,
+          "cm_desc": this.memberVoiceDetail.findings[0].cm_desc,
+          "cm_priority": this.memberVoiceDetail.findings[0].cm_priority,
+          "category_id": null,
+          "factor_id": this.memberVoiceDetail.findings[0].factor_id,
+          "cm_pic_id": this.memberVoiceDetail.findings[0].cm_pic_id,
+          "cm_str_plan_date": this.formatTheDate(this.memberVoiceDetail.findings[0].cm_str_plan_date),
+          "cm_end_plan_date": this.formatTheDate(this.memberVoiceDetail.findings[0].cm_end_plan_date),
+          "cm_result_factor_id": this.memberVoiceDetail.findings[0].factor_id,
+          "cm_str_act_date": this.memberVoiceDetail.findings[0].cm_str_act_date ? this.formatTheDate(this.memberVoiceDetail.findings[0].cm_str_act_date) : null,
+          "cm_end_act_date": this.memberVoiceDetail.findings[0].cm_end_act_date ? this.formatTheDate(this.memberVoiceDetail.findings[0].cm_end_act_date) : null,
+          "cm_training_date": this.memberVoiceDetail.findings[0].cm_training_date ? this.formatTheDate(this.memberVoiceDetail.findings[0].cm_training_date) : null,
+          "cm_judg": this.memberVoiceDetail.findings[0].cm_judg,
+          "cm_sign_lh_red": null,
+          "cm_sign_lh_white": null,
+          "cm_sign_sh": null,
+          "cm_comments": this.memberVoiceDetail.findings[0].cm_comments
+
+        }
+      }
+
+      this.updateMemberVoice(updateData)
+    },
+    updateMemberVoice(data) {
+      const MVID = this.selectedMVID
+
+      try {
+        ApiService.setHeader()
+        const updateData = ApiService.put(`operational/member-voice/edit/${MVID}`, data)
+
+        if (updateData) {
+          Swal.fire('Data updated!', '', 'success')
+          this.editMVModal = false
+          this.getMemberVoices()
+        } else {
+          Swal.fire('Error', '', 'warning')
+        }
+
+
+      } catch (error) {
+        console.log(error)
+        Swal.fire('Failed to update henkaten data', '', 'error')
+        this.editFocusThemeModal = false
+      }
+    },
+
     async getFactors() {
       ApiService.setHeader()
       const factors = await ApiService.get(`master/factors`)
@@ -687,15 +1179,38 @@ export default {
       const data = this.getMemberVoice[MVIndex]
       this.detailMVData = data
     },
+    getDetailMVToEdit(MVIndex) {
+      this.editMVModal = true;
+      const data = this.getMemberVoice[MVIndex]
+      this.selectedMVID = data.mv_id
+      this.memberVoiceDetail = data
+    },
     addFilter() {
       this.getMemberVoices()
+    },
+    getLineName(lineID) {
+
+      if (lineID) {
+        const data = this.getLinesOpts.filter((line) => {
+          return line.id === lineID
+        })
+
+        return data[0].text
+
+      }
+    },
+    getPicName(picID) {
+      const data = this.getUsersOpts.filter((pic) => {
+        return pic.id === picID
+      })
+      return data[0].text
     },
   },
   async mounted() {
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
-    this.selectedLineID = localStorage.getItem('line_id')
+    this.selectedLine = localStorage.getItem('line_id')
     this.selectedFilterStartDate = `${year}-${month}-01`
     this.selectedFilterEndDate = `${year}-12-31`
 

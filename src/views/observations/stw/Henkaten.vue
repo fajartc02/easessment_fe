@@ -24,9 +24,9 @@
       <div class="card-header d-flex justify-content-between align-items-center">
         <h5>Henkaten List</h5>
         <button class="btn btn-info text-white" @click="() => {
-            addHenkatenModal = true
-            mapUsersData()
-          }
+          addHenkatenModal = true
+          mapUsersData()
+        }
           ">
           Add henkaten
         </button>
@@ -66,10 +66,10 @@
               <td>{{ henkaten.henkaten_flw_safety }}</td>
               <td>{{ henkaten.henkaten_flw_quality }}</td>
               <td>
-                <button class="btn btn-danger btn-sm text-white mx-2" @click="deleteHenkaten()">
+                <button class="btn btn-danger btn-sm text-white mx-2" @click="deleteHenkaten(henkaten.henkaten_id)">
                   Delete
                 </button>
-                <button class="btn btn-info btn-sm text-white">Edit</button>
+                <button class="btn btn-info btn-sm text-white" @click="getDetailHenkaten(index)">Edit</button>
               </td>
             </tr>
             <tr v-if="getHenkatens?.length < 1">
@@ -86,7 +86,7 @@
         @changeLimit="onPageChangeLimit" />
     </div>
 
-    <!-- modals -->
+    <!-- add modals -->
     <CModal scrollable backdrop="static" alignment="center" :visible="addHenkatenModal" @close="addHenkatenModal = false"
       size="lg">
       <CModalHeader>
@@ -108,13 +108,12 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Line</label>
-                  <VueMultiselect v-model="henkatenData.henkaten_line_id" :options="lineData"
-                    :custom-label="customLineFilterOptions">
+                  <VueMultiselect v-model="selectedLineID" :options="lineData" :custom-label="customLineFilterOptions">
                   </VueMultiselect>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">PIC</label>
-                  <VueMultiselect v-model="henkatenData.henkaten_pic" :options="picData" :custom-label="customPicOptions">
+                  <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
                   </VueMultiselect>
                 </div>
                 <div class="mb-2">
@@ -148,6 +147,12 @@
                   <input type="date" class="form-control" v-model="findingsData.finding_date" />
                 </div>
                 <div class="mb-2">
+                  <label class="mb-1">Line</label>
+                  <VueMultiselect v-model="selectedFindingLineID" :options="lineData"
+                    :custom-label="customLineFilterOptions">
+                  </VueMultiselect>
+                </div>
+                <div class="mb-2">
                   <label class="mb-1">Pos</label>
                   <input type="text" class="form-control" v-model="findingsData.finding_location" />
                 </div>
@@ -169,15 +174,7 @@
                   </select>
                 </div>
 
-                <div class="mb-2">
-                  <label class="mb-1">Category </label>
-                  <select class="form-select" v-model="findingsData.category_id">
-                    <option selected>Select category</option>
-                    <option v-for="category in categories" :key="category.id" :value="category.id">
-                      {{ category.name }}
-                    </option>
-                  </select>
-                </div>
+
 
                 <div class="mb-2">
                   <label class="mb-1">Faktor </label>
@@ -191,7 +188,7 @@
 
                 <div class="mb-2">
                   <label class="mb-1">PIC </label>
-                  <VueMultiselect v-model="findingsData.cm_pic_id" :options="picData" :custom-label="customPicOptions">
+                  <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
                   </VueMultiselect>
                 </div>
 
@@ -254,6 +251,272 @@
         <CButton color="primary" @click="addHenkatenData">Save changes</CButton>
       </CModalFooter>
     </CModal>
+
+    <!-- edit modals -->
+    <CModal scrollable backdrop="static" alignment="center" :visible="EditHenkatenModal"
+      @close="EditHenkatenModal = false" size="lg">
+      <CModalHeader>
+        <CModalTitle>Edit henkaten</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <CAccordion :active-item-key="1" always-open>
+          <CAccordionItem :item-key="1">
+            <CAccordionHeader> Henkaten input </CAccordionHeader>
+            <CAccordionBody>
+              <div>
+                <div class="mb-2">
+                  <label class="mb-1">Start date</label>
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" class="form-control" disabled
+                        :value="formatTheDate(henkatenDetail.henkaten_date)">
+                    </div>
+                    <div class="col">
+                      <input type="date" class="form-control" v-model="henkatenDetail.henkaten_date" />
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Henkaten location</label>
+                  <input type="text" class="form-control" v-model="henkatenDetail.henkaten_location" />
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Line</label>
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" disabled class="form-control"
+                        :value="getLineName(henkatenDetail.henkaten_line_id)">
+                    </div>
+                    <div class="col">
+                      <VueMultiselect v-model="selectedLineID" :options="lineData"
+                        :custom-label="customLineFilterOptions">
+                      </VueMultiselect>
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">PIC</label>
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" disabled class="form-control" :value="getPicName(henkatenDetail.henkaten_pic)">
+                    </div>
+                    <div class="col">
+                      <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
+                      </VueMultiselect>
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Perubahan</label>
+                  <textarea type="text" class="form-control" v-model="henkatenDetail.henkaten_desc">
+                  </textarea>
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Tujuan</label>
+                  <textarea type="text" class="form-control" v-model="henkatenDetail.henkaten_purpose">
+                  </textarea>
+                </div>
+                <span style="font-weight: bold" class="mb-2">Follow (2 weeks) item</span>
+                <div class="mb-2">
+                  <label class="mb-1">Safety</label>
+                  <input type="text" class="form-control" v-model="henkatenDetail.henkaten_flw_safety" />
+                </div>
+                <div>
+                  <label class="mb-1">Quality</label>
+                  <input type="text" class="form-control" v-model="henkatenDetail.henkaten_flw_quality" />
+                </div>
+              </div>
+            </CAccordionBody>
+          </CAccordionItem>
+          <CAccordionItem :item-key="2">
+            <CAccordionHeader> Findings input </CAccordionHeader>
+            <CAccordionBody>
+              <div>
+                <div class="mb-2">
+                  <label class="mb-1">Tanggal temuan</label>
+
+
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" class="form-control" disabled
+                        :value="formatTheDate(henkatenDetail.findings[0].finding_date)">
+                    </div>
+                    <div class="col">
+                      <input type="date" class="form-control" v-model="henkatenDetail.findings[0].finding_date" />
+                    </div>
+                  </div>
+
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Line</label>
+
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" disabled class="form-control"
+                        :value="getLineName(henkatenDetail.findings[0].line_id)">
+                    </div>
+                    <div class="col">
+                      <VueMultiselect v-model="selectedFindingLineID" :options="lineData"
+                        :custom-label="customLineFilterOptions">
+                      </VueMultiselect>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Pos</label>
+                  <input type="text" class="form-control" v-model="henkatenDetail.findings[0].finding_location" />
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Finding description</label>
+                  <textarea cols="30" rows="5" class="form-control"
+                    v-model="henkatenDetail.findings[0].finding_desc"></textarea>
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">CM description</label>
+                  <textarea cols="30" rows="5" class="form-control"
+                    v-model="henkatenDetail.findings[0].cm_desc"></textarea>
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Priority</label>
+                  <select class="form-select" v-model="henkatenDetail.findings[0].cm_priority">
+                    <option selected>Select priority</option>
+                    <option value="P1">P1: Safety & Quality Issue</option>
+                    <option value="P2">P2: Productivity Issue</option>
+                    <option value="P3">P3: Cost Issue</option>
+                  </select>
+                </div>
+
+                <div class="mb-2">
+                  <label class="mb-1">Faktor </label>
+                  <select class="form-select" v-model="henkatenDetail.findings[0].factor_id">
+                    <option disabled>Select Factor</option>
+                    <option v-for="factor in factors" :key="factor.text" :value="factor.id">
+                      {{ factor.text }}
+                    </option>
+                  </select>
+                </div>
+
+                <div class="mb-2">
+                  <label class="mb-1">PIC </label>
+
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" disabled class="form-control"
+                        :value="getPicName(henkatenDetail.findings[0].cm_pic_id)">
+                    </div>
+                    <div class="col">
+                      <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
+                      </VueMultiselect>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="mb-2">
+                  <label class="mb-1">CM Start Plan Date </label>
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" class="form-control" disabled
+                        :value="formatTheDate(henkatenDetail.findings[0].cm_str_plan_date)">
+                    </div>
+                    <div class="col">
+                      <input type="date" class="form-control" v-model="henkatenDetail.findings[0].cm_str_plan_date" />
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">CM End Plan Date </label>
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" class="form-control" disabled
+                        :value="formatTheDate(henkatenDetail.findings[0].cm_end_plan_date)">
+                    </div>
+                    <div class="col">
+                      <input type="date" class="form-control" v-model="henkatenDetail.findings[0].cm_end_plan_date" />
+                    </div>
+                  </div>
+                </div>
+
+                <hr />
+
+                <div class="mb-2">
+                  <label class="mb-1">CM Start actual date</label>
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" class="form-control" disabled
+                        :value="formatTheDate(henkatenDetail.findings[0].cm_str_act_date)">
+                    </div>
+                    <div class="col">
+                      <input type="date" class="form-control" v-model="henkatenDetail.findings[0].cm_str_act_date" />
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">CM End actual date</label>
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" class="form-control" disabled
+                        :value="formatTheDate(henkatenDetail.findings[0].cm_end_act_date)">
+                    </div>
+                    <div class="col">
+                      <input type="date" class="form-control" v-model="henkatenDetail.findings[0].cm_end_act_date" />
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">CM Training date</label>
+                  <div class="row">
+                    <div class="col">
+                      <input type="text" class="form-control" disabled
+                        :value="formatTheDate(henkatenDetail.findings[0].cm_training_date)">
+                    </div>
+                    <div class="col">
+                      <input type="date" class="form-control" v-model="henkatenDetail.findings[0].cm_training_date" />
+                    </div>
+                  </div>
+
+
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">CM Judge</label>
+                  <select class="form-select" v-model="henkatenDetail.findings[0].cm_judg">
+                    <option selected>Select judgement</option>
+                    <option value="true">Sudah</option>
+                    <option value="false">Belum</option>
+                  </select>
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">CM Sign LH Red</label>
+                  <input type="file" class="form-control" disabled />
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">CM Sign LH White</label>
+                  <input type="file" class="form-control" disabled />
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">CM Sign SH</label>
+                  <input type="file" class="form-control" disabled />
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">CM Comments</label>
+                  <input type="text" class="form-control" v-model="henkatenDetail.findings[0].cm_comments" />
+                </div>
+              </div>
+            </CAccordionBody>
+          </CAccordionItem>
+        </CAccordion>
+      </CModalBody>
+      <CModalFooter>
+        <CButton color="secondary" @click="() => {
+          EditHenkatenModal = false
+          selectedHenkatenID = null
+        }">
+          Close
+        </CButton>
+        <CButton color="primary" @click="updateHenkatenData">Update data</CButton>
+      </CModalFooter>
+    </CModal>
   </div>
 </template>
   
@@ -278,15 +541,20 @@ export default {
       currentPageLimit: 5,
       selectedMonth: null,
       addHenkatenModal: false,
-      selectedLineID: '',
+      EditHenkatenModal: false,
+      selectedLineID: null,
+      selectedFindingLineID: null,
       picData: [],
       lineData: [],
       factors: [],
       categories: [],
       selectedPIC: null,
+      selectedFindingPIC: null,
       selectedFilterStartDate: '',
       selectedFilterEndDate: '',
       selectedFilterLineID: '-1',
+      henkatenDetail: null,
+      selectedHenkatenID: null,
       henkatenData: {
         henkaten_date: '',
         henkaten_location: '',
@@ -305,7 +573,7 @@ export default {
         finding_desc: '',
         cm_desc: '',
         cm_priority: 0,
-        category_id: '',
+        category_id: null,
         factor_id: '',
         cm_pic_id: '',
         cm_str_plan_date: '',
@@ -340,25 +608,77 @@ export default {
       this.getHenkaten()
     },
     formatTheDate(val) {
-      const year = val.split('T')[0].split('-')[0]
-      const month = val.split('T')[0].split('-')[1]
-      const day = val.split('T')[0].split('-')[2]
+      if (val) {
+        const year = val.split('T')[0].split('-')[0]
+        const month = val.split('T')[0].split('-')[1]
+        const day = val.split('T')[0].split('-')[2]
 
-      return `${year}-${month}-${day}`
-    },
-    initData() {
-      if (this.getHenkatens) {
-        this.selectedLineID = this.getHenkatens[0]?.henkaten_line_id
+        return `${year}-${month}-${day}`
       }
     },
+    getLineName(lineID) {
+      const data = this.getLinesOpts.filter((line) => {
+        return line.id === lineID
+      })
+      return data[0].text
+    },
+    getPicName(picID) {
+      const data = this.getUsersOpts.filter((pic) => {
+        return pic.id === picID
+      })
+      return data[0].text
+    },
     addHenkatenData() {
+      this.henkatenData.henkaten_line_id = this.selectedLineID.line_id
+      this.henkatenData.henkaten_pic = this.selectedPIC.pic_id
+
       this.findingsData.cm_result_factor_id = this.findingsData.factor_id
+      this.findingsData.line_id = this.selectedFindingLineID.line_id
+      this.findingsData.cm_pic_id = this.selectedFindingPIC.pic_id
 
       let data = {
         ...this.henkatenData,
         findings: this.findingsData,
       }
       this.addHenkaten(data)
+    },
+    updateHenkatenData() {
+      const updateData = {
+
+        "henkaten_date": this.formatTheDate(this.henkatenDetail.henkaten_date),
+        "henkaten_location": this.henkatenDetail.henkaten_location,
+        "henkaten_pic": this.selectedPIC ? this.selectedPIC.pic_id : this.henkatenDetail.henkaten_pic,
+        "henkaten_desc": this.henkatenDetail.henkaten_desc,
+        "henkaten_purpose": this.henkatenDetail.henkaten_purpose,
+        "henkaten_flw_safety": this.henkatenDetail.henkaten_flw_safety,
+        "henkaten_flw_quality": this.henkatenDetail.henkaten_flw_quality,
+        "henkaten_line_id": this.selectedLineID ? this.selectedLineID.line_id : this.henkatenDetail.henkaten_line_id,
+        "findings": {
+          "line_id": this.selectedFindingLineID ? this.selectedFindingLineID.line_id : this.henkatenDetail.findings[0].line_id,
+          "finding_date": this.formatTheDate(this.henkatenDetail.findings[0].finding_date),
+          "finding_location": this.henkatenDetail.findings[0].finding_location,
+          "finding_desc": this.henkatenDetail.findings[0].finding_desc,
+          "cm_desc": this.henkatenDetail.findings[0].cm_desc,
+          "cm_priority": this.henkatenDetail.findings[0].cm_priority,
+          "category_id": null,
+          "factor_id": this.henkatenDetail.findings[0].factor_id,
+          "cm_pic_id": this.henkatenDetail.findings[0].cm_pic_id,
+          "cm_str_plan_date": this.formatTheDate(this.henkatenDetail.findings[0].cm_str_plan_date),
+          "cm_end_plan_date": this.formatTheDate(this.henkatenDetail.findings[0].cm_end_plan_date),
+          "cm_result_factor_id": this.henkatenDetail.findings[0].factor_id,
+          "cm_str_act_date": this.henkatenDetail.findings[0].cm_str_act_date ? this.formatTheDate(this.henkatenDetail.findings[0].cm_str_act_date) : null,
+          "cm_end_act_date": this.henkatenDetail.findings[0].cm_end_act_date ? this.formatTheDate(this.henkatenDetail.findings[0].cm_end_act_date) : null,
+          "cm_training_date": this.henkatenDetail.findings[0].cm_training_date ? this.formatTheDate(this.henkatenDetail.findings[0].cm_training_date) : null,
+          "cm_judg": this.henkatenDetail.findings[0].cm_judg,
+          "cm_sign_lh_red": null,
+          "cm_sign_lh_white": null,
+          "cm_sign_sh": null,
+          "cm_comments": this.henkatenDetail.findings[0].cm_comments
+
+        }
+      }
+
+      this.updateHenkaten(updateData)
     },
     async getHenkaten() {
       this.isLoading = true
@@ -396,6 +716,8 @@ export default {
           Swal.fire('Success to add henkaten data', '', 'success')
           this.addHenkatenModal = false
           this.getHenkaten()
+          this.henkatenDetail = null
+          this.selectedHenkatenID = null
         })
       } catch (error) {
         console.log(error)
@@ -403,7 +725,29 @@ export default {
         this.addHenkatenModal = false
       }
     },
-    deleteHenkaten() {
+    async updateHenkaten(data) {
+      const henkatenID = this.selectedHenkatenID
+
+      try {
+        ApiService.setHeader()
+        const updateData = ApiService.put(`operational/henkaten/edit/${henkatenID}`, data)
+
+        if (updateData) {
+          Swal.fire('Data updated!', '', 'success')
+          this.EditHenkatenModal = false
+          this.getHenkaten()
+        } else {
+          Swal.fire('Error', '', 'warning')
+        }
+
+
+      } catch (error) {
+        console.log(error)
+        Swal.fire('Failed to update henkaten data', '', 'error')
+        this.EditHenkatenModal = false
+      }
+    },
+    async deleteHenkaten(henkatenID) {
       Swal.fire({
         title: 'Are you sure to delete this Henkaten?',
         showDenyButton: true,
@@ -411,13 +755,27 @@ export default {
         confirmButtonText: 'Sure',
         denyButtonText: `No`,
       }).then((result) => {
-        /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
-          Swal.fire('Data deleted!', '', 'success')
+          ApiService.setHeader()
+          const deleteData = ApiService.delete(`operational/henkaten/delete/${henkatenID}`)
+
+          if (deleteData) {
+            Swal.fire('Data deleted!', '', 'success')
+            this.getHenkaten()
+          } else {
+            Swal.fire('Error', '', 'warning')
+          }
+
         } else if (result.isDenied) {
           Swal.fire('Canceled', '', 'info')
         }
       })
+    },
+    getDetailHenkaten(index) {
+      const data = this.getHenkatens[index]
+      this.selectedHenkatenID = this.getHenkatens[index].henkaten_id
+      this.henkatenDetail = data
+      this.EditHenkatenModal = true
     },
     async getFactors() {
       ApiService.setHeader()
@@ -492,7 +850,6 @@ export default {
     await this.getCategories()
     await this.getFactors()
     await this.getHenkaten()
-    this.initData()
   },
   updated() {
     this.mapLinesData()
