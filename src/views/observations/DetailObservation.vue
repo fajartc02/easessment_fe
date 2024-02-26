@@ -38,7 +38,7 @@
   <div class="card mt-1">
     <div class="card-header overflow-auto">
       <div class="row">
-        <div class="col-9">
+        <div class="col-9 my-auto">
           <b>Data Observasi</b>
         </div>
         <div class="d-flex col-3 text-right justify-content-around">
@@ -138,8 +138,16 @@
                 <input type="number" v-model="item.stw_ct5" class="form-control text-center"
                   style="width: 70px; margin-right: 10px" placeholder="CT5" />
                 <div class="mx-1 d-flex flex-column">
-                  <span class="badge bg-secondary">Avg: {{ judgementAverage }}</span>
-                  <span class="badge bg-secondary mt-1">Prc: {{ judgementPrecentage }} %</span>
+
+
+                </div>
+                <div class="row my-auto">
+                  <div class="col-lg-6">
+                    <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(1) }}</span>
+                  </div>
+                  <div class="col-lg-6">
+                    <span class="badge bg-success mt-1 w-100">Persentasi: {{ judgementPrecentage }} %</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -151,7 +159,7 @@
             </CFormSelect>
           </td>
           <td>
-            <div v-if="(item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
+            <div v-if="((item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' || item.judgment_id == 'dcb12fa6-0d1e-4d29-ab3d-7576c863ed2e') &&
               item.judgment_id) || (judgementID == '2e247c66-3e9c-44b6-951a-0a26791ad37d' && i == 0)
               ">
               <CFormSelect :disabled="isCheck" v-model="item.factor_id">
@@ -162,7 +170,7 @@
               </CFormSelect>
             </div>
           </td>
-          <td v-if="(item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
+          <td v-if="((item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' || item.judgment_id == 'dcb12fa6-0d1e-4d29-ab3d-7576c863ed2e') &&
             item.judgment_id) || (judgementID == '2e247c66-3e9c-44b6-951a-0a26791ad37d' && i == 0)
             ">
             <div>
@@ -178,12 +186,13 @@
                   ">
                   Edit finding
                 </button>
-                <button :disabled="isCheck" class="btn btn-warning">
+                <button :disabled="isCheck" class="btn btn-warning" @click="deleteFinding(item.id)">
                   Delete finding
                 </button>
               </div>
-              <button v-else :disabled="isCheck" class="btn btn-info" @click="() => {
+              <button v-else :disabled="isCheck" class="btn btn-info" :data-target="`#staticBackdrop-${i}`" @click="() => {
                 addFindingsModal = true
+                finding.finding_location = observation.pos_nm
                 mapUsersData()
               }
                 ">
@@ -192,7 +201,8 @@
             </div>
 
             <!-- modal -->
-            <CModal scrollable backdrop="static" alignment="center" :visible="addFindingsModal" size="xl">
+            <CModal :id="`#staticBackdrop-${i}`" backdrop="static" scrollable alignment="center"
+              :visible="addFindingsModal" size="xl">
               <CModalHeader>
                 <CModalTitle>Add temuan</CModalTitle>
               </CModalHeader>
@@ -216,10 +226,10 @@
                       <div class="mb-2">
                         <div>
                           <label class="mb-1">Finding image </label>
-                          <input ref="finding_image" type="file" class="form-control" />
+                          <input :ref="`finding_image-${i}`" type="file" class="form-control" />
                         </div>
                         <button class="btn btn-info my-2 text-white"
-                          @click="uploadFindingImage('finding_image', finding)">Upload</button>
+                          @click="uploadFindingImage(`finding_image-${i}`, finding)">Upload</button>
 
                         <div v-if="selectedFindingImage">
                           <img :src="selectedFindingImage" width="300" alt="">
@@ -247,13 +257,19 @@
                         <VueMultiselect v-model="finding.cm_pic_id" :options="picData" :custom-label="customPicOptions">
                         </VueMultiselect>
                       </div>
-                      <div class="mb-2">
-                        <label class="mb-1">CM Start Plan Date </label>
-                        <input type="date" class="form-control" v-model="finding.cm_str_plan_date" />
-                      </div>
-                      <div class="mb-2">
-                        <label class="mb-1">CM End Plan Date </label>
-                        <input type="date" class="form-control" v-model="finding.cm_end_plan_date" />
+                      <div class="row">
+                        <div class="col-12 col-lg-6">
+                          <div class="mb-2">
+                            <label class="mb-1">CM Start Plan Date </label>
+                            <input type="date" class="form-control" v-model="finding.cm_str_plan_date" />
+                          </div>
+                        </div>
+                        <div class="col12 col-lg-6">
+                          <div class="mb-2">
+                            <label class="mb-1">CM End Plan Date </label>
+                            <input type="date" class="form-control" v-model="finding.cm_end_plan_date" />
+                          </div>
+                        </div>
                       </div>
                       <div class="mb-2">
                         <label class="mb-1">CM Factor</label>
@@ -346,7 +362,7 @@
 
 <script>
 import { GET_OBSERVATION_DETAIL } from '@/store/modules/observation.module'
-// import { POST_OBSERVATION_CHECK } from '@/store/modules/observation.module'
+import { POST_OBSERVATION_CHECK } from '@/store/modules/observation.module'
 import { GET_USERS } from '@/store/modules/user.module'
 import { mapGetters } from 'vuex'
 import VuePdfEmbed from 'vue-pdf-embed'
@@ -412,7 +428,8 @@ export default {
         cm_comments: null,
         finding_img: null
       },
-      selectedFindingImage: null
+      selectedFindingImage: null,
+      TRESHOLD_STW_NG: 3
     }
   },
   watch: {
@@ -458,6 +475,33 @@ export default {
     VueMultiselect,
   },
   methods: {
+    swalConfDel() {
+      return Swal.fire({
+        title: "Kamu yakin ingin menghapus finding ini?",
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: "Ya",
+        denyButtonText: `Tidak`
+      }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          return true
+        } else if (result.isDenied) {
+          return false
+        }
+      });
+    },
+    async deleteFinding(catID) {
+      console.log(catID);
+      let is_delete = await this.swalConfDel()
+
+      if (is_delete) {
+        let filterFinding = this.findings.filter(finding => finding.category_id != catID)
+
+        this.findings = filterFinding
+        Swal.fire('Berhasil menghapus', '', 'success')
+      }
+    },
     checkLabelTypeJob(jobType) {
       if (jobType == 'Type 3') {
         ; (this.tskLabel = 'Gentani'), (this.tskkLabel = 'Yamazumi')
@@ -554,6 +598,7 @@ export default {
 
       ApiService.setHeader()
 
+      this.$refs[state][0]
       const image = this.$refs[state][0].files[0];
       const formData = new FormData();
       formData.append('before_path', before_path);
@@ -609,7 +654,7 @@ export default {
       this.judgementAverage = totalAvg
       this.judgementPrecentage = totalPrecentage.toFixed()
 
-      if (totalPrecentage.toFixed() > 20) {
+      if (totalPrecentage.toFixed() >= this.TRESHOLD_STW_NG) {
         this.judgementID = NG_ID
         // result.factor_id = NG_ID
       } else {
@@ -651,14 +696,13 @@ export default {
     },
     async postCheckObs() {
       try {
-        // Swal.showLoading()
         this.resultCheck = []
         for (let i = 0; i < this.categories.length; i++) {
           const element = this.categories[i]
           element.category_id = element.id
           let newObj = {
             category_id: element.category_id,
-            judgment_id: element.judgment_id,
+            judgment_id: i == 0 ? this.judgementID : element.judgment_id,
             stw_ct1: element.stw_ct1,
             stw_ct2: element.stw_ct2,
             stw_ct3: element.stw_ct3,
@@ -674,21 +718,21 @@ export default {
           actual_check_dt: this.form.actual_check_dt,
           comment_sh: this.observation?.comment_sh,
           comment_ammgr: this.observation?.comment_ammgr,
-          results_check: this.resultCheck,
-          findings: this.findings,
+          results_check: JSON.stringify(this.resultCheck),
+          findings: JSON.stringify(this.findings),
         }
 
         console.log(formInput)
 
-        //   await this.$store
-        //     .dispatch(POST_OBSERVATION_CHECK, formInput)
-        //     .then(() => {
-        //       Swal.showLoading()
-        //       Swal.fire('Pengecekan berhasil di submit', '', 'success')
-        //       setTimeout(() => {
-        //         this.$router.push('/')
-        //       }, 1000)
-        //     })
+        await this.$store
+          .dispatch(POST_OBSERVATION_CHECK, formInput)
+          .then(() => {
+            Swal.showLoading()
+            Swal.fire('Pengecekan berhasil di submit', '', 'success')
+            setTimeout(() => {
+              this.$router.push('/stw/dashboard')
+            }, 1000)
+          })
       } catch (error) {
         console.log(error)
         Swal.fire('Pengecekan gagal di submit', '', 'error')

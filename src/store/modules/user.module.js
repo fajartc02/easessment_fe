@@ -90,9 +90,10 @@ const actions = {
         });
     },
     [PUT_USER]({ commit }, data = null) {
-        ApiService.setHeader()
         let ID = data.id
+        console.log(data);
         delete data.id
+        ApiService.setHeader()
         return new Promise((resolve, reject) => {
             console.log(data);
             ApiService.put(`master/users/edit/${ID}`, data)
