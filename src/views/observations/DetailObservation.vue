@@ -127,18 +127,18 @@
               item.category_nm == 'Standarize Work'
               ">
               <div class="d-flex">
-                <input type="number" v-model="item.stw_ct1" class="form-control text-center" style="width: 70px"
-                  placeholder="CT1" />
-                <input type="number" v-model="item.stw_ct2" class="form-control text-center mx-2" style="width: 70px"
-                  placeholder="CT2" />
-                <input type="number" v-model="item.stw_ct3" class="form-control text-center" style="width: 70px"
-                  placeholder="CT3" />
-                <input type="number" v-model="item.stw_ct4" class="form-control text-center mx-2" style="width: 70px"
-                  placeholder="CT4" />
-                <input type="number" v-model="item.stw_ct5" class="form-control text-center"
+                <input type="number" :disabled="isCheck" v-model="item.stw_ct1" class="form-control text-center"
+                  style="width: 70px" placeholder="CT1" />
+                <input type="number" :disabled="isCheck" v-model="item.stw_ct2" class="form-control text-center mx-2"
+                  style="width: 70px" placeholder="CT2" />
+                <input type="number" :disabled="isCheck" v-model="item.stw_ct3" class="form-control text-center"
+                  style="width: 70px" placeholder="CT3" />
+                <input type="number" :disabled="isCheck" v-model="item.stw_ct4" class="form-control text-center mx-2"
+                  style="width: 70px" placeholder="CT4" />
+                <input type="number" :disabled="isCheck" v-model="item.stw_ct5" class="form-control text-center"
                   style="width: 70px; margin-right: 10px" placeholder="CT5" />
                 <div class="mx-1 d-flex flex-column"></div>
-                <div class="row my-auto">
+                <div v-if="item.stw_ct5" class="row my-auto">
                   <div class="col-lg-6">
                     <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(1) }}</span>
                   </div>
@@ -146,6 +146,16 @@
                     <span class="badge bg-success mt-1 w-100">Persentasi: {{ judgementPrecentage }} %</span>
                   </div>
                 </div>
+
+                <div v-else class="row my-auto">
+                  <div class="col-lg-6">
+                    <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(1) }}</span>
+                  </div>
+                  <div class="col-lg-6">
+                    <span class="badge bg-success mt-1 w-100">Persentasi: {{ judgementPrecentage }} %</span>
+                  </div>
+                </div>
+
               </div>
             </div>
             <CFormSelect v-else :disabled="isCheck" v-model="item.judgment_id">
@@ -162,12 +172,18 @@
               (judgementID == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
                 i == 0)
               ">
-              <CFormSelect :disabled="isCheck" v-model="item.factor_id">
-                <option>Select Factor</option>
-                <option v-for="factor in factors" :key="factor.text" :value="factor.id">
-                  {{ factor.text }}
-                </option>
-              </CFormSelect>
+              <div v-if="item.findings[0].factor_id">
+                {{ item.findings[0].factor_nm }}
+              </div>
+              <div v-else>
+                <CFormSelect :disabled="isCheck" v-model="item.factor_id">
+                  <option>Select Factor</option>
+                  <option v-for="factor in factors" :key="factor.text" :value="factor.id">
+                    {{ factor.text }}
+                  </option>
+                </CFormSelect>
+              </div>
+
             </div>
           </td>
           <td v-if="((item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' ||
@@ -175,7 +191,8 @@
             item.judgment_id) ||
             (judgementID == '2e247c66-3e9c-44b6-951a-0a26791ad37d' && i == 0)
             ">
-            <div>
+
+            <div v-if="item.findings.length == 0">
               <div v-if="findings.filter((find) => {
                 return find.category_id == item.id
               }).length > 0
@@ -200,6 +217,9 @@
                 ">
                 Add findings
               </button>
+            </div>
+            <div v-else>
+              {{ item.findings[0].finding_desc }}
             </div>
 
             <!-- modal -->
@@ -227,7 +247,7 @@
                       </div>
                       <div class="mb-2">
                         <div>
-                          <label class="mb-1">Finding image </label>
+                          <label class="mb-1">Finding image {{ selectedFindingImage ? '(Uploaded)' : '' }} </label>
                           <input :ref="`finding_image-${i}`" type="file" class="form-control" />
                         </div>
                         <button class="btn btn-info my-2 text-white" :disabled="isUploadLoading" @click="
@@ -236,9 +256,9 @@
                           {{ isUploadLoading ? 'Uploading' : 'Upload' }}
                         </button>
 
-                        <div v-if="selectedFindingImage">
+                        <!-- <div v-if="selectedFindingImage">
                           <img :src="selectedFindingImage" width="300" alt="" />
-                        </div>
+                        </div> -->
                       </div>
                       <div class="mb-2">
                         <label class="mb-1">CM description</label>
@@ -353,13 +373,25 @@
         </tr>
       </table>
 
-      <div class="mb-2">
+      <div v-if="observation?.comment_sh">
+        <div class="mb-2">
+          <label class="mb-1">Comment SH </label>
+          <input :value="observation.comment_sh" type="text" class="form-control" disabled />
+        </div>
+      </div>
+      <div v-if="observation?.comment_ammgr">
+        <div class="mb-2">
+          <label class="mb-1">Comment AM / MGR </label>
+          <input :value="observation?.comment_ammgr" type="text" class="form-control" disabled />
+        </div>
+      </div>
+
+      <div class="mb-2" v-if="!observation?.comment_sh">
         <label class="mb-1">Comment SH </label>
         <input type="text" class="form-control" v-model="comment_sh" />
       </div>
-
-      <div class="mb-2">
-        <label class="mb-1">Comment AMMGR </label>
+      <div class="mb-2" v-if="!observation?.comment_ammgr">
+        <label class="mb-1">Comment AM / MGR </label>
         <input type="text" class="form-control" v-model="comment_ammgr" />
       </div>
 
@@ -582,7 +614,6 @@ export default {
         factor_id: factorID,
         ...findings,
       }
-
       this.findings.push(data)
       this.addFindingsModal = false
       this.resetData()
@@ -594,22 +625,7 @@ export default {
       this.finding = data
     },
     updateFindingData(categoryID, factorID, findings) {
-      // let data = {
-      //   line_id: this.observation?.line_id,
-      //   category_id: categoryID,
-      //   factor_id: factorID,
-      //   cm_pic_id: this.selectedPIC,
-      //   cm_result_factor_id: this.selectedFactor,
-      //   ...findings,
-      // }
-
-      // const index = this.findings.filter((object) => {
-      //   return object.category_id === categoryID
-      // })
-
-      // // // console.log(data)
-      // console.log(index)
-      console.log(findings)
+      this.finding = findings
     },
     async uploadFindingImage(state, finding) {
       let before_path = null
@@ -683,10 +699,8 @@ export default {
 
       if (totalPrecentage.toFixed() >= this.TRESHOLD_STW_NG) {
         this.judgementID = NG_ID
-        // result.factor_id = NG_ID
       } else {
         this.judgementID = OK_ID
-        // result.factor_id = OK_ID
       }
     },
     async getCategories() {
@@ -700,6 +714,7 @@ export default {
         itm.stw_ct3 = null
         itm.stw_ct4 = null
         itm.stw_ct5 = null
+        itm.findings = null
 
         let result = this.resultCheck[i]
 
@@ -711,6 +726,7 @@ export default {
           itm.stw_ct3 = result.stw_ct3
           itm.stw_ct4 = result.stw_ct4
           itm.stw_ct5 = result.stw_ct5
+          itm.findings = result.findings
         }
 
         return itm
@@ -720,6 +736,9 @@ export default {
       await this.getJudgments()
       await this.getFactors()
       await this.getGroups()
+
+
+      this.calculateJudgement(mapCategory[0])
     },
     async postCheckObs() {
       try {
@@ -746,13 +765,13 @@ export default {
           comment_sh: this.comment_sh,
           comment_ammgr: this.comment_ammgr,
           results_check: JSON.stringify(this.resultCheck),
-          findings: this.findings,
+          findings: JSON.stringify(this.findings),
         }
 
         console.log(formInput)
 
         await this.$store
-          .dispatch(POST_OBSERVATION_CHECK)
+          .dispatch(POST_OBSERVATION_CHECK, formInput)
           .then(() => {
             Swal.showLoading()
             Swal.fire('Pengecekan berhasil di submit', '', 'success')
