@@ -13,6 +13,8 @@ import Select2 from 'vue3-select2-component';
 import VueApexCharts from "vue3-apexcharts";  
 import { OhVueIcon  } from "oh-vue-icons";
 import VueSignaturePad  from "vue-signature-pad";
+import JsonExcel from "vue-json-excel3";
+
 
 
 import Toast from "vue-toastification";
@@ -37,6 +39,8 @@ app.component('CIcon', CIcon)
 app.component('DocsExample', DocsExample)
 app.component('Select2', Select2)
 app.component("v-icon", OhVueIcon);
+app.component("downloadExcel", JsonExcel);
+
 
 app.use(VueApexCharts);
  
