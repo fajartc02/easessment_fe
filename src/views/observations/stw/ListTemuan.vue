@@ -95,10 +95,25 @@
               <span class="mx-2">On progress</span>
             </div>
           </div>
-          <div>
+          <div class="mx-2">
             <span class="badge bg-info"> P1: Safety & Quality Issue </span>
             <span class="badge bg-info mx-2"> P2: Productivity Issue </span>
             <span class="badge bg-info"> P3: Cost Issue </span>
+          </div>
+          <div>
+            <button
+              :disabled="getFindings?.length < 1"
+              class="btn btn-info btn-sm text-white w-full my-1"
+            >
+              <download-excel
+                :data="json_data"
+                :fields="json_fields"
+                worksheet="My Worksheet"
+                name="findinglist.xls"
+              >
+                Export all data
+              </download-excel>
+            </button>
           </div>
         </div>
       </div>
@@ -324,19 +339,6 @@
                     class="btn btn-info btn-sm text-white w-full my-1"
                   >
                     Download
-                  </button>
-                  <button
-                    :disabled="getFindings?.length < 1"
-                    class="btn btn-info btn-sm text-white w-full my-1 mx-2"
-                  >
-                    <download-excel
-                      :data="json_data"
-                      :fields="json_fields"
-                      worksheet="My Worksheet"
-                      name="findinglist.xls"
-                    >
-                      Export data
-                    </download-excel>
                   </button>
                 </div>
               </td>
@@ -1085,6 +1087,7 @@ export default {
         SOURCE_CATEGORY: 'source_category',
       },
       json_data: null,
+      selected_json_data: null,
       isLoading: false,
       isUploadKaizenFile: false,
       isUploadSignLoading: false,

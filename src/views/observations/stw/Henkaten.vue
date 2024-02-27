@@ -5,31 +5,70 @@
         <div class="row">
           <div class="col">
             <label>Start date</label>
-            <input type="date" class="form-control" v-model="selectedFilterStartDate" @change="addFilter()" />
+            <input
+              type="date"
+              class="form-control"
+              v-model="selectedFilterStartDate"
+              @change="addFilter()"
+            />
           </div>
           <div class="col">
             <label>End date</label>
-            <input type="date" class="form-control" v-model="selectedFilterEndDate" @change="addFilter()" />
+            <input
+              type="date"
+              class="form-control"
+              v-model="selectedFilterEndDate"
+              @change="addFilter()"
+            />
           </div>
           <div class="col">
             <label>Line</label>
-            <select class="form-select" v-model="selectedLine" @change="addFilter()">
-              <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
+            <select
+              class="form-select"
+              v-model="selectedLine"
+              @change="addFilter()"
+            >
+              <option
+                v-for="(line, index) in getLinesOpts"
+                :key="index"
+                :value="line.id"
+              >
                 {{ line.text }}
               </option>
             </select>
           </div>
         </div>
       </div>
-      <div class="card-header d-flex justify-content-between align-items-center">
+      <div
+        class="card-header d-flex justify-content-between align-items-center"
+      >
         <h5>Henkaten List</h5>
-        <button class="btn btn-info text-white" @click="() => {
-          addHenkatenModal = true
-          mapUsersData()
-        }
-          ">
-          Add henkaten
-        </button>
+        <div>
+          <button
+            class="btn btn-info text-white mx-2"
+            @click="
+              () => {
+                addHenkatenModal = true
+                mapUsersData()
+              }
+            "
+          >
+            Add henkaten
+          </button>
+          <button
+            :disabled="getHenkatens?.length < 1"
+            class="btn btn-info text-white w-full my-1"
+          >
+            <download-excel
+              :data="json_data"
+              :fields="json_fields"
+              worksheet="My Worksheet"
+              name="henkaten.xls"
+            >
+              Export all data
+            </download-excel>
+          </button>
+        </div>
       </div>
       <div>
         <table class="table table-striped text-center">
@@ -51,7 +90,12 @@
             <tr v-if="isLoading">
               <td colspan="10" class="p-0" style="height: 200px">
                 <div class="vl-parent p-0" style="height: 100%">
-                  <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false" :on-cancel="onCancel" />
+                  <loading
+                    v-model:active="isLoading"
+                    :can-cancel="true"
+                    :is-full-page="false"
+                    :on-cancel="onCancel"
+                  />
                 </div>
               </td>
             </tr>
@@ -66,10 +110,16 @@
               <td>{{ henkaten.henkaten_flw_safety }}</td>
               <td>{{ henkaten.henkaten_flw_quality }}</td>
               <td>
-                <button class="btn btn-danger btn-sm text-white mx-2" @click="deleteHenkaten(henkaten.henkaten_id)">
+                <button
+                  class="btn btn-danger btn-sm text-white mx-2"
+                  @click="deleteHenkaten(henkaten.henkaten_id)"
+                >
                   Delete
                 </button>
-                <button class="btn btn-info btn-sm text-white" @click="getDetailHenkaten(index)">
+                <button
+                  class="btn btn-info btn-sm text-white"
+                  @click="getDetailHenkaten(index)"
+                >
                   Edit
                 </button>
               </td>
@@ -84,13 +134,24 @@
       </div>
 
       <!-- pagination -->
-      <Pagination :totalPages="10" :perPage="10" :currentPage="currentPage" @changePage="onPageChange"
-        @changeLimit="onPageChangeLimit" />
+      <Pagination
+        :totalPages="10"
+        :perPage="10"
+        :currentPage="currentPage"
+        @changePage="onPageChange"
+        @changeLimit="onPageChangeLimit"
+      />
     </div>
 
     <!-- add modals -->
-    <CModal scrollable backdrop="static" alignment="center" :visible="addHenkatenModal" @close="addHenkatenModal = false"
-      size="lg">
+    <CModal
+      scrollable
+      backdrop="static"
+      alignment="center"
+      :visible="addHenkatenModal"
+      @close="addHenkatenModal = false"
+      size="lg"
+    >
       <CModalHeader>
         <CModalTitle>Add henkaten</CModalTitle>
       </CModalHeader>
@@ -102,40 +163,74 @@
               <div>
                 <div class="mb-2">
                   <label class="mb-1">Start date</label>
-                  <input type="date" class="form-control" v-model="henkatenData.henkaten_date" />
+                  <input
+                    type="date"
+                    class="form-control"
+                    v-model="henkatenData.henkaten_date"
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Henkaten location</label>
-                  <input type="text" class="form-control" v-model="henkatenData.henkaten_location" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="henkatenData.henkaten_location"
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Line</label>
-                  <VueMultiselect v-model="selectedLineID" :options="lineData" :custom-label="customLineFilterOptions">
+                  <VueMultiselect
+                    v-model="selectedLineID"
+                    :options="lineData"
+                    :custom-label="customLineFilterOptions"
+                  >
                   </VueMultiselect>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">PIC</label>
-                  <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
+                  <VueMultiselect
+                    v-model="selectedPIC"
+                    :options="picData"
+                    :custom-label="customPicOptions"
+                  >
                   </VueMultiselect>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Perubahan</label>
-                  <textarea type="text" class="form-control" v-model="henkatenData.henkaten_desc">
+                  <textarea
+                    type="text"
+                    class="form-control"
+                    v-model="henkatenData.henkaten_desc"
+                  >
                   </textarea>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Tujuan</label>
-                  <textarea type="text" class="form-control" v-model="henkatenData.henkaten_purpose">
+                  <textarea
+                    type="text"
+                    class="form-control"
+                    v-model="henkatenData.henkaten_purpose"
+                  >
                   </textarea>
                 </div>
-                <span style="font-weight: bold" class="mb-2">Follow (2 weeks) item</span>
+                <span style="font-weight: bold" class="mb-2"
+                  >Follow (2 weeks) item</span
+                >
                 <div class="mb-2">
                   <label class="mb-1">Safety</label>
-                  <input type="text" class="form-control" v-model="henkatenData.henkaten_flw_safety" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="henkatenData.henkaten_flw_safety"
+                  />
                 </div>
                 <div>
                   <label class="mb-1">Quality</label>
-                  <input type="text" class="form-control" v-model="henkatenData.henkaten_flw_quality" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="henkatenData.henkaten_flw_quality"
+                  />
                 </div>
               </div>
             </CAccordionBody>
@@ -146,29 +241,53 @@
               <div>
                 <div class="mb-2">
                   <label class="mb-1">Tanggal temuan</label>
-                  <input type="date" class="form-control" v-model="findingsData.finding_date" />
+                  <input
+                    type="date"
+                    class="form-control"
+                    v-model="findingsData.finding_date"
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Line</label>
-                  <VueMultiselect v-model="selectedFindingLineID" :options="lineData"
-                    :custom-label="customLineFilterOptions">
+                  <VueMultiselect
+                    v-model="selectedFindingLineID"
+                    :options="lineData"
+                    :custom-label="customLineFilterOptions"
+                  >
                   </VueMultiselect>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Pos</label>
-                  <input type="text" class="form-control" v-model="findingsData.finding_location" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="findingsData.finding_location"
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Finding description</label>
-                  <textarea cols="30" rows="5" class="form-control" v-model="findingsData.finding_desc"></textarea>
+                  <textarea
+                    cols="30"
+                    rows="5"
+                    class="form-control"
+                    v-model="findingsData.finding_desc"
+                  ></textarea>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM description</label>
-                  <textarea cols="30" rows="5" class="form-control" v-model="findingsData.cm_desc"></textarea>
+                  <textarea
+                    cols="30"
+                    rows="5"
+                    class="form-control"
+                    v-model="findingsData.cm_desc"
+                  ></textarea>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Priority</label>
-                  <select class="form-select" v-model="findingsData.cm_priority">
+                  <select
+                    class="form-select"
+                    v-model="findingsData.cm_priority"
+                  >
                     <option selected>Select priority</option>
                     <option value="P1">P1: Safety & Quality Issue</option>
                     <option value="P2">P2: Productivity Issue</option>
@@ -180,7 +299,11 @@
                   <label class="mb-1">Faktor </label>
                   <select class="form-select" v-model="findingsData.factor_id">
                     <option disabled>Select Factor</option>
-                    <option v-for="factor in factors" :key="factor.text" :value="factor.id">
+                    <option
+                      v-for="factor in factors"
+                      :key="factor.text"
+                      :value="factor.id"
+                    >
                       {{ factor.text }}
                     </option>
                   </select>
@@ -188,36 +311,67 @@
 
                 <div class="mb-2">
                   <label class="mb-1">PIC </label>
-                  <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
+                  <VueMultiselect
+                    v-model="selectedFindingPIC"
+                    :options="picData"
+                    :custom-label="customPicOptions"
+                  >
                   </VueMultiselect>
                 </div>
 
                 <div class="mb-2">
                   <label class="mb-1">CM Start Plan Date </label>
-                  <input type="date" class="form-control" v-model="findingsData.cm_str_plan_date" />
+                  <input
+                    type="date"
+                    class="form-control"
+                    v-model="findingsData.cm_str_plan_date"
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM End Plan Date </label>
-                  <input type="date" class="form-control" v-model="findingsData.cm_end_plan_date" />
+                  <input
+                    type="date"
+                    class="form-control"
+                    v-model="findingsData.cm_end_plan_date"
+                  />
                 </div>
 
                 <hr />
 
                 <div class="mb-2">
                   <label class="mb-1">CM Start actual date</label>
-                  <input type="date" class="form-control" v-model="findingsData.cm_str_act_date" disabled />
+                  <input
+                    type="date"
+                    class="form-control"
+                    v-model="findingsData.cm_str_act_date"
+                    disabled
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM End actual date</label>
-                  <input type="date" class="form-control" v-model="findingsData.cm_end_act_date" disabled />
+                  <input
+                    type="date"
+                    class="form-control"
+                    v-model="findingsData.cm_end_act_date"
+                    disabled
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Training date</label>
-                  <input type="date" class="form-control" v-model="findingsData.cm_training_date" disabled />
+                  <input
+                    type="date"
+                    class="form-control"
+                    v-model="findingsData.cm_training_date"
+                    disabled
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Judge</label>
-                  <select class="form-select" v-model="findingsData.cm_judg" disabled>
+                  <select
+                    class="form-select"
+                    v-model="findingsData.cm_judg"
+                    disabled
+                  >
                     <option selected>Select judgement</option>
                     <option value="true">Sudah</option>
                     <option value="false">Belum</option>
@@ -237,7 +391,12 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Comments</label>
-                  <input type="text" class="form-control" v-model="findingsData.cm_comments" disabled />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="findingsData.cm_comments"
+                    disabled
+                  />
                 </div>
               </div>
             </CAccordionBody>
@@ -253,8 +412,14 @@
     </CModal>
 
     <!-- edit modals -->
-    <CModal scrollable backdrop="static" alignment="center" :visible="EditHenkatenModal"
-      @close="EditHenkatenModal = false" size="lg">
+    <CModal
+      scrollable
+      backdrop="static"
+      alignment="center"
+      :visible="EditHenkatenModal"
+      @close="EditHenkatenModal = false"
+      size="lg"
+    >
       <CModalHeader>
         <CModalTitle>Edit henkaten</CModalTitle>
       </CModalHeader>
@@ -268,28 +433,47 @@
                   <label class="mb-1">Start date</label>
                   <div class="row">
                     <div class="col">
-                      <input type="text" class="form-control" disabled
-                        :value="formatTheDate(henkatenDetail.henkaten_date)" />
+                      <input
+                        type="text"
+                        class="form-control"
+                        disabled
+                        :value="formatTheDate(henkatenDetail.henkaten_date)"
+                      />
                     </div>
                     <div class="col">
-                      <input type="date" class="form-control" v-model="henkatenDetail.henkaten_date" />
+                      <input
+                        type="date"
+                        class="form-control"
+                        v-model="henkatenDetail.henkaten_date"
+                      />
                     </div>
                   </div>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Henkaten location</label>
-                  <input type="text" class="form-control" v-model="henkatenDetail.henkaten_location" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="henkatenDetail.henkaten_location"
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Line</label>
                   <div class="row">
                     <div class="col">
-                      <input type="text" disabled class="form-control"
-                        :value="getLineName(henkatenDetail.henkaten_line_id)" />
+                      <input
+                        type="text"
+                        disabled
+                        class="form-control"
+                        :value="getLineName(henkatenDetail.henkaten_line_id)"
+                      />
                     </div>
                     <div class="col">
-                      <VueMultiselect v-model="selectedLineID" :options="lineData"
-                        :custom-label="customLineFilterOptions">
+                      <VueMultiselect
+                        v-model="selectedLineID"
+                        :options="lineData"
+                        :custom-label="customLineFilterOptions"
+                      >
                       </VueMultiselect>
                     </div>
                   </div>
@@ -298,32 +482,59 @@
                   <label class="mb-1">PIC</label>
                   <div class="row">
                     <div class="col">
-                      <input type="text" disabled class="form-control" :value="getPicName(henkatenDetail.henkaten_pic)" />
+                      <input
+                        type="text"
+                        disabled
+                        class="form-control"
+                        :value="getPicName(henkatenDetail.henkaten_pic)"
+                      />
                     </div>
                     <div class="col">
-                      <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
+                      <VueMultiselect
+                        v-model="selectedPIC"
+                        :options="picData"
+                        :custom-label="customPicOptions"
+                      >
                       </VueMultiselect>
                     </div>
                   </div>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Perubahan</label>
-                  <textarea type="text" class="form-control" v-model="henkatenDetail.henkaten_desc">
+                  <textarea
+                    type="text"
+                    class="form-control"
+                    v-model="henkatenDetail.henkaten_desc"
+                  >
                   </textarea>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Tujuan</label>
-                  <textarea type="text" class="form-control" v-model="henkatenDetail.henkaten_purpose">
+                  <textarea
+                    type="text"
+                    class="form-control"
+                    v-model="henkatenDetail.henkaten_purpose"
+                  >
                   </textarea>
                 </div>
-                <span style="font-weight: bold" class="mb-2">Follow (2 weeks) item</span>
+                <span style="font-weight: bold" class="mb-2"
+                  >Follow (2 weeks) item</span
+                >
                 <div class="mb-2">
                   <label class="mb-1">Safety</label>
-                  <input type="text" class="form-control" v-model="henkatenDetail.henkaten_flw_safety" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="henkatenDetail.henkaten_flw_safety"
+                  />
                 </div>
                 <div>
                   <label class="mb-1">Quality</label>
-                  <input type="text" class="form-control" v-model="henkatenDetail.henkaten_flw_quality" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="henkatenDetail.henkaten_flw_quality"
+                  />
                 </div>
               </div>
             </CAccordionBody>
@@ -337,11 +548,21 @@
 
                   <div class="row">
                     <div class="col">
-                      <input type="text" class="form-control" disabled :value="formatTheDate(henkatenDetail.findings[0].finding_date)
-                        " />
+                      <input
+                        type="text"
+                        class="form-control"
+                        disabled
+                        :value="
+                          formatTheDate(henkatenDetail.findings[0].finding_date)
+                        "
+                      />
                     </div>
                     <div class="col">
-                      <input type="date" class="form-control" v-model="henkatenDetail.findings[0].finding_date" />
+                      <input
+                        type="date"
+                        class="form-control"
+                        v-model="henkatenDetail.findings[0].finding_date"
+                      />
                     </div>
                   </div>
                 </div>
@@ -350,33 +571,55 @@
 
                   <div class="row">
                     <div class="col">
-                      <input type="text" disabled class="form-control"
-                        :value="getLineName(henkatenDetail.findings[0].line_id)" />
+                      <input
+                        type="text"
+                        disabled
+                        class="form-control"
+                        :value="getLineName(henkatenDetail.findings[0].line_id)"
+                      />
                     </div>
                     <div class="col">
-                      <VueMultiselect v-model="selectedFindingLineID" :options="lineData"
-                        :custom-label="customLineFilterOptions">
+                      <VueMultiselect
+                        v-model="selectedFindingLineID"
+                        :options="lineData"
+                        :custom-label="customLineFilterOptions"
+                      >
                       </VueMultiselect>
                     </div>
                   </div>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Pos</label>
-                  <input type="text" class="form-control" v-model="henkatenDetail.findings[0].finding_location" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="henkatenDetail.findings[0].finding_location"
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Finding description</label>
-                  <textarea cols="30" rows="5" class="form-control"
-                    v-model="henkatenDetail.findings[0].finding_desc"></textarea>
+                  <textarea
+                    cols="30"
+                    rows="5"
+                    class="form-control"
+                    v-model="henkatenDetail.findings[0].finding_desc"
+                  ></textarea>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM description</label>
-                  <textarea cols="30" rows="5" class="form-control"
-                    v-model="henkatenDetail.findings[0].cm_desc"></textarea>
+                  <textarea
+                    cols="30"
+                    rows="5"
+                    class="form-control"
+                    v-model="henkatenDetail.findings[0].cm_desc"
+                  ></textarea>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Priority</label>
-                  <select class="form-select" v-model="henkatenDetail.findings[0].cm_priority">
+                  <select
+                    class="form-select"
+                    v-model="henkatenDetail.findings[0].cm_priority"
+                  >
                     <option selected>Select priority</option>
                     <option value="P1">P1: Safety & Quality Issue</option>
                     <option value="P2">P2: Productivity Issue</option>
@@ -386,9 +629,16 @@
 
                 <div class="mb-2">
                   <label class="mb-1">Faktor </label>
-                  <select class="form-select" v-model="henkatenDetail.findings[0].factor_id">
+                  <select
+                    class="form-select"
+                    v-model="henkatenDetail.findings[0].factor_id"
+                  >
                     <option disabled>Select Factor</option>
-                    <option v-for="factor in factors" :key="factor.text" :value="factor.id">
+                    <option
+                      v-for="factor in factors"
+                      :key="factor.text"
+                      :value="factor.id"
+                    >
                       {{ factor.text }}
                     </option>
                   </select>
@@ -399,11 +649,21 @@
 
                   <div class="row">
                     <div class="col">
-                      <input type="text" disabled class="form-control" :value="getPicName(henkatenDetail.findings[0].cm_pic_id)
-                        " />
+                      <input
+                        type="text"
+                        disabled
+                        class="form-control"
+                        :value="
+                          getPicName(henkatenDetail.findings[0].cm_pic_id)
+                        "
+                      />
                     </div>
                     <div class="col">
-                      <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
+                      <VueMultiselect
+                        v-model="selectedFindingPIC"
+                        :options="picData"
+                        :custom-label="customPicOptions"
+                      >
                       </VueMultiselect>
                     </div>
                   </div>
@@ -413,13 +673,23 @@
                   <label class="mb-1">CM Start Plan Date </label>
                   <div class="row">
                     <div class="col">
-                      <input type="text" class="form-control" disabled :value="formatTheDate(
-                        henkatenDetail.findings[0].cm_str_plan_date,
-                      )
-                        " />
+                      <input
+                        type="text"
+                        class="form-control"
+                        disabled
+                        :value="
+                          formatTheDate(
+                            henkatenDetail.findings[0].cm_str_plan_date,
+                          )
+                        "
+                      />
                     </div>
                     <div class="col">
-                      <input type="date" class="form-control" v-model="henkatenDetail.findings[0].cm_str_plan_date" />
+                      <input
+                        type="date"
+                        class="form-control"
+                        v-model="henkatenDetail.findings[0].cm_str_plan_date"
+                      />
                     </div>
                   </div>
                 </div>
@@ -427,13 +697,23 @@
                   <label class="mb-1">CM End Plan Date </label>
                   <div class="row">
                     <div class="col">
-                      <input type="text" class="form-control" disabled :value="formatTheDate(
-                        henkatenDetail.findings[0].cm_end_plan_date,
-                      )
-                        " />
+                      <input
+                        type="text"
+                        class="form-control"
+                        disabled
+                        :value="
+                          formatTheDate(
+                            henkatenDetail.findings[0].cm_end_plan_date,
+                          )
+                        "
+                      />
                     </div>
                     <div class="col">
-                      <input type="date" class="form-control" v-model="henkatenDetail.findings[0].cm_end_plan_date" />
+                      <input
+                        type="date"
+                        class="form-control"
+                        v-model="henkatenDetail.findings[0].cm_end_plan_date"
+                      />
                     </div>
                   </div>
                 </div>
@@ -444,13 +724,23 @@
                   <label class="mb-1">CM Start actual date</label>
                   <div class="row">
                     <div class="col">
-                      <input type="text" class="form-control" disabled :value="formatTheDate(
-                        henkatenDetail.findings[0].cm_str_act_date,
-                      )
-                        " />
+                      <input
+                        type="text"
+                        class="form-control"
+                        disabled
+                        :value="
+                          formatTheDate(
+                            henkatenDetail.findings[0].cm_str_act_date,
+                          )
+                        "
+                      />
                     </div>
                     <div class="col">
-                      <input type="date" class="form-control" v-model="henkatenDetail.findings[0].cm_str_act_date" />
+                      <input
+                        type="date"
+                        class="form-control"
+                        v-model="henkatenDetail.findings[0].cm_str_act_date"
+                      />
                     </div>
                   </div>
                 </div>
@@ -458,13 +748,23 @@
                   <label class="mb-1">CM End actual date</label>
                   <div class="row">
                     <div class="col">
-                      <input type="text" class="form-control" disabled :value="formatTheDate(
-                        henkatenDetail.findings[0].cm_end_act_date,
-                      )
-                        " />
+                      <input
+                        type="text"
+                        class="form-control"
+                        disabled
+                        :value="
+                          formatTheDate(
+                            henkatenDetail.findings[0].cm_end_act_date,
+                          )
+                        "
+                      />
                     </div>
                     <div class="col">
-                      <input type="date" class="form-control" v-model="henkatenDetail.findings[0].cm_end_act_date" />
+                      <input
+                        type="date"
+                        class="form-control"
+                        v-model="henkatenDetail.findings[0].cm_end_act_date"
+                      />
                     </div>
                   </div>
                 </div>
@@ -472,25 +772,37 @@
                   <label class="mb-1">CM Training date</label>
                   <div class="row">
                     <div class="col">
-                      <input type="text" class="form-control" disabled :value="formatTheDate(
-                        henkatenDetail.findings[0].cm_training_date,
-                      )
-                        " />
+                      <input
+                        type="text"
+                        class="form-control"
+                        disabled
+                        :value="
+                          formatTheDate(
+                            henkatenDetail.findings[0].cm_training_date,
+                          )
+                        "
+                      />
                     </div>
                     <div class="col">
-                      <input type="date" class="form-control" v-model="henkatenDetail.findings[0].cm_training_date" />
+                      <input
+                        type="date"
+                        class="form-control"
+                        v-model="henkatenDetail.findings[0].cm_training_date"
+                      />
                     </div>
                   </div>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Judge</label>
-                  <select class="form-select" v-model="henkatenDetail.findings[0].cm_judg">
+                  <select
+                    class="form-select"
+                    v-model="henkatenDetail.findings[0].cm_judg"
+                  >
                     <option selected>Select judgement</option>
                     <option value="true">Sudah</option>
                     <option value="false">Belum</option>
                   </select>
                 </div>
-
 
                 <div class="mb-2">
                   <label class="mb-1">CM Sign LH Red</label>
@@ -506,7 +818,11 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Comments</label>
-                  <input type="text" class="form-control" v-model="henkatenDetail.findings[0].cm_comments" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="henkatenDetail.findings[0].cm_comments"
+                  />
                 </div>
               </div>
             </CAccordionBody>
@@ -514,14 +830,20 @@
         </CAccordion>
       </CModalBody>
       <CModalFooter>
-        <CButton color="secondary" @click="() => {
-          EditHenkatenModal = false
-          selectedHenkatenID = null
-        }
-          ">
+        <CButton
+          color="secondary"
+          @click="
+            () => {
+              EditHenkatenModal = false
+              selectedHenkatenID = null
+            }
+          "
+        >
           Close
         </CButton>
-        <CButton color="primary" @click="updateHenkatenData">Update data</CButton>
+        <CButton color="primary" @click="updateHenkatenData"
+          >Update data</CButton
+        >
       </CModalFooter>
     </CModal>
   </div>
@@ -543,6 +865,17 @@ export default {
   name: 'Henkaten',
   data() {
     return {
+      json_fields: {
+        ID: 'henkaten_id',
+        Desc: 'henkaten_desc',
+        Purpose: 'henkaten_purpose',
+        FLW_Safety: 'henkaten_flw_safety',
+        FLW_Quality: 'henkaten_flw_quality',
+        Location: 'henkaten_location',
+        PIC: 'henkaten_pic_nm',
+        Line: 'line_nm',
+      },
+      json_data: null,
       isLoading: false,
       currentPage: 1,
       currentPageLimit: 5,
@@ -601,7 +934,6 @@ export default {
     ...mapGetters(['getUsersOpts', 'getHenkatens', 'getLinesOpts']),
   },
   methods: {
-
     onPageChange(page) {
       if (page == -1) {
         this.currentPage = this.currentPage - 1
@@ -687,18 +1019,18 @@ export default {
           cm_result_factor_id: this.henkatenDetail.findings[0].factor_id,
           cm_str_act_date: this.henkatenDetail.findings[0].cm_str_act_date
             ? this.formatTheDate(
-              this.henkatenDetail.findings[0].cm_str_act_date,
-            )
+                this.henkatenDetail.findings[0].cm_str_act_date,
+              )
             : null,
           cm_end_act_date: this.henkatenDetail.findings[0].cm_end_act_date
             ? this.formatTheDate(
-              this.henkatenDetail.findings[0].cm_end_act_date,
-            )
+                this.henkatenDetail.findings[0].cm_end_act_date,
+              )
             : null,
           cm_training_date: this.henkatenDetail.findings[0].cm_training_date
             ? this.formatTheDate(
-              this.henkatenDetail.findings[0].cm_training_date,
-            )
+                this.henkatenDetail.findings[0].cm_training_date,
+              )
             : null,
           cm_judg: this.henkatenDetail.findings[0].cm_judg,
           cm_sign_lh_red: null,
@@ -731,6 +1063,7 @@ export default {
         this.$store.dispatch(GET_HENKATEN, objQuery).then((res) => {
           if (res) {
             this.isLoading = false
+            this.json_data = res
           }
         })
       } catch (error) {
