@@ -55,21 +55,13 @@
           </td>
         </tr>
         <tr class="text-center">
-          <td
-            :colspan="category.category_nm == 'Quality' ? '' : ''"
-            class="bg-warning"
-            v-for="category in categories"
-            :key="category.id"
-          >
+          <td :colspan="category.category_nm == 'Quality' ? '' : ''" class="bg-warning" v-for="category in categories"
+            :key="category.id">
             {{ category.category_nm }}
           </td>
         </tr>
         <tr>
-          <td
-            :colspan="category.category_nm == 'Quality' ? '' : ''"
-            v-for="category in categories"
-            :key="category.id"
-          >
+          <td :colspan="category.category_nm == 'Quality' ? '' : ''" v-for="category in categories" :key="category.id">
             {{ category.category_desc }}
           </td>
         </tr>
@@ -93,39 +85,40 @@
               </option>
             </CFormSelect>
           </td>
-          <td
-            v-if="
-              item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
-              item.judgment_id
-            "
-          >
-            <CFormSelect :disabled="isCheck" v-model="item.factor_id">
-              <option>Select Factor</option>
-              <option
-                v-for="factor in factors"
-                :key="factor.text"
-                :value="factor.id"
-              >
-                {{ factor.text }}
-              </option>
-            </CFormSelect>
+          <td v-if="item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
+            item.judgment_id
+            ">
+            <div>
+              {{ item.findings[0]?.factor_nm }}
+            </div>
           </td>
           <td v-else></td>
-          <td
-            v-if="
-              item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
-              item.judgment_id
-            "
-          >
-            <textarea
-              :disabled="isCheck"
-              v-model="item.findings"
-              class="w-100"
-            ></textarea>
+          <td v-if="item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
+            item.judgment_id
+            ">
+            <div>
+              {{ item.findings[0]?.finding_desc }}
+            </div>
           </td>
           <td v-else></td>
         </tr>
       </table>
+      <div class="row">
+        <div class="col">
+          <h5>Foto temuan</h5>
+        </div>
+        <div class="col">
+          <h5>Comment AM/SH</h5>
+          <p>
+            <span>
+              Comment AMMGR : {{ observation.comment_ammgr }}
+            </span> <br>
+            <span>
+              Comment SH : {{ observation.comment_sh }}
+            </span>
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -143,7 +136,6 @@ export default {
         actual_check_dt: moment().toISOString().split('T')[0],
       },
       categories: [],
-
       judgments: [],
       factors: [],
       resultCheck: [],
@@ -176,6 +168,8 @@ export default {
         `operational/observation/schedule`,
         this.$route.params.id,
       )
+
+      console.log(detailObser)
       this.observation = detailObser.data.data[0]
       let resCheckData = detailObser.data.data[1]
       if (resCheckData.length > 0) this.isCheck = true
