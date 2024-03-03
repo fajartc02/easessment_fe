@@ -172,7 +172,7 @@
               (judgementID == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
                 i == 0)
               ">
-              <div v-if="item.findings[0].factor_id">
+              <div v-if="item.findings.length > 0">
                 {{ item.findings[0].factor_nm }}
               </div>
               <div v-else>
@@ -693,10 +693,9 @@ export default {
           2 /
           totalAvg) *
         100
-
       this.judgementAverage = totalAvg
-      this.judgementPrecentage = totalPrecentage.toFixed()
-
+      let is_nan = Number.isNaN(totalPrecentage)
+      this.judgementPrecentage = is_nan ? 0 : totalPrecentage.toFixed()
       if (totalPrecentage.toFixed() >= this.TRESHOLD_STW_NG) {
         this.judgementID = NG_ID
       } else {
@@ -714,7 +713,7 @@ export default {
         itm.stw_ct3 = null
         itm.stw_ct4 = null
         itm.stw_ct5 = null
-        itm.findings = null
+        itm.findings = []
 
         let result = this.resultCheck[i]
 

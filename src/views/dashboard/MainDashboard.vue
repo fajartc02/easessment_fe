@@ -333,7 +333,6 @@ export default {
     },
   },
   async mounted() {
-    await this.getLines()
     if (localStorage.getItem('line_id')) {
       this.selectedLineID = localStorage.getItem('line_id')
       this.selectedLine = localStorage.getItem('line_id')
@@ -341,15 +340,17 @@ export default {
       this.selectedLineID = -1
       this.selectedLine = -1
     }
+    await this.getLines()
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
 
     this.selectedFilterStartDate = `${year}-${month}-01`
     this.selectedFilterEndDate = `${year}-12-31`
-    await this.getGraph()
     await this.getGroup()
-    await this.getOverallGraph()
+    await this.addFilter()
+    // await this.getGraph()
+    // await this.getOverallGraph()
   },
   components: { Loading },
 }

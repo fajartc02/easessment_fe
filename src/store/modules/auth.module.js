@@ -35,6 +35,7 @@ const actions = {
             ApiService.post("login", credentials)
                 .then(({ data }) => {
                     context.commit(SET_AUTH, data.data);
+                    localStorage.setItem('line_id', data.data.data.line_id)
                     localStorage.setItem('group_id', data.data.data.group_id)
                     resolve(data.data);
                 })
@@ -69,7 +70,7 @@ const actions = {
                     console.log(data)
                     localStorage.setItem('name', data.message.fullname)
                     localStorage.setItem('noreg', data.message.noreg)
-                    localStorage.setItem('line_id', data.message.line_id)
+                        // localStorage.setItem('line_id', data.message.line_id)
                         // context.commit(SET_AUTH, data);
                 })
                 .catch(({ response }) => {
