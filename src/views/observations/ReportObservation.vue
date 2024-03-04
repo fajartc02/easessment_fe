@@ -55,13 +55,21 @@
           </td>
         </tr>
         <tr class="text-center">
-          <td :colspan="category.category_nm == 'Quality' ? '' : ''" class="bg-warning" v-for="category in categories"
-            :key="category.id">
+          <td
+            :colspan="category.category_nm == 'Quality' ? '' : ''"
+            class="bg-warning"
+            v-for="category in categories"
+            :key="category.id"
+          >
             {{ category.category_nm }}
           </td>
         </tr>
         <tr>
-          <td :colspan="category.category_nm == 'Quality' ? '' : ''" v-for="category in categories" :key="category.id">
+          <td
+            :colspan="category.category_nm == 'Quality' ? '' : ''"
+            v-for="category in categories"
+            :key="category.id"
+          >
             {{ category.category_desc }}
           </td>
         </tr>
@@ -73,6 +81,7 @@
           <th>Judgment</th>
           <th>Factor</th>
           <th>Findings</th>
+          <th>Image</th>
         </tr>
         <tr v-for="(item, i) in categories" :key="i">
           <td class="text-center">{{ i + 1 }}</td>
@@ -85,37 +94,53 @@
               </option>
             </CFormSelect>
           </td>
-          <td v-if="item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
-            item.judgment_id
-            ">
+          <td
+            v-if="
+              item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
+              item.judgment_id
+            "
+          >
             <div>
               {{ item.findings[0]?.factor_nm }}
             </div>
           </td>
           <td v-else></td>
-          <td v-if="item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
-            item.judgment_id
-            ">
+          <td
+            v-if="
+              item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
+              item.judgment_id
+            "
+          >
             <div>
               {{ item.findings[0]?.finding_desc }}
             </div>
+          </td>
+          <td
+            v-if="
+              item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
+              item.judgment_id
+            "
+          >
+            <div v-if="item.findings[0]?.finding_img">
+              <input
+                type="image"
+                :src="item.findings[0]?.finding_img"
+                alt=""
+                width="200"
+              />
+            </div>
+            <div v-else>no image</div>
           </td>
           <td v-else></td>
         </tr>
       </table>
       <div class="row">
         <div class="col">
-          <h5>Foto temuan</h5>
-        </div>
-        <div class="col">
           <h5>Comment AM/SH</h5>
           <p>
-            <span>
-              Comment AMMGR : {{ observation.comment_ammgr }}
-            </span> <br>
-            <span>
-              Comment SH : {{ observation.comment_sh }}
-            </span>
+            <span> Comment AMMGR : {{ observation.comment_ammgr }} </span>
+            <br />
+            <span> Comment SH : {{ observation.comment_sh }} </span>
           </p>
         </div>
       </div>
