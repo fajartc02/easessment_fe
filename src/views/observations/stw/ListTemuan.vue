@@ -73,6 +73,28 @@
           <div class="mx-2 d-flex align-items-center">
             <div class="d-flex align-items-center">
               <div
+                style="
+                  background-color: transparent;
+                  width: 20px;
+                  height: 20px;
+                  border: 2px dotted black;
+                "
+              ></div>
+              <span class="mx-2">Plan</span>
+            </div>
+            <div class="d-flex align-items-center">
+              <div
+                style="
+                  background-color: transparent;
+                  width: 20px;
+                  height: 20px;
+                  border: 2px solid black;
+                "
+              ></div>
+              <span class="mx-2">Actual</span>
+            </div>
+            <div class="d-flex align-items-center">
+              <div
                 style="background-color: #fee2e2; width: 20px; height: 20px"
               ></div>
               <span class="mx-2">Delay</span>
@@ -267,12 +289,56 @@
                     (n >= finding.w_str_plan_date) &
                     (n <= finding.w_end_plan_date)
                   "
-                  style="
+                  :style="` 
                     width: 100%;
-                    height: 20px;
-                    border-radius: 4px;
-                    background-color: coral;
+                    height: 25px;
+                    border-radius: 4px;  
+                    border: 2px dotted #64748b 
+                    ${
+                      finding.status_check == 'PROGRESS'
+                        ? 'background-color: #fff'
+                        : ''
+                    }; 
+                    ${
+                      finding.status_check == 'DELAY'
+                        ? 'background-color: #fee2e2'
+                        : ''
+                    }; 
+                    ${
+                      finding.status_check == 'DONE'
+                        ? 'background-color: #bbf7d0'
+                        : ''
+                    }; 
+                    `"
+                ></div>
+
+                <div
+                  class="my-2"
+                  v-if="
+                    (n >= finding.w_str_act_date) &
+                    (n <= finding.w_end_act_date)
                   "
+                  :style="`  
+                    width: 100%;
+                    height: 25px;
+                    border-radius: 4px;
+                    border: 2px solid #64748b
+                    ${
+                      finding.status_check == 'PROGRESS'
+                        ? 'background-color: #fff'
+                        : ''
+                    }; 
+                    ${
+                      finding.status_check == 'DELAY'
+                        ? 'background-color: #fee2e2'
+                        : ''
+                    }; 
+                    ${
+                      finding.status_check == 'DONE'
+                        ? 'background-color: #bbf7d0'
+                        : ''
+                    }; 
+                    `"
                 ></div>
               </td>
               <td>
@@ -761,7 +827,7 @@
           </div>
           <!-- to edit sign -->
           <div
-            v-if="showSignLhRed"
+            v-if="showSignLhRed && findingDetail?.cm_sign_lh_red"
             id="sign-wrapper"
             style="width: 100%; height: 100px; border: 1px solid #eaeaea"
           >
@@ -859,7 +925,7 @@
           </div>
           <!-- to edit sign -->
           <div
-            v-if="showSignLhWhite"
+            v-if="showSignLhWhite && findingDetail?.cm_sign_lh_white"
             id="sign-wrapper"
             style="width: 100%; height: 100px; border: 1px solid #eaeaea"
           >
@@ -957,7 +1023,7 @@
           </div>
           <!-- to edit sign -->
           <div
-            v-if="showSignSH"
+            v-if="showSignSH && findingDetail?.cm_sign_sh"
             id="sign-wrapper"
             style="width: 100%; height: 100px; border: 1px solid #eaeaea"
           >
@@ -1409,7 +1475,7 @@ export default {
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
 
     this.selectedMonth = `${year}-${month}`
-    this.selectedFilterStartDate = `${year}-${month}-01`
+    this.selectedFilterStartDate = `${year}-01-01`
     this.selectedFilterEndDate = `${year}-12-31`
     this.selectedLine = localStorage.getItem('line_id')
     await this.getUsers()

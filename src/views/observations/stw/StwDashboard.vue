@@ -6,12 +6,25 @@
         <div class="row">
           <div class="col">
             <label>Select month</label>
-            <input type="month" class="form-control" v-model="selectedMonth" @change="addFilter()" />
+            <input
+              type="month"
+              class="form-control"
+              v-model="selectedMonth"
+              @change="addFilter()"
+            />
           </div>
           <div class="col">
             <label>Line</label>
-            <select class="form-select" v-model="selectedLine" @change="addFilter()">
-              <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
+            <select
+              class="form-select"
+              v-model="selectedLine"
+              @change="addFilter()"
+            >
+              <option
+                v-for="(line, index) in getLinesOpts"
+                :key="index"
+                :value="line.id"
+              >
                 {{ line.text }}
               </option>
             </select>
@@ -20,7 +33,9 @@
       </div>
       <!-- end filter -->
 
-      <div class="card-header d-flex justify-content-between align-items-center">
+      <div
+        class="card-header d-flex justify-content-between align-items-center"
+      >
         <h6>Schedule Observation</h6>
         <div class="d-flex align-items-center">
           <div class="d-flex" style="margin-right: 20px">
@@ -38,12 +53,17 @@
             </div>
             <div>
               Pengecekan 2 TL:
-              <CButton color="dark" variant="outline" disabled style="
+              <CButton
+                color="dark"
+                variant="outline"
+                disabled
+                style="
                   margin-left: 5px;
                   width: 35px;
                   height: 35px;
                   transform: rotate(45deg);
-                ">
+                "
+              >
                 <CIcon icon="cil-circlea" class="text-dark" size="sm" />
               </CButton>
             </div>
@@ -83,20 +103,38 @@
             <tr v-if="isLoading">
               <td colspan="40" class="p-0" style="height: 200px">
                 <div class="vl-parent p-0" style="height: 100%">
-                  <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false" :on-cancel="onCancel" />
+                  <loading
+                    v-model:active="isLoading"
+                    :can-cancel="true"
+                    :is-full-page="false"
+                    :on-cancel="onCancel"
+                  />
                 </div>
               </td>
             </tr>
-            <tr v-else v-for="(observation, i) in observationSchedule" :key="observation.pos_id">
+            <tr
+              v-else
+              v-for="(observation, i) in observationSchedule"
+              :key="observation.pos_id"
+            >
               <td id="fixCol-1">{{ i + 1 }}</td>
               <td id="fixCol-2">{{ observation.line_snm }}</td>
               <td id="fixCol-3">{{ observation.pos_nm }}</td>
               <td id="fixCol-4">{{ observation.checkers[0] }}</td>
               <td id="fixCol-5">{{ observation.group_nm }}</td>
-              <td v-for="item in containerDate" :key="item.idx" style="min-width: 63px">
-                <template v-for="child in observation.children" :key="child.observation_id">
+              <td
+                v-for="item in containerDate"
+                :key="item.idx"
+                style="min-width: 63px"
+              >
+                <template
+                  v-for="child in observation.children"
+                  :key="child.observation_id"
+                >
                   <template v-if="child.idxdate === String(item.idx)">
-                    <CButton v-c-tooltip="`
+                    <CButton
+                      v-c-tooltip="
+                        `
                       <div class='card'>
                         <div class='card-header text-dark'>Detail data</div>
                         <div class='card-body text-dark'>
@@ -105,12 +143,26 @@
                         </div>
                       </div>
                       `
-                      " v-if="child && child.is_wajik == false" class="mt-1" :color="`${child.job_type_nm == 'Type 1' ||
-    child.job_type_nm == 'Type 2'
-    ? 'dark rounded-circle'
-    : 'dark rounded'
-    }`" html="true" variant="outline" style="position: relative" @click="() => detailSchedule(child)">
-                      <button disabled v-if="observation.comment_sh !== null" style="
+                      "
+                      v-if="child && child.is_wajik == false"
+                      class="mt-1"
+                      :color="`${
+                        child.job_type_nm == 'Type 1' ||
+                        child.job_type_nm == 'Type 2'
+                          ? 'dark rounded-circle'
+                          : 'dark rounded'
+                      }`"
+                      html="true"
+                      variant="outline"
+                      :style="`position: relative; ${
+                        child.is_finding ? 'background-color: #fef2f2' : ''
+                      }`"
+                      @click="() => detailSchedule(child)"
+                    >
+                      <button
+                        v-if="observation.comment_sh !== null"
+                        disabled
+                        style="
                           position: absolute;
                           margin-left: 20px;
                           background-color: #e0f2fe;
@@ -118,16 +170,37 @@
                           border: 1px solid #7dd3fc;
                           color: #0369a1;
                           border-radius: 6px;
-                        ">
+                        "
+                      >
                         1
                       </button>
-                      <CIcon v-if="child.actual_check_dt" icon="cil-check-circle" class="text-success" size="md" />
-                      <CIcon v-else-if="+currentDate <= +child.idxdate" icon="cil-circle" class="text-dark" size="md" />
-                      <CIcon v-else-if="child.is_finding" icon="cil-bell" class="text-warning" size="md" />
-
-                      <CIcon v-else icon="cil-circle" class="text-danger" size="md" />
+                      <span v-if="child.is_finding">
+                        <CIcon icon="cil-bell" class="text-warning" size="md" />
+                      </span>
+                      <span v-else>
+                        <CIcon
+                          v-if="child.actual_check_dt"
+                          icon="cil-check-circle"
+                          class="text-success"
+                          size="md"
+                        />
+                        <CIcon
+                          v-else-if="+currentDate <= +child.idxdate"
+                          icon="cil-circle"
+                          class="text-dark"
+                          size="md"
+                        />
+                        <CIcon
+                          v-else
+                          icon="cil-circle"
+                          class="text-danger"
+                          size="md"
+                        />
+                      </span>
                     </CButton>
-                    <CButton v-c-tooltip="`
+                    <CButton
+                      v-c-tooltip="
+                        `
                       <div class='card'>
                         <div class='card-header text-dark'>Detail data</div>
                         <div class='card-body text-dark'>
@@ -136,9 +209,19 @@
                         </div>
                       </div>
                       `
-                      " v-if="child && child.is_wajik == true" class="mt-3" :color="`dark rounded`" html="true"
-                      variant="outline" style="transform: rotate(45deg)" @click="() => detailSchedule(child)">
-                      <button disabled v-if="observation.comment_sh !== null" style="
+                      "
+                      v-if="child && child.is_wajik == true"
+                      class="mt-3"
+                      :color="`dark rounded`"
+                      html="true"
+                      variant="outline"
+                      style="transform: rotate(45deg)"
+                      @click="() => detailSchedule(child)"
+                    >
+                      <button
+                        disabled
+                        v-if="observation.comment_sh !== null"
+                        style="
                           position: absolute;
                           margin-left: 20px;
                           background-color: #e0f2fe;
@@ -147,15 +230,32 @@
                           color: #0369a1;
                           border-radius: 6px;
                           transform: rotate(-45deg);
-                        ">
+                        "
+                      >
                         1
                       </button>
-                      <CIcon v-if="child.actual_check_dt" icon="cil-check-circle" class="text-success" size="md"
-                        style="transform: rotate(-45deg)" />
-                      <CIcon v-else-if="+currentDate <= +child.idxdate" icon="cil-circle" class="text-dark" size="md"
-                        style="transform: rotate(-45deg)" />
+                      <CIcon
+                        v-if="child.actual_check_dt"
+                        icon="cil-check-circle"
+                        class="text-success"
+                        size="md"
+                        style="transform: rotate(-45deg)"
+                      />
+                      <CIcon
+                        v-else-if="+currentDate <= +child.idxdate"
+                        icon="cil-circle"
+                        class="text-dark"
+                        size="md"
+                        style="transform: rotate(-45deg)"
+                      />
 
-                      <CIcon v-else icon="cil-circle" class="text-danger" size="md" style="transform: rotate(-45deg)" />
+                      <CIcon
+                        v-else
+                        icon="cil-circle"
+                        class="text-danger"
+                        size="md"
+                        style="transform: rotate(-45deg)"
+                      />
                     </CButton>
                   </template>
                 </template>
@@ -194,21 +294,37 @@
             <tr v-if="isRedShiftLoading">
               <td colspan="40" class="p-0" style="height: 200px">
                 <div class="vl-parent p-0" style="height: 100%">
-                  <loading v-model:active="isRedShiftLoading" :can-cancel="true" :is-full-page="false"
-                    :on-cancel="onCancel" />
+                  <loading
+                    v-model:active="isRedShiftLoading"
+                    :can-cancel="true"
+                    :is-full-page="false"
+                    :on-cancel="onCancel"
+                  />
                 </div>
               </td>
             </tr>
-            <tr v-for="(observationRedShift, i) in observationScheduleRedShift" :key="observationRedShift.pos_id">
+            <tr
+              v-for="(observationRedShift, i) in observationScheduleRedShift"
+              :key="observationRedShift.pos_id"
+            >
               <td id="fixCol-1">{{ i + 1 }}</td>
               <td id="fixCol-2">{{ observationRedShift.line_snm }}</td>
               <td id="fixCol-3">{{ observationRedShift.pos_nm }}</td>
               <td id="fixCol-4">{{ observationRedShift.checkers[0] }}</td>
               <td id="fixCol-5">{{ observationRedShift.group_nm }}</td>
-              <td v-for="item in containerDate" :key="item.idx" style="min-width: 63px">
-                <template v-for="child in observationRedShift.children" :key="child.observation_id">
+              <td
+                v-for="item in containerDate"
+                :key="item.idx"
+                style="min-width: 63px"
+              >
+                <template
+                  v-for="child in observationRedShift.children"
+                  :key="child.observation_id"
+                >
                   <template v-if="child.idxdate === String(item.idx)">
-                    <CButton v-c-tooltip="`
+                    <CButton
+                      v-c-tooltip="
+                        `
                       <div class='card'>
                         <div class='card-header text-dark'>Detail data</div>
                         <div class='card-body text-dark'>
@@ -217,12 +333,24 @@
                         </div>
                       </div>
                       `
-                      " v-if="child && child.is_wajik == false" class="mt-1" :color="`${child.job_type_nm == 'Type 1' ||
-    child.job_type_nm == 'Type 2'
-    ? 'dark rounded-circle'
-    : 'dark rounded'
-    }`" html="true" variant="outline" style="position: relative" @click="() => detailSchedule(child)">
-                      <button disabled v-if="observationRedShift.comment_sh !== null" style="
+                      "
+                      v-if="child && child.is_wajik == false"
+                      class="mt-1"
+                      :color="`${
+                        child.job_type_nm == 'Type 1' ||
+                        child.job_type_nm == 'Type 2'
+                          ? 'dark rounded-circle'
+                          : 'dark rounded'
+                      }`"
+                      html="true"
+                      variant="outline"
+                      style="position: relative"
+                      @click="() => detailSchedule(child)"
+                    >
+                      <button
+                        disabled
+                        v-if="observationRedShift.comment_sh !== null"
+                        style="
                           position: absolute;
                           margin-left: 20px;
                           background-color: #e0f2fe;
@@ -230,16 +358,39 @@
                           border: 1px solid #7dd3fc;
                           color: #0369a1;
                           border-radius: 6px;
-                        ">
+                        "
+                      >
                         1
                       </button>
-                      <CIcon v-if="child.actual_check_dt" icon="cil-check-circle" class="text-success" size="md" />
-                      <CIcon v-else-if="+currentDate <= +child.idxdate" icon="cil-circle" class="text-dark" size="md" />
-                      <CIcon v-else-if="child.is_finding" icon="cil-bell" class="text-warning" size="md" />
+                      <CIcon
+                        v-if="child.actual_check_dt"
+                        icon="cil-check-circle"
+                        class="text-success"
+                        size="md"
+                      />
+                      <CIcon
+                        v-else-if="+currentDate <= +child.idxdate"
+                        icon="cil-circle"
+                        class="text-dark"
+                        size="md"
+                      />
+                      <CIcon
+                        v-else-if="child.is_finding"
+                        icon="cil-bell"
+                        class="text-warning"
+                        size="md"
+                      />
 
-                      <CIcon v-else icon="cil-circle" class="text-danger" size="md" />
+                      <CIcon
+                        v-else
+                        icon="cil-circle"
+                        class="text-danger"
+                        size="md"
+                      />
                     </CButton>
-                    <CButton v-c-tooltip="`
+                    <CButton
+                      v-c-tooltip="
+                        `
                       <div class='card'>
                         <div class='card-header text-dark'>Detail data</div>
                         <div class='card-body text-dark'>
@@ -248,9 +399,19 @@
                         </div>
                       </div>
                       `
-                      " v-if="child && child.is_wajik == true" class="mt-3" :color="`dark rounded`" html="true"
-                      variant="outline" style="transform: rotate(45deg)" @click="() => detailSchedule(child)">
-                      <button disabled v-if="observationRedShift.comment_sh !== null" style="
+                      "
+                      v-if="child && child.is_wajik == true"
+                      class="mt-3"
+                      :color="`dark rounded`"
+                      html="true"
+                      variant="outline"
+                      style="transform: rotate(45deg)"
+                      @click="() => detailSchedule(child)"
+                    >
+                      <button
+                        disabled
+                        v-if="observationRedShift.comment_sh !== null"
+                        style="
                           position: absolute;
                           margin-left: 20px;
                           background-color: #e0f2fe;
@@ -259,15 +420,32 @@
                           color: #0369a1;
                           border-radius: 6px;
                           transform: rotate(-45deg);
-                        ">
+                        "
+                      >
                         1
                       </button>
-                      <CIcon v-if="child.actual_check_dt" icon="cil-check-circle" class="text-success" size="md"
-                        style="transform: rotate(-45deg)" />
-                      <CIcon v-else-if="+currentDate <= +child.idxdate" icon="cil-circle" class="text-dark" size="md"
-                        style="transform: rotate(-45deg)" />
+                      <CIcon
+                        v-if="child.actual_check_dt"
+                        icon="cil-check-circle"
+                        class="text-success"
+                        size="md"
+                        style="transform: rotate(-45deg)"
+                      />
+                      <CIcon
+                        v-else-if="+currentDate <= +child.idxdate"
+                        icon="cil-circle"
+                        class="text-dark"
+                        size="md"
+                        style="transform: rotate(-45deg)"
+                      />
 
-                      <CIcon v-else icon="cil-circle" class="text-danger" size="md" style="transform: rotate(-45deg)" />
+                      <CIcon
+                        v-else
+                        icon="cil-circle"
+                        class="text-danger"
+                        size="md"
+                        style="transform: rotate(-45deg)"
+                      />
                     </CButton>
                   </template>
                 </template>
@@ -365,8 +543,9 @@ export default {
       if (this.selectedMonth) {
         this.generateDate()
         let idx = this.idxMonth.indexOf(this.selectedMonth.split('-')[1])
-        this.yearMonth = `${this.monthStr[idx]} ${this.selectedMonth.split('-')[0]
-          }`
+        this.yearMonth = `${this.monthStr[idx]} ${
+          this.selectedMonth.split('-')[0]
+        }`
         this.getObsSchedule()
         this.getObsScheduleRedShift()
       }
@@ -478,7 +657,7 @@ export default {
   },
   components: {
     Loading,
-    Yamazumi
+    Yamazumi,
   },
 }
 </script>

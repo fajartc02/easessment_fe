@@ -1203,7 +1203,7 @@ export default {
     this.selectedMonth = `${year}-${month}`
 
     this.selectedLine = localStorage.getItem('line_id')
-    this.selectedFilterStartDate = `${year}-${month}-01`
+    this.selectedFilterStartDate = `${year}-01-01`
     this.selectedFilterEndDate = `${year}-12-31`
     await this.getLines()
     await this.getFocusThemes()

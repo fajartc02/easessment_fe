@@ -44,26 +44,76 @@
         class="card-header d-flex justify-content-between align-items-center"
       >
         <h5>Member Voice List</h5>
-        <div>
-          <button
-            class="btn btn-info text-white mx-2"
-            @click="addMemberVoiceOpenModal()"
-          >
-            Add member voice
-          </button>
-          <button
-            :disabled="getMemberVoice?.length < 1"
-            class="btn btn-info text-white w-full my-1"
-          >
-            <download-excel
-              :data="json_data"
-              :fields="json_fields"
-              worksheet="My Worksheet"
-              name="membervoice.xls"
+        <div class="d-flex">
+          <div class="mx-2 d-flex align-items-center">
+            <div class="d-flex align-items-center">
+              <div
+                style="
+                  background-color: transparent;
+                  width: 20px;
+                  height: 20px;
+                  border: 2px dotted black;
+                "
+              ></div>
+              <span class="mx-2">Plan</span>
+            </div>
+            <div class="d-flex align-items-center">
+              <div
+                style="
+                  background-color: transparent;
+                  width: 20px;
+                  height: 20px;
+                  border: 2px solid black;
+                "
+              ></div>
+              <span class="mx-2">Actual</span>
+            </div>
+            <div class="d-flex align-items-center">
+              <div
+                style="background-color: #fee2e2; width: 20px; height: 20px"
+              ></div>
+              <span class="mx-2">Delay</span>
+            </div>
+            <div class="d-flex align-items-center">
+              <div
+                style="background-color: #dcfce7; width: 20px; height: 20px"
+              ></div>
+              <span class="mx-2">Closed</span>
+            </div>
+            <div class="d-flex align-items-center">
+              <div
+                style="
+                  background-color: #fff;
+                  border: 1px solid #eaeaea;
+                  width: 20px;
+                  height: 20px;
+                "
+              ></div>
+              <span class="mx-2">On progress</span>
+            </div>
+          </div>
+
+          <div>
+            <button
+              class="btn btn-info text-white mx-2"
+              @click="addMemberVoiceOpenModal()"
             >
-              Export all data
-            </download-excel>
-          </button>
+              Add member voice
+            </button>
+            <button
+              :disabled="getMemberVoice?.length < 1"
+              class="btn btn-info text-white w-full my-1"
+            >
+              <download-excel
+                :data="json_data"
+                :fields="json_fields"
+                worksheet="My Worksheet"
+                name="membervoice.xls"
+              >
+                Export all data
+              </download-excel>
+            </button>
+          </div>
         </div>
       </div>
       <div style="width: 100%; overflow-x: scroll">
@@ -185,12 +235,27 @@
                     week >= membervoice.w_mv_plan_date &&
                     week <= membervoice.w_mv_actual_date
                   "
-                  style="
+                  :style="` 
                     width: 100%;
-                    height: 20px;
-                    border-radius: 4px;
-                    background-color: coral;
-                  "
+                    height: 25px;
+                    border-radius: 4px;  
+                    border: 2px dotted #64748b 
+                    ${
+                      membervoice.status_check == 'PROGRESS'
+                        ? 'background-color: #fff'
+                        : ''
+                    }; 
+                    ${
+                      membervoice.status_check == 'DELAY'
+                        ? 'background-color: #fee2e2'
+                        : ''
+                    }; 
+                    ${
+                      membervoice.status_check == 'DONE'
+                        ? 'background-color: #bbf7d0'
+                        : ''
+                    }; 
+                    `"
                 ></div>
               </td>
               <td>{{ membervoice.mv_pic_nm }}</td>
@@ -1687,7 +1752,7 @@ export default {
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
     this.selectedLine = localStorage.getItem('line_id')
-    this.selectedFilterStartDate = `${year}-${month}-01`
+    this.selectedFilterStartDate = `${year}-01-01`
     this.selectedFilterEndDate = `${year}-12-31`
 
     await this.getLines()
