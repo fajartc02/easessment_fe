@@ -4,9 +4,10 @@
       <CHeaderToggler class="ps-1" @click="$store.commit('toggleSidebar')">
         <CIcon icon="cil-menu" size="lg" />
       </CHeaderToggler>
-      <h4 class="my-auto" style="font-family: 'Chakra Petch', sans-serif;
-font-family: 'Rubik Burned', system-ui;">E-Observation</h4>
-        <!-- <CNavItem>
+      <!-- <h4 class="my-auto" style="font-family: 'Chakra Petch', sans-serif;
+font-family: 'Rubik Burned', system-ui;">E-Observation</h4> -->
+      <img src="@/assets/obser2.png" alt="obser" style="height: 50px;">
+      <!-- <CNavItem>
           <CNavLink href="#">
             <CIcon class="mx-2" icon="cil-bell" size="lg" />
           </CNavLink>
@@ -21,7 +22,7 @@ font-family: 'Rubik Burned', system-ui;">E-Observation</h4>
             <CIcon class="mx-2" icon="cil-envelope-open" size="lg" />
           </CNavLink>
         </CNavItem> -->
-        <AppHeaderDropdownAccnt />
+      <AppHeaderDropdownAccnt />
     </CContainer>
     <CHeaderDivider />
     <CContainer fluid>

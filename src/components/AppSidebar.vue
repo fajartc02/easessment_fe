@@ -1,20 +1,14 @@
 <template>
-  <CSidebar
-    position="fixed"
-    :unfoldable="sidebarUnfoldable"
-    :visible="sidebarVisible"
-    @visible-change="
-      (event) =>
-        $store.commit({
-          type: 'updateSidebarVisible',
-          value: event,
-        })
-    "
-  >
+  <CSidebar position="fixed" :unfoldable="sidebarUnfoldable" :visible="sidebarVisible" @visible-change="(event) =>
+    $store.commit({
+      type: 'updateSidebarVisible',
+      value: event,
+    })
+    ">
     <CSidebarBrand>
-      <h3 class="my-auto" style="font-family: 'Chakra Petch', sans-serif;
-font-family: 'Rubik Burned', system-ui;">E-Observation</h3>
-      <!-- <img src="@/assets/obser.png" alt="obser" style="width: 90%;"> -->
+      <!-- <h3 class="my-auto" style="font-family: 'Chakra Petch', sans-serif;
+font-family: 'Rubik Burned', system-ui;">E-Observation</h3> -->
+      <img src="@/assets/obser2.png" alt="obser" style="width: 100%;">
       <!-- <CIcon
         custom-class-name="sidebar-brand-full"
         :icon="logoNegative"
@@ -27,10 +21,7 @@ font-family: 'Rubik Burned', system-ui;">E-Observation</h3>
       /> -->
     </CSidebarBrand>
     <AppSidebarNav />
-    <CSidebarToggler
-      class="d-none d-lg-flex"
-      @click="$store.commit('toggleUnfoldable')"
-    />
+    <CSidebarToggler class="d-none d-lg-flex" @click="$store.commit('toggleUnfoldable')" />
   </CSidebar>
 </template>
 
