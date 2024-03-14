@@ -312,14 +312,13 @@
               >
                 <div
                   v-if="
-                    (n >= finding.w_str_plan_date) &
-                    (n <= finding.w_end_plan_date)
+                    n >= finding.w_str_plan_date && n <= finding.w_end_plan_date
                   "
                   :style="` 
                     width: 100%;
                     height: 25px;
                     border-radius: 4px;  
-                    border: 2px dotted #64748b 
+                    border: 2px dotted #64748b; 
                     ${
                       finding.status_check == 'PROGRESS'
                         ? 'background-color: #fff'
@@ -341,14 +340,13 @@
                 <div
                   class="my-2"
                   v-if="
-                    (n >= finding.w_str_act_date) &
-                    (n <= finding.w_end_act_date)
+                    n >= finding.w_str_act_date && n <= finding.w_end_act_date
                   "
                   :style="`  
                     width: 100%;
                     height: 25px;
                     border-radius: 4px;
-                    border: 2px solid #64748b
+                    border: 2px solid #64748b;
                     ${
                       finding.status_check == 'PROGRESS'
                         ? 'background-color: #fff'
@@ -1114,7 +1112,7 @@
         </div>
 
         <div class="mb-2 my-5">
-          <label class="mb-1">CM Sign SH</label>
+          <label class="mb-1">CM Sign SH/AM/MGR</label>
           <br />
           <div
             v-if="findingDetail?.cm_sign_sh"
@@ -1494,7 +1492,7 @@
         </div>
 
         <div class="mb-2 my-5">
-          <label class="mb-1">CM Sign SH</label>
+          <label class="mb-1">CM Sign SH/AM/MGR</label>
           <br />
           <div
             v-if="findingDetail?.cm_sign_sh"
