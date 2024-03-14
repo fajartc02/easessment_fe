@@ -315,7 +315,7 @@
         <CModalTitle>Add member voice</CModalTitle>
       </CModalHeader>
       <CModalBody>
-        <CAccordion :active-item-key="2">
+        <CAccordion :active-item-key="1" always-open>
           <CAccordionItem :item-key="1">
             <CAccordionHeader> Member voice input </CAccordionHeader>
             <CAccordionBody>
@@ -1393,13 +1393,13 @@ export default {
       this.findingsData.line_id = this.selectedLineID.line_id
       this.findingsData.cm_result_factor_id = this.findingsData.factor_id
       this.findingsData.cm_pic_id = this.selectedPIC.pic_id
+      this.findingsData.finding_location = this.memberVoiceData.mv_location
 
       let data = {
         ...this.memberVoiceData,
         findings: this.findingsData,
       }
 
-      console.log(data)
       this.addMemberVoice(data)
     },
     async getLines() {
