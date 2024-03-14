@@ -233,7 +233,7 @@
         <CModalTitle>Add member voice</CModalTitle>
       </CModalHeader>
       <CModalBody>
-        <CAccordion :active-item-key="1" always-open>
+        <CAccordion :active-item-key="accordionAddMVActiveKey" always-open>
           <CAccordionItem :item-key="1">
             <CAccordionHeader> Member voice input </CAccordionHeader>
             <CAccordionBody>
@@ -309,15 +309,15 @@
               <div>
                 <div class="mb-2">
                   <label class="mb-1">Tanggal temuan</label>
-                  <input type="date" class="form-control" v-model="findingsData.finding_date" />
+                  <input type="date" class="form-control" v-model="memberVoiceData.mv_date_finding" />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Pos</label>
-                  <input type="text" class="form-control" v-model="findingsData.finding_location" />
+                  <input type="text" class="form-control" v-model="memberVoiceData.mv_location" />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Line</label>
-                  <VueMultiselect v-model="selectedFindingLineID" :options="lineData" placeholder=""
+                  <VueMultiselect v-model="selectedLineID" :options="lineData" placeholder=""
                     :custom-label="customLineFilterOptions">
                   </VueMultiselect>
                 </div>
@@ -351,7 +351,7 @@
 
                 <div class="mb-2">
                   <label class="mb-1">PIC </label>
-                  <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
+                  <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
                   </VueMultiselect>
                 </div>
 
@@ -919,10 +919,18 @@ export default {
         cm_comments: null,
       },
       memberVoiceDataReadyToUpload: {},
+      accordionAddMVActiveKey: 1
     }
   },
   computed: {
     ...mapGetters(['getLinesOpts', 'getUsersOpts', 'getMemberVoice']),
+  },
+  watch: {
+    selectedPIC(newVal) {
+      if (newVal) {
+        this.accordionAddMVActiveKey = 2
+      }
+    }
   },
   methods: {
     onPageChange(page) {
@@ -1209,6 +1217,9 @@ export default {
       })
       return data[0].text
     },
+    activateFindingsAccordionItem() {
+      this.accordionAddMVActiveKey = 2
+    }
   },
   async mounted() {
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
