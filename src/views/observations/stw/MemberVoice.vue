@@ -5,69 +5,110 @@
         <div class="row">
           <div class="col">
             <label>Start date</label>
-            <input type="date" class="form-control" v-model="selectedFilterStartDate" @change="addFilter()" />
+            <input
+              type="date"
+              class="form-control"
+              v-model="selectedFilterStartDate"
+              @change="addFilter()"
+            />
           </div>
           <div class="col">
             <label>End date</label>
-            <input type="date" class="form-control" v-model="selectedFilterEndDate" @change="addFilter()" />
+            <input
+              type="date"
+              class="form-control"
+              v-model="selectedFilterEndDate"
+              @change="addFilter()"
+            />
           </div>
           <div class="col">
             <label>Line</label>
-            <select class="form-select" v-model="selectedLine" @change="addFilter()">
-              <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
+            <select
+              class="form-select"
+              v-model="selectedLine"
+              @change="addFilter()"
+            >
+              <option
+                v-for="(line, index) in getLinesOpts"
+                :key="index"
+                :value="line.id"
+              >
                 {{ line.text }}
               </option>
             </select>
           </div>
         </div>
       </div>
-      <div class="card-header d-flex justify-content-between align-items-center">
+      <div
+        class="card-header d-flex justify-content-between align-items-center"
+      >
         <h5>Member Voice List</h5>
         <div class="d-flex">
           <div class="mx-2 d-flex align-items-center">
             <div class="d-flex align-items-center">
-              <div style="
+              <div
+                style="
                   background-color: transparent;
                   width: 20px;
                   height: 20px;
                   border: 2px dotted black;
-                "></div>
+                "
+              ></div>
               <span class="mx-2">Plan</span>
             </div>
             <div class="d-flex align-items-center">
-              <div style="
+              <div
+                style="
                   background-color: transparent;
                   width: 20px;
                   height: 20px;
                   border: 2px solid black;
-                "></div>
+                "
+              ></div>
               <span class="mx-2">Actual</span>
             </div>
             <div class="d-flex align-items-center">
-              <div style="background-color: #fee2e2; width: 20px; height: 20px"></div>
+              <div
+                style="background-color: #fee2e2; width: 20px; height: 20px"
+              ></div>
               <span class="mx-2">Delay</span>
             </div>
             <div class="d-flex align-items-center">
-              <div style="background-color: #dcfce7; width: 20px; height: 20px"></div>
+              <div
+                style="background-color: #dcfce7; width: 20px; height: 20px"
+              ></div>
               <span class="mx-2">Closed</span>
             </div>
             <div class="d-flex align-items-center">
-              <div style="
+              <div
+                style="
                   background-color: #fff;
                   border: 1px solid #eaeaea;
                   width: 20px;
                   height: 20px;
-                "></div>
+                "
+              ></div>
               <span class="mx-2">On progress</span>
             </div>
           </div>
 
           <div>
-            <button class="btn btn-info text-white mx-2" @click="addMemberVoiceOpenModal()">
+            <button
+              class="btn btn-info text-white mx-2"
+              @click="addMemberVoiceOpenModal()"
+            >
               Add member voice
             </button>
-            <button :disabled="getMemberVoice?.length < 1" class="btn btn-info text-white w-full my-1">
-              <download-excel :data="json_data" :fields="json_fields" worksheet="My Worksheet" name="membervoice.xls">
+            <button
+              :disabled="getMemberVoice?.length < 1"
+              class="btn btn-info text-white w-full my-1"
+            >
+              <download-excel
+                :data="json_data"
+                :fields="json_fields"
+                worksheet="My Worksheet"
+                name="membervoice.xls"
+              >
                 Export all data
               </download-excel>
             </button>
@@ -160,11 +201,20 @@
             <tr v-if="isLoading">
               <td colspan="40" class="p-0" style="height: 200px">
                 <div class="vl-parent p-0" style="height: 100%">
-                  <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false" :on-cancel="onCancel" />
+                  <loading
+                    v-model:active="isLoading"
+                    :can-cancel="true"
+                    :is-full-page="false"
+                    :on-cancel="onCancel"
+                  />
                 </div>
               </td>
             </tr>
-            <tr v-else v-for="(membervoice, index) in getMemberVoice" :key="membervoice.mv_id">
+            <tr
+              v-else
+              v-for="(membervoice, index) in getMemberVoice"
+              :key="membervoice.mv_id"
+            >
               <td>{{ index + 1 }}</td>
               <td>{{ membervoice.line_nm }}</td>
               <td>{{ formatTheDate(membervoice.mv_date_finding) }}</td>
@@ -174,41 +224,62 @@
               <td>{{ membervoice.mv_category }}</td>
               <td>{{ membervoice.mv_countermeasure }}</td>
               <td>{{ membervoice.mv_evaluation }}</td>
-              <td v-for="week in totalWeek" :key="week" style="min-width: 30px !important; padding: 5px">
-                <div v-if="week >= membervoice.w_mv_plan_date &&
-              week <= membervoice.w_mv_actual_date
-              " :style="` 
+              <td
+                v-for="week in totalWeek"
+                :key="week"
+                style="min-width: 30px !important; padding: 5px"
+              >
+                <div
+                  v-if="
+                    week >= membervoice.w_mv_plan_date &&
+                    week <= membervoice.w_mv_actual_date
+                  "
+                  :style="` 
                     width: 100%;
                     height: 25px;
                     border-radius: 4px;  
                     border: 2px dotted #64748b 
-                    ${membervoice.status_check == 'PROGRESS'
-                ? 'background-color: #fff'
-                : ''
-              }; 
-                    ${membervoice.status_check == 'DELAY'
-                ? 'background-color: #fee2e2'
-                : ''
-              }; 
-                    ${membervoice.status_check == 'DONE'
-                ? 'background-color: #bbf7d0'
-                : ''
-              }; 
-                    `"></div>
+                    ${
+                      membervoice.status_check == 'PROGRESS'
+                        ? 'background-color: #fff'
+                        : ''
+                    }; 
+                    ${
+                      membervoice.status_check == 'DELAY'
+                        ? 'background-color: #fee2e2'
+                        : ''
+                    }; 
+                    ${
+                      membervoice.status_check == 'DONE'
+                        ? 'background-color: #bbf7d0'
+                        : ''
+                    }; 
+                    `"
+                ></div>
               </td>
               <td>{{ membervoice.mv_pic_nm }}</td>
               <td>
-                <button class="btn btn-info btn-sm text-white w-full my-1" @click="() => {
-              detailMVModal = true
-              getDetailMVData(index)
-            }
-              ">
+                <button
+                  class="btn btn-info btn-sm text-white w-full my-1"
+                  @click="
+                    () => {
+                      detailMVModal = true
+                      getDetailMVData(index)
+                    }
+                  "
+                >
                   Detail
                 </button>
-                <button class="btn btn-danger btn-sm text-white" @click="deleteMV(membervoice.mv_id)">
+                <button
+                  class="btn btn-danger btn-sm text-white"
+                  @click="deleteMV(membervoice.mv_id)"
+                >
                   Delete
                 </button>
-                <button class="btn btn-danger btn-sm text-white" @click="getDetailMVToEdit(index)">
+                <button
+                  class="btn btn-danger btn-sm text-white"
+                  @click="getDetailMVToEdit(index)"
+                >
                   Edit
                 </button>
               </td>
@@ -222,48 +293,82 @@
         </table>
       </div>
       <!-- pagination -->
-      <Pagination :totalPages="10" :perPage="10" :currentPage="currentPage" @changePage="onPageChange"
-        @changeLimit="onPageChangeLimit" />
+      <Pagination
+        :totalPages="10"
+        :perPage="10"
+        :currentPage="currentPage"
+        @changePage="onPageChange"
+        @changeLimit="onPageChangeLimit"
+      />
     </div>
 
     <!-- Add MV modal -->
-    <CModal scrollable size="lg" backdrop="static" alignment="center" :visible="addMemberVoiceModal"
-      @close="addMemberVoiceModal = false">
+    <CModal
+      scrollable
+      size="lg"
+      backdrop="static"
+      alignment="center"
+      :visible="addMemberVoiceModal"
+      @close="addMemberVoiceModal = false"
+    >
       <CModalHeader>
         <CModalTitle>Add member voice</CModalTitle>
       </CModalHeader>
       <CModalBody>
-        <CAccordion :active-item-key="accordionAddMVActiveKey" always-open>
+        <CAccordion :active-item-key="2">
           <CAccordionItem :item-key="1">
             <CAccordionHeader> Member voice input </CAccordionHeader>
             <CAccordionBody>
               <div>
                 <div class="mb-2">
                   <label class="mb-1">Tanggal temuan</label>
-                  <input type="date" v-model="memberVoiceData.mv_date_finding" class="form-control" />
+                  <input
+                    type="date"
+                    v-model="memberVoiceData.mv_date_finding"
+                    class="form-control"
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Line</label>
-                  <VueMultiselect v-model="selectedLineID" :options="lineData" placeholder=""
-                    :custom-label="customLineFilterOptions">
+                  <VueMultiselect
+                    v-model="selectedLineID"
+                    :options="lineData"
+                    placeholder=""
+                    :custom-label="customLineFilterOptions"
+                  >
                   </VueMultiselect>
                 </div>
 
                 <div class="mb-2">
                   <label class="mb-1">Lokasi</label>
-                  <input type="text" class="form-control" v-model="memberVoiceData.mv_location" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="memberVoiceData.mv_location"
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Problem</label>
-                  <input type="text" class="form-control" v-model="memberVoiceData.mv_problem" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="memberVoiceData.mv_problem"
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">No Proses</label>
-                  <input type="text" class="form-control" v-model="memberVoiceData.mv_process_no" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="memberVoiceData.mv_process_no"
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Category </label>
-                  <select class="form-select" v-model="memberVoiceData.mv_category">
+                  <select
+                    class="form-select"
+                    v-model="memberVoiceData.mv_category"
+                  >
                     <option disabled>Select category</option>
                     <option value="safety">Safety</option>
                     <option value="kesulitan kerja">Kesulitan kerja</option>
@@ -271,34 +376,63 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Faktor </label>
-                  <select class="form-select" v-model="memberVoiceData.mv_factor_id">
+                  <select
+                    class="form-select"
+                    v-model="memberVoiceData.mv_factor_id"
+                  >
                     <option disabled>Select Factor</option>
-                    <option v-for="factor in factors" :key="factor.text" :value="factor.id">
+                    <option
+                      v-for="factor in factors"
+                      :key="factor.text"
+                      :value="factor.id"
+                    >
                       {{ factor.text }}
                     </option>
                   </select>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Penanggulangan</label>
-                  <input type="text" class="form-control" v-model="memberVoiceData.mv_countermeasure" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="memberVoiceData.mv_countermeasure"
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Plan tgl penganggulangan</label>
-                  <input type="date" class="form-control" v-model="memberVoiceData.mv_plan_date" />
+                  <input
+                    type="date"
+                    class="form-control"
+                    v-model="memberVoiceData.mv_plan_date"
+                  />
                 </div>
 
                 <div class="mb-2">
                   <label class="mb-1">PIC</label>
-                  <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
+                  <VueMultiselect
+                    v-model="selectedPIC"
+                    :options="picData"
+                    :custom-label="customPicOptions"
+                  >
                   </VueMultiselect>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Aktual tgl penganggulangan</label>
-                  <input type="date" class="form-control" v-model="memberVoiceData.mv_actual_date" disabled />
+                  <input
+                    type="date"
+                    class="form-control"
+                    v-model="memberVoiceData.mv_actual_date"
+                    disabled
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Eval hasil</label>
-                  <input type="text" class="form-control" v-model="memberVoiceData.mv_evaluation" disabled />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="memberVoiceData.mv_evaluation"
+                    disabled
+                  />
                 </div>
               </div>
             </CAccordionBody>
@@ -309,29 +443,54 @@
               <div>
                 <div class="mb-2">
                   <label class="mb-1">Tanggal temuan</label>
-                  <input type="date" class="form-control" v-model="memberVoiceData.mv_date_finding" />
+                  <input
+                    type="date"
+                    class="form-control"
+                    v-model="memberVoiceData.mv_date_finding"
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Pos</label>
-                  <input type="text" class="form-control" v-model="memberVoiceData.mv_location" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="memberVoiceData.mv_location"
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Line</label>
-                  <VueMultiselect v-model="selectedLineID" :options="lineData" placeholder=""
-                    :custom-label="customLineFilterOptions">
+                  <VueMultiselect
+                    v-model="selectedLineID"
+                    :options="lineData"
+                    placeholder=""
+                    :custom-label="customLineFilterOptions"
+                  >
                   </VueMultiselect>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Finding description</label>
-                  <textarea cols="30" rows="5" class="form-control" v-model="findingsData.finding_desc"></textarea>
+                  <textarea
+                    cols="30"
+                    rows="5"
+                    class="form-control"
+                    v-model="findingsData.finding_desc"
+                  ></textarea>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM description</label>
-                  <textarea cols="30" rows="5" class="form-control" v-model="findingsData.cm_desc"></textarea>
+                  <textarea
+                    cols="30"
+                    rows="5"
+                    class="form-control"
+                    v-model="findingsData.cm_desc"
+                  ></textarea>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Priority</label>
-                  <select class="form-select" v-model="findingsData.cm_priority">
+                  <select
+                    class="form-select"
+                    v-model="findingsData.cm_priority"
+                  >
                     <option selected>Select priority</option>
                     <option value="P1">P1: Safety & Quality Issue</option>
                     <option value="P2">P2: Productivity Issue</option>
@@ -343,7 +502,11 @@
                   <label class="mb-1">Faktor </label>
                   <select class="form-select" v-model="findingsData.factor_id">
                     <option disabled>Select Factor</option>
-                    <option v-for="factor in factors" :key="factor.text" :value="factor.id">
+                    <option
+                      v-for="factor in factors"
+                      :key="factor.text"
+                      :value="factor.id"
+                    >
                       {{ factor.text }}
                     </option>
                   </select>
@@ -351,36 +514,67 @@
 
                 <div class="mb-2">
                   <label class="mb-1">PIC </label>
-                  <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
+                  <VueMultiselect
+                    v-model="selectedPIC"
+                    :options="picData"
+                    :custom-label="customPicOptions"
+                  >
                   </VueMultiselect>
                 </div>
 
                 <div class="mb-2">
                   <label class="mb-1">CM Start Plan Date </label>
-                  <input type="date" class="form-control" v-model="findingsData.cm_str_plan_date" />
+                  <input
+                    type="date"
+                    class="form-control"
+                    v-model="findingsData.cm_str_plan_date"
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM End Plan Date </label>
-                  <input type="date" class="form-control" v-model="findingsData.cm_end_plan_date" />
+                  <input
+                    type="date"
+                    class="form-control"
+                    v-model="findingsData.cm_end_plan_date"
+                  />
                 </div>
 
                 <hr />
 
                 <div class="mb-2">
                   <label class="mb-1">CM Start actual date</label>
-                  <input type="date" class="form-control" v-model="findingsData.cm_str_act_date" disabled />
+                  <input
+                    type="date"
+                    class="form-control"
+                    v-model="findingsData.cm_str_act_date"
+                    disabled
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM End actual date</label>
-                  <input type="date" class="form-control" v-model="findingsData.cm_end_act_date" disabled />
+                  <input
+                    type="date"
+                    class="form-control"
+                    v-model="findingsData.cm_end_act_date"
+                    disabled
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Training date</label>
-                  <input type="date" class="form-control" v-model="findingsData.cm_training_date" disabled />
+                  <input
+                    type="date"
+                    class="form-control"
+                    v-model="findingsData.cm_training_date"
+                    disabled
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Judge</label>
-                  <select class="form-select" v-model="findingsData.cm_judg" disabled>
+                  <select
+                    class="form-select"
+                    v-model="findingsData.cm_judg"
+                    disabled
+                  >
                     <option selected>Select judgement</option>
                     <option value="true">Sudah</option>
                     <option value="false">Belum</option>
@@ -400,7 +594,12 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Comments</label>
-                  <input type="text" class="form-control" v-model="findingsData.cm_comments" disabled />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="findingsData.cm_comments"
+                    disabled
+                  />
                 </div>
               </div>
             </CAccordionBody>
@@ -412,13 +611,21 @@
         <CButton color="secondary" @click="addMemberVoiceModal = false">
           Close
         </CButton>
-        <CButton color="primary" @click="addMemberVoiceData">Save changes</CButton>
+        <CButton color="primary" @click="addMemberVoiceData"
+          >Save changes</CButton
+        >
       </CModalFooter>
     </CModal>
 
     <!-- Edit MV Modal -->
-    <CModal scrollable size="lg" backdrop="static" alignment="center" :visible="editMVModal"
-      @close="editMVModal = false">
+    <CModal
+      scrollable
+      size="lg"
+      backdrop="static"
+      alignment="center"
+      :visible="editMVModal"
+      @close="editMVModal = false"
+    >
       <CModalHeader>
         <CModalTitle>Edit member voice</CModalTitle>
       </CModalHeader>
@@ -432,11 +639,21 @@
                   <label class="mb-1">Tanggal temuan</label>
                   <div class="row">
                     <div class="col">
-                      <input type="text" class="form-control" disabled :value="formatTheDate(memberVoiceDetail.mv_date_finding)
-              " />
+                      <input
+                        type="text"
+                        class="form-control"
+                        disabled
+                        :value="
+                          formatTheDate(memberVoiceDetail.mv_date_finding)
+                        "
+                      />
                     </div>
                     <div class="col">
-                      <input type="date" v-model="memberVoiceDetail.mv_date_finding" class="form-control" />
+                      <input
+                        type="date"
+                        v-model="memberVoiceDetail.mv_date_finding"
+                        class="form-control"
+                      />
                     </div>
                   </div>
                 </div>
@@ -445,12 +662,20 @@
 
                   <div class="row">
                     <div class="col">
-                      <input type="text" disabled class="form-control"
-                        :value="getLineName(memberVoiceDetail.line_id)" />
+                      <input
+                        type="text"
+                        disabled
+                        class="form-control"
+                        :value="getLineName(memberVoiceDetail.line_id)"
+                      />
                     </div>
                     <div class="col">
-                      <VueMultiselect v-model="selectedLineID" :options="lineData" placeholder=""
-                        :custom-label="customLineFilterOptions">
+                      <VueMultiselect
+                        v-model="selectedLineID"
+                        :options="lineData"
+                        placeholder=""
+                        :custom-label="customLineFilterOptions"
+                      >
                       </VueMultiselect>
                     </div>
                   </div>
@@ -458,19 +683,34 @@
 
                 <div class="mb-2">
                   <label class="mb-1">Lokasi</label>
-                  <input type="text" class="form-control" v-model="memberVoiceDetail.mv_location" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="memberVoiceDetail.mv_location"
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Problem</label>
-                  <input type="text" class="form-control" v-model="memberVoiceDetail.mv_problem" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="memberVoiceDetail.mv_problem"
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">No Proses</label>
-                  <input type="text" class="form-control" v-model="memberVoiceDetail.mv_process_no" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="memberVoiceDetail.mv_process_no"
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Category </label>
-                  <select class="form-select" v-model="memberVoiceDetail.mv_category">
+                  <select
+                    class="form-select"
+                    v-model="memberVoiceDetail.mv_category"
+                  >
                     <option disabled>Select category</option>
                     <option value="safety">Safety</option>
                     <option value="kesulitan kerja">Kesulitan kerja</option>
@@ -478,27 +718,46 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Faktor </label>
-                  <select class="form-select" v-model="memberVoiceDetail.mv_factor_id">
+                  <select
+                    class="form-select"
+                    v-model="memberVoiceDetail.mv_factor_id"
+                  >
                     <option disabled>Select Factor</option>
-                    <option v-for="factor in factors" :key="factor.text" :value="factor.id">
+                    <option
+                      v-for="factor in factors"
+                      :key="factor.text"
+                      :value="factor.id"
+                    >
                       {{ factor.text }}
                     </option>
                   </select>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Penanggulangan</label>
-                  <input type="text" class="form-control" v-model="memberVoiceDetail.mv_countermeasure" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="memberVoiceDetail.mv_countermeasure"
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Plan tgl penganggulangan</label>
 
                   <div class="row">
                     <div class="col">
-                      <input type="text" class="form-control" disabled
-                        :value="formatTheDate(memberVoiceDetail.mv_plan_date)" />
+                      <input
+                        type="text"
+                        class="form-control"
+                        disabled
+                        :value="formatTheDate(memberVoiceDetail.mv_plan_date)"
+                      />
                     </div>
                     <div class="col">
-                      <input type="date" v-model="memberVoiceDetail.mv_plan_date" class="form-control" />
+                      <input
+                        type="date"
+                        v-model="memberVoiceDetail.mv_plan_date"
+                        class="form-control"
+                      />
                     </div>
                   </div>
                 </div>
@@ -508,11 +767,19 @@
 
                   <div class="row">
                     <div class="col">
-                      <input type="text" class="form-control" disabled
-                        :value="formatTheDate(memberVoiceDetail.mv_actual_date)" />
+                      <input
+                        type="text"
+                        class="form-control"
+                        disabled
+                        :value="formatTheDate(memberVoiceDetail.mv_actual_date)"
+                      />
                     </div>
                     <div class="col">
-                      <input type="date" v-model="memberVoiceDetail.mv_actual_date" class="form-control" />
+                      <input
+                        type="date"
+                        v-model="memberVoiceDetail.mv_actual_date"
+                        class="form-control"
+                      />
                     </div>
                   </div>
                 </div>
@@ -522,11 +789,19 @@
 
                   <div class="row">
                     <div class="col">
-                      <input type="text" disabled class="form-control"
-                        :value="getPicName(memberVoiceDetail.mv_pic_id)" />
+                      <input
+                        type="text"
+                        disabled
+                        class="form-control"
+                        :value="getPicName(memberVoiceDetail.mv_pic_id)"
+                      />
                     </div>
                     <div class="col">
-                      <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
+                      <VueMultiselect
+                        v-model="selectedPIC"
+                        :options="picData"
+                        :custom-label="customPicOptions"
+                      >
                       </VueMultiselect>
                     </div>
                   </div>
@@ -534,7 +809,11 @@
 
                 <div class="mb-2">
                   <label class="mb-1">Eval hasil</label>
-                  <input type="text" class="form-control" v-model="memberVoiceDetail.mv_evaluation" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="memberVoiceDetail.mv_evaluation"
+                  />
                 </div>
               </div>
             </CAccordionBody>
@@ -549,13 +828,23 @@
 
                   <div class="row">
                     <div class="col">
-                      <input type="text" class="form-control" disabled :value="formatTheDate(
-              memberVoiceDetail.findings[0].finding_date,
-            )
-              " />
+                      <input
+                        type="text"
+                        class="form-control"
+                        disabled
+                        :value="
+                          formatTheDate(
+                            memberVoiceDetail.findings[0].finding_date,
+                          )
+                        "
+                      />
                     </div>
                     <div class="col">
-                      <input type="date" class="form-control" v-model="memberVoiceDetail.findings[0].finding_date" />
+                      <input
+                        type="date"
+                        class="form-control"
+                        v-model="memberVoiceDetail.findings[0].finding_date"
+                      />
                     </div>
                   </div>
                 </div>
@@ -564,33 +853,57 @@
 
                   <div class="row">
                     <div class="col">
-                      <input type="text" disabled class="form-control" :value="getLineName(memberVoiceDetail.findings[0].line_id)
-              " />
+                      <input
+                        type="text"
+                        disabled
+                        class="form-control"
+                        :value="
+                          getLineName(memberVoiceDetail.findings[0].line_id)
+                        "
+                      />
                     </div>
                     <div class="col">
-                      <VueMultiselect v-model="selectedFindingLineID" :options="lineData"
-                        :custom-label="customLineFilterOptions">
+                      <VueMultiselect
+                        v-model="selectedFindingLineID"
+                        :options="lineData"
+                        :custom-label="customLineFilterOptions"
+                      >
                       </VueMultiselect>
                     </div>
                   </div>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Pos</label>
-                  <input type="text" class="form-control" v-model="memberVoiceDetail.findings[0].finding_location" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="memberVoiceDetail.findings[0].finding_location"
+                  />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Finding description</label>
-                  <textarea cols="30" rows="5" class="form-control"
-                    v-model="memberVoiceDetail.findings[0].finding_desc"></textarea>
+                  <textarea
+                    cols="30"
+                    rows="5"
+                    class="form-control"
+                    v-model="memberVoiceDetail.findings[0].finding_desc"
+                  ></textarea>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM description</label>
-                  <textarea cols="30" rows="5" class="form-control"
-                    v-model="memberVoiceDetail.findings[0].cm_desc"></textarea>
+                  <textarea
+                    cols="30"
+                    rows="5"
+                    class="form-control"
+                    v-model="memberVoiceDetail.findings[0].cm_desc"
+                  ></textarea>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Priority</label>
-                  <select class="form-select" v-model="memberVoiceDetail.findings[0].cm_priority">
+                  <select
+                    class="form-select"
+                    v-model="memberVoiceDetail.findings[0].cm_priority"
+                  >
                     <option selected>Select priority</option>
                     <option value="P1">P1: Safety & Quality Issue</option>
                     <option value="P2">P2: Productivity Issue</option>
@@ -600,9 +913,16 @@
 
                 <div class="mb-2">
                   <label class="mb-1">Faktor </label>
-                  <select class="form-select" v-model="memberVoiceDetail.findings[0].factor_id">
+                  <select
+                    class="form-select"
+                    v-model="memberVoiceDetail.findings[0].factor_id"
+                  >
                     <option disabled>Select Factor</option>
-                    <option v-for="factor in factors" :key="factor.text" :value="factor.id">
+                    <option
+                      v-for="factor in factors"
+                      :key="factor.text"
+                      :value="factor.id"
+                    >
                       {{ factor.text }}
                     </option>
                   </select>
@@ -613,11 +933,21 @@
 
                   <div class="row">
                     <div class="col">
-                      <input type="text" disabled class="form-control" :value="getPicName(memberVoiceDetail.findings[0].cm_pic_id)
-              " />
+                      <input
+                        type="text"
+                        disabled
+                        class="form-control"
+                        :value="
+                          getPicName(memberVoiceDetail.findings[0].cm_pic_id)
+                        "
+                      />
                     </div>
                     <div class="col">
-                      <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
+                      <VueMultiselect
+                        v-model="selectedFindingPIC"
+                        :options="picData"
+                        :custom-label="customPicOptions"
+                      >
                       </VueMultiselect>
                     </div>
                   </div>
@@ -627,14 +957,23 @@
                   <label class="mb-1">CM Start Plan Date </label>
                   <div class="row">
                     <div class="col">
-                      <input type="text" class="form-control" disabled :value="formatTheDate(
-              memberVoiceDetail.findings[0].cm_str_plan_date,
-            )
-              " />
+                      <input
+                        type="text"
+                        class="form-control"
+                        disabled
+                        :value="
+                          formatTheDate(
+                            memberVoiceDetail.findings[0].cm_str_plan_date,
+                          )
+                        "
+                      />
                     </div>
                     <div class="col">
-                      <input type="date" class="form-control"
-                        v-model="memberVoiceDetail.findings[0].cm_str_plan_date" />
+                      <input
+                        type="date"
+                        class="form-control"
+                        v-model="memberVoiceDetail.findings[0].cm_str_plan_date"
+                      />
                     </div>
                   </div>
                 </div>
@@ -642,14 +981,23 @@
                   <label class="mb-1">CM End Plan Date </label>
                   <div class="row">
                     <div class="col">
-                      <input type="text" class="form-control" disabled :value="formatTheDate(
-              memberVoiceDetail.findings[0].cm_end_plan_date,
-            )
-              " />
+                      <input
+                        type="text"
+                        class="form-control"
+                        disabled
+                        :value="
+                          formatTheDate(
+                            memberVoiceDetail.findings[0].cm_end_plan_date,
+                          )
+                        "
+                      />
                     </div>
                     <div class="col">
-                      <input type="date" class="form-control"
-                        v-model="memberVoiceDetail.findings[0].cm_end_plan_date" />
+                      <input
+                        type="date"
+                        class="form-control"
+                        v-model="memberVoiceDetail.findings[0].cm_end_plan_date"
+                      />
                     </div>
                   </div>
                 </div>
@@ -660,13 +1008,23 @@
                   <label class="mb-1">CM Start actual date</label>
                   <div class="row">
                     <div class="col">
-                      <input type="text" class="form-control" disabled :value="formatTheDate(
-              memberVoiceDetail.findings[0].cm_str_act_date,
-            )
-              " />
+                      <input
+                        type="text"
+                        class="form-control"
+                        disabled
+                        :value="
+                          formatTheDate(
+                            memberVoiceDetail.findings[0].cm_str_act_date,
+                          )
+                        "
+                      />
                     </div>
                     <div class="col">
-                      <input type="date" class="form-control" v-model="memberVoiceDetail.findings[0].cm_str_act_date" />
+                      <input
+                        type="date"
+                        class="form-control"
+                        v-model="memberVoiceDetail.findings[0].cm_str_act_date"
+                      />
                     </div>
                   </div>
                 </div>
@@ -674,13 +1032,23 @@
                   <label class="mb-1">CM End actual date</label>
                   <div class="row">
                     <div class="col">
-                      <input type="text" class="form-control" disabled :value="formatTheDate(
-              memberVoiceDetail.findings[0].cm_end_act_date,
-            )
-              " />
+                      <input
+                        type="text"
+                        class="form-control"
+                        disabled
+                        :value="
+                          formatTheDate(
+                            memberVoiceDetail.findings[0].cm_end_act_date,
+                          )
+                        "
+                      />
                     </div>
                     <div class="col">
-                      <input type="date" class="form-control" v-model="memberVoiceDetail.findings[0].cm_end_act_date" />
+                      <input
+                        type="date"
+                        class="form-control"
+                        v-model="memberVoiceDetail.findings[0].cm_end_act_date"
+                      />
                     </div>
                   </div>
                 </div>
@@ -688,20 +1056,32 @@
                   <label class="mb-1">CM Training date</label>
                   <div class="row">
                     <div class="col">
-                      <input type="text" class="form-control" disabled :value="formatTheDate(
-              memberVoiceDetail.findings[0].cm_training_date,
-            )
-              " />
+                      <input
+                        type="text"
+                        class="form-control"
+                        disabled
+                        :value="
+                          formatTheDate(
+                            memberVoiceDetail.findings[0].cm_training_date,
+                          )
+                        "
+                      />
                     </div>
                     <div class="col">
-                      <input type="date" class="form-control"
-                        v-model="memberVoiceDetail.findings[0].cm_training_date" />
+                      <input
+                        type="date"
+                        class="form-control"
+                        v-model="memberVoiceDetail.findings[0].cm_training_date"
+                      />
                     </div>
                   </div>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Judge</label>
-                  <select class="form-select" v-model="memberVoiceDetail.findings[0].cm_judg">
+                  <select
+                    class="form-select"
+                    v-model="memberVoiceDetail.findings[0].cm_judg"
+                  >
                     <option selected>Select judgement</option>
                     <option value="true">Sudah</option>
                     <option value="false">Belum</option>
@@ -721,7 +1101,11 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Comments</label>
-                  <input type="text" class="form-control" v-model="memberVoiceDetail.findings[0].cm_comments" />
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="memberVoiceDetail.findings[0].cm_comments"
+                  />
                 </div>
               </div>
             </CAccordionBody>
@@ -733,13 +1117,21 @@
         <CButton color="secondary" @click="editMVModal = false">
           Close
         </CButton>
-        <CButton color="primary" @click="updateMemberVoiceData">Update data</CButton>
+        <CButton color="primary" @click="updateMemberVoiceData"
+          >Update data</CButton
+        >
       </CModalFooter>
     </CModal>
 
     <!-- MV Detail modal -->
-    <CModal backdrop="static" alignment="center" :visible="detailMVModal" @close="detailMVModal = false" size="xl"
-      scrollable>
+    <CModal
+      backdrop="static"
+      alignment="center"
+      :visible="detailMVModal"
+      @close="detailMVModal = false"
+      size="xl"
+      scrollable
+    >
       <CModalHeader>
         <CModalTitle>Detail temuan</CModalTitle>
       </CModalHeader>
@@ -750,35 +1142,72 @@
             <CAccordionBody>
               <div class="mb-2">
                 <label class="mb-1">Tanggal temuan</label>
-                <input type="date" class="form-control" :value="formatTheDate(detailMVData?.mv_date_finding)" />
+                <input
+                  type="date"
+                  class="form-control"
+                  :value="formatTheDate(detailMVData?.mv_date_finding)"
+                />
               </div>
               <div class="mb-2">
                 <label class="mb-1">Line</label>
-                <input type="text" class="form-control" :value="detailMVData?.line_nm" />
+                <input
+                  type="text"
+                  class="form-control"
+                  :value="detailMVData?.line_nm"
+                />
               </div>
               <div class="mb-2">
                 <label class="mb-1">MV Problem</label>
-                <input type="text" class="form-control" :value="detailMVData?.mv_problem" />
+                <input
+                  type="text"
+                  class="form-control"
+                  :value="detailMVData?.mv_problem"
+                />
               </div>
               <div class="mb-2">
                 <label class="mb-1">MV Location</label>
-                <textarea cols="30" rows="5" class="form-control" :value="detailMVData?.mv_location"></textarea>
+                <textarea
+                  cols="30"
+                  rows="5"
+                  class="form-control"
+                  :value="detailMVData?.mv_location"
+                ></textarea>
               </div>
               <div class="mb-2">
                 <label class="mb-1">MV No process</label>
-                <textarea cols="30" rows="5" class="form-control" :value="detailMVData?.mv_process_no"></textarea>
+                <textarea
+                  cols="30"
+                  rows="5"
+                  class="form-control"
+                  :value="detailMVData?.mv_process_no"
+                ></textarea>
               </div>
               <div class="mb-2">
                 <label class="mb-1">MV Category</label>
-                <textarea cols="30" rows="5" class="form-control" :value="detailMVData?.mv_category"></textarea>
+                <textarea
+                  cols="30"
+                  rows="5"
+                  class="form-control"
+                  :value="detailMVData?.mv_category"
+                ></textarea>
               </div>
               <div class="mb-2">
                 <label class="mb-1">Penanggulangan</label>
-                <textarea cols="30" rows="5" class="form-control" :value="detailMVData?.mv_countermeasure"></textarea>
+                <textarea
+                  cols="30"
+                  rows="5"
+                  class="form-control"
+                  :value="detailMVData?.mv_countermeasure"
+                ></textarea>
               </div>
               <div class="mb-2">
                 <label class="mb-1">PIC</label>
-                <textarea cols="30" rows="5" class="form-control" :value="detailMVData?.mv_pic_nm"></textarea>
+                <textarea
+                  cols="30"
+                  rows="5"
+                  class="form-control"
+                  :value="detailMVData?.mv_pic_nm"
+                ></textarea>
               </div>
             </CAccordionBody>
           </CAccordionItem>
@@ -799,7 +1228,10 @@
                   <th>Status</th>
                 </thead>
                 <tbody>
-                  <tr v-for="(finding, findingIndex) in detailMVData?.findings" :key="findingIndex">
+                  <tr
+                    v-for="(finding, findingIndex) in detailMVData?.findings"
+                    :key="findingIndex"
+                  >
                     <td>{{ findingIndex + 1 }}</td>
                     <td>{{ finding?.line_nm }}</td>
                     <td>{{ finding?.finding_location }}</td>
@@ -819,7 +1251,11 @@
         <div></div>
       </CModalBody>
       <CModalFooter>
-        <CButton color="secondary" class="text-white" @click="detailMVModal = false">
+        <CButton
+          color="secondary"
+          class="text-white"
+          @click="detailMVModal = false"
+        >
           Close
         </CButton>
       </CModalFooter>
@@ -919,7 +1355,7 @@ export default {
         cm_comments: null,
       },
       memberVoiceDataReadyToUpload: {},
-      accordionAddMVActiveKey: 1
+      accordionAddMVActiveKey: 1,
     }
   },
   computed: {
@@ -930,7 +1366,7 @@ export default {
       if (newVal) {
         this.accordionAddMVActiveKey = 2
       }
-    }
+    },
   },
   methods: {
     onPageChange(page) {
@@ -954,14 +1390,15 @@ export default {
     addMemberVoiceData() {
       this.memberVoiceData.line_id = this.selectedLineID.line_id
       this.memberVoiceData.mv_pic_id = this.selectedPIC.pic_id
-      this.findingsData.line_id = this.selectedFindingLineID.line_id
+      this.findingsData.line_id = this.selectedLineID.line_id
       this.findingsData.cm_result_factor_id = this.findingsData.factor_id
-      this.findingsData.cm_pic_id = this.selectedFindingPIC.pic_id
+      this.findingsData.cm_pic_id = this.selectedPIC.pic_id
 
       let data = {
         ...this.memberVoiceData,
         findings: this.findingsData,
       }
+
       console.log(data)
       this.addMemberVoice(data)
     },
@@ -1097,18 +1534,18 @@ export default {
           cm_result_factor_id: this.memberVoiceDetail.findings[0].factor_id,
           cm_str_act_date: this.memberVoiceDetail.findings[0].cm_str_act_date
             ? this.formatTheDate(
-              this.memberVoiceDetail.findings[0].cm_str_act_date,
-            )
+                this.memberVoiceDetail.findings[0].cm_str_act_date,
+              )
             : null,
           cm_end_act_date: this.memberVoiceDetail.findings[0].cm_end_act_date
             ? this.formatTheDate(
-              this.memberVoiceDetail.findings[0].cm_end_act_date,
-            )
+                this.memberVoiceDetail.findings[0].cm_end_act_date,
+              )
             : null,
           cm_training_date: this.memberVoiceDetail.findings[0].cm_training_date
             ? this.formatTheDate(
-              this.memberVoiceDetail.findings[0].cm_training_date,
-            )
+                this.memberVoiceDetail.findings[0].cm_training_date,
+              )
             : null,
           cm_judg: this.memberVoiceDetail.findings[0].cm_judg,
           cm_sign_lh_red: null,
@@ -1219,7 +1656,7 @@ export default {
     },
     activateFindingsAccordionItem() {
       this.accordionAddMVActiveKey = 2
-    }
+    },
   },
   async mounted() {
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]

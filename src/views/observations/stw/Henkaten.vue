@@ -244,13 +244,13 @@
                   <input
                     type="date"
                     class="form-control"
-                    v-model="findingsData.finding_date"
+                    v-model="henkatenData.henkaten_date"
                   />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Line</label>
                   <VueMultiselect
-                    v-model="selectedFindingLineID"
+                    v-model="selectedLineID"
                     :options="lineData"
                     :custom-label="customLineFilterOptions"
                   >
@@ -261,7 +261,7 @@
                   <input
                     type="text"
                     class="form-control"
-                    v-model="findingsData.finding_location"
+                    v-model="henkatenData.henkaten_location"
                   />
                 </div>
                 <div class="mb-2">
@@ -270,7 +270,7 @@
                     cols="30"
                     rows="5"
                     class="form-control"
-                    v-model="findingsData.finding_desc"
+                    v-model="henkatenData.henkaten_desc"
                   ></textarea>
                 </div>
                 <div class="mb-2">
@@ -312,7 +312,7 @@
                 <div class="mb-2">
                   <label class="mb-1">PIC </label>
                   <VueMultiselect
-                    v-model="selectedFindingPIC"
+                    v-model="selectedPIC"
                     :options="picData"
                     :custom-label="customPicOptions"
                   >
@@ -973,8 +973,11 @@ export default {
       this.henkatenData.henkaten_pic = this.selectedPIC.pic_id
 
       this.findingsData.cm_result_factor_id = this.findingsData.factor_id
-      this.findingsData.line_id = this.selectedFindingLineID.line_id
-      this.findingsData.cm_pic_id = this.selectedFindingPIC.pic_id
+      this.findingsData.finding_date = this.henkatenData.henkaten_date
+      this.findingsData.finding_location = this.henkatenData.henkaten_location
+      this.findingsData.finding_desc = this.henkatenData.henkaten_desc
+      this.findingsData.line_id = this.selectedLineID.line_id
+      this.findingsData.cm_pic_id = this.selectedPIC.pic_id
 
       let data = {
         ...this.henkatenData,

@@ -233,7 +233,7 @@
                 <div class="mb-2">
                   <label class="mb-1">Line</label>
                   <VueMultiselect
-                    v-model="selectedFindingLineID"
+                    v-model="selectedLineID"
                     :options="lineData"
                     :custom-label="customLineFilterOptions"
                   >
@@ -992,7 +992,7 @@ export default {
       this.focusThemeData.ft_line_id = this.selectedLineID.line_id
 
       this.findingsData.cm_result_factor_id = this.findingsData.factor_id
-      this.findingsData.line_id = this.selectedFindingLineID.line_id
+      this.findingsData.line_id = this.selectedLineID.line_id
       this.findingsData.cm_pic_id = this.selectedFindingPIC.pic_id
 
       let data = {
