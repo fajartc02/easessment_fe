@@ -20,7 +20,9 @@ import membervoice from './modules/membervoice.module';
 import focustheme from './modules/focustheme.module';
 import henkaten from './modules/henkaten.module';
 
-import graph from './modules/graph.module';
+import graph from './modules/graph.module'; 
+
+import schedule4s from './modules/schedule4s.module';
 
 export default createStore({
     state: {
@@ -59,6 +61,8 @@ export default createStore({
         membervoice,
         focustheme,
         henkaten,
-        graph
+        graph,
+        
+        schedule4s
     },
 })

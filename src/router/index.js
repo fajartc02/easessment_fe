@@ -148,6 +148,13 @@ const routes = [{
                 component: () =>
                 import ('@/views/observations/stw/FocusTheme.vue'),
             }, 
+            // 4S
+            {
+                path: '/4s/main-schedule',
+                name: '4S Main Schedule',
+                component: () =>
+                import ('@/views/observations/4s/MainSchedule.vue'),
+            }, 
             {
                 path: '/stw/member-voice',
                 name: 'MemberVoice',

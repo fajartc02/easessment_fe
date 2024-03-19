@@ -85,6 +85,16 @@ export default [{
         icon: 'cil-clipboard',
     }, 
     {
+        component: 'CNavTitle', // --- HISTORY MENU
+        name: '4S',
+    },
+    {
+        component: 'CNavItem',
+        name: 'Main Schedule',
+        to: '/4s/main-schedule',
+        icon: 'cil-speedometer'
+    },
+    {
         component: 'CNavTitle', // --- MASTER MENU
         name: 'Master Data',
     },
