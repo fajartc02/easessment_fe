@@ -5,23 +5,45 @@
         <div class="row">
           <div class="col">
             <label>Start date</label>
-            <input type="date" class="form-control" v-model="selectedFilterStartDate" @change="addFilter()" />
+            <input
+              type="date"
+              class="form-control"
+              v-model="selectedFilterStartDate"
+              @change="addFilter()"
+            />
           </div>
           <div class="col">
             <label>End date</label>
-            <input type="date" class="form-control" v-model="selectedFilterEndDate" @change="addFilter()" />
+            <input
+              type="date"
+              class="form-control"
+              v-model="selectedFilterEndDate"
+              @change="addFilter()"
+            />
           </div>
           <div class="col">
             <label>Line</label>
-            <select class="form-select" v-model="selectedLine" @change="addFilter()">
-              <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
+            <select
+              class="form-select"
+              v-model="selectedLine"
+              @change="addFilter()"
+            >
+              <option
+                v-for="(line, index) in getLinesOpts"
+                :key="index"
+                :value="line.id"
+              >
                 {{ line.text }}
               </option>
             </select>
           </div>
           <div class="col">
             <label>Category</label>
-            <select class="form-select" @change="addFilter()" v-model="selectedFilterSourceCat">
+            <select
+              class="form-select"
+              @change="addFilter()"
+              v-model="selectedFilterSourceCat"
+            >
               <option value="-1" selected>All</option>
               <option value="H">Henkaten</option>
               <option value="MV">Member Voice</option>
@@ -31,7 +53,11 @@
           </div>
           <div class="col">
             <label>Status</label>
-            <select class="form-select" @change="addFilter()" v-model="selectedFilterJudge">
+            <select
+              class="form-select"
+              @change="addFilter()"
+              v-model="selectedFilterJudge"
+            >
               <option value="-1" selected>All</option>
               <option value="true">Sudah</option>
               <option value="false">Belum</option>
@@ -39,43 +65,55 @@
           </div>
         </div>
       </div>
-      <div class="card-header d-flex justify-content-between align-items-center">
+      <div
+        class="card-header d-flex justify-content-between align-items-center"
+      >
         <h5>List temuan</h5>
         <div class="d-flex align-items-center">
           <div class="mx-2 d-flex align-items-center">
             <div class="d-flex align-items-center">
-              <div style="
+              <div
+                style="
                   background-color: transparent;
                   width: 20px;
                   height: 20px;
                   border: 2px dotted black;
-                "></div>
+                "
+              ></div>
               <span class="mx-2">Plan</span>
             </div>
             <div class="d-flex align-items-center">
-              <div style="
+              <div
+                style="
                   background-color: transparent;
                   width: 20px;
                   height: 20px;
                   border: 2px solid black;
-                "></div>
+                "
+              ></div>
               <span class="mx-2">Actual</span>
             </div>
             <div class="d-flex align-items-center">
-              <div style="background-color: #fee2e2; width: 20px; height: 20px"></div>
+              <div
+                style="background-color: #fee2e2; width: 20px; height: 20px"
+              ></div>
               <span class="mx-2">Delay</span>
             </div>
             <div class="d-flex align-items-center">
-              <div style="background-color: #dcfce7; width: 20px; height: 20px"></div>
+              <div
+                style="background-color: #dcfce7; width: 20px; height: 20px"
+              ></div>
               <span class="mx-2">Closed</span>
             </div>
             <div class="d-flex align-items-center">
-              <div style="
+              <div
+                style="
                   background-color: #fff;
                   border: 1px solid #eaeaea;
                   width: 20px;
                   height: 20px;
-                "></div>
+                "
+              ></div>
               <span class="mx-2">On progress</span>
             </div>
           </div>
@@ -85,20 +123,30 @@
             <span class="badge bg-info"> P3: Cost Issue </span>
           </div>
           <div>
-            <button :disabled="getFindings?.length < 1" class="btn btn-info btn-sm text-white w-full my-1">
-              <download-excel :data="json_data" :fields="json_fields" worksheet="My Worksheet" name="findinglist.xls">
+            <button
+              :disabled="getFindings?.length < 1"
+              class="btn btn-info btn-sm text-white w-full my-1"
+            >
+              <download-excel
+                :data="json_data"
+                :fields="json_fields"
+                worksheet="My Worksheet"
+                name="findinglist.xls"
+              >
                 Export all data
               </download-excel>
             </button>
           </div>
         </div>
       </div>
-      <div style="
+      <div
+        style="
           width: 100%;
           display: block;
           overflow-x: auto;
           white-space: nowrap;
-        ">
+        "
+      >
         <table style="border: 1px solid black; width: 100%" class="text-center">
           <thead class="text-center">
             <tr>
@@ -199,31 +247,44 @@
             <tr v-if="isLoading">
               <td colspan="50" class="p-0" style="height: 200px">
                 <div class="vl-parent p-0" style="height: 100%">
-                  <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false" :on-cancel="onCancel" />
+                  <loading
+                    v-model:active="isLoading"
+                    :can-cancel="true"
+                    :is-full-page="false"
+                    :on-cancel="onCancel"
+                  />
                 </div>
               </td>
             </tr>
-            <tr v-else v-for="(finding, findingIndex) in getFindings" :key="finding.no" :style="`${this.todayDate > formatTheDate(finding.cm_str_plan_date) &&
-              finding.cm_judg == false
-              ? 'background-color: #fee2e2'
-              : ''
+            <tr
+              v-else
+              v-for="(finding, findingIndex) in getFindings"
+              :key="finding.no"
+              :style="`${
+                this.todayDate > formatTheDate(finding.cm_str_plan_date) &&
+                finding.cm_judg == false
+                  ? 'background-color: #fee2e2'
+                  : ''
               }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ${finding.cm_judg ==
-                true
-                ? 'background-color: #f0fdf4'
-                : ''
-              }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ${finding.cm_judg ==
-                false &&
-                this
-                  .todayDate <
-                formatTheDate(
-                  finding.cm_str_plan_date,
-                )
-                ? 'background-color: #fff'
-                : ''
-              }
-              `">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ${
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    finding.cm_judg ==
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    true
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ? 'background-color: #f0fdf4'
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      : ''
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ${
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    finding.cm_judg ==
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      false &&
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    this
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      .todayDate <
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      formatTheDate(
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        finding.cm_str_plan_date,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      )
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ? 'background-color: #fff'
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      : ''
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  }
+              `"
+            >
               <th>{{ findingIndex + 1 }}</th>
               <td class="px-2">{{ finding.line_nm }}</td>
               <td class="px-2">{{ finding.source_category }}</td>
@@ -244,68 +305,112 @@
               <td>{{ finding.factor_nm == 'Material' ? 'v' : ' ' }}</td>
               <td>{{ finding.factor_nm == 'Machine' ? 'v' : ' ' }}</td>
               <td>{{ finding.cm_pic_nm }}</td>
-              <td v-for="n in num" :key="n" style="min-width: 30px !important; padding: 5px">
-                <div v-if="n >= finding.w_str_plan_date && n <= finding.w_end_plan_date
-              " :style="`
+              <td
+                v-for="n in num"
+                :key="n"
+                style="min-width: 30px !important; padding: 5px"
+              >
+                <div
+                  v-if="
+                    n >= finding.w_str_plan_date && n <= finding.w_end_plan_date
+                  "
+                  :style="`
                     width: 100%;
                     height: 25px;
                     border-radius: 4px;
                     border: 2px dotted #64748b;
-                    ${finding.status_check == 'PROGRESS'
-                ? 'background-color: #fff'
-                : ''
-              };
-                    ${finding.status_check == 'DELAY'
-                ? 'background-color: #fee2e2'
-                : ''
-              };
-                    ${finding.status_check == 'DONE'
-                ? 'background-color: #bbf7d0'
-                : ''
-              };
-                    `"></div>
+                    ${
+                      finding.status_check == 'PROGRESS'
+                        ? 'background-color: #fff'
+                        : ''
+                    };
+                    ${
+                      finding.status_check == 'DELAY'
+                        ? 'background-color: #fee2e2'
+                        : ''
+                    };
+                    ${
+                      finding.status_check == 'DONE'
+                        ? 'background-color: #bbf7d0'
+                        : ''
+                    };
+                    `"
+                ></div>
 
-                <div class="my-2" v-if="n >= finding.w_str_act_date && n <= finding.w_end_act_date
-              " :style="`
+                <div
+                  class="my-2"
+                  v-if="
+                    n >= finding.w_str_act_date && n <= finding.w_end_act_date
+                  "
+                  :style="`
                     width: 100%;
                     height: 25px;
                     border-radius: 4px;
                     border: 2px solid #64748b;
-                    ${finding.status_check == 'PROGRESS'
-                ? 'background-color: #fff'
-                : ''
-              };
-                    ${finding.status_check == 'DELAY'
-                ? 'background-color: #fee2e2'
-                : ''
-              };
-                    ${finding.status_check == 'DONE'
-                ? 'background-color: #bbf7d0'
-                : ''
-              };
-                    `"></div>
+                    ${
+                      finding.status_check == 'PROGRESS'
+                        ? 'background-color: #fff'
+                        : ''
+                    };
+                    ${
+                      finding.status_check == 'DELAY'
+                        ? 'background-color: #fee2e2'
+                        : ''
+                    };
+                    ${
+                      finding.status_check == 'DONE'
+                        ? 'background-color: #bbf7d0'
+                        : ''
+                    };
+                    `"
+                ></div>
               </td>
               <td>
-                <input v-if="finding.cm_sign_lh_red" type="image" :src="finding.cm_sign_lh_red" alt="" width="200" />
+                <input
+                  v-if="finding.cm_sign_lh_red"
+                  type="image"
+                  :src="finding.cm_sign_lh_red"
+                  alt=""
+                  width="200"
+                />
               </td>
               <td>
-                <input v-if="finding.cm_sign_lh_white" type="image" :src="finding.cm_sign_lh_white" alt=""
-                  width="200" />
+                <input
+                  v-if="finding.cm_sign_lh_white"
+                  type="image"
+                  :src="finding.cm_sign_lh_white"
+                  alt=""
+                  width="200"
+                />
               </td>
               <td>
-                <input v-if="finding.cm_sign_sh" type="image" :src="finding.cm_sign_sh" alt="" width="200" />
+                <input
+                  v-if="finding.cm_sign_sh"
+                  type="image"
+                  :src="finding.cm_sign_sh"
+                  alt=""
+                  width="200"
+                />
               </td>
               <td>
                 <div class="d-flex m-2">
                   <div class="d-flex" style="width: 400px">
-                    <input type="text" class="form-control w-full" :value="finding.cm_comments" @input="
-              updateCMComments(
-                finding.finding_id,
-                $event.target.value,
-                findingIndex,
-              )
-              " />
-                    <button class="btn btn-info btn-sm text-white w-full mx-1" @click="saveCMComments()">
+                    <input
+                      type="text"
+                      class="form-control w-full"
+                      :value="finding.cm_comments"
+                      @input="
+                        updateCMComments(
+                          finding.finding_id,
+                          $event.target.value,
+                          findingIndex,
+                        )
+                      "
+                    />
+                    <button
+                      class="btn btn-info btn-sm text-white w-full mx-1"
+                      @click="saveCMComments()"
+                    >
                       save
                     </button>
                   </div>
@@ -313,34 +418,83 @@
               </td>
               <td class="px-1">
                 <div class="px-2 d-flex">
-                  <button @click="() => {
-              getDetailTemuan(findingIndex)
-              addSignModal = true
-            }
-              " class="btn btn-info btn-sm text-white w-full my-1">
+                  <button
+                    @click="
+                      () => {
+                        getDetailTemuan(findingIndex)
+                        addSignModal = true
+                      }
+                    "
+                    class="btn btn-info btn-sm text-white w-full my-1"
+                  >
                     Add sign
                   </button>
-                  <button class="btn btn-info btn-sm text-white w-full mx-1 my-1" style="margin-right: 10px" @click="() => {
-              getDetailTemuan(findingIndex)
-              detailTemuanModal = true
-            }
-              ">
+                  <button
+                    class="btn btn-info btn-sm text-white w-full mx-1 my-1"
+                    style="margin-right: 10px"
+                    @click="
+                      () => {
+                        getDetailTemuan(findingIndex)
+                        detailTemuanModal = true
+                      }
+                    "
+                  >
                     Detail
                   </button>
-                  <button @click="() => {
-              getDetailTemuan(findingIndex)
-              editTemuanModal = true
-            }
-              " class="btn btn-info btn-sm text-white w-full my-1">
+                  <button
+                    @click="
+                      () => {
+                        getDetailTemuan(findingIndex)
+                        editTemuanModal = true
+                      }
+                    "
+                    class="btn btn-info btn-sm text-white w-full my-1"
+                  >
                     Edit
                   </button>
-                  <button @click="deleteFinding()" class="btn btn-danger mx-1 btn-sm text-white w-full my-1">
+                  <button
+                    @click="deleteFinding()"
+                    class="btn btn-danger mx-1 btn-sm text-white w-full my-1"
+                  >
                     Delete
                   </button>
-                  <button :disabled="finding.file_pinksheet == null" @click="downloadPinkSheet(finding.file_pinksheet)"
-                    class="btn btn-info btn-sm text-white w-full my-1">
+                  <!-- <button
+                    @click="
+                      downloadPinkSheet(
+                        finding.file_pinksheet,
+                        finding.observation_id,
+                        finding.source_category,
+                      )
+                    "
+                    class="btn btn-info btn-sm text-white w-full my-1"
+                  >
                     Download
-                  </button>
+                  </button> -->
+                  <CDropdown size="sm" class="mx-1">
+                    <CDropdownToggle color="info" class="btn-sm" size="sm"
+                      >Download</CDropdownToggle
+                    >
+                    <CDropdownMenu>
+                      <CDropdownItem>
+                        <button
+                          :disabled="finding.source_category !== 'Obs'"
+                          class="btn btn-info btn-sm text-white"
+                          @click="downloadReport(finding.observation_id)"
+                        >
+                          Download Report
+                        </button>
+                      </CDropdownItem>
+                      <CDropdownItem>
+                        <button
+                          :disabled="finding.file_pinksheet == null"
+                          @click="downloadPinkSheet(finding.file_pinksheet)"
+                          class="btn btn-info btn-sm text-white"
+                        >
+                          Download Pinksheet
+                        </button>
+                      </CDropdownItem>
+                    </CDropdownMenu>
+                  </CDropdown>
                 </div>
               </td>
             </tr>
@@ -353,45 +507,91 @@
         </table>
       </div>
       <!-- pagination -->
-      <Pagination :totalPages="10" :perPage="10" :currentPage="currentPage" @changePage="onPageChange"
-        @changeLimit="onPageChangeLimit" />
+      <Pagination
+        :totalPages="10"
+        :perPage="10"
+        :currentPage="currentPage"
+        @changePage="onPageChange"
+        @changeLimit="onPageChangeLimit"
+      />
     </div>
 
     <!-- modals -->
     <!-- detail modal -->
-    <CModal backdrop="static" alignment="center" :visible="detailTemuanModal" @close="detailTemuanModal = false"
-      size="lg" scrollable>
+    <CModal
+      backdrop="static"
+      alignment="center"
+      :visible="detailTemuanModal"
+      @close="detailTemuanModal = false"
+      size="lg"
+      scrollable
+    >
       <CModalHeader>
         <CModalTitle>Detail temuan</CModalTitle>
       </CModalHeader>
       <CModalBody>
         <div class="mb-2">
           <label class="mb-1">Line</label>
-          <input type="text" class="form-control" :value="findingDetail?.line_nm" disabled />
+          <input
+            type="text"
+            class="form-control"
+            :value="findingDetail?.line_nm"
+            disabled
+          />
         </div>
         <div class="mb-2">
           <label class="mb-1">Source cat</label>
-          <input type="text" class="form-control" :value="findingDetail?.source_category" disabled />
+          <input
+            type="text"
+            class="form-control"
+            :value="findingDetail?.source_category"
+            disabled
+          />
         </div>
         <div class="mb-2">
           <label class="mb-1">Tanggal temuan</label>
-          <input type="date" class="form-control" :value="formatTheDate(findingDetail?.finding_date)" disabled />
+          <input
+            type="date"
+            class="form-control"
+            :value="formatTheDate(findingDetail?.finding_date)"
+            disabled
+          />
         </div>
         <div class="mb-2">
           <label class="mb-1">Pos</label>
-          <input type="text" class="form-control" :value="findingDetail?.finding_location" disabled />
+          <input
+            type="text"
+            class="form-control"
+            :value="findingDetail?.finding_location"
+            disabled
+          />
         </div>
         <div class="mb-2">
           <label class="mb-1">Finding description / problem</label>
-          <textarea cols="30" rows="5" class="form-control" :value="findingDetail?.finding_desc" disabled></textarea>
+          <textarea
+            cols="30"
+            rows="5"
+            class="form-control"
+            :value="findingDetail?.finding_desc"
+            disabled
+          ></textarea>
         </div>
         <div class="mb-2">
           <label class="mb-1">Rencana perbaikan</label>
-          <input type="date" class="form-control" :value="formatTheDate(findingDetail?.cm_str_plan_date)" disabled />
+          <input
+            type="date"
+            class="form-control"
+            :value="formatTheDate(findingDetail?.cm_str_plan_date)"
+            disabled
+          />
         </div>
         <div class="mb-2">
           <label class="mb-1">Priority</label>
-          <select class="form-select" :value="findingDetail?.cm_priority" disabled>
+          <select
+            class="form-select"
+            :value="findingDetail?.cm_priority"
+            disabled
+          >
             <option selected>Select priority</option>
             <option value="P1">P1: Safety and Quality Issue</option>
             <option value="P2">P2: Productivity Issue</option>
@@ -400,31 +600,62 @@
         </div>
         <div class="mb-2">
           <label class="mb-1">PIC </label>
-          <input type="text" class="form-control" :value="findingDetail?.cm_pic_nm" disabled />
+          <input
+            type="text"
+            class="form-control"
+            :value="findingDetail?.cm_pic_nm"
+            disabled
+          />
         </div>
         <div class="mb-2">
           <label class="mb-1">CM description</label>
-          <textarea cols="30" rows="5" class="form-control" :value="findingDetail?.cm_desc" disabled></textarea>
+          <textarea
+            cols="30"
+            rows="5"
+            class="form-control"
+            :value="findingDetail?.cm_desc"
+            disabled
+          ></textarea>
         </div>
 
         <div class="mb-2">
           <label class="mb-1">CM Start Plan Date </label>
-          <input type="date" class="form-control" :value="formatTheDate(findingDetail?.cm_str_plan_date)" disabled />
+          <input
+            type="date"
+            class="form-control"
+            :value="formatTheDate(findingDetail?.cm_str_plan_date)"
+            disabled
+          />
         </div>
         <div class="mb-2">
           <label class="mb-1">CM End Plan Date </label>
-          <input type="date" class="form-control" :value="formatTheDate(findingDetail?.cm_end_plan_date)" disabled />
+          <input
+            type="date"
+            class="form-control"
+            :value="formatTheDate(findingDetail?.cm_end_plan_date)"
+            disabled
+          />
         </div>
 
         <hr />
 
         <div class="mb-2">
           <label class="mb-1">CM Start actual date</label>
-          <input type="date" class="form-control" :value="formatTheDate(findingDetail?.cm_str_act_date)" disabled />
+          <input
+            type="date"
+            class="form-control"
+            :value="formatTheDate(findingDetail?.cm_str_act_date)"
+            disabled
+          />
         </div>
         <div class="mb-2">
           <label class="mb-1">CM End actual date</label>
-          <input type="date" class="form-control" :value="formatTheDate(findingDetail?.cm_end_act_date)" disabled />
+          <input
+            type="date"
+            class="form-control"
+            :value="formatTheDate(findingDetail?.cm_end_act_date)"
+            disabled
+          />
         </div>
         <div class="mb-2">
           <label class="mb-1">CM Training date</label>
@@ -455,61 +686,107 @@
         </div>
       </CModalBody>
       <CModalFooter>
-        <router-link v-if="findingDetail?.observation_id !== null"
-          :to="`/observation/${findingDetail?.observation_id}`">
+        <router-link
+          v-if="findingDetail?.observation_id !== null"
+          :to="`/observation/${findingDetail?.observation_id}`"
+        >
           <CButton color="primary" class="text-white"> More details </CButton>
         </router-link>
 
-        <CButton color="secondary" class="text-white" @click="detailTemuanModal = false">
+        <CButton
+          color="secondary"
+          class="text-white"
+          @click="detailTemuanModal = false"
+        >
           Close
         </CButton>
       </CModalFooter>
     </CModal>
 
     <!-- edit modal -->
-    <CModal backdrop="static" alignment="center" :visible="editTemuanModal" @close="editTemuanModal = false" size="lg"
-      scrollable>
+    <CModal
+      backdrop="static"
+      alignment="center"
+      :visible="editTemuanModal"
+      @close="editTemuanModal = false"
+      size="lg"
+      scrollable
+    >
       <CModalHeader>
         <CModalTitle>Edit temuan</CModalTitle>
       </CModalHeader>
       <CModalBody>
         <div class="mb-2">
           <label class="mb-1">Line</label>
-          <input type="text" class="form-control" v-model="findingDetail.line_nm" />
+          <input
+            type="text"
+            class="form-control"
+            v-model="findingDetail.line_nm"
+          />
         </div>
         <div class="mb-2">
           <label class="mb-1">Source cat</label>
-          <input type="text" class="form-control" v-model="findingDetail.source_category" />
+          <input
+            type="text"
+            class="form-control"
+            v-model="findingDetail.source_category"
+          />
         </div>
         <div class="mb-2">
           <label class="mb-1">Tanggal temuan</label>
           <div class="row">
             <div class="col">
-              <input type="text" class="form-control" disabled :value="formatTheDate(findingDetail?.finding_date)" />
+              <input
+                type="text"
+                class="form-control"
+                disabled
+                :value="formatTheDate(findingDetail?.finding_date)"
+              />
             </div>
             <div class="col">
-              <input type="date" class="form-control" v-model="findingDetail.finding_date" />
+              <input
+                type="date"
+                class="form-control"
+                v-model="findingDetail.finding_date"
+              />
             </div>
           </div>
         </div>
         <div class="mb-2">
           <label class="mb-1">Pos</label>
-          <input type="text" class="form-control" :value="findingDetail?.finding_location" />
+          <input
+            type="text"
+            class="form-control"
+            :value="findingDetail?.finding_location"
+          />
         </div>
         <div class="mb-2">
           <label class="mb-1">Finding description / problem</label>
-          <textarea cols="30" rows="5" class="form-control" v-model="findingDetail.finding_desc"></textarea>
+          <textarea
+            cols="30"
+            rows="5"
+            class="form-control"
+            v-model="findingDetail.finding_desc"
+          ></textarea>
         </div>
         <div class="mb-2">
           <label class="mb-1">Rencana perbaikan</label>
 
           <div class="row">
             <div class="col">
-              <input type="text" class="form-control" disabled
-                :value="formatTheDate(findingDetail?.cm_str_plan_date)" />
+              <input
+                type="text"
+                class="form-control"
+                disabled
+                :value="formatTheDate(findingDetail?.cm_str_plan_date)"
+              />
             </div>
             <div class="col">
-              <input type="date" class="form-control" v-model="findingDetail.cm_str_plan_date" />
+              <input
+                type="date"
+                class="form-control"
+                v-model="findingDetail.cm_str_plan_date"
+              />
             </div>
           </div>
         </div>
@@ -526,17 +803,31 @@
           <label class="mb-1">PIC </label>
           <div class="row">
             <div class="col">
-              <input type="text" class="form-control py-2" :value="findingDetail?.cm_pic_nm" disabled />
+              <input
+                type="text"
+                class="form-control py-2"
+                :value="findingDetail?.cm_pic_nm"
+                disabled
+              />
             </div>
             <div class="col">
-              <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
+              <VueMultiselect
+                v-model="selectedPIC"
+                :options="picData"
+                :custom-label="customPicOptions"
+              >
               </VueMultiselect>
             </div>
           </div>
         </div>
         <div class="mb-2">
           <label class="mb-1">CM description</label>
-          <textarea cols="30" rows="5" class="form-control" v-model="findingDetail.cm_desc"></textarea>
+          <textarea
+            cols="30"
+            rows="5"
+            class="form-control"
+            v-model="findingDetail.cm_desc"
+          ></textarea>
         </div>
 
         <div class="mb-2">
@@ -544,11 +835,19 @@
 
           <div class="row">
             <div class="col">
-              <input type="text" class="form-control" disabled
-                :value="formatTheDate(findingDetail?.cm_str_plan_date)" />
+              <input
+                type="text"
+                class="form-control"
+                disabled
+                :value="formatTheDate(findingDetail?.cm_str_plan_date)"
+              />
             </div>
             <div class="col">
-              <input type="date" class="form-control" v-model="findingDetail.cm_str_plan_date" />
+              <input
+                type="date"
+                class="form-control"
+                v-model="findingDetail.cm_str_plan_date"
+              />
             </div>
           </div>
         </div>
@@ -557,11 +856,19 @@
 
           <div class="row">
             <div class="col">
-              <input type="text" class="form-control" disabled
-                :value="formatTheDate(findingDetail?.cm_end_plan_date)" />
+              <input
+                type="text"
+                class="form-control"
+                disabled
+                :value="formatTheDate(findingDetail?.cm_end_plan_date)"
+              />
             </div>
             <div class="col">
-              <input type="date" class="form-control" v-model="findingDetail.cm_end_plan_date" />
+              <input
+                type="date"
+                class="form-control"
+                v-model="findingDetail.cm_end_plan_date"
+              />
             </div>
           </div>
         </div>
@@ -573,10 +880,19 @@
 
           <div class="row">
             <div class="col">
-              <input type="text" class="form-control" disabled :value="formatTheDate(findingDetail?.cm_str_act_date)" />
+              <input
+                type="text"
+                class="form-control"
+                disabled
+                :value="formatTheDate(findingDetail?.cm_str_act_date)"
+              />
             </div>
             <div class="col">
-              <input type="date" class="form-control" v-model="findingDetail.cm_str_act_date" />
+              <input
+                type="date"
+                class="form-control"
+                v-model="findingDetail.cm_str_act_date"
+              />
             </div>
           </div>
         </div>
@@ -585,10 +901,19 @@
 
           <div class="row">
             <div class="col">
-              <input type="text" class="form-control" disabled :value="formatTheDate(findingDetail?.cm_end_act_date)" />
+              <input
+                type="text"
+                class="form-control"
+                disabled
+                :value="formatTheDate(findingDetail?.cm_end_act_date)"
+              />
             </div>
             <div class="col">
-              <input type="date" class="form-control" v-model="findingDetail.cm_end_act_date" />
+              <input
+                type="date"
+                class="form-control"
+                v-model="findingDetail.cm_end_act_date"
+              />
             </div>
           </div>
         </div>
@@ -597,11 +922,19 @@
 
           <div class="row">
             <div class="col">
-              <input type="text" class="form-control" disabled
-                :value="formatTheDate(findingDetail?.cm_training_date)" />
+              <input
+                type="text"
+                class="form-control"
+                disabled
+                :value="formatTheDate(findingDetail?.cm_training_date)"
+              />
             </div>
             <div class="col">
-              <input type="date" class="form-control" v-model="findingDetail.cm_training_date" />
+              <input
+                type="date"
+                class="form-control"
+                v-model="findingDetail.cm_training_date"
+              />
             </div>
           </div>
         </div>
@@ -615,47 +948,96 @@
         <div class="mb-5">
           <label class="mb-1">CM Sign LH Red</label>
           <br />
-          <div v-if="findingDetail?.cm_sign_lh_red" style="border: 1px solid #eaeaea; width: 100%; height: 100px">
-            <input type="image" v-if="updatedLHRedSign" :src="updatedLHRedSign" style="width: 100%; height: 100%" />
-            <input type="image" v-else :src="findingDetail?.cm_sign_lh_red" style="width: 100%; height: 100%" />
+          <div
+            v-if="findingDetail?.cm_sign_lh_red"
+            style="border: 1px solid #eaeaea; width: 100%; height: 100px"
+          >
+            <input
+              type="image"
+              v-if="updatedLHRedSign"
+              :src="updatedLHRedSign"
+              style="width: 100%; height: 100%"
+            />
+            <input
+              type="image"
+              v-else
+              :src="findingDetail?.cm_sign_lh_red"
+              style="width: 100%; height: 100%"
+            />
 
-            <button class="btn btn-secondary my-2 btn-sm text-white" @click="() => {
-              showSignLhRed = true
-              showSignLhWhite = false
-              showSignSH = false
-            }
-              ">
+            <button
+              class="btn btn-secondary my-2 btn-sm text-white"
+              @click="
+                () => {
+                  showSignLhRed = true
+                  showSignLhWhite = false
+                  showSignSH = false
+                }
+              "
+            >
               Edit sign
             </button>
           </div>
           <!-- to add sign -->
           <div v-else>
-            <button class="btn btn-info my-2 btn-sm text-white" @click="showAddSignature('lhred')">
+            <button
+              class="btn btn-info my-2 btn-sm text-white"
+              @click="showAddSignature('lhred')"
+            >
               Add signature
             </button>
 
-            <div v-if="showSignLhRed" id="sign-wrapper" style="width: 100%; height: 100px; border: 1px solid #eaeaea">
-              <vueSignature ref="cm_sign_lh_red" :sigOption="option" :w="'100%'" :h="'100px'">
+            <div
+              v-if="showSignLhRed"
+              id="sign-wrapper"
+              style="width: 100%; height: 100px; border: 1px solid #eaeaea"
+            >
+              <vueSignature
+                ref="cm_sign_lh_red"
+                :sigOption="option"
+                :w="'100%'"
+                :h="'100px'"
+              >
               </vueSignature>
-              <button class="btn btn-info my-2 btn-sm text-white" :disabled="isUploadSignLoading"
-                @click="saveSignature('cm_sign_lh_red')">
+              <button
+                class="btn btn-info my-2 btn-sm text-white"
+                :disabled="isUploadSignLoading"
+                @click="saveSignature('cm_sign_lh_red')"
+              >
                 {{ isUploadSignLoading ? 'Saving..' : 'Save' }}
               </button>
-              <button class="btn btn-info btn-sm mx-2 my-2 text-white" @click="clearSignature('cm_sign_lh_red')">
+              <button
+                class="btn btn-info btn-sm mx-2 my-2 text-white"
+                @click="clearSignature('cm_sign_lh_red')"
+              >
                 Clear
               </button>
             </div>
           </div>
           <!-- to edit sign -->
-          <div v-if="showSignLhRed && findingDetail?.cm_sign_lh_red" id="sign-wrapper"
-            style="width: 100%; height: 100px; border: 1px solid #eaeaea">
-            <vueSignature ref="cm_sign_lh_red" :sigOption="option" :w="'100%'" :h="'100px'">
+          <div
+            v-if="showSignLhRed && findingDetail?.cm_sign_lh_red"
+            id="sign-wrapper"
+            style="width: 100%; height: 100px; border: 1px solid #eaeaea"
+          >
+            <vueSignature
+              ref="cm_sign_lh_red"
+              :sigOption="option"
+              :w="'100%'"
+              :h="'100px'"
+            >
             </vueSignature>
-            <button class="btn btn-info my-2 btn-sm text-white" :disabled="isUploadSignLoading"
-              @click="saveSignature('cm_sign_lh_red')">
+            <button
+              class="btn btn-info my-2 btn-sm text-white"
+              :disabled="isUploadSignLoading"
+              @click="saveSignature('cm_sign_lh_red')"
+            >
               {{ isUploadSignLoading ? 'Saving..' : 'Save' }}
             </button>
-            <button class="btn btn-info btn-sm mx-2 my-2 text-white" @click="clearSignature('cm_sign_lh_red')">
+            <button
+              class="btn btn-info btn-sm mx-2 my-2 text-white"
+              @click="clearSignature('cm_sign_lh_red')"
+            >
               Clear
             </button>
           </div>
@@ -664,47 +1046,96 @@
         <div class="mb-2 my-3">
           <label class="mb-1">CM Sign LH White</label>
           <br />
-          <div v-if="findingDetail?.cm_sign_lh_white" style="border: 1px solid #eaeaea; width: 100%; height: 100px">
-            <input type="image" v-if="updatedLHWhiteSign" :src="updatedLHWhiteSign" style="width: 100%; height: 100%" />
-            <input type="image" v-else :src="findingDetail?.cm_sign_lh_white" style="width: 100%; height: 100%" />
+          <div
+            v-if="findingDetail?.cm_sign_lh_white"
+            style="border: 1px solid #eaeaea; width: 100%; height: 100px"
+          >
+            <input
+              type="image"
+              v-if="updatedLHWhiteSign"
+              :src="updatedLHWhiteSign"
+              style="width: 100%; height: 100%"
+            />
+            <input
+              type="image"
+              v-else
+              :src="findingDetail?.cm_sign_lh_white"
+              style="width: 100%; height: 100%"
+            />
 
-            <button class="btn btn-secondary my-2 btn-sm text-white" @click="() => {
-              showSignLhRed = false
-              showSignLhWhite = true
-              showSignSH = false
-            }
-              ">
+            <button
+              class="btn btn-secondary my-2 btn-sm text-white"
+              @click="
+                () => {
+                  showSignLhRed = false
+                  showSignLhWhite = true
+                  showSignSH = false
+                }
+              "
+            >
               Edit sign
             </button>
           </div>
           <!-- to add sign -->
           <div v-else>
-            <button class="btn btn-info my-2 btn-sm text-white" @click="showAddSignature('lhwhite')">
+            <button
+              class="btn btn-info my-2 btn-sm text-white"
+              @click="showAddSignature('lhwhite')"
+            >
               Add signature
             </button>
 
-            <div v-if="showSignLhWhite" id="sign-wrapper" style="width: 100%; height: 100px; border: 1px solid #eaeaea">
-              <vueSignature ref="cm_sign_lh_white" :sigOption="option" :w="'100%'" :h="'100px'">
+            <div
+              v-if="showSignLhWhite"
+              id="sign-wrapper"
+              style="width: 100%; height: 100px; border: 1px solid #eaeaea"
+            >
+              <vueSignature
+                ref="cm_sign_lh_white"
+                :sigOption="option"
+                :w="'100%'"
+                :h="'100px'"
+              >
               </vueSignature>
-              <button class="btn btn-info my-2 btn-sm text-white" :disabled="isUploadSignLoading"
-                @click="saveSignature('cm_sign_lh_white')">
+              <button
+                class="btn btn-info my-2 btn-sm text-white"
+                :disabled="isUploadSignLoading"
+                @click="saveSignature('cm_sign_lh_white')"
+              >
                 {{ isUploadSignLoading ? 'Saving..' : 'Save' }}
               </button>
-              <button class="btn btn-info btn-sm mx-2 my-2 text-white" @click="clearSignature('cm_sign_lh_white')">
+              <button
+                class="btn btn-info btn-sm mx-2 my-2 text-white"
+                @click="clearSignature('cm_sign_lh_white')"
+              >
                 Clear
               </button>
             </div>
           </div>
           <!-- to edit sign -->
-          <div v-if="showSignLhWhite && findingDetail?.cm_sign_lh_white" id="sign-wrapper"
-            style="width: 100%; height: 100px; border: 1px solid #eaeaea">
-            <vueSignature ref="cm_sign_lh_white" :sigOption="option" :w="'100%'" :h="'100px'">
+          <div
+            v-if="showSignLhWhite && findingDetail?.cm_sign_lh_white"
+            id="sign-wrapper"
+            style="width: 100%; height: 100px; border: 1px solid #eaeaea"
+          >
+            <vueSignature
+              ref="cm_sign_lh_white"
+              :sigOption="option"
+              :w="'100%'"
+              :h="'100px'"
+            >
             </vueSignature>
-            <button class="btn btn-info my-2 btn-sm text-white" :disabled="isUploadSignLoading"
-              @click="saveSignature('cm_sign_lh_white')">
+            <button
+              class="btn btn-info my-2 btn-sm text-white"
+              :disabled="isUploadSignLoading"
+              @click="saveSignature('cm_sign_lh_white')"
+            >
               {{ isUploadSignLoading ? 'Saving..' : 'Save' }}
             </button>
-            <button class="btn btn-info btn-sm mx-2 my-2 text-white" @click="clearSignature('cm_sign_lh_white')">
+            <button
+              class="btn btn-info btn-sm mx-2 my-2 text-white"
+              @click="clearSignature('cm_sign_lh_white')"
+            >
               Clear
             </button>
           </div>
@@ -713,47 +1144,96 @@
         <div class="mb-2 my-5">
           <label class="mb-1">CM Sign SH/AM/MGR</label>
           <br />
-          <div v-if="findingDetail?.cm_sign_sh" style="border: 1px solid #eaeaea; width: 100%; height: 100px">
-            <input type="image" v-if="updatedSHSign" :src="updatedSHSign" style="width: 100%; height: 100%" />
-            <input type="image" v-else :src="findingDetail?.cm_sign_sh" style="width: 100%; height: 100%" />
+          <div
+            v-if="findingDetail?.cm_sign_sh"
+            style="border: 1px solid #eaeaea; width: 100%; height: 100px"
+          >
+            <input
+              type="image"
+              v-if="updatedSHSign"
+              :src="updatedSHSign"
+              style="width: 100%; height: 100%"
+            />
+            <input
+              type="image"
+              v-else
+              :src="findingDetail?.cm_sign_sh"
+              style="width: 100%; height: 100%"
+            />
 
-            <button class="btn btn-secondary my-2 btn-sm text-white" @click="() => {
-              showSignLhRed = false
-              showSignLhWhite = false
-              showSignSH = true
-            }
-              ">
+            <button
+              class="btn btn-secondary my-2 btn-sm text-white"
+              @click="
+                () => {
+                  showSignLhRed = false
+                  showSignLhWhite = false
+                  showSignSH = true
+                }
+              "
+            >
               Edit sign
             </button>
           </div>
           <!-- to add sign -->
           <div v-else>
-            <button class="btn btn-info my-2 btn-sm text-white" @click="showAddSignature('sh')">
+            <button
+              class="btn btn-info my-2 btn-sm text-white"
+              @click="showAddSignature('sh')"
+            >
               Add signature
             </button>
 
-            <div v-if="showSignSH" id="sign-wrapper" style="width: 100%; height: 100px; border: 1px solid #eaeaea">
-              <vueSignature ref="cm_sign_sh" :sigOption="option" :w="'100%'" :h="'100px'">
+            <div
+              v-if="showSignSH"
+              id="sign-wrapper"
+              style="width: 100%; height: 100px; border: 1px solid #eaeaea"
+            >
+              <vueSignature
+                ref="cm_sign_sh"
+                :sigOption="option"
+                :w="'100%'"
+                :h="'100px'"
+              >
               </vueSignature>
-              <button class="btn btn-info my-2 btn-sm text-white" :disabled="isUploadSignLoading"
-                @click="saveSignature('cm_sign_sh')">
+              <button
+                class="btn btn-info my-2 btn-sm text-white"
+                :disabled="isUploadSignLoading"
+                @click="saveSignature('cm_sign_sh')"
+              >
                 {{ isUploadSignLoading ? 'Saving..' : 'Save' }}
               </button>
-              <button class="btn btn-info btn-sm mx-2 my-2 text-white" @click="clearSignature('cm_sign_sh')">
+              <button
+                class="btn btn-info btn-sm mx-2 my-2 text-white"
+                @click="clearSignature('cm_sign_sh')"
+              >
                 Clear
               </button>
             </div>
           </div>
           <!-- to edit sign -->
-          <div v-if="showSignSH && findingDetail?.cm_sign_sh" id="sign-wrapper"
-            style="width: 100%; height: 100px; border: 1px solid #eaeaea">
-            <vueSignature ref="cm_sign_sh" :sigOption="option" :w="'100%'" :h="'100px'">
+          <div
+            v-if="showSignSH && findingDetail?.cm_sign_sh"
+            id="sign-wrapper"
+            style="width: 100%; height: 100px; border: 1px solid #eaeaea"
+          >
+            <vueSignature
+              ref="cm_sign_sh"
+              :sigOption="option"
+              :w="'100%'"
+              :h="'100px'"
+            >
             </vueSignature>
-            <button class="btn btn-info my-2 btn-sm text-white" :disabled="isUploadSignLoading"
-              @click="saveSignature('cm_sign_sh')">
+            <button
+              class="btn btn-info my-2 btn-sm text-white"
+              :disabled="isUploadSignLoading"
+              @click="saveSignature('cm_sign_sh')"
+            >
               {{ isUploadSignLoading ? 'Saving..' : 'Save' }}
             </button>
-            <button class="btn btn-info btn-sm mx-2 my-2 text-white" @click="clearSignature('cm_sign_sh')">
+            <button
+              class="btn btn-info btn-sm mx-2 my-2 text-white"
+              @click="clearSignature('cm_sign_sh')"
+            >
               Clear
             </button>
           </div>
@@ -764,49 +1244,83 @@
           <input ref="pink_sheet" type="file" class="form-control" />
 
           <div v-if="selectedPinkSheet || findingDetail?.file_pinksheet">
-            <button @click="viewPinkSheet()" v-if="selectedPinkSheet" class="btn btn-info btn-sm my-2 text-white">
+            <button
+              @click="viewPinkSheet()"
+              v-if="selectedPinkSheet"
+              class="btn btn-info btn-sm my-2 text-white"
+            >
               View updated file
             </button>
-            <button @click="viewPinkSheet()" v-else class="btn btn-info btn-sm my-2 text-white">
+            <button
+              @click="viewPinkSheet()"
+              v-else
+              class="btn btn-info btn-sm my-2 text-white"
+            >
               View file
             </button>
-            <button class="btn btn-info btn-sm my-2 mx-2 text-white" :disabled="isUploadKaizenFile"
-              @click="uploadPinkSheet('pink_sheet')">
+            <button
+              class="btn btn-info btn-sm my-2 mx-2 text-white"
+              :disabled="isUploadKaizenFile"
+              @click="uploadPinkSheet('pink_sheet')"
+            >
               {{ isUploadKaizenFile ? 'Updating..' : 'Update pink sheet' }}
             </button>
           </div>
           <div v-else>
-            <button class="btn btn-info btn-sm my-2 text-white" :disabled="isUploadKaizenFile"
-              @click="uploadPinkSheet('pink_sheet')">
+            <button
+              class="btn btn-info btn-sm my-2 text-white"
+              :disabled="isUploadKaizenFile"
+              @click="uploadPinkSheet('pink_sheet')"
+            >
               {{ isUploadKaizenFile ? 'Uploading..' : 'Upload pink sheet' }}
             </button>
           </div>
         </div>
         <div class="mb-2">
           <label class="mb-1">CM Comments</label>
-          <input type="text" class="form-control" v-model="findingDetail.cm_comments" />
+          <input
+            type="text"
+            class="form-control"
+            v-model="findingDetail.cm_comments"
+          />
         </div>
       </CModalBody>
       <CModalFooter>
-        <CButton color="info" class="text-white" @click="() => {
+        <CButton
+          color="info"
+          class="text-white"
+          @click="
+            () => {
               updateFindingList()
             }
-              ">
+          "
+        >
           Update data
         </CButton>
-        <CButton color="secondary" class="text-white" @click="() => {
+        <CButton
+          color="secondary"
+          class="text-white"
+          @click="
+            () => {
               selectedFindingIndex = null
               editTemuanModal = false
             }
-              ">
+          "
+        >
           Close
         </CButton>
       </CModalFooter>
     </CModal>
 
     <!-- add sign modal -->
-    <CModal backdrop="static" alignment="center" :visible="addSignModal" @close="addSignModal = false" size="lg"
-      scrollable>
+    <CModal
+      backdrop="static"
+      alignment="center"
+      :visible="addSignModal"
+      @close="addSignModal = false"
+      size="lg"
+      scrollable
+    >
       <CModalHeader>
         <CModalTitle>Add sign</CModalTitle>
       </CModalHeader>
@@ -814,47 +1328,96 @@
         <div class="mb-5">
           <label class="mb-1">CM Sign LH Red</label>
           <br />
-          <div v-if="findingDetail?.cm_sign_lh_red" style="border: 1px solid #eaeaea; width: 100%; height: 100px">
-            <input type="image" v-if="updatedLHRedSign" :src="updatedLHRedSign" style="width: 100%; height: 100%" />
-            <input type="image" v-else :src="findingDetail?.cm_sign_lh_red" style="width: 100%; height: 100%" />
+          <div
+            v-if="findingDetail?.cm_sign_lh_red"
+            style="border: 1px solid #eaeaea; width: 100%; height: 100px"
+          >
+            <input
+              type="image"
+              v-if="updatedLHRedSign"
+              :src="updatedLHRedSign"
+              style="width: 100%; height: 100%"
+            />
+            <input
+              type="image"
+              v-else
+              :src="findingDetail?.cm_sign_lh_red"
+              style="width: 100%; height: 100%"
+            />
 
-            <button class="btn btn-secondary my-2 btn-sm text-white" @click="() => {
-              showSignLhRed = true
-              showSignLhWhite = false
-              showSignSH = false
-            }
-              ">
+            <button
+              class="btn btn-secondary my-2 btn-sm text-white"
+              @click="
+                () => {
+                  showSignLhRed = true
+                  showSignLhWhite = false
+                  showSignSH = false
+                }
+              "
+            >
               Edit sign
             </button>
           </div>
           <!-- to add sign -->
           <div v-else>
-            <button class="btn btn-info my-2 btn-sm text-white" @click="showAddSignature('lhred')">
+            <button
+              class="btn btn-info my-2 btn-sm text-white"
+              @click="showAddSignature('lhred')"
+            >
               Add signature
             </button>
 
-            <div v-if="showSignLhRed" id="sign-wrapper" style="width: 100%; height: 100px; border: 1px solid #eaeaea">
-              <vueSignature ref="cm_sign_lh_red" :sigOption="option" :w="'100%'" :h="'100px'">
+            <div
+              v-if="showSignLhRed"
+              id="sign-wrapper"
+              style="width: 100%; height: 100px; border: 1px solid #eaeaea"
+            >
+              <vueSignature
+                ref="cm_sign_lh_red"
+                :sigOption="option"
+                :w="'100%'"
+                :h="'100px'"
+              >
               </vueSignature>
-              <button class="btn btn-info my-2 btn-sm text-white" :disabled="isUploadSignLoading"
-                @click="saveSignature('cm_sign_lh_red')">
+              <button
+                class="btn btn-info my-2 btn-sm text-white"
+                :disabled="isUploadSignLoading"
+                @click="saveSignature('cm_sign_lh_red')"
+              >
                 {{ isUploadSignLoading ? 'Saving..' : 'Save' }}
               </button>
-              <button class="btn btn-info btn-sm mx-2 my-2 text-white" @click="clearSignature('cm_sign_lh_red')">
+              <button
+                class="btn btn-info btn-sm mx-2 my-2 text-white"
+                @click="clearSignature('cm_sign_lh_red')"
+              >
                 Clear
               </button>
             </div>
           </div>
           <!-- to edit sign -->
-          <div v-if="showSignLhRed && findingDetail?.cm_sign_lh_red" id="sign-wrapper"
-            style="width: 100%; height: 100px; border: 1px solid #eaeaea">
-            <vueSignature ref="cm_sign_lh_red" :sigOption="option" :w="'100%'" :h="'100px'">
+          <div
+            v-if="showSignLhRed && findingDetail?.cm_sign_lh_red"
+            id="sign-wrapper"
+            style="width: 100%; height: 100px; border: 1px solid #eaeaea"
+          >
+            <vueSignature
+              ref="cm_sign_lh_red"
+              :sigOption="option"
+              :w="'100%'"
+              :h="'100px'"
+            >
             </vueSignature>
-            <button class="btn btn-info my-2 btn-sm text-white" :disabled="isUploadSignLoading"
-              @click="saveSignature('cm_sign_lh_red')">
+            <button
+              class="btn btn-info my-2 btn-sm text-white"
+              :disabled="isUploadSignLoading"
+              @click="saveSignature('cm_sign_lh_red')"
+            >
               {{ isUploadSignLoading ? 'Saving..' : 'Save' }}
             </button>
-            <button class="btn btn-info btn-sm mx-2 my-2 text-white" @click="clearSignature('cm_sign_lh_red')">
+            <button
+              class="btn btn-info btn-sm mx-2 my-2 text-white"
+              @click="clearSignature('cm_sign_lh_red')"
+            >
               Clear
             </button>
           </div>
@@ -863,47 +1426,96 @@
         <div class="mb-2 my-3">
           <label class="mb-1">CM Sign LH White</label>
           <br />
-          <div v-if="findingDetail?.cm_sign_lh_white" style="border: 1px solid #eaeaea; width: 100%; height: 100px">
-            <input type="image" v-if="updatedLHWhiteSign" :src="updatedLHWhiteSign" style="width: 100%; height: 100%" />
-            <input type="image" v-else :src="findingDetail?.cm_sign_lh_white" style="width: 100%; height: 100%" />
+          <div
+            v-if="findingDetail?.cm_sign_lh_white"
+            style="border: 1px solid #eaeaea; width: 100%; height: 100px"
+          >
+            <input
+              type="image"
+              v-if="updatedLHWhiteSign"
+              :src="updatedLHWhiteSign"
+              style="width: 100%; height: 100%"
+            />
+            <input
+              type="image"
+              v-else
+              :src="findingDetail?.cm_sign_lh_white"
+              style="width: 100%; height: 100%"
+            />
 
-            <button class="btn btn-secondary my-2 btn-sm text-white" @click="() => {
-              showSignLhRed = false
-              showSignLhWhite = true
-              showSignSH = false
-            }
-              ">
+            <button
+              class="btn btn-secondary my-2 btn-sm text-white"
+              @click="
+                () => {
+                  showSignLhRed = false
+                  showSignLhWhite = true
+                  showSignSH = false
+                }
+              "
+            >
               Edit sign
             </button>
           </div>
           <!-- to add sign -->
           <div v-else>
-            <button class="btn btn-info my-2 btn-sm text-white" @click="showAddSignature('lhwhite')">
+            <button
+              class="btn btn-info my-2 btn-sm text-white"
+              @click="showAddSignature('lhwhite')"
+            >
               Add signature
             </button>
 
-            <div v-if="showSignLhWhite" id="sign-wrapper" style="width: 100%; height: 100px; border: 1px solid #eaeaea">
-              <vueSignature ref="cm_sign_lh_white" :sigOption="option" :w="'100%'" :h="'100px'">
+            <div
+              v-if="showSignLhWhite"
+              id="sign-wrapper"
+              style="width: 100%; height: 100px; border: 1px solid #eaeaea"
+            >
+              <vueSignature
+                ref="cm_sign_lh_white"
+                :sigOption="option"
+                :w="'100%'"
+                :h="'100px'"
+              >
               </vueSignature>
-              <button class="btn btn-info my-2 btn-sm text-white" :disabled="isUploadSignLoading"
-                @click="saveSignature('cm_sign_lh_white')">
+              <button
+                class="btn btn-info my-2 btn-sm text-white"
+                :disabled="isUploadSignLoading"
+                @click="saveSignature('cm_sign_lh_white')"
+              >
                 {{ isUploadSignLoading ? 'Saving..' : 'Save' }}
               </button>
-              <button class="btn btn-info btn-sm mx-2 my-2 text-white" @click="clearSignature('cm_sign_lh_white')">
+              <button
+                class="btn btn-info btn-sm mx-2 my-2 text-white"
+                @click="clearSignature('cm_sign_lh_white')"
+              >
                 Clear
               </button>
             </div>
           </div>
           <!-- to edit sign -->
-          <div v-if="showSignLhWhite && findingDetail?.cm_sign_lh_white" id="sign-wrapper"
-            style="width: 100%; height: 100px; border: 1px solid #eaeaea">
-            <vueSignature ref="cm_sign_lh_white" :sigOption="option" :w="'100%'" :h="'100px'">
+          <div
+            v-if="showSignLhWhite && findingDetail?.cm_sign_lh_white"
+            id="sign-wrapper"
+            style="width: 100%; height: 100px; border: 1px solid #eaeaea"
+          >
+            <vueSignature
+              ref="cm_sign_lh_white"
+              :sigOption="option"
+              :w="'100%'"
+              :h="'100px'"
+            >
             </vueSignature>
-            <button class="btn btn-info my-2 btn-sm text-white" :disabled="isUploadSignLoading"
-              @click="saveSignature('cm_sign_lh_white')">
+            <button
+              class="btn btn-info my-2 btn-sm text-white"
+              :disabled="isUploadSignLoading"
+              @click="saveSignature('cm_sign_lh_white')"
+            >
               {{ isUploadSignLoading ? 'Saving..' : 'Save' }}
             </button>
-            <button class="btn btn-info btn-sm mx-2 my-2 text-white" @click="clearSignature('cm_sign_lh_white')">
+            <button
+              class="btn btn-info btn-sm mx-2 my-2 text-white"
+              @click="clearSignature('cm_sign_lh_white')"
+            >
               Clear
             </button>
           </div>
@@ -912,59 +1524,113 @@
         <div class="mb-2 my-5">
           <label class="mb-1">CM Sign SH/AM/MGR</label>
           <br />
-          <div v-if="findingDetail?.cm_sign_sh" style="border: 1px solid #eaeaea; width: 100%; height: 100px">
-            <input type="image" v-if="updatedSHSign" :src="updatedSHSign" style="width: 100%; height: 100%" />
-            <input type="image" v-else :src="findingDetail?.cm_sign_sh" style="width: 100%; height: 100%" />
+          <div
+            v-if="findingDetail?.cm_sign_sh"
+            style="border: 1px solid #eaeaea; width: 100%; height: 100px"
+          >
+            <input
+              type="image"
+              v-if="updatedSHSign"
+              :src="updatedSHSign"
+              style="width: 100%; height: 100%"
+            />
+            <input
+              type="image"
+              v-else
+              :src="findingDetail?.cm_sign_sh"
+              style="width: 100%; height: 100%"
+            />
 
-            <button class="btn btn-secondary my-2 btn-sm text-white" @click="() => {
-              showSignLhRed = false
-              showSignLhWhite = false
-              showSignSH = true
-            }
-              ">
+            <button
+              class="btn btn-secondary my-2 btn-sm text-white"
+              @click="
+                () => {
+                  showSignLhRed = false
+                  showSignLhWhite = false
+                  showSignSH = true
+                }
+              "
+            >
               Edit sign
             </button>
           </div>
           <!-- to add sign -->
           <div v-else>
-            <button class="btn btn-info my-2 btn-sm text-white" @click="showAddSignature('sh')">
+            <button
+              class="btn btn-info my-2 btn-sm text-white"
+              @click="showAddSignature('sh')"
+            >
               Add signature
             </button>
 
-            <div v-if="showSignSH" id="sign-wrapper" style="width: 100%; height: 100px; border: 1px solid #eaeaea">
-              <vueSignature ref="cm_sign_sh" :sigOption="option" :w="'100%'" :h="'100px'">
+            <div
+              v-if="showSignSH"
+              id="sign-wrapper"
+              style="width: 100%; height: 100px; border: 1px solid #eaeaea"
+            >
+              <vueSignature
+                ref="cm_sign_sh"
+                :sigOption="option"
+                :w="'100%'"
+                :h="'100px'"
+              >
               </vueSignature>
-              <button class="btn btn-info my-2 btn-sm text-white" :disabled="isUploadSignLoading"
-                @click="saveSignature('cm_sign_sh')">
+              <button
+                class="btn btn-info my-2 btn-sm text-white"
+                :disabled="isUploadSignLoading"
+                @click="saveSignature('cm_sign_sh')"
+              >
                 {{ isUploadSignLoading ? 'Saving..' : 'Save' }}
               </button>
-              <button class="btn btn-info btn-sm mx-2 my-2 text-white" @click="clearSignature('cm_sign_sh')">
+              <button
+                class="btn btn-info btn-sm mx-2 my-2 text-white"
+                @click="clearSignature('cm_sign_sh')"
+              >
                 Clear
               </button>
             </div>
           </div>
           <!-- to edit sign -->
-          <div v-if="showSignSH && findingDetail?.cm_sign_sh" id="sign-wrapper"
-            style="width: 100%; height: 100px; border: 1px solid #eaeaea">
-            <vueSignature ref="cm_sign_sh" :sigOption="option" :w="'100%'" :h="'100px'">
+          <div
+            v-if="showSignSH && findingDetail?.cm_sign_sh"
+            id="sign-wrapper"
+            style="width: 100%; height: 100px; border: 1px solid #eaeaea"
+          >
+            <vueSignature
+              ref="cm_sign_sh"
+              :sigOption="option"
+              :w="'100%'"
+              :h="'100px'"
+            >
             </vueSignature>
-            <button class="btn btn-info my-2 btn-sm text-white" :disabled="isUploadSignLoading"
-              @click="saveSignature('cm_sign_sh')">
+            <button
+              class="btn btn-info my-2 btn-sm text-white"
+              :disabled="isUploadSignLoading"
+              @click="saveSignature('cm_sign_sh')"
+            >
               {{ isUploadSignLoading ? 'Saving..' : 'Save' }}
             </button>
-            <button class="btn btn-info btn-sm mx-2 my-2 text-white" @click="clearSignature('cm_sign_sh')">
+            <button
+              class="btn btn-info btn-sm mx-2 my-2 text-white"
+              @click="clearSignature('cm_sign_sh')"
+            >
               Clear
             </button>
           </div>
         </div>
       </CModalBody>
       <CModalFooter>
-        <CButton color="secondary" class="text-white" @click="() => {
+        <CButton
+          color="secondary"
+          class="text-white"
+          @click="
+            () => {
               selectedFindingIndex = null
               addSignModal = false
               getFindingsFunc()
             }
-              ">
+          "
+        >
           Close
         </CButton>
       </CModalFooter>
@@ -1045,6 +1711,7 @@ export default {
       updatedSHSign: null,
       findingDataToExport: null,
       cm_comments: null,
+      APPURL: process.env.VUE_APP_URL,
     }
   },
   updated() {
@@ -1419,6 +2086,9 @@ export default {
     downloadPinkSheet(filePath) {
       window.open(`${process.env.VUE_APP_URL}/file?path=${filePath}`, '_blank')
     },
+    downloadReport(obsID) {
+      this.$router.push(`/observation/report/${obsID}`, '_blank')
+    },
   },
   async mounted() {
     // cek kalau ada params di url (dari dashboard)
@@ -1444,7 +2114,9 @@ export default {
     this.selectedMonth = `${year}-${month}`
     this.selectedFilterStartDate = `${year}-01-01`
     this.selectedFilterEndDate = `${year}-12-31`
-    this.selectedLine = this.$route.query.line_id ? this.$route.query.line_id : localStorage.getItem('line_id')
+    this.selectedLine = this.$route.query.line_id
+      ? this.$route.query.line_id
+      : localStorage.getItem('line_id')
     await this.getUsers()
     await this.getFindingsFunc()
     await this.getLines()
