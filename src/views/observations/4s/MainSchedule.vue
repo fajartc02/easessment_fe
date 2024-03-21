@@ -1,15 +1,77 @@
 <template>
   <div>
-    <div class="card mb-5">
+    <div
+      v-for="mainSchedule in mainScheduleData"
+      :key="mainSchedule.id"
+      class="card mb-5"
+    >
       <div class="card-header">
         <div class="row d-flex align-items-center">
           <div class="col">
-            <label>Shift</label>
-            <select class="form-select">
-              <option value="">RED</option>
-              <option value="">WHITE</option>
+            <label>Select month</label>
+            <input
+              type="month"
+              class="form-control"
+              v-model="selectedMonth"
+              @change="addFilter()"
+            />
+          </div>
+          <div class="col">
+            <label>Line</label>
+            <select
+              class="form-select"
+              v-model="mainSchedule.line_id"
+              @change="addFilter()"
+            >
+              <option
+                v-for="(line, index) in getLinesOpts"
+                :key="index"
+                :value="line.id"
+              >
+                {{ line.text }}
+              </option>
             </select>
           </div>
+          <div class="col">
+            <label>Shift / group</label>
+            <select class="form-select" v-model="mainSchedule.group_id">
+              <option
+                v-for="group in getGroups"
+                :key="group.id"
+                :value="group.id"
+              >
+                {{ group.group_nm }}
+              </option>
+            </select>
+          </div>
+          <div class="col">
+            <label>Zona</label>
+            <select class="form-select" v-model="mainSchedule.zone_id">
+              <option
+                v-for="zone in getZones"
+                :key="zone.zone_id"
+                :value="zone.zone_id"
+              >
+                {{ zone.zone_nm }}
+              </option>
+            </select>
+          </div>
+          <div class="col">
+            <label>Kanban</label>
+            <select class="form-select" v-model="mainSchedule.zone_id">
+              <option
+                v-for="kanban in getKanbans"
+                :key="kanban.kanban_id"
+                :value="kanban.kanban_id"
+              >
+                {{ kanban.kanban_id }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="card-header">
+        <div class="row">
           <div class="col">
             <div class="d-flex align-items-center">
               <div class="d-flex align-items-center">
@@ -39,7 +101,7 @@
           <thead>
             <tr>
               <th colspan="40" class="text-center">
-                4S Schedule Activities [Sub line Red]
+                4S Schedule Activities [Sub line {{ mainSchedule.group_nm }}]
               </th>
             </tr>
             <tr>
@@ -71,14 +133,14 @@
             </tr>
             <tr
               v-else
-              v-for="(data, scheduleIndex) in scheduleData"
+              v-for="(data, scheduleIndex) in subScheduleData"
               :key="scheduleIndex"
             >
               <td>{{ scheduleIndex + 1 }}</td>
               <td style="min-width: 100px">{{ data.zone_nm }}</td>
               <td style="min-width: 120px">{{ data.kanban_no }}</td>
               <td style="min-width: 200px">{{ data.area_nm }}</td>
-              <td style="min-width: 200px">{{ data.area_nm }}</td>
+              <td style="min-width: 200px">{{ data.standart_time }}</td>
               <td style="min-width: 100px" :rowspan="data.row_span_pic">
                 {{ data.pic_nm }}
               </td>
@@ -106,8 +168,17 @@
 </template>
 
 <script>
+import moment from 'moment'
 import Loading from 'vue-loading-overlay'
-import { GET_SCHEDULES } from '@/store/modules/schedule4s.module'
+import {
+  GET_SCHEDULES,
+  GET_SUB_SCHEDULES,
+} from '@/store/modules/schedule4s.module'
+import { GET_GROUP } from '@/store/modules/group.module'
+import { GET_LINES } from '@/store/modules/line.module'
+import { GET_ZONES } from '@/store/modules/zones.module'
+import { GET_KANBANS } from '@/store/modules/kanban.module'
+import { mapGetters } from 'vuex'
 export default {
   name: 'Main Schedule',
   components: { Loading },
@@ -115,26 +186,148 @@ export default {
     return {
       totalDate: 31,
       isLoading: false,
-      scheduleData: null,
+      mainScheduleData: null,
+      subScheduleData: null,
+      selectedMonth: null,
+      idxMonth: [
+        '01',
+        '02',
+        '03',
+        '04',
+        '05',
+        '06',
+        '07',
+        '08',
+        '09',
+        '10',
+        '11',
+        '12',
+      ],
+      monthStr: [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sept',
+        'Oct',
+        'Nov',
+        'Dec',
+      ],
     }
   },
+  computed: {
+    ...mapGetters(['getLinesOpts', 'getGroups', 'getZones', 'getKanbans']),
+  },
+  watch: {
+    selectedMonth: function () {
+      if (this.selectedMonth) {
+        this.generateDate()
+        let idx = this.idxMonth.indexOf(this.selectedMonth.split('-')[1])
+        this.yearMonth = `${this.monthStr[idx]} ${
+          this.selectedMonth.split('-')[0]
+        }`
+      }
+    },
+  },
   methods: {
-    async get4sSchedules() {
+    async getSchedules() {
       this.isLoading = true
       let objQuery = {
-        main_schedule_id: '29bd729a-0ca3-492c-bba5-c8ca4c9ed4b5',
+        // main_schedule_id: '29bd729a-0ca3-492c-bba5-c8ca4c9ed4b5',
       }
       await this.$store.dispatch(GET_SCHEDULES, objQuery).then((res) => {
         if (res) {
-          this.scheduleData = res.schedule
+          this.mainScheduleData = res
+          this.isLoading = false
+
+          res.map((item) => {
+            this.getSubSchedules(item.main_schedule_id)
+          })
+        }
+      })
+    },
+    async getSubSchedules(mainScheduleID) {
+      this.isLoading = true
+      let objQuery = {
+        main_schedule_id: mainScheduleID,
+      }
+      await this.$store.dispatch(GET_SUB_SCHEDULES, objQuery).then((res) => {
+        if (res) {
+          console.log(res)
+          this.subScheduleData = res.schedule
           this.isLoading = false
         }
       })
     },
+
+    async getLines() {
+      try {
+        this.$store.dispatch(GET_LINES)
+      } catch (error) {
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
+      }
+    },
+    async getGroup() {
+      try {
+        this.$store.dispatch(GET_GROUP)
+      } catch (error) {
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
+      }
+    },
+    async getZone() {
+      try {
+        this.$store.dispatch(GET_ZONES)
+      } catch (error) {
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
+      }
+    },
+    async getKanban() {
+      try {
+        this.$store.dispatch(GET_KANBANS)
+      } catch (error) {
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
+      }
+    },
+    generateDate() {
+      let year = new Date(this.selectedMonth).getFullYear()
+      let month = new Date(this.selectedMonth).getMonth() + 1
+      let selectedMonth = new Date(`${year}-${month}`)
+      var lastDay = new Date(year, month, 0)
+      let container = []
+      this.containerDate = []
+      for (let i = 1; i <= lastDay.getDate(); i++) {
+        let setDt = new Date(selectedMonth).setDate(i)
+        let newDate = new Date(setDt)
+        container.push(newDate.getDate())
+        let dateObj = {
+          bg: ``,
+          date: newDate,
+          idx: `${i}`,
+        }
+        if (newDate.getDay() === 0 || newDate.getDay() === 6)
+          dateObj.bg = `bg-secondary`
+        this.containerDate.push(dateObj)
+      }
+    },
   },
 
   async mounted() {
-    await this.get4sSchedules()
+    await this.getSchedules()
+    await this.getLines()
+    await this.getGroup()
+    await this.getZone()
+    await this.getKanban()
+    const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
+    const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
+    this.selectedMonth = `${year}-${month}`
   },
   updated() {},
 }

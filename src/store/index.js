@@ -23,6 +23,8 @@ import henkaten from './modules/henkaten.module';
 import graph from './modules/graph.module'; 
 
 import schedule4s from './modules/schedule4s.module';
+import zones from './modules/zones.module';
+import kanban from './modules/kanban.module';
 
 export default createStore({
     state: {
@@ -63,6 +65,8 @@ export default createStore({
         henkaten,
         graph,
         
-        schedule4s
+        schedule4s,
+        zones,
+        kanban
     },
 })
