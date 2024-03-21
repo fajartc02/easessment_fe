@@ -64,7 +64,7 @@
                 :key="kanban.kanban_id"
                 :value="kanban.kanban_id"
               >
-                {{ kanban.kanban_id }}
+                {{ kanban.kanban_no }}
               </option>
             </select>
           </div>
@@ -87,9 +87,11 @@
               </div>
               <div class="d-flex align-items-center">
                 <div
-                  class="bullet-cancel"
+                  class="bullet-cancel d-flex justify-content-center align-items-center"
                   style="width: 20px; height: 20px"
-                ></div>
+                >
+                  <CIcon icon="cil-x" class="text-danger" size="md" />
+                </div>
                 <span class="mx-2">Sudah Cleaning, ada temuan abnormally</span>
               </div>
             </div>
