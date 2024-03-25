@@ -1,10 +1,6 @@
 <template>
   <div>
-    <div
-      v-for="mainSchedule in mainScheduleData"
-      :key="mainSchedule.id"
-      class="card mb-5"
-    >
+    <div class="card mb-5">
       <div class="card-header">
         <div class="row d-flex align-items-center">
           <div class="col">
@@ -20,7 +16,7 @@
             <label>Line</label>
             <select
               class="form-select"
-              v-model="mainSchedule.line_id"
+              v-model="selectedLineID"
               @change="addFilter()"
             >
               <option
@@ -34,7 +30,11 @@
           </div>
           <div class="col">
             <label>Shift / group</label>
-            <select class="form-select" v-model="mainSchedule.group_id">
+            <select
+              class="form-select"
+              v-model="selectedGroupID"
+              @change="addFilter()"
+            >
               <option
                 v-for="group in getGroups"
                 :key="group.id"
@@ -46,7 +46,11 @@
           </div>
           <div class="col">
             <label>Zona</label>
-            <select class="form-select" v-model="mainSchedule.zone_id">
+            <select
+              class="form-select"
+              v-model="selectedZoneID"
+              @change="addFilter()"
+            >
               <option
                 v-for="zone in getZones"
                 :key="zone.zone_id"
@@ -58,7 +62,11 @@
           </div>
           <div class="col">
             <label>Kanban</label>
-            <select class="form-select" v-model="mainSchedule.zone_id">
+            <select
+              class="form-select"
+              v-model="selectedKanbanID"
+              @change="addFilter()"
+            >
               <option
                 v-for="kanban in getKanbans"
                 :key="kanban.kanban_id"
@@ -67,6 +75,23 @@
                 {{ kanban.kanban_no }}
               </option>
             </select>
+          </div>
+          <div class="col">
+            <label>Freq</label>
+            <select
+              class="form-select"
+              v-model="selectedFreqID"
+              @change="addFilter()"
+            >
+              <option v-for="freq in getFreqs" :key="freq.id" :value="freq.id">
+                {{ freq.freq_nm }}
+              </option>
+            </select>
+          </div>
+          <div class="col-sm-1">
+            <button class="mt-4 btn btn-info text-white" @click="resetFilter()">
+              Reset
+            </button>
           </div>
         </div>
       </div>
@@ -99,11 +124,16 @@
         </div>
       </div>
       <div class="card-body p-0 overflow-x-auto">
-        <table class="table table-bordered" style="width: 100%">
+        <table
+          class="table table-bordered"
+          style="width: 100%"
+          v-for="mainSchedule in mainScheduleData"
+          :key="mainSchedule.id"
+        >
           <thead>
             <tr>
               <th colspan="40" class="text-center">
-                4S Schedule Activities [Sub line {{ mainSchedule.group_nm }}]
+                4S Schedule Activities [Sub line asd]
               </th>
             </tr>
             <tr>
@@ -115,6 +145,7 @@
               <th rowspan="2">PIC</th>
               <th rowspan="2">Freq</th>
               <th colspan="31" class="text-center">Maret</th>
+              <th colspan="31" class="text-center">Actions</th>
             </tr>
             <tr>
               <td v-for="n in totalDate" :key="n">{{ n }}</td>
@@ -161,11 +192,151 @@
                   <div class="bullet"></div>
                 </div>
               </td>
+              <td>
+                <div class="d-flex">
+                  <button class="btn btn-info btn-sm mx-2 text-white">
+                    Edit
+                  </button>
+                  <button class="btn btn-warning btn-sm text-white">
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr v-if="subScheduleData">
+              <td colspan="7" class="text-center">Sign TL 1</td>
+              <td
+                v-for="children in subScheduleData[0].children"
+                :key="children"
+                :style="`${
+                  children.is_holiday ? 'background-color: #f9fafb' : ''
+                }`"
+              >
+                <button
+                  @click="
+                    openSignModal(children.tl1_sign_checker_id, 'sign_tl_1')
+                  "
+                  v-if="!children.is_holiday && !children.sign_tl_1"
+                  class="check-wrapper-null d-flex align-items-center justify-content-center"
+                >
+                  <CIcon icon="cil-x" class="text-danger" size="md" />
+                </button>
+                <button
+                  @click="
+                    openSignModal(children.tl1_sign_checker_id, 'sign_tl_1')
+                  "
+                  v-else-if="!children.is_holiday && children.sign_tl_1"
+                  class="check-wrapper d-flex align-items-center justify-content-center"
+                >
+                  <CIcon icon="cil-check" class="text-black" size="md" />
+                </button>
+              </td>
+            </tr>
+            <tr v-if="subScheduleData">
+              <td colspan="7" class="text-center">Sign TL 2</td>
+              <td
+                v-for="children in subScheduleData[0].children"
+                :key="children"
+                :style="`${
+                  children.is_holiday ? 'background-color: #f9fafb' : ''
+                }`"
+              >
+                <button
+                  @click="
+                    openSignModal(children.tl2_sign_checker_id, 'sign_tl_2')
+                  "
+                  v-if="!children.is_holiday && !children.sign_tl_2"
+                  class="check-wrapper-null d-flex align-items-center justify-content-center"
+                >
+                  <CIcon icon="cil-x" class="text-danger" size="md" />
+                </button>
+                <button
+                  @click="
+                    openSignModal(children.tl2_sign_checker_id, 'sign_tl_2')
+                  "
+                  v-else-if="!children.is_holiday && children.sign_tl_2"
+                  class="check-wrapper d-flex align-items-center justify-content-center"
+                >
+                  <CIcon icon="cil-check" class="text-black" size="md" />
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
+
+    <!-- modals -->
+    <CModal
+      backdrop="static"
+      alignment="center"
+      :visible="addSignModal"
+      @close="addSignModal = false"
+      size="lg"
+    >
+      <CModalHeader>
+        <CModalTitle
+          >Add sign {{ selectedSignCheckerID }}
+          {{ selectedSignType }}</CModalTitle
+        >
+      </CModalHeader>
+      <CModalBody>
+        <div style="height: 150px" v-if="selectedSignType == 'sign_tl_1'">
+          <div style="width: 100%; height: 100px; border: 1px solid #eaeaea">
+            <vueSignature
+              ref="sign_tl_1"
+              :sigOption="option"
+              :w="'100%'"
+              :h="'100px'"
+            >
+            </vueSignature>
+            <button
+              class="btn btn-info my-3 btn-sm text-white"
+              :disabled="isUploadSignLoading"
+              @click="saveSignature('sign_tl_1')"
+            >
+              {{ isUploadSignLoading ? 'Saving..' : 'Save TL 1' }}
+            </button>
+            <button
+              class="btn btn-info btn-sm mx-2 my-3 text-white"
+              @click="clearSignature('sign_tl_1')"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+
+        <div style="height: 150px" v-else-if="selectedSignType == 'sign_tl_2'">
+          <div style="width: 100%; height: 100px; border: 1px solid #eaeaea">
+            <vueSignature
+              ref="sign_tl_2"
+              :sigOption="option"
+              :w="'100%'"
+              :h="'100px'"
+            >
+            </vueSignature>
+            <button
+              class="btn btn-info my-3 btn-sm text-white"
+              :disabled="isUploadSignLoading"
+              @click="saveSignature('sign_tl_2')"
+            >
+              {{ isUploadSignLoading ? 'Saving..' : 'Save TL 2' }}
+            </button>
+            <button
+              class="btn btn-info btn-sm mx-2 my-3 text-white"
+              @click="clearSignature('sign_tl_2')"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+      </CModalBody>
+      <CModalFooter>
+        <CButton color="secondary" class="text-white" @click="closeSignModal()">
+          Close
+        </CButton>
+      </CModalFooter>
+    </CModal>
   </div>
 </template>
 
@@ -180,17 +351,27 @@ import { GET_GROUP } from '@/store/modules/group.module'
 import { GET_LINES } from '@/store/modules/line.module'
 import { GET_ZONES } from '@/store/modules/zones.module'
 import { GET_KANBANS } from '@/store/modules/kanban.module'
+import { GET_FREQS } from '@/store/modules/freq.module'
 import { mapGetters } from 'vuex'
+import vueSignature from 'vue-signature'
+import ApiService from '@/store/api.service'
+
 export default {
   name: 'Main Schedule',
-  components: { Loading },
+  components: { Loading, vueSignature },
   data() {
     return {
+      addSignModal: false,
       totalDate: 31,
       isLoading: false,
       mainScheduleData: null,
       subScheduleData: null,
       selectedMonth: null,
+      selectedLineID: null,
+      selectedGroupID: null,
+      selectedZoneID: null,
+      selectedKanbanID: null,
+      selectedFreqID: null,
       idxMonth: [
         '01',
         '02',
@@ -219,10 +400,24 @@ export default {
         'Nov',
         'Dec',
       ],
+      option: {
+        penColor: 'rgb(0, 0, 0)',
+        backgroundColor: 'rgb(255,255,255)',
+      },
+      isUploadSignLoading: false,
+      selectedSignature: null,
+      selectedSignCheckerID: null,
+      selectedSignType: null,
     }
   },
   computed: {
-    ...mapGetters(['getLinesOpts', 'getGroups', 'getZones', 'getKanbans']),
+    ...mapGetters([
+      'getLinesOpts',
+      'getGroups',
+      'getZones',
+      'getKanbans',
+      'getFreqs',
+    ]),
   },
   watch: {
     selectedMonth: function () {
@@ -238,15 +433,14 @@ export default {
   methods: {
     async getSchedules() {
       this.isLoading = true
-      let objQuery = {
-        // main_schedule_id: '29bd729a-0ca3-492c-bba5-c8ca4c9ed4b5',
-      }
+      let objQuery = {}
       await this.$store.dispatch(GET_SCHEDULES, objQuery).then((res) => {
         if (res) {
-          this.mainScheduleData = res
+          const data = res.list
+          this.mainScheduleData = data
           this.isLoading = false
 
-          res.map((item) => {
+          data.map((item) => {
             this.getSubSchedules(item.main_schedule_id)
           })
         }
@@ -256,16 +450,32 @@ export default {
       this.isLoading = true
       let objQuery = {
         main_schedule_id: mainScheduleID,
+        line_id: this.selectedLineID,
+        kanban_id: this.selectedKanbanID,
+        zone_id: this.selectedZoneID,
+        freq_id: this.selectedFreqID,
+        month_year_num: this.selectedMonth,
       }
       await this.$store.dispatch(GET_SUB_SCHEDULES, objQuery).then((res) => {
         if (res) {
-          console.log(res)
           this.subScheduleData = res.schedule
+          console.log(this.subScheduleData[0])
           this.isLoading = false
         }
       })
     },
 
+    async addFilter() {
+      await this.getSchedules()
+    },
+    resetFilter() {
+      ;(this.selectedLineID = null),
+        (this.selectedFreqID = null),
+        (this.selectedGroupID = null),
+        (this.selectedZoneID = null),
+        (this.selectedKanbanID = null),
+        this.getSchedules()
+    },
     async getLines() {
       try {
         this.$store.dispatch(GET_LINES)
@@ -298,6 +508,14 @@ export default {
         console.log(error)
       }
     },
+    async getFreq() {
+      try {
+        this.$store.dispatch(GET_FREQS)
+      } catch (error) {
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
+      }
+    },
     generateDate() {
       let year = new Date(this.selectedMonth).getFullYear()
       let month = new Date(this.selectedMonth).getMonth() + 1
@@ -319,6 +537,57 @@ export default {
         this.containerDate.push(dateObj)
       }
     },
+
+    // sign methods
+    openSignModal(signCheckerID, from) {
+      this.selectedSignType = from
+      this.addSignModal = true
+      this.selectedSignCheckerID = signCheckerID
+    },
+    async closeSignModal() {
+      this.addSignModal = false
+      this.selectedSignCheckerID = null
+      this.selectedSignature = null
+      this.selectedSignType = null
+      await this.getSchedules()
+    },
+    saveSignature(from) {
+      var signFile
+
+      switch (from) {
+        case 'sign_tl_1':
+          signFile = this.$refs[from].save()
+          this.selectedSignature = signFile
+          break
+        default:
+          break
+      }
+      switch (from) {
+        case 'sign_tl_2':
+          signFile = this.$refs[from].save()
+          this.selectedSignature = signFile
+          break
+        default:
+          break
+      }
+
+      this.uploadSignature()
+    },
+    clearSignature(from) {
+      this.$refs[from].clear()
+    },
+    async uploadSignature() {
+      this.isUploadSignLoading = true
+      ApiService.setHeader()
+      const upload = await ApiService.put(
+        `/operational/4s/sub-schedule/sign/${this.selectedSignCheckerID}`,
+        { sign: this.selectedSignature },
+      )
+      if (upload.data.message == 'success to sign 4s schedule') {
+        this.isUploadSignLoading = false
+        alert('Sign saved')
+      }
+    },
   },
 
   async mounted() {
@@ -327,11 +596,11 @@ export default {
     await this.getGroup()
     await this.getZone()
     await this.getKanban()
+    await this.getFreq()
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
   },
-  updated() {},
 }
 </script>
 
@@ -341,6 +610,20 @@ export default {
   height: 30px;
   background-color: #f0fdf4;
   border-radius: 6px;
+}
+.check-wrapper {
+  width: 30px;
+  height: 30px;
+  background-color: #e0f2fe;
+  border-radius: 100px;
+  border: none;
+}
+.check-wrapper-null {
+  width: 30px;
+  height: 30px;
+  background-color: #f3f4f6;
+  border-radius: 100px;
+  border: none;
 }
 .bullet {
   width: 10px;

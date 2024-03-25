@@ -26,6 +26,8 @@ import schedule4s from './modules/schedule4s.module';
 import zones from './modules/zones.module';
 import kanban from './modules/kanban.module';
 
+import freq from './modules/freq.module';
+
 export default createStore({
     state: {
         sidebarVisible: '',
@@ -67,6 +69,7 @@ export default createStore({
         
         schedule4s,
         zones,
-        kanban
+        kanban,
+        freq
     },
 })
