@@ -194,7 +194,10 @@
               </td>
               <td>
                 <div class="d-flex">
-                  <button class="btn btn-info btn-sm mx-2 text-white">
+                  <button
+                    class="btn btn-info btn-sm mx-2 text-white"
+                    @click="openEditModal(data.main_schedule_id)"
+                  >
                     Edit
                   </button>
                   <button class="btn btn-warning btn-sm text-white">
@@ -266,7 +269,7 @@
       </div>
     </div>
 
-    <!-- modals -->
+    <!-- add sign modal -->
     <CModal
       backdrop="static"
       alignment="center"
@@ -275,10 +278,7 @@
       size="lg"
     >
       <CModalHeader>
-        <CModalTitle
-          >Add sign {{ selectedSignCheckerID }}
-          {{ selectedSignType }}</CModalTitle
-        >
+        <CModalTitle>Add sign </CModalTitle>
       </CModalHeader>
       <CModalBody>
         <div style="height: 150px" v-if="selectedSignType == 'sign_tl_1'">
@@ -337,6 +337,46 @@
         </CButton>
       </CModalFooter>
     </CModal>
+
+    <!-- edit modal -->
+    <CModal
+      backdrop="static"
+      alignment="center"
+      :visible="editDataModal"
+      @close="editDataModal = false"
+      size="lg"
+    >
+      <CModalHeader>
+        <CModalTitle>Edit data </CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <div class="mb-2">
+          <label class="mb-1">PIC </label>
+          <div class="row">
+            <div class="col">
+              <input type="text" class="form-control py-2" disabled />
+            </div>
+            <div class="col">
+              <VueMultiselect
+                v-model="selectedPIC"
+                :options="picData"
+                :custom-label="customPicOptions"
+              >
+              </VueMultiselect>
+            </div>
+          </div>
+        </div>
+      </CModalBody>
+      <CModalFooter>
+        <CButton
+          color="secondary"
+          class="text-white"
+          @click="editDataModal = false"
+        >
+          Close
+        </CButton>
+      </CModalFooter>
+    </CModal>
   </div>
 </template>
 
@@ -352,16 +392,18 @@ import { GET_LINES } from '@/store/modules/line.module'
 import { GET_ZONES } from '@/store/modules/zones.module'
 import { GET_KANBANS } from '@/store/modules/kanban.module'
 import { GET_FREQS } from '@/store/modules/freq.module'
+import { GET_USERS } from '@/store/modules/user.module'
+
 import { mapGetters } from 'vuex'
 import vueSignature from 'vue-signature'
 import ApiService from '@/store/api.service'
+import VueMultiselect from 'vue-multiselect'
 
 export default {
   name: 'Main Schedule',
-  components: { Loading, vueSignature },
+  components: { Loading, vueSignature, VueMultiselect },
   data() {
     return {
-      addSignModal: false,
       totalDate: 31,
       isLoading: false,
       mainScheduleData: null,
@@ -408,6 +450,11 @@ export default {
       selectedSignature: null,
       selectedSignCheckerID: null,
       selectedSignType: null,
+      addSignModal: false,
+      editDataModal: false,
+      selectedMainScheduleID: null,
+      picData: [],
+      selectedPIC: null,
     }
   },
   computed: {
@@ -417,6 +464,7 @@ export default {
       'getZones',
       'getKanbans',
       'getFreqs',
+      'getUsersOpts',
     ]),
   },
   watch: {
@@ -475,6 +523,23 @@ export default {
         (this.selectedZoneID = null),
         (this.selectedKanbanID = null),
         this.getSchedules()
+    },
+
+    async getUsers() {
+      try {
+        this.$store.dispatch(GET_USERS)
+        if (this.getUsersOpts) {
+          this.mapUsersData()
+        }
+      } catch (error) {
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
+      }
+    },
+    mapUsersData() {
+      this.getUsersOpts?.map((item) => {
+        this.picData.push(item.text)
+      })
     },
     async getLines() {
       try {
@@ -588,6 +653,13 @@ export default {
         alert('Sign saved')
       }
     },
+
+    // edit data
+    openEditModal(mainScheduleID) {
+      this.editDataModal = true
+      this.selectedMainScheduleID = mainScheduleID
+      this.mapUsersData()
+    },
   },
 
   async mounted() {
@@ -597,6 +669,7 @@ export default {
     await this.getZone()
     await this.getKanban()
     await this.getFreq()
+    await this.getUsers()
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
@@ -646,3 +719,4 @@ export default {
   border-radius: 10px;
 }
 </style>
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>
