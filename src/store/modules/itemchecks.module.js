@@ -1,69 +1,60 @@
 import ApiService from "@/store/api.service";
-export const GET_KANBANS = "getKanbans";
-export const POST_KANBAN = "postKanbans";
-export const PUT_KANBAN = "putKanbans";
-export const DELETE_KANBAN = "deleteKanbans";
+export const GET_ITEMCHECKS = "getItemchecks";
+export const POST_ITEMCHECK = "postItemchecks";
+export const PUT_ITEMCHECK = "putItemchecks";
+export const DELETE_ITEMCHECK = "deleteItemchecks";
 
 // mutation types
-export const SET_KANBANS = "setKanbans";
+export const SET_ITEMCHECKS = "setItemchecks";
 
 const state = {
-    kanbans: null
+    itemcheck: null
 };
 
 const getters = {
-    getKanbans(state) {
-        return state.kanbans
+    getItemchecks(state) {
+        return state.itemcheck
     },
-    getKanbansWithStatusModal(state) {
-        if (state.kanbans) {
-            let mapKanbans = state.kanbans.map(kanban => {
-                kanban.status = false
-                return kanban
-            })
-            return mapKanbans
-        }
-    },
-    getKanbansOpts(state) {
-        if (state.kanbans) {
-            let mapKanbans = []
-            if (state.kanbans) {
-                mapKanbans = state.kanbans.list.map(kanban => {
+    getItemchecksOpts(state) {
+        if (state.itemcheck) {
+            let mapItemchecks = []
+            if (state.itemcheck.list) {
+                mapItemchecks = state.itemcheck.list.map(itemcheck => {
                     return {
-                        id: kanban.kanban_id,
-                        text: `${kanban.kanban_no}-${kanban.area_nm}`
+                        id: itemcheck.item_check_kanban_id,
+                        text: `${itemcheck.kanban_no}-${itemcheck.item_check_nm}`
                     }
                 })
             }
-            mapKanbans.push({
+            mapItemchecks.push({
                 id: "-1",
                 text: 'All'
             })
-            return mapKanbans
+            return mapItemchecks
         }
     },
-    getKanbansOptsWithoutAll(state) {
-        if (state.kanbans) {
-            const mapKanbans = state.kanbans.map(kanban => {
+    getItemchecksOptsWithoutAll(state) {
+        if (state.itemcheck) {
+            const mapItemchecks = state.itemcheck.map(itemcheck => {
                 return {
-                    id: kanban.kanban_id,
-                    text: `${kanban.kanban_no}-${kanban.area_nm}`
+                    id: itemcheck.item_check_kanban_id,
+                    text: `${itemcheck.kanban_no}-${itemcheck.item_check_nm}`
                 }
             })
-            return mapKanbans
+            return mapItemchecks
         }
     }
 };
 
 const actions = {
-    [GET_KANBANS]({ commit }, query) {
+    [GET_ITEMCHECKS]({ commit }, query) {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
-            ApiService.query("master/kanbans/get", query)
+            ApiService.query("master/item-check-kanbans/get", query)
                 .then((result) => {
                     const data = result.data
-                    if (data.data) {
-                        commit(SET_KANBANS, data.data.list)
+                    if (data) {
+                        commit(SET_ITEMCHECKS, data.data.list)
                         resolve(data.data.list)
                     }
                 }).catch((err) => {
@@ -72,13 +63,13 @@ const actions = {
 
         });
     },
-    [POST_KANBAN]({ commit }, data = null) {
+    [POST_ITEMCHECK]({ commit }, data = null) {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
-            ApiService.post('master/kanbans/add', data)
+            ApiService.post('master/item-check-kanbans/add', data)
                 .then((result) => {
-                    const linesData = result.data
-                    resolve(linesData.data)
+                    const itemCheck = result.data
+                    resolve(itemCheck.data)
                     console.log(commit);
                 }).catch((err) => {
                     reject(err)
@@ -86,13 +77,13 @@ const actions = {
 
         });
     },
-    [PUT_KANBAN]({ commit }, data = null) {
+    [PUT_ITEMCHECK]({ commit }, data = null) {
         ApiService.setHeader()
         let ID = data.id
         delete data.id
         return new Promise((resolve, reject) => {
             console.log(data);
-            ApiService.put(`master/kanbans/edit/${ID}`, data)
+            ApiService.put(`master/item-check-kanbans/edit/${ID}`, data)
                 .then((result) => {
                     const shop = result.data
                     resolve(shop.data)
@@ -103,10 +94,10 @@ const actions = {
 
         });
     },
-    [DELETE_KANBAN]({ commit }, id) {
+    [DELETE_ITEMCHECK]({ commit }, id) {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
-            ApiService.delete(`master/kanbans/delete/${id}`)
+            ApiService.delete(`master/item-check-kanbans/delete/${id}`)
                 .then((result) => {
                     const jobData = result.data
                     resolve(jobData.data)
@@ -120,8 +111,8 @@ const actions = {
 };
 
 const mutations = {
-    [SET_KANBANS](state, kanbans) {
-        state.kanbans = kanbans;
+    [SET_ITEMCHECKS](state, itemcheck) {
+        state.itemcheck = itemcheck;
     },
 };
 

@@ -8,15 +8,14 @@ const routes = [{
         name: 'Home',
         component: DefaultLayout,
         redirect: '/',
-        children: [
-            {
+        children: [{
                 path: '/pm-dashboard',
-                name: 'PM Dashboard', 
+                name: 'PM Dashboard',
                 component: () =>
                     import ('@/views/dashboard/Dashboard.vue'),
-            },{
+            }, {
                 path: '/',
-                name: 'Dashboard', 
+                name: 'Dashboard',
                 component: () =>
                     import ('@/views/dashboard/MainDashboard.vue'),
             },
@@ -128,13 +127,13 @@ const routes = [{
                 path: '/stw/list-temuan',
                 name: 'List Temuan',
                 component: () =>
-                import ('@/views/observations/stw/ListTemuan.vue'), 
+                    import ('@/views/observations/stw/ListTemuan.vue'),
             },
             {
                 path: '/stw/list-temuan/add',
                 name: 'List Temuan Add',
                 component: () =>
-                import ('@/views/observations/stw/ListTemuanAdd.vue'), 
+                    import ('@/views/observations/stw/ListTemuanAdd.vue'),
             },
             {
                 path: '/stw/member',
@@ -146,15 +145,21 @@ const routes = [{
                 path: '/stw/focus-theme',
                 name: 'STW Fokus Tema',
                 component: () =>
-                import ('@/views/observations/stw/FocusTheme.vue'),
-            }, 
+                    import ('@/views/observations/stw/FocusTheme.vue'),
+            },
             // 4S
             {
                 path: '/4s/main-schedule',
                 name: '4S Main Schedule',
                 component: () =>
-                import ('@/views/observations/4s/MainSchedule.vue'),
-            }, 
+                    import ('@/views/observations/4s/MainSchedule.vue'),
+            },
+            {
+                path: '/4s/kanban',
+                name: 'Kanban4s',
+                component: () =>
+                    import ('@/views/observations/4s/Kanban4s.vue'),
+            },
             {
                 path: '/stw/member-voice',
                 name: 'MemberVoice',
@@ -176,8 +181,8 @@ const routes = [{
                 path: '/stw/henkaten',
                 name: 'STW Henkaten',
                 component: () =>
-                import ('@/views/observations/stw/Henkaten.vue'),
-            }, 
+                    import ('@/views/observations/stw/Henkaten.vue'),
+            },
         ],
     },
 
