@@ -30,6 +30,7 @@ import zones from './modules/zones.module';
 import kanban from './modules/kanban.module';
 
 import freq from './modules/freq.module';
+import pagination from './modules/pagination.module';
 
 export default createStore({
     state: {
@@ -75,6 +76,7 @@ export default createStore({
         schedule4s,
         zones,
         kanban,
-        freq
+        freq,
+        pagination
     },
 })

@@ -34,13 +34,15 @@ const getters = {
     },
     getZoneOptsWithoutAll(state) {
         if (state.zones) {
-            const mapZones = state.zones.map(shop => {
+            const mapZones = state.zones.map(zone => {
                 return {
-                    id: shop.zone_id,
-                    text: shop.zone_nm
+                    id: zone.zone_id,
+                    text: zone.zone_nm
                 }
             })
             return mapZones
+        } else {
+            return []
         }
     }
 };

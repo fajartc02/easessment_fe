@@ -13,10 +13,15 @@ const ApiService = {
     /**
      * Set the default HTTP request headers
      */
-    setHeader() {
+    setHeader(isMultipart = false) {
         axios.defaults.headers.common[
             "Authorization"
         ] = `Bearer ${JwtService.getToken()}`;
+        if (isMultipart) {
+            axios.defaults.headers.common[
+                'content-type'
+            ] = 'multipart/form-data'
+        }
     },
 
     async query(resource, params) {

@@ -6,16 +6,17 @@
         <th>Line</th>
         <th>Zone</th>
         <th>Area</th>
+        <th>Ilustrations</th>
         <th>Kanban No</th>
         <th>Frequency</th>
         <th colspan="3">Actions</th>
       </tr>
     </thead>
     <tbody>
-      <template v-if="kanbans?.length > 0">
-        <tr v-for="(kanban, i) in kanbans" :key="i">
+      <template v-if="getKanbansWithStatusModal?.length > 0">
+        <tr v-for="(kanban, i) in getKanbansWithStatusModal" :key="i">
           <td>
-            {{ i + 1 }}
+            {{ kanban.no }}
           </td>
           <td>
             {{ kanban.line_nm }}
@@ -27,29 +28,45 @@
             {{ kanban.area_nm }}
           </td>
           <td>
-            {{ kanban.kanban_no }}
+        <tr>
+          <td v-for="image in kanban.kanban_imgs" :key="image.index">
+            <img :src="image.img" width="100">
           </td>
-          <td>
-            {{ kanban.freq_nm }}
-          </td>
-          <td class="text-center">
-            <button class="btn btn-primary" @click="() => { kanban.status = true }">Item
-              Check</button>
-            <CModal :visible="kanban.status" @close="() => { kanban.status = false }">
-              <CModalHeader>
-                <CModalTitle>Details Itemcheck Kanban</CModalTitle>
-              </CModalHeader>
-              <CModalBody>
-                <TableKanbanItemCheck4s :kanban_id="kanban.kanban_id" />
-              </CModalBody>
-            </CModal>
-          </td>
+        </tr>
 
-          <td class="text-center">
-            <button class="btn btn-warning" @click="editKanban(kanban.kanban_id)">Edit</button>
-          </td>
-          <td class="text-center">
-            <button class="btn btn-danger">Delete</button>
+        </td>
+        <td>
+          {{ kanban.kanban_no }}
+        </td>
+        <td>
+          {{ kanban.freq_nm }}
+        </td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-primary" @click="() => { kanban.status = true }">Item
+            Check</button>
+          <CModal :visible="kanban.status" @close="() => { kanban.status = false }">
+            <CModalHeader>
+              <CModalTitle>Details Itemcheck Kanban</CModalTitle>
+            </CModalHeader>
+            <CModalBody>
+              <TableKanbanItemCheck4s :kanban_id="kanban.kanban_id" />
+            </CModalBody>
+          </CModal>
+        </td>
+
+        <td class="text-center">
+          <button class="btn btn-sm btn-warning" @click="editKanban(kanban.kanban_id)">Edit</button>
+        </td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-danger">Delete</button>
+        </td>
+        </tr>
+      </template>
+      <template v-else-if="isLoading && !getKanbansWithStatusModal">
+        <tr>
+          <td class="text-center" colspan="9">
+            <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
+            Loading...
           </td>
         </tr>
       </template>
@@ -74,7 +91,8 @@ export default {
     return {
       kanbans: [] || KANBANS_MOCK,
       visibleLiveDemo: false,
-      setId: null
+      setId: null,
+      isLoading: false
     }
   },
   computed: {
@@ -83,7 +101,9 @@ export default {
   methods: {
     async getKanban() {
       try {
-        this.$store.dispatch(GET_KANBANS, { line_id: this.selectedLine, zone_id: this.selectedZone })
+        this.isLoading = true
+        await this.$store.dispatch(GET_KANBANS, this.filter)
+        this.isLoading = false
       } catch (error) {
         console.log(error)
         if (error.response.status == 401) this.$router.push('/login')
@@ -92,6 +112,7 @@ export default {
     async editKanban(kanban_id) {
       try {
         console.log(kanban_id);
+
       } catch (error) {
         console.log(error)
         if (error.response.status == 401) this.$router.push('/login')
@@ -99,28 +120,25 @@ export default {
     }
   },
   props: {
-    selectedLine: {
-      type: String,
-      default: -1
+    filter: {
+      type: Object,
     },
-    selectedZone: {
-      type: String,
-      default: -1
-    }
   },
   components: {
     NoDataTable,
     TableKanbanItemCheck4s
   },
   watch: {
-    selectedLine() {
-      this.getKanban()
+    filter: {
+      handler() {
+        this.getKanban()
+      },
+      deep: true
     },
     selectedZone() {
       this.getKanban()
     },
     getKanbans() {
-      console.log(this.getKanbansWithStatusModal);
       this.kanbans = this.getKanbansWithStatusModal
     }
   },

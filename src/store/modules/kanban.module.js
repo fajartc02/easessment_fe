@@ -3,12 +3,18 @@ export const GET_KANBANS = "getKanbans";
 export const POST_KANBAN = "postKanbans";
 export const PUT_KANBAN = "putKanbans";
 export const DELETE_KANBAN = "deleteKanbans";
+export const SET_LIMIT = "setLimit"
+export const SET_CURRENT_PAGE = "setPage"
+export const SET_TOTAL_DATA = "setTotalData"
 
 // mutation types
 export const SET_KANBANS = "setKanbans";
 
 const state = {
-    kanbans: null
+    kanbans: null,
+    limit: 10,
+    total_data: 0,
+    current_page: 1
 };
 
 const getters = {
@@ -61,10 +67,15 @@ const actions = {
         return new Promise((resolve, reject) => {
             ApiService.query("master/kanbans/get", query)
                 .then((result) => {
-                    const data = result.data
-                    if (data.data) {
-                        commit(SET_KANBANS, data.data.list)
-                        resolve(data.data.list)
+                    const { data } = result.data
+                    if (data) {
+                        commit(SET_KANBANS, data.list)
+
+                        // THIS COMMIT FROM pagination.module.js
+                        if (data.limit) commit(SET_LIMIT, data.limit)
+                        if (data.current_page) commit(SET_CURRENT_PAGE, data.current_page)
+                        if (data.total_data) commit(SET_TOTAL_DATA, data.total_data)
+                        resolve(data.list)
                     }
                 }).catch((err) => {
                     reject(err)
@@ -73,9 +84,15 @@ const actions = {
         });
     },
     [POST_KANBAN]({ commit }, data = null) {
+        // for multipart
         ApiService.setHeader()
+        const config = {
+            headers: {
+                'content-type': 'multipart/form-data'
+            }
+        }
         return new Promise((resolve, reject) => {
-            ApiService.post('master/kanbans/add', data)
+            ApiService.post('master/kanbans/add', data, config)
                 .then((result) => {
                     const linesData = result.data
                     resolve(linesData.data)
