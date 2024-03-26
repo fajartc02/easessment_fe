@@ -1,5 +1,5 @@
 import axios from "axios";
-// 
+//
 import JwtService from "@/store/jwt.service";
 
 /**
@@ -23,7 +23,7 @@ const ApiService = {
         let container = []
         let query = `?`
         for (const key in params) {
-            if (params[key]) container.push(`${key}=${params[key]}`);
+            if (params[key] && params[key] != -1) container.push(`${key}=${params[key]}`);
         }
         query += container.join('&')
         return axios.get(resource + query).catch(error => {
