@@ -19,12 +19,8 @@
                     <CInputGroupText>
                       <CIcon icon="cil-lock-locked" />
                     </CInputGroupText>
-                    <CFormInput
-                      type="password"
-                      v-model="password"
-                      placeholder="Password"
-                      autocomplete="current-password"
-                    />
+                    <CFormInput type="password" v-model="password" placeholder="Password"
+                      autocomplete="current-password" />
                   </CInputGroup>
                   <CRow>
                     <CCol :xs="6">
@@ -37,21 +33,16 @@
               </CCardBody>
             </CCard>
           </CCardGroup>
-          <CAlert v-if="isError" color="danger"
-            ><CIcon
-              icon="cil-warning"
-              class="flex-shrink-0 me-2"
-              width="24"
-              height="24"
-            />{{ errMsg }}</CAlert
-          >
+          <CAlert v-if="isError" color="danger">
+            <CIcon icon="cil-warning" class="flex-shrink-0 me-2" width="24" height="24" />{{ errMsg }}
+          </CAlert>
         </CCol>
       </CRow>
     </CContainer>
   </div>
 </template>
-  
-  <script>
+
+<script>
 import Swal from 'sweetalert2'
 import { LOGIN } from '@/store/modules/auth.module'
 export default {
@@ -84,4 +75,3 @@ export default {
   },
 }
 </script>
-  

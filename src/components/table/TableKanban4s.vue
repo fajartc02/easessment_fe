@@ -13,7 +13,7 @@
       </tr>
     </thead>
     <tbody>
-      <template v-if="getKanbansWithStatusModal?.length > 0">
+      <template v-if="getKanbansWithStatusModal && !isLoading">
         <tr v-for="(kanban, i) in getKanbansWithStatusModal" :key="i">
           <td>
             {{ kanban.no }}
