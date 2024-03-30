@@ -6,7 +6,6 @@
         <th>Line</th>
         <th>Zone</th>
         <th>Area</th>
-        <th>Ilustrations</th>
         <th>Kanban No</th>
         <th>Frequency</th>
         <th colspan="3">Actions</th>
@@ -28,38 +27,35 @@
             {{ kanban.area_nm }}
           </td>
           <td>
-        <tr>
-          <td v-for="image in kanban.kanban_imgs" :key="image.index">
-            <img :src="image.img" width="100">
+            {{ kanban.kanban_no }}
           </td>
-        </tr>
+          <td>
+            {{ kanban.freq_nm }}
+          </td>
+          <td class="text-center">
+            <button class="btn btn-sm btn-primary" @click="() => { kanban.status = true }">Kanban</button>
+            <CModal :visible="kanban.status" @close="() => { kanban.status = false }" size="lg">
+              <CModalBody>
+                <KanbanItemCheck :kanban_id="kanban.kanban_id" />
+              </CModalBody>
+            </CModal>
+          </td>
 
-        </td>
-        <td>
-          {{ kanban.kanban_no }}
-        </td>
-        <td>
-          {{ kanban.freq_nm }}
-        </td>
-        <td class="text-center">
-          <button class="btn btn-sm btn-primary" @click="() => { kanban.status = true }">Item
-            Check</button>
-          <CModal :visible="kanban.status" @close="() => { kanban.status = false }">
-            <CModalHeader>
-              <CModalTitle>Details Itemcheck Kanban</CModalTitle>
-            </CModalHeader>
-            <CModalBody>
-              <TableKanbanItemCheck4s :kanban_id="kanban.kanban_id" />
-            </CModalBody>
-          </CModal>
-        </td>
-
-        <td class="text-center">
-          <button class="btn btn-sm btn-warning" @click="editKanban(kanban.kanban_id)">Edit</button>
-        </td>
-        <td class="text-center">
-          <button class="btn btn-sm btn-danger">Delete</button>
-        </td>
+          <td class="text-center">
+            <button class="btn btn-sm btn-warning" @click="() => { kanban.statusEdit = true }">Edit</button>
+            <CModal backdrop="static" :visible="kanban.statusEdit" @close="() => { kanban.statusEdit = false }" clos
+              size="lg">
+              <CModalHeader>
+                <CModalTitle>Edit Kanban</CModalTitle>
+              </CModalHeader>
+              <CModalBody>
+                <KanbanItemCheckEdit :kanban_id="kanban.kanban_id" />
+              </CModalBody>
+            </CModal>
+          </td>
+          <td class="text-center">
+            <button class="btn btn-sm btn-danger" @click="ActionDeleteKanban(kanban.kanban_id)">Delete</button>
+          </td>
         </tr>
       </template>
       <template v-else-if="isLoading && !getKanbansWithStatusModal">
@@ -81,9 +77,11 @@
 <script>
 import KANBANS_MOCK from '@/mocks/kanban.mock'
 import NoDataTable from './NoDataTable.vue'
-import TableKanbanItemCheck4s from './TableKanbanItemCheck4s.vue'
-import { GET_KANBANS } from '@/store/modules/kanban.module'
+import KanbanItemCheck from '../kanban4s/KanbanItemCheck.vue'
+import KanbanItemCheckEdit from '../kanban4s/KanbanItemCheckEdit.vue'
+import { DELETE_KANBAN, GET_KANBANS } from '@/store/modules/kanban.module'
 import { mapGetters } from 'vuex'
+import Swal from 'sweetalert2'
 
 export default {
   name: "TableKanban4s",
@@ -117,6 +115,25 @@ export default {
         console.log(error)
         if (error.response.status == 401) this.$router.push('/login')
       }
+    },
+    async ActionDeleteKanban(kanban_id) {
+      try {
+        await Swal.fire({
+          title: `Apakah kamu yakin ingin menghapus kanban ini?`,
+          showCancelButton: true,
+          confirmButtonText: "Delete",
+        }).then(async (result) => {
+          /* Read more about isConfirmed, isDenied below */
+          if (result.isConfirmed) {
+            this.isLoading = true
+            this.$store.dispatch(DELETE_KANBAN, kanban_id)
+            await this.getKanban()
+          }
+        });
+      } catch (error) {
+        console.log(error)
+        if (error.response.status == 401) this.$router.push('/login')
+      }
     }
   },
   props: {
@@ -126,7 +143,8 @@ export default {
   },
   components: {
     NoDataTable,
-    TableKanbanItemCheck4s
+    KanbanItemCheck,
+    KanbanItemCheckEdit
   },
   watch: {
     filter: {

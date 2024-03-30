@@ -83,6 +83,7 @@ const actions = {
         ApiService.setHeader()
         let ID = data.id
         delete data.id
+        console.log(data);
         return new Promise((resolve, reject) => {
             console.log(data);
             ApiService.put(`master/zones/edit/${ID}`, data)
@@ -91,6 +92,7 @@ const actions = {
                     resolve(shop.data)
                     console.log(commit);
                 }).catch((err) => {
+                    console.log(err);
                     reject(err)
                 });
 
