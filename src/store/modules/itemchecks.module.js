@@ -15,6 +15,15 @@ const getters = {
     getItemchecks(state) {
         return state.itemcheck
     },
+    getItemchecksWithEditableStatus(state) {
+        if (state.itemcheck) {
+            let mapItemcheck = state.itemcheck.map(kanban => {
+                kanban.is_edit = false
+                return kanban
+            })
+            return mapItemcheck
+        }
+    },
     getItemchecksOpts(state) {
         if (state.itemcheck) {
             let mapItemchecks = []
@@ -85,8 +94,8 @@ const actions = {
             console.log(data);
             ApiService.put(`master/item-check-kanbans/edit/${ID}`, data)
                 .then((result) => {
-                    const shop = result.data
-                    resolve(shop.data)
+                    const itemcheck = result.data
+                    resolve(itemcheck.data)
                     console.log(commit);
                 }).catch((err) => {
                     reject(err)
@@ -99,8 +108,8 @@ const actions = {
         return new Promise((resolve, reject) => {
             ApiService.delete(`master/item-check-kanbans/delete/${id}`)
                 .then((result) => {
-                    const jobData = result.data
-                    resolve(jobData.data)
+                    const itemcheck = result.data
+                    resolve(itemcheck.data)
                     console.log(commit);
                 }).catch((err) => {
                     reject(err)
