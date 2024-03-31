@@ -108,6 +108,7 @@
             </tr>
           </thead>
           <tbody>
+            <!-- Start: EDIT ITEMCHECK -->
             <template v-if="getItemchecksWithEditableStatus">
               <tr v-for="(itemcheck) in getItemchecksWithEditableStatus" :key="itemcheck.item_check_kanban_id">
                 <template v-if="!itemcheck.is_edit">
@@ -115,21 +116,19 @@
                   <td>{{ itemcheck.item_check_nm }}</td>
                   <td>{{ +itemcheck.standart_time }}</td>
                   <td>
-                    <div class="row">
-                      <div class="col">
-                        <img
-                          src="https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
-                          width="100">
-                      </div>
-                      <div class="col">
-                        <img
-                          src="https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
-                          width="100">
+                    <div class="row" v-if="itemcheck.ilustration_imgs">
+                      <div v-for="itemcheckImg in itemcheck.ilustration_imgs" :key="itemcheckImg.path" class="col-4">
+                        <img :src="itemcheckImg.img" width="90">
                       </div>
                     </div>
+                    <template v-else>
+                      <p class="text-danger">No Ilustrations</p>
+                    </template>
                   </td>
                   <td>
-                    <button class="btn btn-sm btn-warning" @click="() => { itemcheck.is_edit = true }">Edit</button>
+                    <button class="btn btn-sm btn-warning" @click="() => {
+    itemcheck.is_edit = true
+  }">Edit</button>
                   </td>
                 </template>
                 <template v-else>
@@ -139,18 +138,19 @@
                   </td>
                   <td>{{ +itemcheck.standart_time }}</td>
                   <td>
-                    <div class="row">
-                      <div class="col">
-                        <img
-                          src="https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
-                          width="100">
-                      </div>
-                      <div class="col">
-                        <img
-                          src="https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
-                          width="100">
-                      </div>
-                    </div>
+                    <input class="form-control" type="file" name="ilustration_imgs[]" @change="handleFileInputChange"
+                      multiple accept="image/*">
+                    <table v-if="itemcheck.ilustration_imgs">
+                      <tr v-for="(image, index) in itemcheck.ilustration_imgs" :key="index">
+                        <td>
+                          <img v-if="!image.is_deleted" :src="image.img" alt="Selected Image" width="100">
+                        </td>
+                        <td>
+                          <button v-if="!image.is_deleted" class="btn btn-sm btn-sm btn-danger"
+                            @click="removeImage(index, itemcheck)">Remove</button>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                   <td>
                     <button class="btn btn-sm btn-success" @click="() => {
@@ -165,9 +165,11 @@
                 </td>
               </tr>
             </template>
+            <!-- End: EDIT ITEMCHECK -->
             <template v-else>
               <NoDataTable :colspan="4" v-if="!isAddItemCheck" />
             </template>
+            <!-- Start: ADD ITEMCHECK -->
             <tr v-if="isAddItemCheck">
               <td></td>
               <td>
@@ -179,8 +181,8 @@
                   v-model="newItemcheck.standart_time">
               </td>
               <td>
-                <input class="form-control" type="file" name="kanban_imgs[]" @change="handleFileInputChange" multiple
-                  accept="image/*">
+                <input class="form-control" type="file" name="ilustration_imgs[]" @change="handleFileInputChange"
+                  multiple accept="image/*">
 
                 <table v-if="selectedImages.length > 0">
                   <tr v-for="(image, index) in selectedImages" :key="index">
@@ -202,6 +204,7 @@
                 </button>
               </td>
             </tr>
+            <!-- End: ADD ITEMCHECK -->
             <tr>
               <td colspan="6"><button class="btn btn-sm btn-primary mx-auto"
                   @click="() => { isAddItemCheck = true }">Add
@@ -224,7 +227,12 @@
 <script>
 import ITEMCHECK_KANBAN from '@/mocks/ITEMCHECK_KANBAN.mock'
 import NoDataTable from '@/components/table/NoDataTable.vue'
-import { DELETE_ITEMCHECK, GET_ITEMCHECKS, POST_ITEMCHECK, PUT_ITEMCHECK } from '@/store/modules/itemchecks.module'
+import {
+  DELETE_ITEMCHECK,
+  GET_ITEMCHECKS,
+  POST_ITEMCHECK,
+  PUT_ITEMCHECK
+} from '@/store/modules/itemchecks.module'
 import { mapGetters } from 'vuex'
 import { GET_KANBAN_DETAIL, PUT_KANBAN } from '@/store/modules/kanban.module'
 import { GET_LINES } from '@/store/modules/line.module'
@@ -241,7 +249,8 @@ export default {
         kanban_id: null,
         item_check_nm: null,
         standart_time: null,
-        item_check_imgs: []
+        dest: "ITEM_CHECKS_KANBAN",
+        ilustration_imgs: []
       },
       isLoading: false,
       isEditKanban: false,
@@ -265,7 +274,7 @@ export default {
         })
       }
       return total
-    }
+    },
   },
   methods: {
     async getKanbanItemCheck() {
@@ -304,7 +313,6 @@ export default {
         this.isLoading = true
         const data = {
           id: this.getKanbanDetail.kanban_id,
-          line_id: this.getKanbanDetail.line_id,
           freq_id: this.getKanbanDetail.freq_id,
           zone_id: this.getKanbanDetail.zone_id,
           kanban_no: this.getKanbanDetail.kanban_no,
@@ -312,6 +320,7 @@ export default {
         }
 
         await this.$store.dispatch(PUT_KANBAN, data)
+        await this.ActionKanbanDetail()
         this.isLoading = false
         this.isEditKanban = false
       } catch (error) {
@@ -326,16 +335,26 @@ export default {
         kanban_id: null,
         item_check_nm: null,
         standart_time: null,
-        item_check_imgs: []
+        ilustration_imgs: []
       }
     },
     async ActionAddItemCheck() {
       try {
         this.isLoading = true
         this.newItemcheck.kanban_id = this.getKanbanDetail.kanban_id
-        // FOR TEMP WAITING BE ENHANCE
-        delete this.newItemcheck.item_check_imgs
-        await this.$store.dispatch(POST_ITEMCHECK, this.newItemcheck)
+        this.newItemcheck.dest += `_${this.getKanbanDetail.line_nm}_${this.getKanbanDetail.kanban_no}`
+        let newFormKanbanData = new FormData()
+        for (const key in this.newItemcheck) {
+          const element = this.newItemcheck[key];
+          if (Array.isArray(this.newItemcheck[key])) {
+            this.newItemcheck.ilustration_imgs.forEach((item) => {
+              newFormKanbanData.append(`ilustration_imgs`, item);
+            });
+          } else {
+            newFormKanbanData.append(key, element);
+          }
+        }
+        await this.$store.dispatch(POST_ITEMCHECK, newFormKanbanData)
         await this.getKanbanItemCheck()
         this.isLoading = false
         this.isAddItemCheck = false
@@ -343,7 +362,8 @@ export default {
           kanban_id: null,
           item_check_nm: null,
           standart_time: null,
-          item_check_imgs: []
+          dest: null,
+          ilustration_imgs: []
         }
       } catch (error) {
         console.log(error)
@@ -353,16 +373,41 @@ export default {
     },
     async ActionUpdateItemCheck(itemcheck) {
       try {
-        // TEMPORARY WAITING BE enhance
         this.isLoading = true
+        //   newItemcheck: {
+        //   kanban_id: null,
+        //   item_check_nm: null,
+        //   standart_time: null,
+        //   dest: "ITEM_CHECKS_KANBAN",
+        //   ilustration_imgs: []
+        // },
         const data = {
           id: itemcheck.item_check_kanban_id,
           kanban_id: this.getKanbanDetail.kanban_id,
           item_check_nm: itemcheck.item_check_nm,
           standart_time: itemcheck.standart_time,
-          // item_check_imgs: itemcheck.item_check_imgs
+          dest: "ITEM_CHECKS_KANBAN",
+          previous_img_paths: itemcheck.ilustration_imgs ? JSON.stringify(itemcheck.ilustration_imgs) : null, // for handled image
+          ilustration_imgs: [],
         }
-        await this.$store.dispatch(PUT_ITEMCHECK, data)
+        console.log(data);
+        data.dest += `_${this.getKanbanDetail.line_nm}_${this.getKanbanDetail.kanban_no}`
+        let newFormKanbanData = new FormData()
+        for (const key in data) {
+          const element = data[key];
+          if (Array.isArray(data[key]) && key != 'previous_img_paths') {
+            this.selectedImages.forEach((item) => {
+              newFormKanbanData.append(`ilustration_imgs`, item.file);
+            });
+          } else {
+            newFormKanbanData.append(key, element);
+          }
+        }
+        this.isLoading = false
+        await this.$store.dispatch(PUT_ITEMCHECK, newFormKanbanData)
+        this.selectedImages = []
+        this.newItemcheck.ilustration_imgs = []
+        this.newItemcheck.dest = "ITEM_CHECKS_KANBAN"
         await this.getKanbanItemCheck()
       } catch (error) {
         console.log(error)
@@ -391,8 +436,8 @@ export default {
     handleFileInputChange(event) {
       const files = event.target.files;
       for (let i = 0; i < files.length; i++) {
-        if (this.selectedImages.length < 4) {
-          this.newItemcheck.item_check_imgs.push(files[i]);
+        if (this.selectedImages.length < 3) {
+          this.newItemcheck.ilustration_imgs.push(files[i]);
           const reader = new FileReader();
           reader.onload = (e) => {
             this.selectedImages.push({ url: e.target.result, file: files[i] });
@@ -401,8 +446,16 @@ export default {
         }
       }
     },
-    removeImage(index) {
-      this.newItemcheck.item_check_imgs.splice(index, 1);
+    removeImage(index, itemcheck = null) {
+      if (itemcheck) {
+        // console.log(itemcheck);
+        itemcheck.ilustration_imgs[index].is_deleted = true
+        console.log(itemcheck.ilustration_imgs);
+        // itemcheck.ilustration_imgs[index] = itemcheck.ilustration_imgs[index].reduce(itemcheck => itemcheck.)
+        // itemcheck.splice(index, 1);
+        return;
+      }
+      this.newItemcheck.ilustration_imgs.splice(index, 1);
       this.selectedImages.splice(index, 1);
     }
   },

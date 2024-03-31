@@ -74,8 +74,13 @@ const actions = {
     },
     [POST_ITEMCHECK]({ commit }, data = null) {
         ApiService.setHeader()
+        const config = {
+            headers: {
+                'content-type': 'multipart/form-data'
+            }
+        }
         return new Promise((resolve, reject) => {
-            ApiService.post('master/item-check-kanbans/add', data)
+            ApiService.post('master/item-check-kanbans/add', data, config)
                 .then((result) => {
                     const itemCheck = result.data
                     resolve(itemCheck.data)
@@ -88,11 +93,16 @@ const actions = {
     },
     [PUT_ITEMCHECK]({ commit }, data = null) {
         ApiService.setHeader()
-        let ID = data.id
-        delete data.id
+        let ID = data.get('id')
+        data.delete('id')
+        const config = {
+            headers: {
+                'content-type': 'multipart/form-data'
+            }
+        }
         return new Promise((resolve, reject) => {
             console.log(data);
-            ApiService.put(`master/item-check-kanbans/edit/${ID}`, data)
+            ApiService.put(`master/item-check-kanbans/edit/${ID}`, data, config)
                 .then((result) => {
                     const itemcheck = result.data
                     resolve(itemcheck.data)
