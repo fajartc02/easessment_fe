@@ -212,7 +212,11 @@ export default {
       'getLinesOptsWithoutAll',
       'getZoneOptsWithoutAll',
       'getFreqsOptsWithoutAll'
-    ])
+    ]),
+    getLineName() {
+      let line = this.getLinesOptsWithoutAll.find(line => line.id == this.newKanban.line_id)
+      return line.text
+    }
   },
   watch: {
     getPagination() {
@@ -275,7 +279,7 @@ export default {
     async storeNewKanban() {
       try {
         this.isLoading = true
-        this.newKanban.dest = `${this.newKanban.line_id}-${this.newKanban.kanban_no}`
+        this.newKanban.dest = `KANBAN_${this.getLineName}_${this.newKanban.kanban_no}`
         const isInputFullFill = FnRequireFullFillInput(this.newKanban)
         if (isInputFullFill) {
           delete this.newKanban.line_id

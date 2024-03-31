@@ -14,6 +14,11 @@ const routes = [{
                 component: () =>
                     import ('@/views/dashboard/Dashboard.vue'),
             }, {
+                path: '/calendar',
+                name: 'CalendarPlanning',
+                component: () =>
+                    import ('@/views/CalendarPlanning/CalendarPlanning.vue'),
+            }, {
                 path: '/',
                 name: 'Dashboard',
                 component: () =>
