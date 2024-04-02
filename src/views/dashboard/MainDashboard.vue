@@ -6,51 +6,25 @@
         <div class="row">
           <div class="col">
             <label>Start date</label>
-            <input
-              type="date"
-              class="form-control"
-              v-model="selectedFilterStartDate"
-              @change="addFilter()"
-            />
+            <input type="date" class="form-control" v-model="selectedFilterStartDate" @change="addFilter()" />
           </div>
           <div class="col">
             <label>End date</label>
-            <input
-              type="date"
-              class="form-control"
-              v-model="selectedFilterEndDate"
-              @change="addFilter()"
-            />
+            <input type="date" class="form-control" v-model="selectedFilterEndDate" @change="addFilter()" />
           </div>
           <div class="col">
             <label>Line</label>
-            <select
-              class="form-select"
-              v-model="selectedLine"
-              @change="addFilter('line')"
-            >
-              <option
-                v-for="(line, index) in getLinesOpts"
-                :key="index"
-                :value="line.id"
-                :selected="line.id == this.selectedLineID"
-              >
+            <select class="form-select" v-model="selectedLine" @change="addFilter('line')">
+              <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id"
+                :selected="line.id == this.selectedLineID">
                 {{ line.text }}
               </option>
             </select>
           </div>
           <div class="col">
             <label>Shift</label>
-            <select
-              class="form-select"
-              v-model="selectedFilterShift"
-              @change="addFilter('shift')"
-            >
-              <option
-                v-for="(group, index) in getGroupsOpts"
-                :key="index"
-                :value="group.id"
-              >
+            <select class="form-select" v-model="selectedFilterShift" @change="addFilter('shift')">
+              <option v-for="(group, index) in getGroupsOpts" :key="index" :value="group.id">
                 {{ group.text }}
               </option>
             </select>
@@ -62,45 +36,20 @@
         <div v-if="cond == 'default'">
           <div class="row">
             <div class="col-md-2 mr-2" v-if="overallGraphData">
-              <apexchart
-                type="bar"
-                :options="defaultOptions"
-                :series="overallGraphData"
-                height="100%"
-              ></apexchart>
+              <apexchart type="bar" :options="defaultOptions" :series="overallGraphData" height="100%"></apexchart>
             </div>
-            <div
-              style="height: 300px"
-              class="col-md-10 pt-2 pb-4 d-flex horizontal-scrollable"
-            >
+            <div style="height: 300px" class="col-md-10 pt-2 pb-4 d-flex horizontal-scrollable">
               <div v-if="isLoading">
-                <loading
-                  v-model:active="isLoading"
-                  :can-cancel="true"
-                  :is-full-page="false"
-                  :on-cancel="onCancel"
-                />
+                <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false" :on-cancel="onCancel" />
               </div>
 
-              <div
-                class="col-2 m-2"
-                v-else
-                v-for="detailGraph in getGraphs"
-                :key="detailGraph.id"
-              >
+              <div class="col-2 m-2" v-else v-for="detailGraph in getGraphs" :key="detailGraph.id">
                 <div class="w-100 h-100 rounded">
-                  <apexchart
-                    type="bar"
-                    :options="options"
-                    :series="detailGraph.chartData"
-                    height="100%"
-                    @click="
-                      (event, chartContext, config) => {
-                        selectedLineID = detailGraph
-                        clickHandler(event, chartContext, config)
-                      }
-                    "
-                  ></apexchart>
+                  <apexchart type="bar" :options="options" :series="detailGraph.chartData" height="100%" @click="(event, chartContext, config) => {
+                selectedLineID = detailGraph
+                clickHandler(event, chartContext, config)
+              }
+              "></apexchart>
                 </div>
                 <div class="text-center mt-1">{{ detailGraph.line_nm }}</div>
               </div>
@@ -110,40 +59,17 @@
         <div v-else-if="cond == 'detail'">
           <div class="row">
             <div class="col-md-2 mr-2" v-if="overallGraphData">
-              <apexchart
-                type="bar"
-                :options="defaultOptions"
-                :series="overallGraphData"
-                height="100%"
-              ></apexchart>
+              <apexchart type="bar" :options="defaultOptions" :series="overallGraphData" height="100%"></apexchart>
             </div>
-            <div
-              style="height: 300px"
-              class="col-md-10 pt-2 pb-4 d-flex horizontal-scrollable"
-            >
+            <div style="height: 300px" class="col-md-10 pt-2 pb-4 d-flex horizontal-scrollable">
               <div v-if="isLoading">
-                <loading
-                  v-model:active="isLoading"
-                  :can-cancel="true"
-                  :is-full-page="false"
-                  :on-cancel="onCancel"
-                />
+                <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false" :on-cancel="onCancel" />
               </div>
 
-              <div
-                class="col-2 m-2"
-                v-else
-                v-for="detailGraph in getGraphs"
-                :key="detailGraph.id"
-              >
+              <div class="col-2 m-2" v-else v-for="detailGraph in getGraphs" :key="detailGraph.id">
                 <div class="w-100 h-100 rounded">
-                  <apexchart
-                    type="bar"
-                    :options="options"
-                    :series="detailGraph.chartData"
-                    height="100%"
-                    @click="clickHandler"
-                  ></apexchart>
+                  <apexchart type="bar" :options="options" :series="detailGraph.chartData" height="100%"
+                    @click="clickHandler"></apexchart>
                 </div>
                 <div class="text-center mt-1">{{ detailGraph.month }}</div>
               </div>
@@ -329,21 +255,11 @@ export default {
       }
 
       this.$router.push(
-        `/stw/list-temuan?source_category=${source_category}&cm_judg=${cm_judg}&line_id=${
-          this.selectedLineID?.line_id
-            ? this.selectedLineID.line_id
-            : this.selectedLine
+        `/stw/list-temuan?source_category=${source_category}&cm_judg=${cm_judg}&line_id=${this.selectedLineID?.line_id
+          ? this.selectedLineID.line_id
+          : this.selectedLine
         }`,
       )
-
-      // kalau seriesIndex == 0 = cm_judg = false
-      // kalau seriesIndex == 1 = cm_judg = true
-      // kalau seriesIndex == 2 = cm_judg = false
-
-      // kalau dataPointIndex == 0 = source_category = "MV"
-      // kalau dataPointIndex == 1 = source_category = "Obs"
-      // kalau dataPointIndex == 2 = source_category = "H"
-      // kalau dataPointIndex == 3 = source_category = "FT"
     },
     async getGroup() {
       try {

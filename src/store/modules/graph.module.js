@@ -1,29 +1,27 @@
 import ApiService from "@/store/api.service";
 export const GET_GRAPH = "getGraphs";
+export const GET_4S_GRAPH = "get4SGraphs";
 
 // mutation types
 export const SET_GRAPH = "setGraph";
+export const SET_4S_GRAPH = "set4SGraph";
 
 const state = {
-    graphs: null
+    graphs: null,
+    graphs4s: null
 };
 
 const getters = {
     getGraphs(state) {
         return state.graphs
     },
+    get4SGraphs(state) {
+        return state.graphs4s
+    },
 };
 
 const actions = {
-    [GET_GRAPH]({ commit }, query) {
-
-        // let filterOpt;
-        // if (query.line_id !== '-1' || query.group_id !== '-1') {
-        //     filterOpt = `?start_date=${query.start_date}&end_date=${query.end_date}&line_id=${query.line_id}&group_id=${query.group_id}`
-        // } else {
-        //     filterOpt = `?start_date=${query.start_date}&end_date=${query.end_date}`
-        // }
-
+    [GET_GRAPH]({ commit }, query) {  
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
             ApiService.query(`/operational/graph`, query)
@@ -35,8 +33,22 @@ const actions = {
                     }
                 }).catch((err) => {
                     reject(err)
-                });
-
+                }); 
+        }); 
+    },
+    [GET_4S_GRAPH]({ commit }, query) {  
+        ApiService.setHeader()
+        return new Promise((resolve, reject) => {
+            ApiService.query(`/operational/4s/graph`, query)
+                .then((result) => {
+                    const res = result.data
+                    if (res) {
+                        commit(SET_4S_GRAPH, res.data)
+                        resolve(res.data)
+                    }
+                }).catch((err) => {
+                    reject(err)
+                }); 
         });
     },
 
@@ -45,6 +57,9 @@ const actions = {
 const mutations = {
     [SET_GRAPH](state, graphs) {
         state.graphs = graphs;
+    },
+    [SET_4S_GRAPH](state, graphs) {
+        state.graphs4s = graphs;
     },
 };
 

@@ -18,7 +18,7 @@ const actions = {
     [GET_FREQS]({ commit }, query) {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
-            ApiService.query("master/freqs", query)
+            ApiService.query("master/freqs/get", query)
                 .then((result) => {
                     const data = result.data
                     if (data) { 
