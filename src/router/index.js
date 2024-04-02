@@ -169,7 +169,13 @@ const routes = [{
                 path: '/4s/kanban',
                 name: 'Kanban',
                 component: () =>
-                import ('@/views/observations/4s/Kanban.vue'),
+                import ('@/views/observations/4s/Kanban4s.vue'),
+            }, 
+            {
+                path: '/master/kanban',
+                name: 'Kanban4s',
+                component: () =>
+                    import ('@/views/observations/4s/Kanban4s.vue'),
             }, 
             {
                 path: '/4s/temuan',
@@ -182,16 +188,7 @@ const routes = [{
                 name: 'Grafik',
                 component: () =>
                 import ('@/views/observations/4s/Grafik.vue'),
-            }, 
- 
-                    import ('@/views/observations/4s/MainSchedule.vue'),
-            },
-            {
-                path: '/master/kanban',
-                name: 'Kanban4s',
-                component: () =>
-                    import ('@/views/observations/4s/Kanban4s.vue'),
-            }, 
+            },   
             {
                 path: '/stw/member-voice',
                 name: 'MemberVoice',

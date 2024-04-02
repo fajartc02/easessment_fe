@@ -74,16 +74,14 @@ const actions = {
         return new Promise((resolve, reject) => {
             ApiService.query("master/kanbans/get", query)
  
-                .then((result) => {
-                    const data = result.data
-                    if (data) { 
-                        commit(SET_KANBANS, data.data.list)
-                        console.log(data)
-                        resolve(data.data.list)
+                // .then((result) => {
+                //     const data = result.data
+                //     if (data) { 
+                //         commit(SET_KANBANS, data.data.list) 
+                //         resolve(data.data.list)
  
                 .then((result) => {
-                    const { data } = result.data
-                    console.log(data);
+                    const { data } = result.data 
                     if (data) {
                         commit(SET_KANBANS, data.list)
 
