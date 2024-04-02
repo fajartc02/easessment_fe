@@ -75,6 +75,7 @@ const actions = {
             ApiService.query("master/kanbans/get", query)
                 .then((result) => {
                     const { data } = result.data
+                    console.log(data);
                     if (data) {
                         commit(SET_KANBANS, data.list)
 

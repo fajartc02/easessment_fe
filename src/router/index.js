@@ -160,7 +160,7 @@ const routes = [{
                     import ('@/views/observations/4s/MainSchedule.vue'),
             },
             {
-                path: '/4s/kanban',
+                path: '/master/kanban',
                 name: 'Kanban4s',
                 component: () =>
                     import ('@/views/observations/4s/Kanban4s.vue'),

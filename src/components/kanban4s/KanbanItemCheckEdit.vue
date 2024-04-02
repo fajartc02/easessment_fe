@@ -421,7 +421,6 @@ export default {
           showCancelButton: true,
           confirmButtonText: "Delete",
         }).then(async (result) => {
-          /* Read more about isConfirmed, isDenied below */
           if (result.isConfirmed) {
             this.isLoading = true
             await this.$store.dispatch(DELETE_ITEMCHECK, item_check_kanban_id)

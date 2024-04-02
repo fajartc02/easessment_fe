@@ -235,6 +235,10 @@ export default {
       },
       deep: true
     },
+    ['filter.line_id']: function () {
+      // this.changesLine()
+
+    },
     newKanban: {
       handler() {
         if (this.newKanban.line_id) {
@@ -343,6 +347,7 @@ export default {
     await this.getLines();
     await this.getZones();
     await this.fetchFreqs();
+    await this.$store.dispatch(GET_KANBANS, this.filter)
   },
   components: {
     TableKanban4s,
