@@ -156,7 +156,34 @@ const routes = [{
             {
                 path: '/4s/main-schedule',
                 name: '4S Main Schedule',
+                component: () => 
+                import ('@/views/observations/4s/MainSchedule.vue'),
+            },
+            {
+                path: '/4s/schedule-check/:mainScheduleID/:subScheduleID',
+                name: 'Schedule Check',
                 component: () =>
+                import ('@/views/observations/4s/ScheduleCheck.vue'),
+            },    
+            {
+                path: '/4s/kanban',
+                name: 'Kanban',
+                component: () =>
+                import ('@/views/observations/4s/Kanban.vue'),
+            }, 
+            {
+                path: '/4s/temuan',
+                name: 'Temuan',
+                component: () =>
+                import ('@/views/observations/4s/Temuan.vue'),
+            }, 
+            {
+                path: '/4s/grafik',
+                name: 'Grafik',
+                component: () =>
+                import ('@/views/observations/4s/Grafik.vue'),
+            }, 
+ 
                     import ('@/views/observations/4s/MainSchedule.vue'),
             },
             {
@@ -164,7 +191,7 @@ const routes = [{
                 name: 'Kanban4s',
                 component: () =>
                     import ('@/views/observations/4s/Kanban4s.vue'),
-            },
+            }, 
             {
                 path: '/stw/member-voice',
                 name: 'MemberVoice',

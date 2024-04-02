@@ -63,6 +63,24 @@ export default [{
         name: 'Main Schedule',
         to: '/4s/main-schedule',
         icon: 'cil-speedometer'
+    }, 
+    {
+        component: 'CNavItem',
+        name: 'Kanban 4S',
+        to: '/4s/kanban',
+        icon: 'cil-speedometer'
+    },
+    {
+        component: 'CNavItem',
+        name: 'Temuan 4S',
+        to: '/4s/temuan',
+        icon: 'cil-speedometer'
+    }, 
+    {
+        component: 'CNavItem',
+        name: 'Grafik 4S',
+        to: '/4s/grafik',
+        icon: 'cil-speedometer'
     },
     {
         component: 'CNavTitle', // --- MASTER MENU

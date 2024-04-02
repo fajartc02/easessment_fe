@@ -73,6 +73,14 @@ const actions = {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
             ApiService.query("master/kanbans/get", query)
+ 
+                .then((result) => {
+                    const data = result.data
+                    if (data) { 
+                        commit(SET_KANBANS, data.data.list)
+                        console.log(data)
+                        resolve(data.data.list)
+ 
                 .then((result) => {
                     const { data } = result.data
                     console.log(data);
@@ -102,6 +110,7 @@ const actions = {
                     if (data) {
                         commit(SET_KANBAN_DETAIL, data)
                         resolve(data)
+ 
                     }
                 }).catch((err) => {
                     reject(err)
