@@ -1,5 +1,5 @@
 import axios from "axios";
-// 
+//
 import JwtService from "@/store/jwt.service";
 
 /**
@@ -13,17 +13,22 @@ const ApiService = {
     /**
      * Set the default HTTP request headers
      */
-    setHeader() {
+    setHeader(isMultipart = false) {
         axios.defaults.headers.common[
             "Authorization"
         ] = `Bearer ${JwtService.getToken()}`;
+        if (isMultipart) {
+            axios.defaults.headers.common[
+                'content-type'
+            ] = 'multipart/form-data'
+        }
     },
 
     async query(resource, params) {
         let container = []
         let query = `?`
         for (const key in params) {
-            if (params[key]) container.push(`${key}=${params[key]}`);
+            if (params[key] && params[key] != -1) container.push(`${key}=${params[key]}`);
         }
         query += container.join('&')
         return axios.get(resource + query).catch(error => {

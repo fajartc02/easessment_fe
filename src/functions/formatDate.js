@@ -121,6 +121,10 @@ const formatDate = {
         let containerMonth = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
         let month = containerMonth[date.getMonth()]
         return `${month} ${date.getFullYear()}`
+    },
+    getDayString: (date) => {
+      const days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY']
+      return days[date.getDay()]
     }
 
 }

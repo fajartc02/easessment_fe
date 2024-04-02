@@ -17,10 +17,12 @@
             </CButton>
           </div>
           <div>
-            OnProgress: <CIcon icon="cil-circle" class="text-dark" size="sm" />,
+            OnProgress:
+            <CIcon icon="cil-circle" class="text-dark" size="sm" />,
             Done:
             <CIcon icon="cil-check-circle" class="text-success" size="sm" />,
-            Delay: <CIcon icon="cil-circle" class="text-danger" size="sm" />
+            Delay:
+            <CIcon icon="cil-circle" class="text-danger" size="sm" />
           </div>
         </div>
       </div>
@@ -43,28 +45,16 @@
           </tr>
         </thead>
         <tbody v-if="observationSchedule.length > 0">
-          <tr
-            v-for="(observation, i) in observationSchedule"
-            :key="observation.pos_id"
-          >
+          <tr v-for="(observation, i) in observationSchedule" :key="observation.pos_id">
             <td>{{ i + 1 }}</td>
             <td>{{ observation.line_snm }}</td>
             <td>{{ observation.pos_nm }}</td>
             <td>{{ observation.checkers[0] }}</td>
             <td>{{ observation.group_nm }}</td>
-            <td
-              v-for="item in containerDate"
-              :key="item.idx"
-              style="min-width: 63px"
-            >
-              <template
-                v-for="child in observation.children"
-                :key="child.observation_id"
-              >
+            <td v-for="item in containerDate" :key="item.idx" style="min-width: 63px">
+              <template v-for="child in observation.children" :key="child.observation_id">
                 <template v-if="child.idxdate === String(item.idx)">
-                  <CButton
-                    v-c-tooltip="
-                      `
+                  <CButton v-c-tooltip="`
                       <div class='card'>
                         <div class='card-header'>Detail data</div>
                         <div class='card-body'>
@@ -73,18 +63,9 @@
                         </div>
                       </div>
                       `
-                    "
-                    v-if="child"
-                    :color="`${child.job_type_color}`"
-                    html="true"
-                    variant="outline"
-                    style="position: relative"
-                    @click="() => detailSchedule(child)"
-                  >
-                    <button
-                      disabled
-                      :v-if="observation.comment_sh"
-                      style="
+              " v-if="child" :color="`${child.job_type_color}`" html="true" variant="outline"
+                    style="position: relative" @click="() => detailSchedule(child)">
+                    <button disabled :v-if="observation.comment_sh" style="
                         position: absolute;
                         margin-left: 20px;
                         background-color: #e0f2fe;
@@ -92,29 +73,13 @@
                         border: 1px solid #7dd3fc;
                         color: #0369a1;
                         border-radius: 6px;
-                      "
-                    >
+                      ">
                       1
                     </button>
-                    <CIcon
-                      v-if="child.actual_check_dt"
-                      icon="cil-check-circle"
-                      class="text-success"
-                      size="md"
-                    />
-                    <CIcon
-                      v-else-if="+currentDate <= +child.idxdate"
-                      icon="cil-circle"
-                      class="text-dark"
-                      size="md"
-                    />
+                    <CIcon v-if="child.actual_check_dt" icon="cil-check-circle" class="text-success" size="sm" />
+                    <CIcon v-else-if="+currentDate <= +child.idxdate" icon="cil-circle" class="text-dark" size="sm" />
 
-                    <CIcon
-                      v-else
-                      icon="cil-circle"
-                      class="text-danger"
-                      size="md"
-                    />
+                    <CIcon v-else icon="cil-circle" class="text-danger" size="sm" />
                   </CButton>
                 </template>
               </template>
@@ -191,9 +156,8 @@ export default {
       if (this.selectedMonth) {
         this.generateDate()
         let idx = this.idxMonth.indexOf(this.selectedMonth.split('-')[1])
-        this.yearMonth = `${this.monthStr[idx]} ${
-          this.selectedMonth.split('-')[0]
-        }`
+        this.yearMonth = `${this.monthStr[idx]} ${this.selectedMonth.split('-')[0]
+          }`
         this.getObsSchedule()
       }
     },

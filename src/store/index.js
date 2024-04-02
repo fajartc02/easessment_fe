@@ -4,6 +4,7 @@ import company from "./modules/company.module";
 import plant from "./modules/plant.module";
 import shop from "./modules/shop.module";
 import line from "./modules/line.module";
+import zone from "./modules/zone.module";
 
 import machine from "./modules/machine.module";
 import user from "./modules/user.module";
@@ -14,19 +15,22 @@ import pos from "./modules/pos.module"
 import job from "./modules/job.module"
 import jobType from "./modules/jobType.module"
 
+import itemchecks from "./modules/itemchecks.module"
+
 import finding from './modules/finding.module';
 import membervoice from './modules/membervoice.module';
 
 import focustheme from './modules/focustheme.module';
 import henkaten from './modules/henkaten.module';
 
-import graph from './modules/graph.module'; 
+import graph from './modules/graph.module';
 
 import schedule4s from './modules/schedule4s.module';
 import zones from './modules/zones.module';
 import kanban from './modules/kanban.module';
 
 import freq from './modules/freq.module';
+import pagination from './modules/pagination.module';
 
 export default createStore({
     state: {
@@ -55,21 +59,24 @@ export default createStore({
         shop,
         line,
         machine,
+        zone,
+        itemchecks,
 
         observations,
         pos,
         job,
         jobType,
-        
+
         finding,
         membervoice,
         focustheme,
         henkaten,
         graph,
-        
+
         schedule4s,
         zones,
         kanban,
-        freq
+        freq,
+        pagination
     },
 })

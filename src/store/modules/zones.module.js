@@ -11,7 +11,7 @@ const state = {
 const getters = {
     getZones(state) {
         return state.zones
-    },  
+    },
 };
 
 const actions = {
@@ -21,7 +21,7 @@ const actions = {
             ApiService.query("master/zones/get", query)
                 .then((result) => {
                     const data = result.data
-                    if (data) { 
+                    if (data) {
                         commit(SET_ZONES, data.data.list)
                         resolve(data.data.list)
                     }

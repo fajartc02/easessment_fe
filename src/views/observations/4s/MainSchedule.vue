@@ -68,8 +68,8 @@
               </div>
               <div class="d-flex align-items-center">
                 <div class="bullet-cancel d-flex justify-content-center align-items-center"
-                  style="width: 20px; height: 20px">
-                  <CIcon icon="cil-x" class="text-danger" size="md" />
+                  style="width: 20px; height: 20px"> 
+                  <CIcon icon="cil-x" class="text-danger" size="sm" /> 
                 </div>
                 <span class="mx-2">Sudah Cleaning, ada temuan abnormally</span>
               </div>
@@ -120,11 +120,11 @@
               </td>
               <td>{{ data.freq_nm }}</td>
               <td v-for="(children, childrenIndex) in data.children" :key="childrenIndex" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
-              }`">
+              }`"> 
                 <div @click="addScheduleCheck(data.main_schedule_id, data.sub_schedule_id)"
                   v-if="!children.is_holiday && children.status == 'PLANNING'"
                   class="cursor-pointer status-wrapper d-flex align-items-center justify-content-center"
-                  style="cursor: pointer;">
+                  style="cursor: pointer;"> 
                   <div class="bullet"></div>
                 </div>
               </td>
@@ -146,14 +146,14 @@
                 <button @click="
               openSignModal(children.tl1_sign_checker_id, 'sign_tl_1')
               " v-if="!children.is_holiday && !children.sign_tl_1"
-                  class="check-wrapper-null d-flex align-items-center justify-content-center">
-                  <CIcon icon="cil-x" class="text-danger" size="md" />
+                  class="check-wrapper-null d-flex align-items-center justify-content-center"> 
+                  <CIcon icon="cil-x" class="text-danger" size="sm" /> 
                 </button>
                 <button @click="
               openSignModal(children.tl1_sign_checker_id, 'sign_tl_1')
               " v-else-if="!children.is_holiday && children.sign_tl_1"
-                  class="check-wrapper d-flex align-items-center justify-content-center">
-                  <CIcon icon="cil-check" class="text-black" size="md" />
+                  class="check-wrapper d-flex align-items-center justify-content-center"> 
+                  <CIcon icon="cil-check" class="text-black" size="sm" /> 
                 </button>
               </td>
             </tr>
@@ -164,13 +164,13 @@
                 <button @click="
               openSignModal(children.tl2_sign_checker_id, 'sign_tl_2')
               " v-if="!children.is_holiday && !children.sign_tl_2"
-                  class="check-wrapper-null d-flex align-items-center justify-content-center">
-                  <CIcon icon="cil-x" class="text-danger" size="md" />
+                  class="check-wrapper-null d-flex align-items-center justify-content-center"> 
+                  <CIcon icon="cil-x" class="text-danger" size="sm" /> 
                 </button>
                 <button @click="
               openSignModal(children.tl2_sign_checker_id, 'sign_tl_2')
               " v-else-if="!children.is_holiday && children.sign_tl_2"
-                  class="check-wrapper d-flex align-items-center justify-content-center">
+                  class="check-wrapper d-flex align-items-center justify-content-center"> 
                   <CIcon icon="cil-check" class="text-black" size="md" />
                 </button>
               </td>
@@ -207,7 +207,7 @@
               openSignModal(children.sign_checker_id, 'sign_sh')
               " v-else-if="!children.is_holiday && children.sign"
                   class="check-wrapper d-flex align-items-center justify-content-center">
-                  <CIcon icon="cil-check" class="text-black" size="md" />
+                  <CIcon icon="cil-check" class="text-black" size="md" /> 
                 </button>
               </td>
             </tr>
@@ -247,7 +247,7 @@
               @click="saveSignature('sign_tl_2')">
               {{ isUploadSignLoading ? 'Saving..' : 'Save TL 2' }}
             </button>
-            <button class="btn btn-info btn-sm mx-2 my-3 text-white" @click="clearSignature('sign_tl_2')">
+            <button class="btn btn-info btn-sm mx-2 my-3 text-white" @click="clearSignature('sign_tl_2')"> 
               Clear
             </button>
           </div>
@@ -275,7 +275,7 @@
               @click="saveSignature('sign_sh')">
               {{ isUploadSignLoading ? 'Saving..' : 'Save Sign SH' }}
             </button>
-            <button class="btn btn-info btn-sm mx-2 my-3 text-white" @click="clearSignature('sign_sh')">
+            <button class="btn btn-info btn-sm mx-2 my-3 text-white" @click="clearSignature('sign_sh')"> 
               Clear
             </button>
           </div>
