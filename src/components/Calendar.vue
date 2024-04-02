@@ -12,6 +12,7 @@ import { GET_GROUP } from '@/store/modules/group.module'
 import { mapGetters } from 'vuex'
 import ApiService from '@/store/api.service'
 import moment from 'moment'
+// import { toast } from 'vue3-toastify/index'
 // import { formatDate } from '@fullcalendar/core'
 
 export default defineComponent({
@@ -161,6 +162,11 @@ export default defineComponent({
       }
     },
     async handleEventClick(clickInfo) {
+      if (!clickInfo.event._def.extendedProps.created_by) {
+        alert('Anda tidak bisa menghapus libur national!')
+        return
+      }
+
       if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
         try {
           this.isLoading = true
@@ -327,11 +333,14 @@ export default defineComponent({
       <FullCalendar class='demo-app-calendar' :options='calendarOptions'>
         <template v-slot:eventContent='arg'>
           <div :class="`card`"
-            :style="`${arg.event.title == 'WHITE' ? 'background-color: #ffffff' : arg.event.title == 'RED' ? 'background-color: #f95e5e' : 'background-color: #f99a9a'}`">
-            <div class="card-body p-0">
+            :style="`${arg.event.title == 'WHITE' ? 'background-color: #ffffff' : arg.event.title == 'RED' ? 'background-color: #f99a9a' : 'background-color: #f95e5e'}`">
+            <div class="card-body p-0 overflow-auto">
               <!-- <b class="text-dark">{{ arg.timeText }}</b> -->
-              <i style="color: black;">{{ arg.event.extendedProps.is_holiday ? ' (Hari Libur)' :
-    arg.event.title + '-' + arg.event.extendedProps.shift_type }}</i>
+              <i style="color: black;">{{
+    arg.event.extendedProps.is_holiday ? arg.event.extendedProps.created_by ?
+      arg.event.extendedProps.holiday_desc :
+      `${arg.event.title}` :
+      arg.event.title + '-' + arg.event.extendedProps.shift_type }}</i>
             </div>
           </div>
         </template>
@@ -387,5 +396,11 @@ b {
   /* the calendar root */
   max-width: 1100px;
   margin: 0 auto;
+}
+</style>
+
+<style>
+a {
+  text-decoration: none;
 }
 </style>
