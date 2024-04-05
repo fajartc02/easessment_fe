@@ -117,9 +117,13 @@
               <td style="min-width: 200px">{{ data.area_nm }}</td>
               <td style="min-width: 50px">{{ data.standart_time }}</td>
               <td style="min-width: 100px" :rowspan="data.row_span_pic">
-                <div v-if="data.pic_nm"> {{ data.pic_nm }} </div>
+                <div style="cursor: pointer;" v-if="data.pic_nm"
+                  @click="openEditModal(data.sub_schedule_id, data.pic_id, data.pic_nm)">
+                  <p class="cursor-pointer"> {{ data.pic_nm }}</p>
+                </div>
                 <div v-else>
-                  <button class="btn btn-info btn-sm mx-2 text-white" @click="openEditModal(data.sub_schedule_id)">
+                  <button class="btn btn-info btn-sm mx-2 text-white"
+                    @click="openEditModal(data.sub_schedule_id, null, null)">
                     Add
                   </button>
                 </div>
@@ -375,7 +379,7 @@
           <label class="mb-1">PIC </label>
           <div class="row">
             <div class="col">
-              <input type="text" class="form-control py-2" disabled />
+              <input type="text" class="form-control py-2" :value="selectedPICName" disabled />
             </div>
             <div class="col">
               <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
@@ -475,6 +479,7 @@ export default {
       selectedSubScheduleID: null,
       picData: [],
       selectedPIC: null,
+      selectedPICName: null,
     }
   },
   computed: {
@@ -558,9 +563,6 @@ export default {
         `/operational/4s/sub-schedule/edit/${this.selectedSubScheduleID}`,
         data,
       )
-
-      console.log(add)
-
       if (add.data.message == 'Success to edit 4s schedule plan') {
         this.isAddPICLoading = false
         this.editDataModal = false
@@ -744,7 +746,10 @@ export default {
     },
 
     // edit data
-    openEditModal(subScheduleID) {
+    openEditModal(subScheduleID, picID, picName) {
+      if (picName) {
+        this.selectedPICName = picName
+      }
       this.editDataModal = true
       this.selectedSubScheduleID = subScheduleID
       this.mapUsersData()
