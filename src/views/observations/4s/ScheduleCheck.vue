@@ -38,7 +38,7 @@
                         </CInputGroup>
                         <CInputGroup class="mb-3">
                             <CInputGroupText>Act Date</CInputGroupText>
-                            <CFormInput disabled />
+                            <input type="date">
                         </CInputGroup>
                         <CInputGroup class="mb-3">
                             <CInputGroupText>Act PIC</CInputGroupText>
@@ -87,11 +87,11 @@
                             <button
                                 v-if="item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' && item.findings.length > 0"
                                 class=" btn btn-info btn-sm text-white"
-                                @click="openEditFindingModal(item.findings)">View
+                                @click="openEditFindingModal(item.findings, 'update')">Update
                                 finding</button>
                             <button v-else-if="item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d'"
                                 class=" btn btn-info btn-sm text-white"
-                                @click="openAddFindingModal(item.schedule_item_check_kanban_id)">Add
+                                @click="openAddFindingModal(item.schedule_item_check_kanban_id, 'add')">Add
                                 finding</button>
                         </td>
 
@@ -104,16 +104,34 @@
         <CModal backdrop="static" size="xl" :visible="addFindingModal" @close="() => { addFindingModal = false }"
             aria-labelledby="StaticBackdropExampleLabel">
             <CModalHeader>
-                <CModalTitle id="StaticBackdropExampleLabel">Add finding</CModalTitle>
+                <CModalTitle id="StaticBackdropExampleLabel">{{ findingActionType }} finding</CModalTitle>
             </CModalHeader>
             <CModalBody>
                 <div class="row">
                     <div class="col">
-                        <div class="mb-2">
-                            <label class="mb-1">Line</label>
-                            <VueMultiselect v-model="selectedLineID" :options="lineData"
-                                :custom-label="customLineFilterOptions">
-                            </VueMultiselect>
+                        <div class="row" v-if="findingActionType == 'update'">
+                            <div class="col">
+                                <div class="mb-2">
+                                    <label class="mb-1">Line</label>
+                                    <input type="text" class="form-control" :value="lineName" disabled>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="mb-2">
+                                    <label class="mb-1"></label>
+                                    <VueMultiselect v-model="selectedLineID" :options="lineData"
+                                        :custom-label="customLineFilterOptions">
+                                    </VueMultiselect>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col" v-else>
+                            <div class="mb-2">
+                                <label class="mb-1">Line</label>
+                                <VueMultiselect v-model="selectedLineID" :options="lineData"
+                                    :custom-label="customLineFilterOptions">
+                                </VueMultiselect>
+                            </div>
                         </div>
                         <div class="mb-2">
                             <label class="mb-1">Freq</label>
@@ -139,7 +157,23 @@
                                 </option>
                             </select>
                         </div>
-                        <div class="mb-2">
+                        <div class="row" v-if="findingActionType == 'update'">
+                            <div class="col">
+                                <div class="mb-2">
+                                    <label class="mb-1">Finding PIC</label>
+                                    <input type="text" class="form-control" :value="findingPicName" disabled>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="mb-2">
+                                    <label class="mb-1"></label>
+                                    <VueMultiselect v-model="selectedPIC" :options="picData"
+                                        :custom-label="customPicOptions">
+                                    </VueMultiselect>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-2" v-else>
                             <label class="mb-1">Finding PIC</label>
                             <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
                             </VueMultiselect>
@@ -175,11 +209,20 @@
                         </div>
                         <div class="mb-2">
                             <label class="mb-1">Opt Changes</label>
-                            <input type="text" class="form-control" v-model="optChanges" />
+                            <select class="form-select" v-model="optChanges">
+                                <option v-for="optChange in optChangeData" :key="optChange"
+                                    :value="optChange.system_value">
+                                    {{ optChange.system_value }}
+                                </option>
+                            </select>
                         </div>
                         <div class="mb-2">
                             <label class="mb-1">Opt Department</label>
-                            <input type="text" class="form-control" v-model="optDepartment" />
+                            <select class="form-select" v-model="optDepartment">
+                                <option v-for="optDept in optDeptData" :key="optDept" :value="optDept.system_value">
+                                    {{ optDept.system_value }}
+                                </option>
+                            </select>
                         </div>
                         <div class="mb-2">
                             <label class="mb-1">CM Judg</label>
@@ -188,7 +231,25 @@
                                 <option value="false">Belum</option>
                             </select>
                         </div>
-                        <div class="mb-2">
+
+                        <div class="row" v-if="findingActionType == 'update'">
+                            <div class="col">
+                                <div class="mb-2">
+                                    <label class="mb-1">Actual PIC</label>
+                                    <input type="text" class="form-control" :value="actualPicName" disabled>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="mb-2">
+                                    <label class="mb-1"></label>
+                                    <VueMultiselect v-model="actualPIC" :options="picData"
+                                        :custom-label="customPicOptions">
+                                    </VueMultiselect>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-2" v-else>
                             <label class="mb-1">Actual PIC</label>
                             <VueMultiselect v-model="actualPIC" :options="picData" :custom-label="customPicOptions">
                             </VueMultiselect>
@@ -208,7 +269,7 @@
                 <CButton color="secondary" @click="() => { addFindingModal = false }">
                     Close
                 </CButton>
-                <CButton color="primary" @click="addFinding()">Add finding data</CButton>
+                <CButton color="primary" @click="addFinding()"> {{ findingActionType }} finding data</CButton>
             </CModalFooter>
         </CModal>
 
@@ -243,6 +304,9 @@ export default {
             addFindingModal: false,
             lineData: [],
             picData: [],
+            lineName: null,
+            findingPicName: null,
+            actualPicName: null,
             selectedLineID: null,
             selectedFreqID: null,
             selectedKanbanID: null,
@@ -262,7 +326,8 @@ export default {
             evaluationName: null,
             selectedScheduleItemCheckKanbanID: null,
             optChangeData: null,
-            optDeptData: null
+            optDeptData: null,
+            findingActionType: null
         }
     },
     computed: {
@@ -312,7 +377,8 @@ export default {
             }
             this.addFindingModal = true
         },
-        openEditFindingModal(findings) {
+        openEditFindingModal(findings, actionType) {
+            this.findingActionType = actionType
             const data = findings[0]
 
             this.selectedLineID = data.line_id
@@ -332,6 +398,10 @@ export default {
             this.actualPIC = data.actual_pic
             this.actualCMDate = data.actual_cm_date
             this.evaluationName = data.evaluation_nm
+
+            this.lineName = data.line_nm
+            this.findingPicName = data.finding_pic_nm
+            this.actualPicName = data.actual_pic_nm
 
             this.addFindingModal = true
         },
@@ -442,7 +512,7 @@ export default {
             }
             try {
                 this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
-                    console.log(res)
+                    this.optChangeData = res
                 })
             } catch (error) {
                 if (error.response.status == 401) this.$router.push('/login')
@@ -455,7 +525,7 @@ export default {
             }
             try {
                 this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
-                    console.log(res)
+                    this.optDeptData = res
                 })
             } catch (error) {
                 if (error.response.status == 401) this.$router.push('/login')
