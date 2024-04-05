@@ -435,14 +435,15 @@ export default {
     async getSchedules() {
       this.isLoading = true
       let objQuery = {
-        month_year_num: this.selectedMonth
+        month_year_num: this.selectedMonth,
+        line_id: this.selectedLineID,
       }
       await this.$store.dispatch(GET_SCHEDULES, objQuery).then((res) => {
         if (res) {
           const data = res.list
           this.mainScheduleData = data
           this.isLoading = false
-
+          console.log(data);
           data.map((item) => {
             this.getSubSchedules(item.main_schedule_id)
           })
@@ -464,7 +465,7 @@ export default {
           this.subScheduleData = res.schedule
           this.signGLData = res.sign_checker_gl
           this.signSHData = res.sign_checker_sh
-          console.log(this.subScheduleData[0])
+          // console.log(this.subScheduleData[0])
           this.isLoading = false
         }
       })
@@ -654,8 +655,11 @@ export default {
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
-    await this.getSchedules()
     await this.getLines()
+    if (localStorage.getItem('line_id')) {
+      this.selectedLineID = localStorage.getItem('line_id')
+    }
+    await this.getSchedules()
     await this.getGroup()
     await this.getZone()
     await this.getKanban()
