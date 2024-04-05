@@ -68,8 +68,8 @@
               </div>
               <div class="d-flex align-items-center">
                 <div class="bullet-cancel d-flex justify-content-center align-items-center"
-                  style="width: 20px; height: 20px"> 
-                  <CIcon icon="cil-x" class="text-danger" size="sm" /> 
+                  style="width: 20px; height: 20px">
+                  <CIcon icon="cil-x" class="text-danger" size="sm" />
                 </div>
                 <span class="mx-2">Sudah Cleaning, ada temuan abnormally</span>
               </div>
@@ -94,11 +94,11 @@
               <th rowspan="2">Time</th>
               <th rowspan="2">PIC</th>
               <th rowspan="2">Freq</th>
-              <th colspan="31" class="text-center">Maret</th>
-              <th colspan="31" class="text-center">Actions</th>
+              <th :colspan="getDateThisMonth" class="text-center">{{ getMonthStr }}</th>
+              <th :colspan="getDateThisMonth" rowspan="2" class="text-center">Actions</th>
             </tr>
             <tr>
-              <td v-for="n in totalDate" :key="n">{{ n }}</td>
+              <td v-for="n in getDateThisMonth" :key="n">{{ n }}</td>
             </tr>
           </thead>
           <tbody>
@@ -111,20 +111,23 @@
             </tr>
             <tr v-else v-for="(data, scheduleIndex) in subScheduleData" :key="scheduleIndex">
               <td>{{ scheduleIndex + 1 }}</td>
-              <td style="min-width: 100px">{{ data.zone_nm }}</td>
+              <td style="min-width: 100px" v-if="data.zone_id != subScheduleData[scheduleIndex - 1]?.zone_id"
+                :rowspan="data.row_span_zone">
+                {{ data.zone_nm }}</td>
               <td style="min-width: 120px">{{ data.kanban_no }}</td>
               <td style="min-width: 200px">{{ data.area_nm }}</td>
               <td style="min-width: 200px">{{ data.standart_time }}</td>
               <td style="min-width: 100px" :rowspan="data.row_span_pic">
                 {{ data.pic_nm }}
               </td>
-              <td>{{ data.freq_nm }}</td>
+              <td v-if="data.freq_id != subScheduleData[scheduleIndex - 1]?.freq_id" :rowspan="data.row_span_freq">
+                {{ data.freq_nm }}</td>
               <td v-for="(children, childrenIndex) in data.children" :key="childrenIndex" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
-              }`"> 
+              }`">
                 <div @click="addScheduleCheck(data.main_schedule_id, data.sub_schedule_id)"
                   v-if="!children.is_holiday && children.status == 'PLANNING'"
                   class="cursor-pointer status-wrapper d-flex align-items-center justify-content-center"
-                  style="cursor: pointer;"> 
+                  style="cursor: pointer;">
                   <div class="bullet"></div>
                 </div>
               </td>
@@ -146,14 +149,14 @@
                 <button @click="
               openSignModal(children.tl1_sign_checker_id, 'sign_tl_1')
               " v-if="!children.is_holiday && !children.sign_tl_1"
-                  class="check-wrapper-null d-flex align-items-center justify-content-center"> 
-                  <CIcon icon="cil-x" class="text-danger" size="sm" /> 
+                  class="check-wrapper-null d-flex align-items-center justify-content-center">
+                  <CIcon icon="cil-x" class="text-danger" size="sm" />
                 </button>
                 <button @click="
               openSignModal(children.tl1_sign_checker_id, 'sign_tl_1')
               " v-else-if="!children.is_holiday && children.sign_tl_1"
-                  class="check-wrapper d-flex align-items-center justify-content-center"> 
-                  <CIcon icon="cil-check" class="text-black" size="sm" /> 
+                  class="check-wrapper d-flex align-items-center justify-content-center">
+                  <CIcon icon="cil-check" class="text-black" size="sm" />
                 </button>
               </td>
             </tr>
@@ -164,13 +167,13 @@
                 <button @click="
               openSignModal(children.tl2_sign_checker_id, 'sign_tl_2')
               " v-if="!children.is_holiday && !children.sign_tl_2"
-                  class="check-wrapper-null d-flex align-items-center justify-content-center"> 
-                  <CIcon icon="cil-x" class="text-danger" size="sm" /> 
+                  class="check-wrapper-null d-flex align-items-center justify-content-center">
+                  <CIcon icon="cil-x" class="text-danger" size="sm" />
                 </button>
                 <button @click="
               openSignModal(children.tl2_sign_checker_id, 'sign_tl_2')
               " v-else-if="!children.is_holiday && children.sign_tl_2"
-                  class="check-wrapper d-flex align-items-center justify-content-center"> 
+                  class="check-wrapper d-flex align-items-center justify-content-center">
                   <CIcon icon="cil-check" class="text-black" size="md" />
                 </button>
               </td>
@@ -207,7 +210,7 @@
               openSignModal(children.sign_checker_id, 'sign_sh')
               " v-else-if="!children.is_holiday && children.sign"
                   class="check-wrapper d-flex align-items-center justify-content-center">
-                  <CIcon icon="cil-check" class="text-black" size="md" /> 
+                  <CIcon icon="cil-check" class="text-black" size="md" />
                 </button>
               </td>
             </tr>
@@ -247,7 +250,7 @@
               @click="saveSignature('sign_tl_2')">
               {{ isUploadSignLoading ? 'Saving..' : 'Save TL 2' }}
             </button>
-            <button class="btn btn-info btn-sm mx-2 my-3 text-white" @click="clearSignature('sign_tl_2')"> 
+            <button class="btn btn-info btn-sm mx-2 my-3 text-white" @click="clearSignature('sign_tl_2')">
               Clear
             </button>
           </div>
@@ -275,7 +278,7 @@
               @click="saveSignature('sign_sh')">
               {{ isUploadSignLoading ? 'Saving..' : 'Save Sign SH' }}
             </button>
-            <button class="btn btn-info btn-sm mx-2 my-3 text-white" @click="clearSignature('sign_sh')"> 
+            <button class="btn btn-info btn-sm mx-2 my-3 text-white" @click="clearSignature('sign_sh')">
               Clear
             </button>
           </div>
@@ -405,6 +408,15 @@ export default {
       'getFreqs',
       'getUsersOpts',
     ]),
+    getDateThisMonth() {
+      const year = this.selectedMonth.split('-')[0]
+      const month = +this.selectedMonth.split('-')[1] + 1
+      return new Date(year, month + 1, 0).getDate();
+    },
+    getMonthStr() {
+      const monthStr = ['January', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
+      return monthStr[+this.selectedMonth.split('-')[1] - 1]
+    }
   },
   watch: {
     selectedMonth: function () {
