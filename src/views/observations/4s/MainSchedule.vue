@@ -95,7 +95,6 @@
               <th rowspan="2">PIC</th>
               <th rowspan="2">Freq</th>
               <th :colspan="getDateThisMonth" class="text-center">{{ getMonthStr }}</th>
-              <th :colspan="getDateThisMonth" rowspan="2" class="text-center">Actions</th>
             </tr>
             <tr>
               <td v-for="n in getDateThisMonth" :key="n">{{ n }}</td>
@@ -129,7 +128,8 @@
                 {{ data.freq_nm }}</td>
               <td v-for="(children, childrenIndex) in data.children" :key="childrenIndex" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
               }`">
-                <div @click="addScheduleCheck(data.main_schedule_id, data.sub_schedule_id)"
+
+                <!-- <div @click="addScheduleCheck(data.main_schedule_id, data.sub_schedule_id)"
                   v-if="!children.is_holiday && children.status == 'PLANNING'"
                   class="cursor-pointer status-wrapper d-flex align-items-center justify-content-center"
                   style="cursor: pointer;">
@@ -147,14 +147,47 @@
                     style="width: 20px; height: 20px">
                     <CIcon icon="cil-x" class="text-danger text-bold" size="sm" />
                   </div>
-                </div>
-              </td>
-              <td>
-                <div class="d-flex">
-                  <button class="btn btn-warning btn-sm text-white">
-                    Delete
-                  </button>
-                </div>
+                </div> -->
+
+                <CDropdown variant="btn-group" v-if="!children.is_holiday && children.status == 'PLANNING'">
+                  <CButton color="secondary" class="text-secondary bg-white"
+                    @click="addScheduleCheck(data.main_schedule_id, data.sub_schedule_id)">
+                    <div class="bullet"></div>
+                  </CButton>
+                  <CDropdownToggle color="secondary" class="text-white" split> item </CDropdownToggle>
+                  <CDropdownMenu>
+                    <CDropdownItem href="#">Change date</CDropdownItem>
+                    <CDropdownItem href="#">Delete</CDropdownItem>
+                  </CDropdownMenu>
+                </CDropdown>
+
+                <CDropdown variant="btn-group" v-if="!children.is_holiday && children.status == 'ACTUAL'">
+                  <CButton color="secondary" class="text-secondary bg-white"
+                    @click="addScheduleCheck(data.main_schedule_id, data.sub_schedule_id)">
+                    <div class="bullet-filled"></div>
+                  </CButton>
+                  <CDropdownToggle color="secondary" class="text-white" split> item </CDropdownToggle>
+                  <CDropdownMenu>
+                    <CDropdownItem href="#">Change date</CDropdownItem>
+                    <CDropdownItem href="#">Delete</CDropdownItem>
+                  </CDropdownMenu>
+                </CDropdown>
+
+                <CDropdown variant="btn-group" v-if="!children.is_holiday && children.status == 'PROBLEM'">
+                  <CButton color="secondary" class="text-secondary bg-white p-0 px-2"
+                    @click="addScheduleCheck(data.main_schedule_id, data.sub_schedule_id)">
+                    <div class="bullet-cancel d-flex justify-content-center align-items-center"
+                      style="width: 20px; height: 20px">
+                      <CIcon icon="cil-x" class="text-danger text-bold" size="sm" />
+                    </div>
+                  </CButton>
+                  <CDropdownToggle color="secondary" class="text-white" split> item </CDropdownToggle>
+                  <CDropdownMenu>
+                    <CDropdownItem href="#">Change date</CDropdownItem>
+                    <CDropdownItem href="#">Delete</CDropdownItem>
+                  </CDropdownMenu>
+                </CDropdown>
+
               </td>
             </tr>
             <tr v-if="subScheduleData && !isLoading">
@@ -212,8 +245,7 @@
                     class="check-wrapper d-flex align-items-center justify-content-center">
                     <CIcon icon="cil-check" class="text-black" size="md" />
                   </button>
-                </td>
-
+                </td> 
                 <td :key="childrenIndex" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
               }`"
                   v-else-if="children.col_span_gl == subScheduleData[0].children[childrenIndex + 1]?.col_span_gl && children.is_holiday">

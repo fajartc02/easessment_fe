@@ -32,6 +32,8 @@ import kanban from './modules/kanban.module';
 import freq from './modules/freq.module';
 import pagination from './modules/pagination.module';
 
+import system from './modules/system.module';
+
 export default createStore({
     state: {
         sidebarVisible: '',
@@ -77,6 +79,7 @@ export default createStore({
         zones,
         kanban,
         freq,
-        pagination
+        pagination,
+        system
     },
 })
