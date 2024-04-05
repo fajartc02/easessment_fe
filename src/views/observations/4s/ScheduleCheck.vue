@@ -227,6 +227,7 @@ import VueMultiselect from 'vue-multiselect'
 import { GET_ZONES } from '@/store/modules/zones.module'
 import { GET_KANBANS } from '@/store/modules/kanban.module'
 import { GET_FREQS } from '@/store/modules/freq.module'
+import { GET_SYSTEMS } from '@/store/modules/system.module'
 
 export default {
     name: "Schedule Check",
@@ -259,7 +260,9 @@ export default {
             actualPIC: null,
             actualCMDate: null,
             evaluationName: null,
-            selectedScheduleItemCheckKanbanID: null
+            selectedScheduleItemCheckKanbanID: null,
+            optChangeData: null,
+            optDeptData: null
         }
     },
     computed: {
@@ -433,6 +436,32 @@ export default {
                 console.log(error)
             }
         },
+        async getOptChangeSystem() {
+            let objQuery = {
+                system_type: 'OPT_CHANGE'
+            }
+            try {
+                this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
+                    console.log(res)
+                })
+            } catch (error) {
+                if (error.response.status == 401) this.$router.push('/login')
+                console.log(error)
+            }
+        },
+        async getOptDeptSystem() {
+            let objQuery = {
+                system_type: 'OPT_DEPT'
+            }
+            try {
+                this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
+                    console.log(res)
+                })
+            } catch (error) {
+                if (error.response.status == 401) this.$router.push('/login')
+                console.log(error)
+            }
+        },
     },
     updated() {
         this.mapLinesData()
@@ -446,6 +475,8 @@ export default {
         await this.getZone()
         await this.getFreq()
         await this.getKanban()
+        await this.getOptChangeSystem()
+        await this.getOptDeptSystem()
     }
 }
 </script>
