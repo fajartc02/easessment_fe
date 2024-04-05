@@ -116,9 +116,14 @@
                 {{ data.zone_nm }}</td>
               <td style="min-width: 120px">{{ data.kanban_no }}</td>
               <td style="min-width: 200px">{{ data.area_nm }}</td>
-              <td style="min-width: 200px">{{ data.standart_time }}</td>
+              <td style="min-width: 50px">{{ data.standart_time }}</td>
               <td style="min-width: 100px" :rowspan="data.row_span_pic">
-                {{ data.pic_nm }}
+                <div v-if="data.pic_nm"> {{ data.pic_nm }} </div>
+                <div v-else>
+                  <button class="btn btn-info btn-sm mx-2 text-white" @click="openEditModal(data.sub_schedule_id)">
+                    Add
+                  </button>
+                </div>
               </td>
               <td v-if="data.freq_id != subScheduleData[scheduleIndex - 1]?.freq_id" :rowspan="data.row_span_freq">
                 {{ data.freq_nm }}</td>
@@ -130,19 +135,29 @@
                   style="cursor: pointer;">
                   <div class="bullet"></div>
                 </div>
+                <div @click="addScheduleCheck(data.main_schedule_id, data.sub_schedule_id)"
+                  v-if="!children.is_holiday && children.status == 'ACTUAL'"
+                  class="cursor-pointer status-wrapper d-flex align-items-center justify-content-center"
+                  style="cursor: pointer;">
+                  <div class="bullet-filled"></div>
+                </div>
+                <div @click="addScheduleCheck(data.main_schedule_id, data.sub_schedule_id)"
+                  v-if="!children.is_holiday && children.status == 'PROBLEM'">
+                  <div class="bullet-cancel d-flex justify-content-center align-items-center"
+                    style="width: 20px; height: 20px">
+                    <CIcon icon="cil-x" class="text-danger text-bold" size="sm" />
+                  </div>
+                </div>
               </td>
               <td>
                 <div class="d-flex">
-                  <button class="btn btn-info btn-sm mx-2 text-white" @click="openEditModal(data.main_schedule_id)">
-                    Edit
-                  </button>
                   <button class="btn btn-warning btn-sm text-white">
                     Delete
                   </button>
                 </div>
               </td>
             </tr>
-            <tr v-if="subScheduleData">
+            <tr v-if="subScheduleData && !isLoading">
               <td colspan="7" class="text-center">Sign TL 1</td>
               <td v-for="children in subScheduleData[0].children" :key="children" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
               }`">
@@ -160,7 +175,7 @@
                 </button>
               </td>
             </tr>
-            <tr v-if="subScheduleData">
+            <tr v-if="subScheduleData && !isLoading">
               <td colspan="7" class="text-center">Sign TL 2</td>
               <td v-for="children in subScheduleData[0].children" :key="children" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
               }`">
@@ -178,7 +193,34 @@
                 </button>
               </td>
             </tr>
-            <tr v-if="signGLData">
+            <!-- <tr v-if="subScheduleData">
+              <td colspan="7" class="text-center">Sign GL</td>
+              <template v-for="(children, childrenIndex) in subScheduleData[0].children">
+                <td :key="children" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
+              }`" :colspan="children.col_span_gl"
+                  v-if="children.col_span_gl !== subScheduleData[0].children[childrenIndex + 1]?.col_span_gl && children.col_span_gl">
+
+                  <button @click="
+              openSignModal(children.gl_sign_checker_id, 'sign_gl')
+              " v-if="!children.is_holiday && !children.sign_gl"
+                    class="check-wrapper-null d-flex align-items-center justify-content-center">
+                    <CIcon icon="cil-x" class="text-danger" size="sm" />
+                  </button>
+                  <button @click="
+              openSignModal(children.gl_sign_checker_id, 'sign_gl')
+              " v-else-if="!children.is_holiday && children.sign_gl"
+                    class="check-wrapper d-flex align-items-center justify-content-center">
+                    <CIcon icon="cil-check" class="text-black" size="md" />
+                  </button>
+                </td>
+
+                <td :key="childrenIndex" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
+              }`"
+                  v-else-if="children.col_span_gl == subScheduleData[0].children[childrenIndex + 1]?.col_span_gl && children.is_holiday">
+                </td>
+              </template>
+</tr> -->
+            <tr v-if="signGLData && !isLoading">
               <td colspan="7" class="text-center">Sign GL</td>
               <td v-for="children in signGLData" :key="children" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
               }`" :colspan="children.col_span">
@@ -196,7 +238,7 @@
                 </button>
               </td>
             </tr>
-            <tr v-if="signSHData">
+            <tr v-if="signSHData && !isLoading">
               <td colspan="7" class="text-center">Sign SH</td>
               <td v-for="children in signSHData" :key="children" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
               }`" :colspan="children.col_span">
@@ -294,7 +336,7 @@
     <!-- edit modal -->
     <CModal backdrop="static" alignment="center" :visible="editDataModal" @close="editDataModal = false" size="lg">
       <CModalHeader>
-        <CModalTitle>Edit data </CModalTitle>
+        <CModalTitle>Add PIC </CModalTitle>
       </CModalHeader>
       <CModalBody>
         <div class="mb-2">
@@ -313,6 +355,9 @@
       <CModalFooter>
         <CButton color="secondary" class="text-white" @click="editDataModal = false">
           Close
+        </CButton>
+        <CButton color="info" class="text-white" @click="addPIC()">
+          {{ isAddPICLoading ? 'Saving..' : 'Save' }}
         </CButton>
       </CModalFooter>
     </CModal>
@@ -345,6 +390,7 @@ export default {
     return {
       totalDate: 31,
       isLoading: false,
+      isAddPICLoading: false,
       mainScheduleData: null,
       subScheduleData: null,
       signGLData: null,
@@ -394,7 +440,7 @@ export default {
       selectedSign: null,
       addSignModal: false,
       editDataModal: false,
-      selectedMainScheduleID: null,
+      selectedSubScheduleID: null,
       picData: [],
       selectedPIC: null,
     }
@@ -443,7 +489,6 @@ export default {
           const data = res.list
           this.mainScheduleData = data
           this.isLoading = false
-          console.log(data);
           data.map((item) => {
             this.getSubSchedules(item.main_schedule_id)
           })
@@ -465,10 +510,30 @@ export default {
           this.subScheduleData = res.schedule
           this.signGLData = res.sign_checker_gl
           this.signSHData = res.sign_checker_sh
-          // console.log(this.subScheduleData[0])
           this.isLoading = false
         }
       })
+    },
+
+    async addPIC() {
+      this.isAddPICLoading = true
+      ApiService.setHeader()
+      const data = {
+        pic_id: this.selectedPIC.pic_id
+      };
+
+      const add = await ApiService.put(
+        `/operational/4s/sub-schedule/edit/${this.selectedSubScheduleID}`,
+        data,
+      )
+
+      console.log(add)
+
+      if (add.data.message == 'Success to edit 4s schedule plan') {
+        this.isAddPICLoading = false
+        this.editDataModal = false
+        await this.getSchedules()
+      }
     },
 
     async addFilter() {
@@ -496,8 +561,11 @@ export default {
     },
     mapUsersData() {
       this.getUsersOpts?.map((item) => {
-        this.picData.push(item.text)
+        this.picData.push({ pic_id: item.id, pic_name: item.text })
       })
+    },
+    customPicOptions({ pic_name }) {
+      return `${pic_name}`
     },
     async getLines() {
       try {
@@ -644,9 +712,9 @@ export default {
     },
 
     // edit data
-    openEditModal(mainScheduleID) {
+    openEditModal(subScheduleID) {
       this.editDataModal = true
-      this.selectedMainScheduleID = mainScheduleID
+      this.selectedSubScheduleID = subScheduleID
       this.mapUsersData()
     },
   },
@@ -666,6 +734,10 @@ export default {
     await this.getFreq()
     await this.getUsers()
   },
+
+  updated() {
+    console.log(this.selectedPIC)
+  }
 }
 </script>
 
