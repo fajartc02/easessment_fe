@@ -5,17 +5,13 @@ export const SET_PAGINATION = "setPagination"
 
 const state = {
     limit: 10,
-    total_data: 0,
+    total_data: 1,
     current_page: 1
 };
 
 const getters = {
     getPagination(state) {
-        return {
-            limit: state.limit,
-            total_data: state.total_data,
-            current_page: state.current_page
-        }
+        return state
     },
 };
 
