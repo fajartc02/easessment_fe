@@ -116,6 +116,11 @@ const routes = [{
                 component: () =>
                     import ('@/views/master/Machine/Machine.vue'),
             }, {
+                path: '/master/periodic-schedule',
+                name: 'PeriodicSchedule',
+                component: () =>
+                    import ('@/views/master/PeriodicSchedule.vue'),
+            }, {
                 path: '/master/machine/form',
                 name: 'FormMachine',
                 component: () =>
@@ -156,39 +161,39 @@ const routes = [{
             {
                 path: '/4s/main-schedule',
                 name: '4S Main Schedule',
-                component: () => 
-                import ('@/views/observations/4s/MainSchedule.vue'),
+                component: () =>
+                    import ('@/views/observations/4s/MainSchedule.vue'),
             },
             {
                 path: '/4s/schedule-check/:mainScheduleID/:subScheduleID',
                 name: 'Schedule Check',
                 component: () =>
-                import ('@/views/observations/4s/ScheduleCheck.vue'),
-            },    
+                    import ('@/views/observations/4s/ScheduleCheck.vue'),
+            },
             {
                 path: '/4s/kanban',
                 name: 'Kanban',
                 component: () =>
-                import ('@/views/observations/4s/Kanban4s.vue'),
-            }, 
+                    import ('@/views/observations/4s/Kanban4s.vue'),
+            },
             {
                 path: '/master/kanban',
                 name: 'Kanban4s',
                 component: () =>
                     import ('@/views/observations/4s/Kanban4s.vue'),
-            }, 
+            },
             {
                 path: '/4s/temuan',
                 name: 'Temuan',
                 component: () =>
-                import ('@/views/observations/4s/Temuan.vue'),
-            }, 
+                    import ('@/views/observations/4s/Temuan.vue'),
+            },
             {
                 path: '/4s/grafik',
                 name: 'Grafik',
                 component: () =>
-                import ('@/views/observations/4s/Grafik.vue'),
-            },   
+                    import ('@/views/observations/4s/Grafik.vue'),
+            },
             {
                 path: '/stw/member-voice',
                 name: 'MemberVoice',
