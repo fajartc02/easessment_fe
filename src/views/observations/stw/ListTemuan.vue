@@ -240,7 +240,8 @@
               " class="btn btn-info btn-sm text-white w-full my-1">
                     Edit
                   </button>
-                  <button @click="deleteFinding()" class="btn btn-danger mx-1 btn-sm text-white w-full my-1">
+                  <button @click="deleteFinding(finding.finding_id)"
+                    class="btn btn-danger mx-1 btn-sm text-white w-full my-1">
                     Delete
                   </button>
                   <!-- <button
@@ -1042,16 +1043,17 @@ export default {
         console.log(error)
       }
     },
-    deleteFinding() {
+    async deleteFinding(findingID) {
       Swal.fire({
         title: 'Are you sure to delete this finding?',
         showDenyButton: true,
         showCancelButton: true,
         confirmButtonText: 'Sure',
         denyButtonText: `No`,
-      }).then((result) => {
-        /* Read more about isConfirmed, isDenied below */
+      }).then(async (result) => {
         if (result.isConfirmed) {
+          ApiService.setHeader()
+          await ApiService.delete(`operational/findingCm/delete/${findingID}`)
           Swal.fire('Data deleted!', '', 'success')
         } else if (result.isDenied) {
           Swal.fire('Canceled', '', 'info')
@@ -1065,39 +1067,39 @@ export default {
       this.getDetailTemuan(findingIndex)
     },
     async saveCMComments() {
-      const data = {
-        line_id: this.findingDetail.line_id,
-        finding_date: this.formatTheDate(this.findingDetail.finding_date), // from henkaten_date
-        finding_location: this.findingDetail.finding_location, // from mv_location
-        finding_desc: this.findingDetail.finding_desc, // from mv_problem
-        cm_desc: this.findingDetail.cm_desc, // from mv_countermeasure
-        cm_priority: this.findingDetail.cm_priority,
-        category_id: '5b5bfd20-f5f7-4edc-8030-1d3e3f15d0e6', // select manual (STW, Safety, quality,etc.)
-        factor_id: this.findingDetail.factor_id, // from mv_factor_id
-        cm_pic_id: this.findingDetail.cm_pic_id, // from henkaten_pic
-        cm_str_plan_date: this.findingDetail.cm_str_plan_date, // from mv_plan_date
-        cm_end_plan_date: this.findingDetail.cm_end_plan_date, // from mv_plan_date
-        cm_result_factor_id: this.findingDetail.factor_id,
-        // below can input after findings input (no mandatory)
-        cm_str_act_date: this.findingDetail.cm_str_act_date, // from mv_actual_date
-        cm_end_act_date: this.findingDetail.cm_end_act_date, // from mv_actual_date
-        cm_training_date: this.findingDetail.cm_training_date, // from mv_training_date
-        cm_judg: this.findingDetail.cm_judg,
-        cm_sign_lh_red: this.findingDetail.cm_sign_lh_red
-          ? this.findingDetail.cm_sign_lh_red
-          : null,
-        cm_sign_lh_white: this.findingDetail.cm_sign_lh_white
-          ? this.findingDetail.cm_sign_lh_white
-          : null,
-        cm_sign_sh: this.findingDetail.cm_sign_sh
-          ? this.findingDetail.cm_sign_sh
-          : null,
-        cm_comments: this.cm_comments,
-      }
-
       try {
+        const data = {
+          line_id: this.findingDetail.line_id,
+          finding_date: this.formatTheDate(this.findingDetail.finding_date), // from henkaten_date
+          finding_location: this.findingDetail.finding_location, // from mv_location
+          finding_desc: this.findingDetail.finding_desc, // from mv_problem
+          cm_desc: this.findingDetail.cm_desc, // from mv_countermeasure
+          cm_priority: this.findingDetail.cm_priority,
+          category_id: '5b5bfd20-f5f7-4edc-8030-1d3e3f15d0e6', // select manual (STW, Safety, quality,etc.)
+          factor_id: this.findingDetail.factor_id, // from mv_factor_id
+          cm_pic_id: this.findingDetail.cm_pic_id, // from henkaten_pic
+          cm_str_plan_date: this.findingDetail.cm_str_plan_date, // from mv_plan_date
+          cm_end_plan_date: this.findingDetail.cm_end_plan_date, // from mv_plan_date
+          cm_result_factor_id: this.findingDetail.factor_id,
+          // below can input after findings input (no mandatory)
+          cm_str_act_date: this.findingDetail.cm_str_act_date, // from mv_actual_date
+          cm_end_act_date: this.findingDetail.cm_end_act_date, // from mv_actual_date
+          cm_training_date: this.findingDetail.cm_training_date, // from mv_training_date
+          cm_judg: this.findingDetail.cm_judg,
+          cm_sign_lh_red: this.findingDetail.cm_sign_lh_red
+            ? this.findingDetail.cm_sign_lh_red
+            : null,
+          cm_sign_lh_white: this.findingDetail.cm_sign_lh_white
+            ? this.findingDetail.cm_sign_lh_white
+            : null,
+          cm_sign_sh: this.findingDetail.cm_sign_sh
+            ? this.findingDetail.cm_sign_sh
+            : null,
+          cm_comments: this.cm_comments,
+        }
+
         ApiService.setHeader()
-        const updateData = ApiService.put(
+        const updateData = await ApiService.put(
           `operational/findingCm/edit/${this.selectedFindingID}`,
           data,
         )
@@ -1116,58 +1118,55 @@ export default {
       }
     },
     async updateFindingList() {
-      // const findingID = this.selectedFindingID
-      const data = {
-        line_id: this.findingDetail.line_id,
-        finding_date: this.formatTheDate(this.findingDetail.finding_date), // from henkaten_date
-        finding_location: this.findingDetail.finding_location, // from mv_location
-        finding_desc: this.findingDetail.finding_desc, // from mv_problem
-        cm_desc: this.findingDetail.cm_desc, // from mv_countermeasure
-        cm_priority: this.findingDetail.cm_priority,
-        category_id: '5b5bfd20-f5f7-4edc-8030-1d3e3f15d0e6', // select manual (STW, Safety, quality,etc.)
-        factor_id: this.findingDetail.factor_id, // from mv_factor_id
-        cm_pic_id: this.findingDetail.cm_pic_id, // from henkaten_pic
-        cm_str_plan_date: this.findingDetail.cm_str_plan_date, // from mv_plan_date
-        cm_end_plan_date: this.findingDetail.cm_end_plan_date, // from mv_plan_date
-        cm_result_factor_id: this.findingDetail.factor_id,
-        // below can input after findings input (no mandatory)
-        cm_str_act_date: this.findingDetail.cm_str_act_date, // from mv_actual_date
-        cm_end_act_date: this.findingDetail.cm_end_act_date, // from mv_actual_date
-        cm_training_date: this.findingDetail.cm_training_date, // from mv_training_date
-        cm_judg: this.findingDetail.cm_judg,
-        cm_sign_lh_red: this.findingDetail.cm_sign_lh_red
-          ? this.findingDetail.cm_sign_lh_red
-          : null,
-        cm_sign_lh_white: this.findingDetail.cm_sign_lh_white
-          ? this.findingDetail.cm_sign_lh_white
-          : null,
-        cm_sign_sh: this.findingDetail.cm_sign_sh
-          ? this.findingDetail.cm_sign_sh
-          : null,
-        cm_comments: this.cm_comments,
+      try {
+        const findingID = this.selectedFindingID
+        const data = {
+          line_id: this.findingDetail.line_id,
+          finding_date: this.formatTheDate(this.findingDetail.finding_date), // from henkaten_date
+          finding_location: this.findingDetail.finding_location, // from mv_location
+          finding_desc: this.findingDetail.finding_desc, // from mv_problem
+          cm_desc: this.findingDetail.cm_desc, // from mv_countermeasure
+          cm_priority: this.findingDetail.cm_priority,
+          category_id: '5b5bfd20-f5f7-4edc-8030-1d3e3f15d0e6', // select manual (STW, Safety, quality,etc.)
+          factor_id: this.findingDetail.factor_id, // from mv_factor_id
+          cm_pic_id: this.findingDetail.cm_pic_id, // from henkaten_pic
+          cm_str_plan_date: this.findingDetail.cm_str_plan_date, // from mv_plan_date
+          cm_end_plan_date: this.findingDetail.cm_end_plan_date, // from mv_plan_date
+          cm_result_factor_id: this.findingDetail.factor_id,
+          // below can input after findings input (no mandatory)
+          cm_str_act_date: this.findingDetail.cm_str_act_date, // from mv_actual_date
+          cm_end_act_date: this.findingDetail.cm_end_act_date, // from mv_actual_date
+          cm_training_date: this.findingDetail.cm_training_date, // from mv_training_date
+          cm_judg: this.findingDetail.cm_judg,
+          cm_sign_lh_red: this.findingDetail.cm_sign_lh_red
+            ? this.findingDetail.cm_sign_lh_red
+            : null,
+          cm_sign_lh_white: this.findingDetail.cm_sign_lh_white
+            ? this.findingDetail.cm_sign_lh_white
+            : null,
+          cm_sign_sh: this.findingDetail.cm_sign_sh
+            ? this.findingDetail.cm_sign_sh
+            : null,
+          cm_comments: this.cm_comments,
+        }
+        ApiService.setHeader()
+        const updateData = await ApiService.put(
+          `operational/findingCm/edit/${findingID}`,
+          data,
+        )
+
+        if (updateData) {
+          Swal.fire('Data updated!', '', 'success')
+          this.editTemuanModal = false
+          this.getFindingsFunc()
+        } else {
+          Swal.fire('Error', '', 'warning')
+        }
+      } catch (error) {
+        console.log(error)
+        Swal.fire('Failed to update finding data', '', 'error')
+        this.editTemuanModal = false
       }
-
-      console.log(data)
-
-      // try {
-      //   ApiService.setHeader()
-      //   const updateData = ApiService.put(
-      //     `operational/findingCm/edit/${findingID}`,
-      //     data,
-      //   )
-
-      //   if (updateData) {
-      //     Swal.fire('Data updated!', '', 'success')
-      //     this.editTemuanModal = false
-      //     this.getFindingsFunc()
-      //   } else {
-      //     Swal.fire('Error', '', 'warning')
-      //   }
-      // } catch (error) {
-      //   console.log(error)
-      //   Swal.fire('Failed to update finding data', '', 'error')
-      //   this.editTemuanModal = false
-      // }
     },
     async uploadPinkSheet(state) {
       this.isUploadKaizenFile = true

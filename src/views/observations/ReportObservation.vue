@@ -29,7 +29,7 @@
                                     </video>
                                 </div>
                             </div>
-                            
+
                         </CModalBody>
                     </CModal> -->
         </div>
@@ -55,21 +55,13 @@
           </td>
         </tr>
         <tr class="text-center">
-          <td
-            :colspan="category.category_nm == 'Quality' ? '' : ''"
-            class="bg-warning"
-            v-for="category in categories"
-            :key="category.id"
-          >
+          <td :colspan="category.category_nm == 'Quality' ? '' : ''" class="bg-warning" v-for="category in categories"
+            :key="category.id">
             {{ category.category_nm }}
           </td>
         </tr>
         <tr>
-          <td
-            :colspan="category.category_nm == 'Quality' ? '' : ''"
-            v-for="category in categories"
-            :key="category.id"
-          >
+          <td :colspan="category.category_nm == 'Quality' ? '' : ''" v-for="category in categories" :key="category.id">
             {{ category.category_desc }}
           </td>
         </tr>
@@ -94,40 +86,27 @@
               </option>
             </CFormSelect>
           </td>
-          <td
-            v-if="
-              item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
-              item.judgment_id
-            "
-          >
+          <td v-if="item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
+      item.judgment_id
+      ">
             <div>
               {{ item.findings[0]?.factor_nm }}
             </div>
           </td>
           <td v-else></td>
-          <td
-            v-if="
-              item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
-              item.judgment_id
-            "
-          >
+          <td v-if="item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
+      item.judgment_id
+      ">
             <div>
               {{ item.findings[0]?.finding_desc }}
             </div>
           </td>
-          <td
-            v-if="
-              item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
-              item.judgment_id
-            "
-          >
+          <td v-if="item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
+      item.judgment_id
+      ">
             <div v-if="item.findings[0]?.finding_img">
-              <input
-                type="image"
-                :src="item.findings[0]?.finding_img"
-                alt=""
-                width="200"
-              />
+              <!-- <input type="image" :src="item.findings[0]?.finding_img" width="200" /> -->
+              <img :src="item.findings[0]?.finding_pict" width="100">
             </div>
             <div v-else>no image</div>
           </td>
@@ -169,6 +148,9 @@ export default {
       ignoringExport: false,
     }
   },
+  computed: {
+
+  },
   methods: {
     exportToPDF(nameFile) {
       console.log(nameFile)
@@ -177,7 +159,7 @@ export default {
         margin: 1,
         filename: `REPORT_SW_${this.observation.job_no}_${this.observation.pos_nm}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { dpi: 192, letterRendering: true },
+        html2canvas: { dpi: 192, letterRendering: true, useCORS: true },
         jsPDF: { unit: 'pt', format: 'a3', orientation: 'l' },
         allowTaint: true,
       }).then((pdf) => {
@@ -203,7 +185,11 @@ export default {
         ? moment(actualDate).toISOString().split('T')[0]
         : moment().toISOString().split('T')[0]
       this.resultCheck = resCheckData
-      // if(resCheckData.length > 0) this.exportToPDF(`REPORT_SW_${this.observation.job_no}_${this.observation.pos_nm}.pdf`);
+      if (resCheckData.length > 0) {
+        setTimeout(() => {
+          this.exportToPDF(`REPORT_SW_${this.observation.job_no}_${this.observation.pos_nm}.pdf`);
+        }, 2000)
+      }
     },
     async getJudgments() {
       ApiService.setHeader()
@@ -217,10 +203,26 @@ export default {
       // console.log(factors);
       this.factors = factors.data.data
     },
+    async getBase64ImageFromUrl(imageUrl) {
+      var res = await fetch(imageUrl);
+      var blob = await res.blob();
+
+      return new Promise((resolve, reject) => {
+        var reader = new FileReader();
+        reader.addEventListener("load", function () {
+          resolve(reader.result);
+        }, false);
+
+        reader.onerror = () => {
+          return reject(this);
+        };
+        reader.readAsDataURL(blob);
+      })
+    },
     async getCategories() {
       ApiService.setHeader()
       const categories = await ApiService.get(`master/categories`)
-      const mapCategory = categories.data.data.map((itm, i) => {
+      const mapCategory = await categories.data.data.map(async (itm, i) => {
         itm.judgment_id = null
         itm.factor_id = null
         itm.findings = null
@@ -228,11 +230,15 @@ export default {
           let result = this.resultCheck[i]
           itm.judgment_id = result.judgment_id
           itm.factor_id = result.factor_id
+          result.findings = await Promise.all(result.findings.map(async finding => {
+            finding.finding_pict = await this.getBase64ImageFromUrl(finding.finding_img)
+            return finding
+          }))
           itm.findings = result.findings
         }
         return itm
       })
-      this.categories = mapCategory
+      this.categories = await Promise.all(mapCategory)
       await this.getJudgments()
       await this.getFactors()
     },
