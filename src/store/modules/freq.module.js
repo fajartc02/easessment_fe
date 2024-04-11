@@ -1,5 +1,8 @@
 import ApiService from "@/store/api.service";
 export const GET_FREQS = "getFreqs";
+export const EDIT_FREQ = "editFreq";
+export const DELETE_FREQ = "deleteFreq";
+export const POST_FREQ = "postFreq";
 
 // mutation types
 export const SET_FREQ = "setFreq";
@@ -43,6 +46,19 @@ const getters = {
         } else {
             return []
         }
+    },
+    getFreqsStatusEdit(state) {
+        if (state.freqs) {
+            let mapFreqs = []
+            if (state.freqs) {
+                mapFreqs = state.freqs.map(freq => {
+                    freq.is_edit = false
+                    return freq
+                })
+            }
+            return mapFreqs
+        }
+        return []
     }
 };
 
@@ -64,6 +80,50 @@ const actions = {
 
         });
     },
+    [POST_FREQ]({ commit }, data = null) {
+        ApiService.setHeader()
+        return new Promise((resolve, reject) => {
+            ApiService.post('master/freqs/add', data)
+                .then((result) => {
+                    const linesData = result.data
+                    resolve(linesData.data)
+                    console.log(commit);
+                }).catch((err) => {
+                    reject(err)
+                });
+
+        });
+    },
+    [EDIT_FREQ]({ commit }, data) {
+        ApiService.setHeader()
+        let ID = data.id
+        delete data.id
+        return new Promise((resolve, reject) => {
+            ApiService.put(`master/freqs/edit/${ID}`, data)
+                .then((result) => {
+                    const freq = result.data
+                    resolve(freq.data)
+                    console.log(commit);
+                }).catch((err) => {
+                    reject(err)
+                });
+
+        });
+    },
+    [DELETE_FREQ]({ commit }, id) {
+        ApiService.setHeader()
+        return new Promise((resolve, reject) => {
+            ApiService.delete(`master/freqs/delete/${id}`)
+                .then((result) => {
+                    const freq = result.data
+                    resolve(freq.data)
+                    console.log(commit);
+                }).catch((err) => {
+                    reject(err)
+                });
+
+        });
+    }
 };
 
 const mutations = {
