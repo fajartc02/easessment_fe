@@ -96,72 +96,8 @@
               <td v-for="item in containerDate" :key="item.idx" style="min-width: 63px">
                 <template v-for="child in observation.children" :key="child.observation_id">
                   <template v-if="child.idxdate === String(item.idx)">
-                    <CButton v-c-tooltip="`
-                      <div class='card'>
-                        <div class='card-header text-dark'>Detail data</div>
-                        <div class='card-body text-dark'>
-                          SOP No:  ${child.job_no} </br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        Member: ${child.member_nm}
-                        </div>
-                      </div>
-                      `
-              " v-if="child && child.is_wajik == false" class="mt-1" :color="`${child.job_type_nm == 'Type 1' ||
-                child.job_type_nm == 'Type 2'
-                ? 'dark rounded-circle'
-                : 'dark rounded'
-              }`" html="true" variant="outline" :style="`position: relative; ${child.is_finding ? 'background-color: #fef2f2' : ''
-              }`" @click="() => detailSchedule(child)">
-                      <button v-if="observation.comment_sh !== null" disabled style="
-                          position: absolute;
-                          margin-left: 20px;
-                          background-color: #e0f2fe;
-                          border: none;
-                          border: 1px solid #7dd3fc;
-                          color: #0369a1;
-                          border-radius: 6px;
-                        ">
-                        1
-                      </button>
-                      <span v-if="child.is_finding">
-                        <CIcon icon="cil-bell" class="text-warning" size="sm" />
-                      </span>
-                      <span v-else>
-                        <CIcon v-if="child.actual_check_dt" icon="cil-check-circle" class="text-success" size="sm" />
-                        <CIcon v-else-if="+currentDate <= +child.idxdate" icon="cil-circle" class="text-dark"
-                          size="sm" />
-                        <CIcon v-else icon="cil-circle" class="text-danger" size="sm" />
-                      </span>
-                    </CButton>
-                    <CButton v-c-tooltip="`
-                      <div class='card'>
-                        <div class='card-header text-dark'>Detail data</div>
-                        <div class='card-body text-dark'>
-                          SOP No:  ${child.job_no} </br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        Member: ${child.member_nm}
-                        </div>
-                      </div>
-                      `
-              " v-if="child && child.is_wajik == true" class="mt-3" :color="`dark rounded`" html="true"
-                      variant="outline" style="transform: rotate(45deg)" @click="() => detailSchedule(child)">
-                      <button disabled v-if="observation.comment_sh !== null" style="
-                          position: absolute;
-                          margin-left: 20px;
-                          background-color: #e0f2fe;
-                          border: none;
-                          border: 1px solid #7dd3fc;
-                          color: #0369a1;
-                          border-radius: 6px;
-                          transform: rotate(-45deg);
-                        ">
-                        1
-                      </button>
-                      <CIcon v-if="child.actual_check_dt" icon="cil-check-circle" class="text-success" size="sm"
-                        style="transform: rotate(-45deg)" />
-                      <CIcon v-else-if="+currentDate <= +child.idxdate" icon="cil-circle" class="text-dark" size="sm"
-                        style="transform: rotate(-45deg)" />
-
-                      <CIcon v-else icon="cil-circle" class="text-danger" size="sm" style="transform: rotate(-45deg)" />
-                    </CButton>
+                    <TooltipStwSchedule :child="child" :customTooltipStyle="customTooltipStyle"
+                      :observation="observation" :currentDate="currentDate" @detail-schedule="detailSchedule" />
                   </template>
                 </template>
               </td>
@@ -213,68 +149,8 @@
               <td v-for="item in containerDate" :key="item.idx" style="min-width: 63px">
                 <template v-for="child in observationRedShift.children" :key="child.observation_id">
                   <template v-if="child.idxdate === String(item.idx)">
-                    <CButton v-c-tooltip="`
-                      <div class='card'>
-                        <div class='card-header text-dark'>Detail data</div>
-                        <div class='card-body text-dark'>
-                          SOP No:  ${child.job_no} </br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    Member: ${child.member_nm}
-                        </div>
-                      </div>
-                      `
-              " v-if="child && child.is_wajik == false" class="mt-1" :color="`${child.job_type_nm == 'Type 1' ||
-                child.job_type_nm == 'Type 2'
-                ? 'dark rounded-circle'
-                : 'dark rounded'
-              }`" html="true" variant="outline" style="position: relative"
-                      @click="() => detailSchedule(child)">
-                      <button disabled v-if="observationRedShift.comment_sh !== null" style="
-                          position: absolute;
-                          margin-left: 20px;
-                          background-color: #e0f2fe;
-                          border: none;
-                          border: 1px solid #7dd3fc;
-                          color: #0369a1;
-                          border-radius: 6px;
-                        ">
-                        1
-                      </button>
-                      <CIcon v-if="child.actual_check_dt" icon="cil-check-circle" class="text-success" size="sm" />
-                      <CIcon v-else-if="+currentDate <= +child.idxdate" icon="cil-circle" class="text-dark" size="sm" />
-                      <CIcon v-else-if="child.is_finding" icon="cil-bell" class="text-warning" size="sm" />
-
-                      <CIcon v-else icon="cil-circle" class="text-danger" size="sm" />
-                    </CButton>
-                    <CButton v-c-tooltip="`
-                      <div class='card'>
-                        <div class='card-header text-dark'>Detail data</div>
-                        <div class='card-body text-dark'>
-                          SOP No:  ${child.job_no} </br>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    Member: ${child.member_nm}
-                        </div>
-                      </div>
-                      `
-              " v-if="child && child.is_wajik == true" class="mt-3" :color="`dark rounded`" html="true"
-                      variant="outline" style="transform: rotate(45deg)" @click="() => detailSchedule(child)">
-                      <button disabled v-if="observationRedShift.comment_sh !== null" style="
-                          position: absolute;
-                          margin-left: 20px;
-                          background-color: #e0f2fe;
-                          border: none;
-                          border: 1px solid #7dd3fc;
-                          color: #0369a1;
-                          border-radius: 6px;
-                          transform: rotate(-45deg);
-                        ">
-                        1
-                      </button>
-                      <CIcon v-if="child.actual_check_dt" icon="cil-check-circle" class="text-success" size="sm"
-                        style="transform: rotate(-45deg)" />
-                      <CIcon v-else-if="+currentDate <= +child.idxdate" icon="cil-circle" class="text-dark" size="sm"
-                        style="transform: rotate(-45deg)" />
-
-                      <CIcon v-else icon="cil-circle" class="text-danger" size="sm" style="transform: rotate(-45deg)" />
-                    </CButton>
+                    <TooltipStwSchedule :child="child" :customTooltipStyle="customTooltipStyle"
+                      :observation="observationRedShift" :currentDate="currentDate" @detail-schedule="detailSchedule" />
                   </template>
                 </template>
               </td>
@@ -307,11 +183,15 @@ import {
 import { mapGetters } from 'vuex'
 import Loading from 'vue-loading-overlay'
 import Yamazumi from '@/components/yamazumi/Yamazumi.vue'
+import TooltipStwSchedule from '@/components/TooltipSchedule/TooltipStwSchedule.vue'
 
 export default {
   name: 'STW Dashboard',
   data() {
     return {
+      customTooltipStyle: {
+        '--cui-tooltip-bg': 'var(--cui-primary)',
+      },
       isLoading: false,
       isRedShiftLoading: false,
       currentPage: 1,
@@ -485,6 +365,7 @@ export default {
   components: {
     Loading,
     Yamazumi,
+    TooltipStwSchedule
   },
 }
 </script>

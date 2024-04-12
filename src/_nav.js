@@ -63,19 +63,19 @@ export default [{
         name: 'Main Schedule',
         to: '/4s/main-schedule',
         icon: 'cil-speedometer'
-    }, 
-    {
-        component: 'CNavItem',
-        name: 'Kanban 4S',
-        to: '/4s/kanban',
-        icon: 'cil-speedometer'
     },
+    // {
+    //     component: 'CNavItem',
+    //     name: 'Kanban 4S',
+    //     to: '/4s/kanban',
+    //     icon: 'cil-speedometer'
+    // },
     {
         component: 'CNavItem',
         name: 'Temuan 4S',
         to: '/4s/temuan',
         icon: 'cil-speedometer'
-    }, 
+    },
     {
         component: 'CNavItem',
         name: 'Grafik 4S',
@@ -153,7 +153,7 @@ export default [{
     },
     {
         component: 'CNavItem',
-        name: 'Kanban Itemcheck',
+        name: 'Kanban 4S',
         to: '/master/kanban',
         icon: 'cil-clipboard',
     },
@@ -161,6 +161,12 @@ export default [{
         component: 'CNavItem',
         name: 'Planning Shift',
         to: '/calendar',
+        icon: 'cil-calendar',
+    },
+    {
+        component: 'CNavItem',
+        name: 'Periodic Schedule',
+        to: '/master/periodic-schedule',
         icon: 'cil-calendar',
     },
     {

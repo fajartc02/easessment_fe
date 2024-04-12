@@ -155,8 +155,8 @@
         <div class="col">
 
         </div>
-        <div class="col-xl-3">
-          <CustPagination :total-items="filter.total_data" :items-per-page="filter.limit"
+        <div class="col-xl-3" v-if="filter.total_data > 1">
+          <CustPagination :totalItems="filter.total_data" :items-per-page="filter.limit"
             :current-page="filter.current_page" @page-changed="handlePageChange" />
         </div>
       </div>
@@ -219,15 +219,16 @@ export default {
     }
   },
   watch: {
-    getPagination() {
-      if (this.getPagination.total_data > 0) {
+    getPagination: {
+      handler() {
         this.filter = {
           ...this.filter,
           limit: this.getPagination.limit,
           total_data: this.getPagination.total_data,
           current_page: this.getPagination.current_page
         }
-      }
+      },
+      deep: true
     },
     filter: {
       handler() {
@@ -317,6 +318,7 @@ export default {
         }
       } catch (error) {
         this.isLoading = false
+        alert(error.response.data.message)
         // if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -344,6 +346,10 @@ export default {
     }
   },
   async mounted() {
+    this.filter.current_page = this.getPagination.current_page
+    this.filter.limit = this.getPagination.limit
+    this.filter.total_data = this.getPagination.total_data
+    this.isLoading = true
     await this.getLines();
     await this.getZones();
     await this.fetchFreqs();

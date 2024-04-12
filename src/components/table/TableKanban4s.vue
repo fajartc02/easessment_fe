@@ -58,7 +58,7 @@
           </td>
         </tr>
       </template>
-      <template v-else-if="isLoading && !getKanbansWithStatusModal">
+      <template v-else-if="isLoading && getKanbansWithStatusModal?.length != 0">
         <tr>
           <td class="text-center" colspan="9">
             <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
@@ -161,6 +161,7 @@ export default {
     }
   },
   mounted() {
+    this.isLoading = true
     this.getKanban()
   }
 }

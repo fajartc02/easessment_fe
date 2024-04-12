@@ -318,24 +318,12 @@ export default defineComponent({
     </CModalFooter>
   </CModal>
   <div class='demo-app' v-if="calendarOptions.initialEvents && !isLoading">
-    <!-- <div class='demo-app-sidebar'>
-      <div class='demo-app-sidebar-section'>
-        <h2>All Events ({{ currentEvents.length }})</h2>
-        <ul>
-          <li v-for='event in currentEvents' :key='event.id'>
-            <b>{{ event.startStr }}</b>
-            <i>{{ event.title }}</i>
-          </li>
-        </ul>
-      </div>
-    </div> -->
     <div class='demo-app-main'>
       <FullCalendar class='demo-app-calendar' :options='calendarOptions'>
         <template v-slot:eventContent='arg'>
           <div :class="`card`"
             :style="`${arg.event.title == 'WHITE' ? 'background-color: #ffffff' : arg.event.title == 'RED' ? 'background-color: #f99a9a' : 'background-color: #f95e5e'}`">
             <div class="card-body p-0 overflow-auto">
-              <!-- <b class="text-dark">{{ arg.timeText }}</b> -->
               <i style="color: black;">{{
     arg.event.extendedProps.is_holiday ? arg.event.extendedProps.created_by ?
       arg.event.extendedProps.holiday_desc :
