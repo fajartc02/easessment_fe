@@ -1,12 +1,12 @@
 <template>
   <thead class="text-center">
     <tr>
-      <th rowspan="3">No</th>
-      <th rowspan="3" width="120">Line name</th>
-      <th rowspan="3">Source cat</th>
-      <th rowspan="3" width="120">Tanggal</th>
-      <th rowspan="3" width="180">Pos</th>
-      <th rowspan="3" width="120">Temuan prob</th>
+      <th id="fixCol-head-1" rowspan="3">No</th>
+      <th id="fixCol-head-2" rowspan="3" width="120">Line name</th>
+      <th id="fixCol-head-3" rowspan="3">Source</th>
+      <th id="fixCol-head-4" rowspan="3" width="120">Tanggal</th>
+      <th id="fixCol-head-5" rowspan="3" width="180">Pos</th>
+      <th id="fixCol-head-6" rowspan="3" width="120">Temuan prob</th>
       <th rowspan="3" width="120">Rencana perbaikan</th>
       <th rowspan="3">priority</th>
       <th>Stop 6</th>
@@ -103,5 +103,55 @@ export default {
 <style scoped>
 .week {
   width: 20px !important;
+}
+
+#fixCol-head-1 {
+  position: sticky;
+  width: 38px;
+  top: 0px;
+  left: 0px;
+  z-index: 3;
+  background-color: white;
+}
+
+#fixCol-head-2 {
+  position: sticky;
+  top: 0px;
+  left: 37px;
+  z-index: 3;
+  background-color: white;
+}
+
+#fixCol-head-3 {
+  position: sticky;
+  min-width: 121px;
+  top: 0px;
+  left: 125px;
+  z-index: 3;
+  background-color: white;
+}
+
+#fixCol-head-4 {
+  position: sticky;
+  top: 0px;
+  left: 220px;
+  z-index: 3;
+  background-color: white;
+}
+
+#fixCol-head-5 {
+  position: sticky;
+  top: 0px;
+  left: 310px;
+  z-index: 3;
+  background-color: white;
+}
+
+#fixCol-head-6 {
+  position: sticky;
+  top: 0px;
+  left: 460px;
+  z-index: 3;
+  background-color: white;
 }
 </style>

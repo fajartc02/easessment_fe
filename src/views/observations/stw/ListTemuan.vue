@@ -99,27 +99,29 @@
           overflow-x: auto;
           white-space: nowrap;
         ">
-        <table style="border: 1px solid black; width: 100%" class="text-center">
-          <HeadFindingList />
-          <tbody>
-            <tr v-if="isLoading">
-              <td colspan="50" class="p-0" style="height: 200px">
-                <div class="vl-parent p-0" style="height: 100%">
-                  <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false" :on-cancel="onCancel" />
-                </div>
-              </td>
-            </tr>
-            <tr v-else v-for="(finding, findingIndex) in getFindings" :key="finding.no" :style="`${this.todayDate > formatTheDate(finding.cm_str_plan_date) &&
+        <div class="tableFixHead">
+          <table class="table table-hover text-center">
+            <HeadFindingList />
+            <tbody>
+              <tr v-if="isLoading">
+                <td colspan="50" class="p-0" style="height: 200px">
+                  <div class="vl-parent p-0" style="height: 100%">
+                    <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false"
+                      :on-cancel="onCancel" />
+                  </div>
+                </td>
+              </tr>
+              <tr v-else v-for="(finding, findingIndex) in getFindings" :key="finding.no" :style="`${this.todayDate > formatTheDate(finding.cm_str_plan_date) &&
               finding.cm_judg == false
               ? 'background-color: #fee2e2'
               : ''
               }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ${finding.cm_judg ==
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ${finding.cm_judg ==
                 true
                 ? 'background-color: #f0fdf4'
                 : ''
               }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ${finding.cm_judg ==
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ${finding.cm_judg ==
                 false &&
                 this
                   .todayDate <
@@ -129,160 +131,161 @@
                 ? 'background-color: #fff'
                 : ''
               }
-              `">
-              <th>{{ findingIndex + 1 }}</th>
-              <td class="px-2">{{ finding.line_nm }}</td>
-              <td class="px-2">{{ finding.source_category }}</td>
-              <td class="px-2">{{ formatTheDate(finding.finding_date) }}</td>
-              <td class="px-2">{{ finding.finding_location }}</td>
-              <td class="px-2">{{ finding.finding_desc }}</td>
-              <td class="px-2">
-                {{ formatTheDate(finding.cm_str_plan_date) }}
-              </td>
-              <td class="px-2">{{ finding.cm_priority }}</td>
-              <td colspan="2">
-                {{ finding.factor_nm == 'Safety' ? 'v' : ' ' }}
-              </td>
-              <td>{{ finding.factor_nm == 'Method' ? 'v' : ' ' }}</td>
-              <td colspan="2">
-                {{ finding.factor_nm == 'Man' ? 'v' : ' ' }}
-              </td>
-              <td>{{ finding.factor_nm == 'Material' ? 'v' : ' ' }}</td>
-              <td>{{ finding.factor_nm == 'Machine' ? 'v' : ' ' }}</td>
-              <td>{{ finding.cm_pic_nm }}</td>
-              <td v-for="n in num" :key="n" style="min-width: 30px !important; padding: 5px">
-                <div v-if="n >= finding.w_str_plan_date && n <= finding.w_end_plan_date
+                `">
+                <th id="fixCol-1">{{ findingIndex + 1 }}</th>
+                <td id="fixCol-2" class="px-2">{{ finding.line_nm }}</td>
+                <td id="fixCol-3" class="px-2">{{ finding.source_category }}</td>
+                <td id="fixCol-4" class="px-2">{{ formatTheDate(finding.finding_date) }}</td>
+                <td id="fixCol-5" class="px-2">{{ finding.finding_location }}</td>
+                <td id="fixCol-6" class="px-2">{{ finding.finding_desc }}</td>
+                <td class="px-2">
+                  {{ formatTheDate(finding.cm_str_plan_date) }}
+                </td>
+                <td class="px-2">{{ finding.cm_priority }}</td>
+                <td colspan="2">
+                  {{ finding.factor_nm == 'Safety' ? 'v' : ' ' }}
+                </td>
+                <td>{{ finding.factor_nm == 'Method' ? 'v' : ' ' }}</td>
+                <td colspan="2">
+                  {{ finding.factor_nm == 'Man' ? 'v' : ' ' }}
+                </td>
+                <td>{{ finding.factor_nm == 'Material' ? 'v' : ' ' }}</td>
+                <td>{{ finding.factor_nm == 'Machine' ? 'v' : ' ' }}</td>
+                <td>{{ finding.cm_pic_nm }}</td>
+                <td v-for="n in num" :key="n" style="min-width: 30px !important; padding: 5px">
+                  <div v-if="n >= finding.w_str_plan_date && n <= finding.w_end_plan_date
               " :style="`
-                    width: 100%;
-                    height: 25px;
-                    border-radius: 4px;
-                    border: 2px dotted #64748b;
-                    ${finding.status_check == 'PROGRESS'
+                      width: 100%;
+                      height: 25px;
+                      border-radius: 4px;
+                      border: 2px dotted #64748b;
+                      ${finding.status_check == 'PROGRESS'
                 ? 'background-color: #fff'
                 : ''
               };
-                    ${finding.status_check == 'DELAY'
+                      ${finding.status_check == 'DELAY'
                 ? 'background-color: #fee2e2'
                 : ''
               };
-                    ${finding.status_check == 'DONE'
+                      ${finding.status_check == 'DONE'
                 ? 'background-color: #bbf7d0'
                 : ''
               };
-                    `"></div>
+                      `"></div>
 
-                <div class="my-2" v-if="n >= finding.w_str_act_date && n <= finding.w_end_act_date
+                  <div class="my-2" v-if="n >= finding.w_str_act_date && n <= finding.w_end_act_date
               " :style="`
-                    width: 100%;
-                    height: 25px;
-                    border-radius: 4px;
-                    border: 2px solid #64748b;
-                    ${finding.status_check == 'PROGRESS'
+                      width: 100%;
+                      height: 25px;
+                      border-radius: 4px;
+                      border: 2px solid #64748b;
+                      ${finding.status_check == 'PROGRESS'
                 ? 'background-color: #fff'
                 : ''
               };
-                    ${finding.status_check == 'DELAY'
+                      ${finding.status_check == 'DELAY'
                 ? 'background-color: #fee2e2'
                 : ''
               };
-                    ${finding.status_check == 'DONE'
+                      ${finding.status_check == 'DONE'
                 ? 'background-color: #bbf7d0'
                 : ''
               };
-                    `"></div>
-              </td>
-              <td>
-                <input v-if="finding.cm_sign_lh_red" type="image" :src="finding.cm_sign_lh_red" alt="" width="200" />
-              </td>
-              <td>
-                <input v-if="finding.cm_sign_lh_white" type="image" :src="finding.cm_sign_lh_white" alt=""
-                  width="200" />
-              </td>
-              <td>
-                <input v-if="finding.cm_sign_sh" type="image" :src="finding.cm_sign_sh" alt="" width="200" />
-              </td>
-              <td>
-                <div class="d-flex m-2">
-                  <div class="d-flex" style="width: 400px">
-                    <input type="text" class="form-control w-full" :value="finding.cm_comments" @input="
+                      `"></div>
+                </td>
+                <td>
+                  <input v-if="finding.cm_sign_lh_red" type="image" :src="finding.cm_sign_lh_red" alt="" width="200" />
+                </td>
+                <td>
+                  <input v-if="finding.cm_sign_lh_white" type="image" :src="finding.cm_sign_lh_white" alt=""
+                    width="200" />
+                </td>
+                <td>
+                  <input v-if="finding.cm_sign_sh" type="image" :src="finding.cm_sign_sh" alt="" width="200" />
+                </td>
+                <td>
+                  <div class="d-flex m-2">
+                    <div class="d-flex" style="width: 400px">
+                      <input type="text" class="form-control w-full" :value="finding.cm_comments" @input="
               updateCMComments(
                 finding.finding_id,
                 $event.target.value,
                 findingIndex,
               )
               " />
-                    <button class="btn btn-info btn-sm text-white w-full mx-1" @click="saveCMComments()">
-                      save
-                    </button>
+                      <button class="btn btn-info btn-sm text-white w-full mx-1" @click="saveCMComments()">
+                        save
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </td>
-              <td class="px-1">
-                <div class="px-2 d-flex">
-                  <button @click="() => {
+                </td>
+                <td class="px-1">
+                  <div class="px-2 d-flex">
+                    <button @click="() => {
               getDetailTemuan(findingIndex)
               addSignModal = true
             }
               " class="btn btn-info btn-sm text-white w-full my-1">
-                    Add sign
-                  </button>
-                  <button class="btn btn-info btn-sm text-white w-full mx-1 my-1" style="margin-right: 10px" @click="() => {
+                      Add sign
+                    </button>
+                    <button class="btn btn-info btn-sm text-white w-full mx-1 my-1" style="margin-right: 10px" @click="() => {
               getDetailTemuan(findingIndex)
               detailTemuanModal = true
             }
               ">
-                    Detail
-                  </button>
-                  <button @click="() => {
+                      Detail
+                    </button>
+                    <button @click="() => {
               getDetailTemuan(findingIndex)
               editTemuanModal = true
             }
               " class="btn btn-info btn-sm text-white w-full my-1">
-                    Edit
-                  </button>
-                  <button @click="deleteFinding(finding.finding_id)"
-                    class="btn btn-danger mx-1 btn-sm text-white w-full my-1">
-                    Delete
-                  </button>
-                  <!-- <button
-                    @click="
-                      downloadPinkSheet(
-                        finding.file_pinksheet,
-                        finding.observation_id,
-                        finding.source_category,
-                      )
-                    "
-                    class="btn btn-info btn-sm text-white w-full my-1"
-                  >
-                    Download
-                  </button> -->
-                  <CDropdown size="sm" class="mx-1">
-                    <CDropdownToggle color="info" class="btn-sm" size="sm">Download</CDropdownToggle>
-                    <CDropdownMenu>
-                      <CDropdownItem>
-                        <button :disabled="finding.source_category !== 'Obs'" class="btn btn-info btn-sm text-white"
-                          @click="downloadReport(finding.observation_id)">
-                          Download Report
-                        </button>
-                      </CDropdownItem>
-                      <CDropdownItem>
-                        <button :disabled="finding.file_pinksheet == null"
-                          @click="downloadPinkSheet(finding.file_pinksheet)" class="btn btn-info btn-sm text-white">
-                          Download Pinksheet
-                        </button>
-                      </CDropdownItem>
-                    </CDropdownMenu>
-                  </CDropdown>
-                </div>
-              </td>
-            </tr>
-            <tr v-if="getFindings?.length < 1">
-              <td colspan="50">
-                <h3 class="my-2">Data kosong</h3>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                      Edit
+                    </button>
+                    <button @click="deleteFinding(finding.finding_id)"
+                      class="btn btn-danger mx-1 btn-sm text-white w-full my-1">
+                      Delete
+                    </button>
+                    <!-- <button
+                      @click="
+                        downloadPinkSheet(
+                          finding.file_pinksheet,
+                          finding.observation_id,
+                          finding.source_category,
+                        )
+                      "
+                      class="btn btn-info btn-sm text-white w-full my-1"
+                    >
+                      Download
+                    </button> -->
+                    <CDropdown size="sm" class="mx-1">
+                      <CDropdownToggle color="info" class="btn-sm" size="sm">Download</CDropdownToggle>
+                      <CDropdownMenu>
+                        <CDropdownItem>
+                          <button :disabled="finding.source_category !== 'Obs'" class="btn btn-info btn-sm text-white"
+                            @click="downloadReport(finding.observation_id)">
+                            Download Report
+                          </button>
+                        </CDropdownItem>
+                        <CDropdownItem>
+                          <button :disabled="finding.file_pinksheet == null"
+                            @click="downloadPinkSheet(finding.file_pinksheet)" class="btn btn-info btn-sm text-white">
+                            Download Pinksheet
+                          </button>
+                        </CDropdownItem>
+                      </CDropdownMenu>
+                    </CDropdown>
+                  </div>
+                </td>
+              </tr>
+              <tr v-if="getFindings?.length < 1">
+                <td colspan="50">
+                  <h3 class="my-2">Data kosong</h3>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
       <!-- pagination -->
       <Pagination :totalPages="10" :perPage="10" :currentPage="currentPage" @changePage="onPageChange"
@@ -1293,3 +1296,83 @@ export default {
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
+
+<style>
+.fixed-td {
+  position: absolute;
+}
+
+.tableFixHead {
+  overflow: auto;
+  height: 300px;
+}
+
+.tableFixHead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: white;
+}
+
+.tableFixHead {
+  overflow: auto;
+  height: 300px;
+}
+
+.tableFixHead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: white;
+}
+
+#fixCol-1 {
+  position: sticky;
+  width: 38px;
+  top: 0px;
+  left: 0px;
+  z-index: 3;
+  background-color: white;
+}
+
+#fixCol-2 {
+  position: sticky;
+  top: 0px;
+  left: 37px;
+  z-index: 3;
+  background-color: white;
+}
+
+#fixCol-3 {
+  position: sticky;
+  min-width: 121px;
+  top: 0px;
+  left: 125px;
+  z-index: 3;
+  background-color: white;
+}
+
+#fixCol-4 {
+  position: sticky;
+  top: 0px;
+  left: 220px;
+  z-index: 3;
+  background-color: white;
+}
+
+#fixCol-5 {
+  position: sticky;
+  top: 0px;
+  left: 320px;
+  z-index: 3;
+  background-color: white;
+}
+
+#fixCol-6 {
+  position: sticky;
+  top: 0px;
+  left: 460px;
+  z-index: 3;
+  background-color: white;
+}
+</style>
