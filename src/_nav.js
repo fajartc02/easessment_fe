@@ -55,7 +55,7 @@ export default [{
         icon: 'cil-clipboard',
     },
     {
-        component: 'CNavTitle', // --- HISTORY MENU
+        component: 'CNavTitle', // --- 4S MENU
         name: '4S',
     },
     {
@@ -82,6 +82,36 @@ export default [{
         to: '/4s/grafik',
         icon: 'cil-speedometer'
     },
+
+    {
+        component: 'CNavTitle', // --- OM MENU
+        name: 'OM',
+    },
+    {
+        component: 'CNavItem',
+        name: 'Main Schedule',
+        to: '/om/main-schedule',
+        icon: 'cil-speedometer'
+    }, 
+    {
+        component: 'CNavItem',
+        name: 'Kanban OM',
+        to: '/om/kanban',
+        icon: 'cil-speedometer'
+    },
+    {
+        component: 'CNavItem',
+        name: 'Temuan OM',
+        to: '/om/temuan',
+        icon: 'cil-speedometer'
+    }, 
+    {
+        component: 'CNavItem',
+        name: 'Grafik OM',
+        to: '/om/grafik',
+        icon: 'cil-speedometer'
+    },
+
     {
         component: 'CNavTitle', // --- MASTER MENU
         name: 'Master Data',

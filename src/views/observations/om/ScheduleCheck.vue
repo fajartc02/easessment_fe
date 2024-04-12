@@ -1,10 +1,5 @@
 <template>
-    <div v-if="isLoading" class="card-body p-0 overflow-x-auto" style="width: 100%; height: 500px">
-        <div class="vl-parent p-0" style="width: 100%; height: 100%">
-            <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false" :on-cancel="onCancel" />
-        </div>
-    </div>
-    <div v-if="!isLoading">
+    <div>
         <div class="card">
             <div class="row">
                 <div class="col">
@@ -23,7 +18,7 @@
                         </CInputGroup>
                         <CInputGroup class="mb-3">
                             <CInputGroupText>Plan Date</CInputGroupText>
-                            <CFormInput :value="getSubSchedulesCheck?.actual_time?.substring(0, 10)" disabled />
+                            <CFormInput disabled />
                         </CInputGroup>
                         <CInputGroup class="mb-3">
                             <CInputGroupText>Plan PIC</CInputGroupText>
@@ -48,7 +43,7 @@
                             <input type="date" class="form-control" v-model="detailActualDate">
                             <CInputGroupText>
                                 <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()"> {{
-        isUpdateCheckLoading ? 'updating..' : 'update' }} </button>
+                                isUpdateCheckLoading ? 'updating..' : 'update' }} </button>
                             </CInputGroupText>
                         </CInputGroup>
                         <CInputGroup class="mb-3">
@@ -57,7 +52,7 @@
                             <Select2 class="form-control" :options="Users" v-model="detailActualPIC" />
                             <CInputGroupText>
                                 <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()">{{
-        isUpdateCheckLoading ? 'updating..' : 'update' }}</button>
+                                isUpdateCheckLoading ? 'updating..' : 'update' }}</button>
                             </CInputGroupText>
                         </CInputGroup>
                     </div>
@@ -96,7 +91,7 @@
                             <button class="btn btn-info btn-sm text-white"
                                 @click="saveScheduleCheck(item.judgment_id, item.actual_time, item.item_check_kanban_id)">
                                 {{ isAddCheckLoading ?
-        'Saving...' : 'Save' }}
+                                'Saving...' : 'Save' }}
                             </button>
                         </td>
                         <td>
@@ -305,12 +300,11 @@ import { GET_ZONES } from '@/store/modules/zones.module'
 import { GET_KANBANS } from '@/store/modules/kanban.module'
 import { GET_FREQS } from '@/store/modules/freq.module'
 import { GET_SYSTEMS } from '@/store/modules/system.module'
-import Loading from 'vue-loading-overlay'
 
 export default {
     name: "Schedule Check",
     components: {
-        VueMultiselect, Loading
+        VueMultiselect
     },
     data() {
         return {
@@ -383,7 +377,6 @@ export default {
             await this.$store.dispatch(GET_SCHEDULES_CHECK, objQuery).then((res) => {
                 if (res) {
                     this.itemCheks = res.item_check_kanbans
-                    this.isLoading = false
                 }
             })
         },
