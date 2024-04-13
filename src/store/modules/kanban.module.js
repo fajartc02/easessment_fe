@@ -41,7 +41,7 @@ const getters = {
         if (state.kanbans) {
             let mapKanbans = []
             if (state.kanbans) {
-                mapKanbans = state.kanbans.list.map(kanban => {
+                mapKanbans = state.kanbans.map(kanban => {
                     return {
                         id: kanban.kanban_id,
                         text: `${kanban.kanban_no}-${kanban.area_nm}`
@@ -73,27 +73,27 @@ const actions = {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
             ApiService.query("master/kanbans/get", query)
- 
-                // .then((result) => {
-                //     const data = result.data
-                //     if (data) { 
-                //         commit(SET_KANBANS, data.data.list) 
-                //         resolve(data.data.list)
- 
-                .then((result) => {
-                    const { data } = result.data 
-                    if (data) {
-                        commit(SET_KANBANS, data.list)
 
-                        // THIS COMMIT FROM pagination.module.js
-                        if (data.limit) commit(SET_LIMIT, data.limit)
-                        if (data.current_page) commit(SET_CURRENT_PAGE, data.current_page)
-                        if (data.total_data) commit(SET_TOTAL_DATA, data.total_data)
-                        resolve(data.list)
-                    }
-                }).catch((err) => {
-                    reject(err)
-                });
+            // .then((result) => {
+            //     const data = result.data
+            //     if (data) {
+            //         commit(SET_KANBANS, data.data.list)
+            //         resolve(data.data.list)
+
+            .then((result) => {
+                const { data } = result.data
+                if (data) {
+                    commit(SET_KANBANS, data.list)
+
+                    // THIS COMMIT FROM pagination.module.js
+                    if (data.limit) commit(SET_LIMIT, data.limit)
+                    if (data.current_page) commit(SET_CURRENT_PAGE, data.current_page)
+                    if (data.total_data) commit(SET_TOTAL_DATA, data.total_data)
+                    resolve(data.list)
+                }
+            }).catch((err) => {
+                reject(err)
+            });
 
         });
     },
@@ -108,7 +108,7 @@ const actions = {
                     if (data) {
                         commit(SET_KANBAN_DETAIL, data)
                         resolve(data)
- 
+
                     }
                 }).catch((err) => {
                     reject(err)
