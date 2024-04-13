@@ -217,6 +217,13 @@ const routes = [{
                 component: () =>
                     import ('@/views/observations/stw/Henkaten.vue'),
             },
+            // OM
+            {
+              path: '/master/om-item-check-kanban',
+              name: 'Om Item Check Kanban',
+              component: () =>
+                import('@/views/observations/om/OmItemCheckKanban.vue'),
+            },
         ],
     },
 
