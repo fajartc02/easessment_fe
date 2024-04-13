@@ -54,7 +54,7 @@
             <CInputGroup class="mb-3">
               <CInputGroupText>Act PIC</CInputGroupText>
               <CFormInput :value="getSubSchedulesCheck?.actual_pic_nm" disabled />
-              <Select2 class="form-control" :options="getUsersOpts" v-model="detailActualPIC" />
+              <Select2 class="form-control" :options="Users" v-model="detailActualPIC" />
               <CInputGroupText>
                 <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()">{{
     isUpdateCheckLoading ? 'updating..' : 'update' }}</button>
@@ -101,7 +101,8 @@
             </td>
             <td>
               <button v-if="item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' && item.findings.length > 0"
-                class=" btn btn-info btn-sm text-white" @click="openEditFindingModal(item.findings, 'update')">Update
+                class=" btn btn-info btn-sm text-white"
+                @click="openEditFindingModal(item.schedule_item_check_kanban_id, item.findings, 'update')">Update
                 finding</button>
               <button v-else-if="item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d'"
                 class=" btn btn-info btn-sm text-white"
@@ -278,7 +279,10 @@
         <CButton color="secondary" @click="() => { addFindingModal = false }">
           Close
         </CButton>
-        <CButton color="primary" @click="addFinding()"> {{ findingActionType }} finding data</CButton>
+        <CButton v-if="findingActionType == 'add'" color="primary" @click="addFinding()"> {{ findingActionType
+          }} finding
+          data</CButton>
+        <CButton color="primary" v-else @click="updateFinding()"> {{ findingActionType }} finding data</CButton>
       </CModalFooter>
     </CModal>
 
@@ -339,6 +343,7 @@ export default {
       optChangeData: null,
       optDeptData: null,
       findingActionType: null,
+      selectedFindingID: null,
       // detail
       detailActualPIC: null,
       detailActualDate: null
@@ -353,6 +358,19 @@ export default {
       'getKanbans',
       'getFreqs',
     ]),
+    Users() {
+      if (this.getUsersOpts) {
+        let container = this.getUsersOpts.map(user => {
+          return {
+            id: user.id,
+            text: `${user.noreg}-${user.text}`
+          }
+        })
+        return container;
+      } else {
+        return [];
+      }
+    }
   },
   methods: {
     async getScheduleCheck() {
@@ -392,7 +410,11 @@ export default {
       }
       this.addFindingModal = true
     },
-    openEditFindingModal(findings, actionType) {
+    openEditFindingModal(scheduleItemCheckKanbanID, findings, actionType) {
+      this.selectedFindingID = findings[0].finding_id
+      if (scheduleItemCheckKanbanID !== null) {
+        this.selectedScheduleItemCheckKanbanID = scheduleItemCheckKanbanID
+      }
       this.findingActionType = actionType
       const data = findings[0]
 
@@ -400,7 +422,7 @@ export default {
       this.selectedFreqID = data.freq_id
       this.selectedZoneID = data.zone_id
       this.selectedKanbanID = data.kanban_id
-      this.selectedPIC = data.finding_pic
+      this.selectedPIC = data.finding_pic_id
       this.findingDate = data.finding_date
       this.findingDesc = data.finding_desc
       this.planCMDate = data.plan_cm_date
@@ -410,7 +432,7 @@ export default {
       this.optChanges = data.opt_changes
       this.optDepartment = data.opt_depts
       this.cmJudg = data.cm_judg
-      this.actualPIC = data.actual_pic
+      this.actualPIC = data.actual_pic_id
       this.actualCMDate = data.actual_cm_date
       this.evaluationName = data.evaluation_nm
 
@@ -450,6 +472,40 @@ export default {
         await this.getScheduleCheck()
       } else {
         alert('Failed add data')
+
+      }
+    },
+    async updateFinding() {
+      console.log('update called')
+      ApiService.setHeader()
+      const findingData = {
+        "schedule_item_check_kanban_id": this.selectedScheduleItemCheckKanbanID,
+        "line_id": this.selectedLineID,
+        "freq_id": this.selectedFreqID,
+        "zone_id": this.selectedZoneID,
+        "kanban_id": this.selectedKanbanID,
+        "finding_pic_id": this.selectedPIC,
+        "finding_date": this.findingDate,
+        "finding_desc": this.findingDesc,
+        "plan_cm_date": this.planCMDate,
+        "plan_cm_desc": this.planCMDesc,
+        "time_cm": +this.timeCM,
+        "time_yokoten": this.timeYokoten,
+        "opt_changes": this.optChanges,
+        "opt_depts": this.optDepartment,
+        "cm_judg": this.cmJudg,
+        "actual_pic_id": this.actualPIC,
+        "actual_cm_date": this.actualCMDate,
+        "evaluation_nm": this.evaluationName
+      }
+
+      const update = await ApiService.put(`operational/4s/finding/edit/${this.selectedFindingID}`, findingData)
+      if (update.data.message == 'Success to edit 4s finding') {
+        alert('Success edit data')
+        this.addFindingModal = false
+        await this.getScheduleCheck()
+      } else {
+        alert('Failed edit data')
 
       }
     },
