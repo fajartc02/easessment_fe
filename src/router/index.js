@@ -196,42 +196,42 @@ const routes = [{
             },   
 
             // OM
-            // {
-            //     path: '/om/main-schedule',
-            //     name: 'OM Main Schedule',
-            //     component: () => 
-            //     import ('@/views/observations/om/MainSchedule.vue'),
-            // },
+            {
+                path: '/om/main-schedule',
+                name: 'OM Main Schedule',
+                component: () => 
+                import ('@/views/observations/om/MainSchedule.vue'),
+            },
             // {
             //     path: '/om/schedule-check/:mainScheduleID/:subScheduleID',
             //     name: 'Schedule Check',
             //     component: () =>
             //     import ('@/views/observations/om/ScheduleCheck.vue'),
             // },    
-            // {
-            //     path: '/om/kanban',
-            //     name: 'Kanban',
-            //     component: () =>
-            //     import ('@/views/observations/om/Kanbanom.vue'),
-            // }, 
-            // {
-            //     path: '/master/kanban',
-            //     name: 'Kanbanom',
-            //     component: () =>
-            //         import ('@/views/observations/om/Kanbanom.vue'),
-            // }, 
-            // {
-            //     path: '/om/temuan',
-            //     name: 'Temuan',
-            //     component: () =>
-            //     import ('@/views/observations/om/Temuan.vue'),
-            // }, 
-            // {
-            //     path: '/om/grafik',
-            //     name: 'Grafik',
-            //     component: () =>
-            //     import ('@/views/observations/om/Grafik.vue'),
-            // },  
+            {
+                path: '/om/kanban',
+                name: 'Kanban',
+                component: () =>
+                import ('@/views/observations/om/Kanbanom.vue'),
+            }, 
+            {
+                path: '/master/kanban',
+                name: 'Kanbanom',
+                component: () =>
+                    import ('@/views/observations/om/Kanbanom.vue'),
+            }, 
+            {
+                path: '/om/temuan',
+                name: 'Temuan',
+                component: () =>
+                import ('@/views/observations/om/Temuan.vue'),
+            }, 
+            {
+                path: '/om/grafik',
+                name: 'Grafik',
+                component: () =>
+                import ('@/views/observations/om/Grafik.vue'),
+            },  
  
             {
                 path: '/stw/member-voice',

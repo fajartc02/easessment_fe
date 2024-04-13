@@ -476,7 +476,6 @@ export default {
       }
     },
     async updateFinding() {
-      console.log('update called')
       ApiService.setHeader()
       const findingData = {
         "schedule_item_check_kanban_id": this.selectedScheduleItemCheckKanbanID,
@@ -506,7 +505,6 @@ export default {
         await this.getScheduleCheck()
       } else {
         alert('Failed edit data')
-
       }
     },
     async updateScheduleCheckData() {
