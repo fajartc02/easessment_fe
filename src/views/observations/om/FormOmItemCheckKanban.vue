@@ -39,12 +39,16 @@
         <CInputGroupText>Method Name</CInputGroupText>
         <CFormSelect v-model="form.method_nm">
           <option value="null">Select Method</option>
+          <option v-for="opt in optMethods" :key="opt.system_id" :value="opt.system_value">{{ opt.system_value }}
+          </option>
         </CFormSelect>
       </CInputGroup>
       <CInputGroup class="mb-3">
         <CInputGroupText>Standart Name</CInputGroupText>
         <CFormSelect v-model="form.standart_nm">
           <option value="null">Select Standart</option>
+          <option v-for="opt in optStandarts" :key="opt.system_id" :value="opt.system_value">{{ opt.system_value }}
+          </option>
         </CFormSelect>
       </CInputGroup>
       <CInputGroup class="mb-3">
@@ -71,6 +75,7 @@ import { POST_OM_ITEM_CHECK, PUT_OM_ITEM_CHECK } from '@/store/modules/omItemChe
 import { GET_LINES } from '@/store/modules/line.module'
 import { GET_FREQS } from '@/store/modules/freq.module'
 import { GET_MACHINES } from '@/store/modules/machine.module'
+import { GET_SYSTEMS } from '@/store/modules/system.module'
 import { mapGetters } from 'vuex'
 import Swal from 'sweetalert2'
 
@@ -88,6 +93,9 @@ export default {
   },
   data() {
     return {
+      optStandarts: [],
+      optMethods: [],
+      optKanbans: [],
       form: {
         line_id: null,
         freq_id: null,
@@ -153,6 +161,34 @@ export default {
         console.log(error)
       }
     },
+    async getOptStandartsSystem() {
+      try
+      {
+        this.$store.dispatch(GET_SYSTEMS, {
+          system_type: 'OM_STANDARD'
+        }).then(res => {
+          this.optStandarts = res
+        })
+      } catch (error)
+      {
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
+      }
+    },
+    async getOptMethodsSystem() {
+      try
+      {
+        this.$store.dispatch(GET_SYSTEMS, {
+          system_type: 'OM_METHOD'
+        }).then(res => {
+          this.optMethods = res
+        })
+      } catch (error)
+      {
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
+      }
+    },
     async post() {
       try
       {
@@ -210,9 +246,11 @@ export default {
     }
   },
   async mounted() {
-    await this.getLines()
-    await this.getFreqs()
-    await this.getMachines()
+    this.getLines()
+    this.getFreqs()
+    this.getMachines()
+    this.getOptStandartsSystem()
+    this.getOptMethodsSystem()
   }
 }
 </script>
