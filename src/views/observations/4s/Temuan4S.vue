@@ -500,9 +500,9 @@ export default {
     async getSystem() {
       try {
         ApiService.setHeader()
-        const changeOpts = await ApiService.get(`master/systems/get/OPT_CHANGE`)
-        const depts = await ApiService.get('master/systems/get/OPT_DEPT')
-        let evaluation = await ApiService.get('master/systems/get/EVALUATION')
+        const changeOpts = await ApiService.get(`master/systems/get/4S_OPT_CHANGE`)
+        const depts = await ApiService.get('master/systems/get/4S_OPT_DEPT')
+        let evaluation = await ApiService.get('master/systems/get/4S_EVALUATION')
         // console.log(changeOpts);
         this.changeOpts = changeOpts.data.data
         this.deptOpts = depts.data.data
