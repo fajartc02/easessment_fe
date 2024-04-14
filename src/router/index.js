@@ -202,18 +202,6 @@ const routes = [{
                 component: () =>
                     import ('@/views/observations/om/MainScheduleOM.vue'),
             },
-            // {
-            //     path: '/om/schedule-check/:mainScheduleID/:subScheduleID',
-            //     name: 'Schedule Check',
-            //     component: () =>
-            //     import ('@/views/observations/om/ScheduleCheck.vue'),
-            // },
-            {
-                path: '/om/kanban',
-                name: 'Kanban',
-                component: () =>
-                    import ('@/views/observations/om/Kanbanom.vue'),
-            },
             {
                 path: '/master/kanban',
                 name: 'Kanbanom',
@@ -226,13 +214,6 @@ const routes = [{
                 component: () =>
                     import ('@/views/observations/om/Temuan.vue'),
             },
-            {
-                path: '/om/grafik',
-                name: 'Grafik',
-                component: () =>
-                    import ('@/views/observations/om/Grafik.vue'),
-            },
-
             {
                 path: '/stw/member-voice',
                 name: 'MemberVoice',

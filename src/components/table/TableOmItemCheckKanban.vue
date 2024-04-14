@@ -5,19 +5,15 @@
         <th>No</th>
         <th>Line</th>
         <th>Machine</th>
-        <th>Item Check</th>
-        <th>Location</th>
-        <th>Methode</th>
-        <th>Standart</th>
-        <th>Duration</th>
-        <th>Frequency</th>
+        <th>Total Item Check</th>
+        <th>Total Duration</th>
         <th colspan="3">Actions</th>
       </tr>
     </thead>
     <tbody>
       <template v-if="getItemChecksWithStatusModal && !isLoading">
         <tr v-for="(itemCheck, i) in getItemChecksWithStatusModal" :key="i">
-          <td>
+          <td class="text-center">
             {{ itemCheck.no }}
           </td>
           <td>
@@ -26,31 +22,19 @@
           <td>
             {{ itemCheck.machine_nm }}
           </td>
-          <td>
-            {{ itemCheck.item_check_nm }}
-          </td>
-          <td>
-            {{ itemCheck.location_nm }}
-          </td>
-          <td>
-            {{ itemCheck.method_nm }}
-          </td>
-          <td>
-            {{ itemCheck.standart_nm }}
-          </td>
-          <td>
-            {{ itemCheck.standart_time }}
-          </td>
-          <td>
-            {{ itemCheck.freq_nm }}
+          <td class="text-center">
+            {{ itemCheck.total_item_check }}
           </td>
           <td class="text-center">
-            <button class="btn btn-sm btn-warning" @click="edit(itemCheck)">Edit</button>
+            {{ itemCheck.total_duration_time }}
           </td>
           <td class="text-center">
+            <button class="btn btn-sm btn-warning" @click="edit(itemCheck)">Item Check</button>
+          </td>
+          <!-- <td class="text-center">
             <button class="btn btn-sm btn-danger"
               @click="ActionDeleteItemChecks(itemCheck.om_item_check_kanban_id)">Delete</button>
-          </td>
+          </td> -->
         </tr>
       </template>
       <template v-else-if="isLoading && getItemChecksWithStatusModal?.length != 0">
@@ -71,7 +55,7 @@
 
 <script>
 import NoDataTable from './NoDataTable.vue'
-import { DELETE_OM_ITEM_CHECK, GET_OM_ITEM_CHECKS } from '../../store/modules/omItemChecks.module'
+import { DELETE_OM_ITEM_CHECK, GET_OM_GROUP_MACHINES_ITEM_CHECK } from '../../store/modules/omItemChecks.module'
 import { mapGetters } from 'vuex'
 import Swal from 'sweetalert2'
 
@@ -93,7 +77,7 @@ export default {
       try
       {
         this.isLoading = true
-        await this.$store.dispatch(GET_OM_ITEM_CHECKS, this.filter)
+        await this.$store.dispatch(GET_OM_GROUP_MACHINES_ITEM_CHECK, this.filter)
         this.isLoading = false
       } catch (error)
       {

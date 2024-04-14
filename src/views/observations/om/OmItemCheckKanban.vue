@@ -5,7 +5,8 @@
     </div>
     <div class="flex-column">
       <button class="btn btn-primary" @click="() => { showFormModal = true }">Add Item Check</button>
-      <FormOmItemCheckKanban :loadedData="selectedEdit" :visible="showFormModal" @visible="onVisibleFormDialog($event)" />
+      <FormOmItemCheckKanban :loadedData="selectedEdit" :visible="showFormModal"
+        @visible="onVisibleFormDialog($event)" />
     </div>
   </div>
   <div class="card">
@@ -16,14 +17,6 @@
           <select class="form-select" v-model="filter.line_id" @change="changesLine">
             <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
               {{ line.text }}
-            </option>
-          </select>
-        </div>
-        <div class="col">
-          <label>Frequency</label>
-          <select class="form-select" v-model="filter.freq_id">
-            <option v-for="(freq, index) in getFreqsOpts" :key="index" :value="freq.id">
-              {{ freq.text }}
             </option>
           </select>
         </div>
@@ -41,8 +34,8 @@
       <TableOmItemCheckKanban :filter="filter" @selectedEdit="onSelectedEdit($event)" />
     </div>
     <div class="card-footer">
-      <div class="row">
-        <div class="col-xl-3">
+      <div class="d-flex justify-content-between">
+        <div>
           <div class="input-group mb-3">
             <label class="input-group-text">Limit</label>
             <select class="form-select" v-model="filter.limit">
@@ -53,9 +46,7 @@
             </select>
           </div>
         </div>
-        <div class="col">
-        </div>
-        <div class="col-xl-3" v-if="filter.total_data > 1">
+        <div v-if="filter.total_data > 1">
           <CustPagination :totalItems="filter.total_data" :items-per-page="filter.limit"
             :current-page="filter.current_page" @page-changed="handlePageChange" />
         </div>

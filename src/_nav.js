@@ -95,23 +95,10 @@ export default [{
     },
     {
         component: 'CNavItem',
-        name: 'Kanban OM',
-        to: '/om/kanban',
-        icon: 'cil-speedometer'
-    },
-    {
-        component: 'CNavItem',
         name: 'Temuan OM',
         to: '/om/temuan',
         icon: 'cil-speedometer'
     },
-    {
-        component: 'CNavItem',
-        name: 'Grafik OM',
-        to: '/om/grafik',
-        icon: 'cil-speedometer'
-    },
-
     {
         component: 'CNavTitle', // --- MASTER MENU
         name: 'Master Data',

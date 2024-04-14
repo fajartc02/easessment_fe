@@ -1,5 +1,6 @@
 import ApiService from "@/store/api.service";
 export const GET_OM_ITEM_CHECKS = "getOmItemChecks";
+export const GET_OM_GROUP_MACHINES_ITEM_CHECK = "getOmItemChecks";
 export const GET_OM_ITEM_CHECK_DETAIL = "getOmItemCheckDetail"
 export const POST_OM_ITEM_CHECK = "postOmItemCheck";
 export const PUT_OM_ITEM_CHECK = "putOmItemCheck";
@@ -45,6 +46,29 @@ const actions = {
     ApiService.setHeader()
     return new Promise((resolve, reject) => {
       ApiService.query("master/om-item-check-kanbans/get", query)
+        .then((result) => {
+          const { data } = result.data
+          if (data)
+          {
+            commit(SET_OM_ITEM_CHECKS, data.list)
+
+            // THIS COMMIT FROM pagination.module.js
+            if (data.limit) commit(SET_LIMIT, data.limit)
+            if (data.current_page) commit(SET_CURRENT_PAGE, data.current_page)
+            if (data.total_data) commit(SET_TOTAL_DATA, data.total_data)
+            resolve(data.list)
+          }
+        })
+        .catch((err) => {
+          reject(err)
+        });
+
+    });
+  },
+  [GET_OM_GROUP_MACHINES_ITEM_CHECK]({ commit }, query) {
+    ApiService.setHeader()
+    return new Promise((resolve, reject) => {
+      ApiService.query("master/om-item-check-kanbans/get/groups", query)
         .then((result) => {
           const { data } = result.data
           if (data)
