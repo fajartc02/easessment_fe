@@ -378,7 +378,7 @@ export default {
 
 .tableFixHead {
   overflow: auto;
-  height: 300px;
+  height: 100%;
 }
 
 .tableFixHead th {
