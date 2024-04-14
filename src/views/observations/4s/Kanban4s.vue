@@ -176,6 +176,7 @@ import CustPagination from '@/components/pagination/CustPagination.vue';
 import TableKanban4s from '@/components/table/TableKanban4s.vue'
 
 import FnRequireFullFillInput from '@/functions/FnRequireFullFillInput'
+import { toast } from 'vue3-toastify'
 
 export default {
   name: 'Kanban4s',
@@ -284,9 +285,9 @@ export default {
     async storeNewKanban() {
       try {
         this.isLoading = true
-        this.newKanban.dest = `KANBAN_${this.getLineName}_${this.newKanban.kanban_no}`
         const isInputFullFill = FnRequireFullFillInput(this.newKanban)
         if (isInputFullFill) {
+          this.newKanban.dest = `KANBAN_${this.getLineName}_${this.newKanban.kanban_no}`
           delete this.newKanban.line_id
           let newFormKanbanData = new FormData()
           for (const key in this.newKanban) {
@@ -313,7 +314,10 @@ export default {
           }
           this.selectedImages = []
         } else {
-          alert("Lengkapi input terlebih dahulu")
+          toast.info('Lengkapi input terlebih dahulu', {
+            autoClose: 1000
+          })
+          // alert("Lengkapi input terlebih dahulu")
           this.isLoading = false
         }
       } catch (error) {
@@ -354,6 +358,7 @@ export default {
     await this.getZones();
     await this.fetchFreqs();
     await this.$store.dispatch(GET_KANBANS, this.filter)
+    this.isLoading = false
   },
   components: {
     TableKanban4s,
