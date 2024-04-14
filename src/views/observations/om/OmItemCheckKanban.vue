@@ -3,11 +3,6 @@
     <div class="flex-column">
       <h4>Master OM Item Check Kanban</h4>
     </div>
-    <div class="flex-column">
-      <button class="btn btn-primary" @click="() => { showFormModal = true }">Add Item Check</button>
-      <FormOmItemCheckKanban :loadedData="selectedEdit" :visible="showFormModal"
-        @visible="onVisibleFormDialog($event)" />
-    </div>
   </div>
   <div class="card">
     <div class="card-header">
@@ -31,7 +26,7 @@
       </div>
     </div>
     <div class="card-body">
-      <TableOmItemCheckKanban :filter="filter" @selectedEdit="onSelectedEdit($event)" />
+      <TableMachineGroupOmItemCheck :filter="filter" @selectedEdit="onSelectedEdit($event)" />
     </div>
     <div class="card-footer">
       <div class="d-flex justify-content-between">
@@ -52,6 +47,10 @@
         </div>
       </div>
     </div>
+    <ModalTableOmItemCheck :visible="showTableItemCheck" @visible="onVisibleItemCheckModal($event)"
+      @showFormItemCheck="onShowFormItemCheck($event)" />
+    <ModalFormOmItemCheck :loadedData="selectedEdit" :visible="showFormItemCheck"
+      @visible="onVisibleFormItemCheckModal($event)" />
   </div>
 </template>
 
@@ -59,16 +58,13 @@
 <script>
 import { mapGetters } from 'vuex'
 import { GET_LINES } from '@/store/modules/line.module'
-import { GET_OM_ITEM_CHECKS } from '@/store/modules/omItemChecks.module'
-import { GET_FREQS } from '@/store/modules/freq.module'
+import { GET_OM_GROUP_MACHINES_ITEM_CHECKS, GET_OM_GROUP_MACHINE_DETAIL, GET_OM_ITEM_CHECKS } from '@/store/modules/omItemChecks.module'
 import { GET_MACHINES } from '@/store/modules/machine.module'
 
 import CustPagination from '@/components/pagination/CustPagination.vue';
-import TableOmItemCheckKanban from '@/components/table/TableOmItemCheckKanban.vue'
-
-//import FnRequireFullFillInput from '@/functions/FnRequireFullFillInput'
-
-import FormOmItemCheckKanban from './FormOmItemCheckKanban.vue'
+import TableMachineGroupOmItemCheck from '@/components/om/TableMachineGroupOmItemCheck.vue'
+import ModalTableOmItemCheck from '@/components/om/ModalTableOmItemCheck.vue'
+import ModalFormOmItemCheck from '@/components/om/ModalFormOmItemCheck.vue'
 
 export default {
   name: 'OmItemCheckKanban',
@@ -76,13 +72,13 @@ export default {
     return {
       filter: {
         line_id: -1,
-        freq_id: -1,
         machine_id: -1,
         limit: 10,
         total_data: 1,
         current_page: 1,
       },
-      showFormModal: false,
+      showTableItemCheck: false,
+      showFormItemCheck: false,
       isLoading: false,
       selectedEdit: null,
     }
@@ -90,27 +86,27 @@ export default {
   computed: {
     ...mapGetters([
       'getLinesOpts',
-      'getFreqsOpts',
       'getMachinesOpts',
-      'getItemChecksWithStatusModal',
-      'getPagination',
+      'getGroupMachineItemChecks',
+      'getMachineGroupPagination',
+      'getGroupMachineDetail',
     ]),
   },
   watch: {
-    getPagination: {
+    getMachineGroupPagination: {
       handler() {
         this.filter = {
           ...this.filter,
-          limit: this.getPagination.limit,
-          total_data: this.getPagination.total_data,
-          current_page: this.getPagination.current_page
+          limit: this.getMachineGroupPagination.limit,
+          total_data: this.getMachineGroupPagination.total_data,
+          current_page: this.getMachineGroupPagination.current_page
         }
       },
       deep: true
     },
     filter: {
       handler() {
-        this.$store.dispatch(GET_OM_ITEM_CHECKS, this.filter)
+        this.$store.dispatch(GET_OM_GROUP_MACHINES_ITEM_CHECKS, this.filter)
       },
       deep: true
     },
@@ -136,16 +132,6 @@ export default {
         console.log(error)
       }
     },
-    async fetchFreqs() {
-      try
-      {
-        this.$store.dispatch(GET_FREQS)
-      } catch (error)
-      {
-        if (error.response.status == 401) this.$router.push('/login')
-        console.log(error)
-      }
-    },
     changesLine() {
       if (this.filter.selectedLine != -1)
       {
@@ -157,48 +143,73 @@ export default {
     },
     handlePageChange(page) {
       this.filter.current_page = page;
-      this.$store.dispatch(GET_OM_ITEM_CHECKS, this.filter)
+      this.$store.dispatch(GET_OM_GROUP_MACHINES_ITEM_CHECKS, this.filter)
     },
     onSelectedEdit(event) {
       if (event)
       {
-        this.selectedEdit = {
-          id: event.om_item_check_kanban_id,
-          line_id: event.line_id,
-          freq_id: event.freq_id,
-          machine_id: event.machine_id,
-          item_check_nm: event.item_check_nm,
-          location_nm: event.location_nm,
-          method_nm: event.method_nm,
-          standart_nm: event.standart_nm,
-          standart_time: event.standart_time,
-        }
-        this.showFormModal = true
+        this.showTableItemCheck = true
+        this.$store.dispatch(GET_OM_GROUP_MACHINE_DETAIL, event)
       }
     },
-    onVisibleFormDialog(event) {
-      this.showFormModal = event.visible
+    onVisibleItemCheckModal(event) {
+      this.showTableItemCheck = event.visible
       if (event.refresh)
       {
-        this.$store.dispatch(GET_OM_ITEM_CHECKS, this.filter)
+        this.$store.dispatch(GET_OM_GROUP_MACHINES_ITEM_CHECKS, this.filter)
       }
-    }
+    },
+    onShowFormItemCheck(event) {
+      this.showFormItemCheck = event.visible
+      if (this.showFormItemCheck)
+      {
+        if (event.data)
+        {
+          this.selectedEdit = {
+            id: event.data.om_item_check_kanban_id,
+            line_id: event.data.line_id,
+            freq_id: event.data.freq_id,
+            machine_id: event.data.machine_id,
+            item_check_nm: event.data.item_check_nm,
+            location_nm: event.data.location_nm,
+            method_nm: event.data.method_nm,
+            standart_nm: event.data.standart_nm,
+            standart_time: event.data.standart_time,
+          }
+        }
+      }
+      else
+      {
+        this.selectedEdit = null
+      }
+    },
+    onVisibleFormItemCheckModal(event) {
+      this.showFormItemCheck = event.visible
+      this.selectedEdit = null
+      if (event.refresh)
+      {
+        this.$store.dispatch(GET_OM_ITEM_CHECKS, {
+          line_id: this.getGroupMachineDetail.line_id,
+          machine_id: this.getGroupMachineDetail.machine_id,
+        })
+      }
+    },
   },
   async mounted() {
-    this.filter.current_page = this.getPagination.current_page
-    this.filter.limit = this.getPagination.limit
-    this.filter.total_data = this.getPagination.total_data
+    this.filter.current_page = this.getMachineGroupPagination.current_page
+    this.filter.limit = this.getMachineGroupPagination.limit
+    this.filter.total_data = this.getMachineGroupPagination.total_data
     this.isLoading = true
 
     this.getLines();
-    this.fetchFreqs();
     this.getMachines();
-    this.$store.dispatch(GET_OM_ITEM_CHECKS, this.filter)
+    this.$store.dispatch(GET_OM_GROUP_MACHINES_ITEM_CHECKS, this.filter)
   },
   components: {
-    TableOmItemCheckKanban,
+    TableMachineGroupOmItemCheck,
     CustPagination,
-    FormOmItemCheckKanban
+    ModalTableOmItemCheck,
+    ModalFormOmItemCheck
   }
 }
 </script>

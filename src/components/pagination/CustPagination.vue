@@ -87,7 +87,7 @@ export default {
       return this.currentPage - 1;
     },
     show: function () {
-      return this.next || this.prev;
+      return true;
     }
   },
   methods: {

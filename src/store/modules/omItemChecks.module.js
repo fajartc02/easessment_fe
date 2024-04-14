@@ -1,7 +1,8 @@
 import ApiService from "@/store/api.service";
 export const GET_OM_ITEM_CHECKS = "getOmItemChecks";
-export const GET_OM_GROUP_MACHINES_ITEM_CHECK = "getOmItemChecks";
+export const GET_OM_GROUP_MACHINES_ITEM_CHECKS = "getOmGroupMachineItemChecks";
 export const GET_OM_ITEM_CHECK_DETAIL = "getOmItemCheckDetail"
+export const GET_OM_GROUP_MACHINE_DETAIL = "getSelectedMachineId"
 export const POST_OM_ITEM_CHECK = "postOmItemCheck";
 export const PUT_OM_ITEM_CHECK = "putOmItemCheck";
 export const DELETE_OM_ITEM_CHECK = "deleteOmItemCheck";
@@ -9,13 +10,26 @@ export const SET_LIMIT = "setLimit"
 export const SET_CURRENT_PAGE = "setPage"
 export const SET_TOTAL_DATA = "setTotalData"
 
+export const SET_LIMIT_GROUP_MACHINE = "setLimitGroupMachine"
+export const SET_CURRENT_PAGE_GROUP_MACHINE = "setPageGroupMachine"
+export const SET_TOTAL_DATA_GROUP_MACHINE = "setTotalDataGroupMachine"
+
 // mutation types
+export const SET_OM_GROUP_MACHINE_ITEM_CHECKS = "setGroupMachineItemChecks";
 export const SET_OM_ITEM_CHECKS = "setOmItemChecks";
 export const SET_OM_ITEM_CHECK_DETAIL = "setOmItemCheckDetail";
+export const SET_OM_GROUP_MACHINE_DETAIL = "setGroupMachineDetail";
 
 const state = {
   itemChecks: null,
+  groupMachineItemChecks: null,
   omItemCheckDetail: null,
+  groupMachineDetail: null,
+
+  limitGroupMachine: 10,
+  totalDataGroupMachine: 0,
+  currentPageGroupMachine: 1,
+
   limit: 10,
   total_data: 0,
   current_page: 1
@@ -39,6 +53,19 @@ const getters = {
       return map
     }
   },
+  getGroupMachineItemChecks(state) {
+    return state.groupMachineItemChecks
+  },
+  getGroupMachineDetail(state) {
+    return state.groupMachineDetail
+  },
+  getMachineGroupPagination(state) {
+    return {
+      limit: state.limitGroupMachine,
+      total_data: state.totalDataGroupMachine,
+      current_page: state.current_page,
+    }
+  }
 };
 
 const actions = {
@@ -65,7 +92,7 @@ const actions = {
 
     });
   },
-  [GET_OM_GROUP_MACHINES_ITEM_CHECK]({ commit }, query) {
+  [GET_OM_GROUP_MACHINES_ITEM_CHECKS]({ commit }, query) {
     ApiService.setHeader()
     return new Promise((resolve, reject) => {
       ApiService.query("master/om-item-check-kanbans/get/groups", query)
@@ -73,12 +100,12 @@ const actions = {
           const { data } = result.data
           if (data)
           {
-            commit(SET_OM_ITEM_CHECKS, data.list)
+            commit(SET_OM_GROUP_MACHINE_ITEM_CHECKS, data.list)
 
             // THIS COMMIT FROM pagination.module.js
-            if (data.limit) commit(SET_LIMIT, data.limit)
-            if (data.current_page) commit(SET_CURRENT_PAGE, data.current_page)
-            if (data.total_data) commit(SET_TOTAL_DATA, data.total_data)
+            if (data.limit) commit(SET_LIMIT_GROUP_MACHINE, data.limit)
+            if (data.current_page) commit(SET_CURRENT_PAGE_GROUP_MACHINE, data.current_page)
+            if (data.total_data) commit(SET_TOTAL_DATA_GROUP_MACHINE, data.total_data)
             resolve(data.list)
           }
         })
@@ -165,16 +192,35 @@ const actions = {
         });
 
     });
+  },
+  [GET_OM_GROUP_MACHINE_DETAIL]({ commit }, machineData) {
+    commit(SET_OM_GROUP_MACHINE_DETAIL, machineData)
   }
 };
 
 const mutations = {
+  [SET_OM_GROUP_MACHINE_ITEM_CHECKS](state, groupMachineItemChecks) {
+    state.groupMachineItemChecks = groupMachineItemChecks;
+  },
   [SET_OM_ITEM_CHECKS](state, itemChecks) {
     state.itemChecks = itemChecks;
   },
   [SET_OM_ITEM_CHECK_DETAIL](state, omItemCheckDetail) {
     state.omItemCheckDetail = omItemCheckDetail;
   },
+  [SET_OM_GROUP_MACHINE_DETAIL](state, machineData) {
+    state.groupMachineDetail = machineData;
+  },
+
+  [SET_LIMIT_GROUP_MACHINE](state, limit) {
+    state.limitGroupMachine = limit
+  },
+  [SET_CURRENT_PAGE_GROUP_MACHINE](state, current_page) {
+    state.currentPageGroupMachine = current_page
+  },
+  [SET_TOTAL_DATA_GROUP_MACHINE](state, total_data) {
+    state.totalDataGroupMachine = total_data
+  }
 };
 
 export default {

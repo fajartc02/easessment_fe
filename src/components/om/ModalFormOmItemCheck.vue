@@ -6,9 +6,17 @@
     <CModalBody>
       <CInputGroup class="mb-3">
         <CInputGroupText>Line</CInputGroupText>
-        <CFormSelect v-model="form.line_id">
+        <CFormSelect v-model="form.line_id" :disabled="true">
           <option value="null">Select Line</option>
           <option v-for="line in getLinesOptsWithoutAll" :key="line.id" :value="line.id">{{ line.text }}</option>
+        </CFormSelect>
+      </CInputGroup>
+      <CInputGroup class="mb-3">
+        <CInputGroupText>Machine</CInputGroupText>
+        <CFormSelect v-model="form.machine_id" :disabled="true">
+          <option value="null">Select Machine</option>
+          <option v-for="machine in getMachinesOptsWithoutAll" :key="machine.id" :value="machine.id">{{ machine.text }}
+          </option>
         </CFormSelect>
       </CInputGroup>
       <CInputGroup class="mb-3">
@@ -16,14 +24,6 @@
         <CFormSelect v-model="form.freq_id">
           <option value="null">Select Periodic</option>
           <option v-for="freq in getFreqsOptsWithoutAll" :key="freq.id" :value="freq.id">{{ freq.text }}
-          </option>
-        </CFormSelect>
-      </CInputGroup>
-      <CInputGroup class="mb-3">
-        <CInputGroupText>Machine</CInputGroupText>
-        <CFormSelect v-model="form.machine_id">
-          <option value="null">Select Machine</option>
-          <option v-for="machine in getMachinesOptsWithoutAll" :key="machine.id" :value="machine.id">{{ machine.text }}
           </option>
         </CFormSelect>
       </CInputGroup>
@@ -80,9 +80,7 @@ import { mapGetters } from 'vuex'
 import Swal from 'sweetalert2'
 
 const defaultForm = {
-  line_id: null,
   freq_id: null,
-  machine_id: null,
   item_check_nm: null,
   location_nm: null,
   method_nm: null,
@@ -112,14 +110,11 @@ export default {
     }
   },
   watch: {
-    form: {
+    getGroupMachineDetail: {
       handler() {
-        if (this.form.line_id)
-        {
-          this.$store.dispatch(GET_MACHINES, { line_id: this.form.line_id })
-        }
-      },
-      deep: true
+        this.form.line_id = this.getGroupMachineDetail.line_id
+        this.form.machine_id = this.getGroupMachineDetail.machine_id
+      }
     },
     loadedData: {
       handler() {
@@ -127,7 +122,17 @@ export default {
         {
           this.form = this.loadedData
 
-          const existMethod= this.optMethods.find((item) => item.text == this.loadedData.method_nm)
+          if (!this.form.line_id)
+          {
+            this.form.line_id = this.getGroupMachineDetail.line_id
+
+          }
+          if (!this.form.machine_id)
+          {
+            this.form.machine_id = this.getGroupMachineDetail.machine_id
+          }
+
+          const existMethod = this.optMethods.find((item) => item.text == this.loadedData.method_nm)
           if (!existMethod)
           {
             this.form.method_nm = null
@@ -155,7 +160,8 @@ export default {
       'getMachinesOpts',
       'getLinesOptsWithoutAll',
       'getFreqsOptsWithoutAll',
-      'getMachinesOptsWithoutAll'
+      'getMachinesOptsWithoutAll',
+      'getGroupMachineDetail'
     ])
   },
   methods: {
