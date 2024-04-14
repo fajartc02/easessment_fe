@@ -52,6 +52,20 @@
       </div>
       <div class="card-header d-flex justify-content-between align-items-center">
         <h5>List temuan</h5>
+        <div class="d-flex align-items-center justify-content-center">
+          <table class="table">
+            <tr>
+              <th><img src="@/../public/tanoko/0.png" width="20" height="20"></th>
+              <th>Order Part</th>
+              <th><img src="@/../public/tanoko/1.png" width="20" height="20"></th>
+              <th>Countermeasure</th>
+              <th><img src="@/../public/tanoko/2.png" width="20" height="20"></th>
+              <th>Monitor / Follow</th>
+              <th><img src="@/../public/tanoko/3.png" width="20" height="20"></th>
+              <th>Finish</th>
+            </tr>
+          </table>
+        </div>
         <div class="d-flex align-items-center">
           <div class="mx-2 d-flex align-items-center">
             <div class="d-flex align-items-center">
@@ -78,40 +92,89 @@
       <div class="card-body p-0">
         <div class="tableFixHead">
           <table class="table table-hover" style="width: 100%;">
-            <thead>
+            <thead class="text-center">
               <tr>
                 <th id="fixCol-head-1" rowspan="2">No</th>
                 <th id="fixCol-head-2" rowspan="2">Line</th>
-                <th id="fixCol-head-3" rowspan="2">Freq</th>
-                <th id="fixCol-head-4" rowspan="2">Zone</th>
-                <th id="fixCol-head-5" rowspan="2">Kanban</th>
-                <th id="fixCol-head-6" rowspan="2">Finding Desc</th>
-                <th rowspan="2">Finding Date</th>
-                <th rowspan="2">Finding PIC</th>
-                <th rowspan="2">Actual PIC</th>
-                <th rowspan="2">Judgment</th>
-
-                <th rowspan="2">Plan CM Date</th>
-                <th rowspan="2">Plan CM Desc</th>
-                <th rowspan="2">Time CM</th>
-                <th rowspan="2">Time Yokoten</th>
-                <th rowspan="2">Opt Changes</th>
-                <th rowspan="2">Opt Depths</th>
-                <th rowspan="2">Eval Name</th>
-                <th rowspan="2">Status Finding</th>
-                <th rowspan="2" colspan="4">Jan</th>
-                <th rowspan="2" colspan="4">Feb</th>
-                <th rowspan="2" colspan="4">March</th>
-                <th rowspan="2" colspan="4">Apr</th>
-                <th rowspan="2" colspan="4">May</th>
-                <th rowspan="2" colspan="4">June</th>
-                <th rowspan="2" colspan="4">July</th>
-                <th rowspan="2" colspan="4">Aug</th>
-                <th rowspan="2" colspan="4">Sept</th>
-                <th rowspan="2" colspan="4">Oct</th>
-                <th rowspan="2" colspan="4">Nov</th>
-                <th rowspan="2" colspan="4">Dec</th>
-                <th colspan="31" class="text-center">Actions</th>
+                <th id="fixCol-head-3" rowspan="2">Zone</th>
+                <th id="fixCol-head-4" rowspan="2">No Kanban</th>
+                <th id="fixCol-head-5" rowspan="2">Freq 4S</th>
+                <th id="fixCol-head-6" rowspan="2">Problem</th>
+                <th colspan="2">Reduce Time</th>
+                <th :colspan="changeOpts.length">Perubahan</th>
+                <th :colspan="deptOpts.length">Departement Terkait</th>
+                <th colspan="4">Jan</th>
+                <th colspan="4">Feb</th>
+                <th colspan="4">March</th>
+                <th colspan="4">Apr</th>
+                <th colspan="4">May</th>
+                <th colspan="4">June</th>
+                <th colspan="4">July</th>
+                <th colspan="4">Aug</th>
+                <th colspan="4">Sept</th>
+                <th colspan="4">Oct</th>
+                <th colspan="4">Nov</th>
+                <th colspan="4">Dec</th>
+                <th rowspan="2">Evaluasi</th>
+                <th rowspan="2" colspan="2">Actions</th>
+              </tr>
+              <tr>
+                <th>Waktu 4S (mnt)</th>
+                <th>Yokoten (mnt)</th>
+                <th v-for="optChange in changeOpts" :key="optChange">
+                  {{ optChange.system_value }}
+                </th>
+                <th v-for="dept in deptOpts" :key="dept">
+                  {{ dept.system_value }}
+                </th>
+                <th width="100">I</th>
+                <th width="100">II</th>
+                <th width="100">III</th>
+                <th class="week">IV</th>
+                <th width="100">I</th>
+                <th width="100">II</th>
+                <th width="100">III</th>
+                <th class="week">IV</th>
+                <th width="100">I</th>
+                <th width="100">II</th>
+                <th width="100">III</th>
+                <th class="week">IV</th>
+                <th class="week">I</th>
+                <th class="week">II</th>
+                <th class="week">III</th>
+                <th class="week">IV</th>
+                <th class="week">I</th>
+                <th class="week">II</th>
+                <th class="week">III</th>
+                <th class="week">IV</th>
+                <th class="week">I</th>
+                <th class="week">II</th>
+                <th class="week">III</th>
+                <th class="week">IV</th>
+                <th class="week">I</th>
+                <th class="week">II</th>
+                <th class="week">III</th>
+                <th class="week">IV</th>
+                <th class="week">I</th>
+                <th class="week">II</th>
+                <th class="week">III</th>
+                <th class="week">IV</th>
+                <th class="week">I</th>
+                <th class="week">II</th>
+                <th class="week">III</th>
+                <th class="week">IV</th>
+                <th class="week">I</th>
+                <th class="week">II</th>
+                <th class="week">III</th>
+                <th class="week">IV</th>
+                <th class="week">I</th>
+                <th class="week">II</th>
+                <th class="week">III</th>
+                <th class="week">IV</th>
+                <th class="week">I</th>
+                <th class="week">II</th>
+                <th class="week">III</th>
+                <th class="week">IV</th>
               </tr>
             </thead>
             <tbody>
@@ -127,23 +190,24 @@
               <tr v-else v-for=" (finding, findingIndex) in get4sFindings" :key="finding">
                 <td id="fixCol-1">{{ findingIndex + 1 }}</td>
                 <td id="fixCol-2">{{ finding.line_nm }}</td>
-                <td id="fixCol-3">{{ finding.freq_nm }}</td>
-                <td id="fixCol-4">{{ finding.zone_nm }}</td>
-                <td id="fixCol-5">{{ finding.kanban_no }}</td>
+                <td id="fixCol-3">{{ finding.zone_nm }}</td>
+                <td id="fixCol-4">{{ finding.kanban_no }}</td>
+                <td id="fixCol-5">{{ finding.freq_nm }}</td>
                 <td id="fixCol-6">{{ finding.finding_desc }}</td>
-                <td>{{ finding.finding_date }}</td>
-                <td>{{ finding.finding_pic_nm }}</td>
-                <td>{{ finding.actual_pic_nm }}</td>
-                <td>{{ finding.judgment_nm }}</td>
-
-                <td>{{ finding.plan_nm_date }}</td>
-                <td>{{ finding.plan_nm_desc }}</td>
-                <td>{{ finding.time_cm }}</td>
-                <td>{{ finding.time_yokoten }}</td>
-                <td>{{ finding.opt_changes }}</td>
-                <td>{{ finding.opt_depts }}</td>
-                <td>{{ finding.evaluation_nm }}</td>
-                <td>{{ finding.status_finding }}</td>
+                <td class="text-center">
+                  {{ finding.time_cm }}
+                </td>
+                <td class="text-center">
+                  <CIcon v-if="finding.time_yokoten" icon="cil-check" size="sm" />
+                </td>
+                <td class="text-center" v-for="(optChange, i) in changeOpts" :key="optChange">
+                  <CIcon v-if="optChange.system_value.includes(finding.opt_changes.split('; ')[i])" icon="cil-check"
+                    size="sm" />
+                </td>
+                <td class="text-center" v-for="(dept, i) in deptOpts" :key="dept">
+                  <CIcon v-if="dept.system_value.includes(finding.opt_depts.split('; ')[i])" icon="cil-check"
+                    size="sm" />
+                </td>
                 <td v-for="item in totalDate" :key="item.idx" style="min-width: 30px">
                   <div v-if="item == finding.week_plan"
                     style="width: 20px; height: 20px; border: 2px dotted #64748b; background-color: #bbf7d0">
@@ -154,6 +218,10 @@
                   </div>
                 </td>
                 <td>
+                  <img :src="getImage(finding.evaluation_nm)" :alt="getImage(finding.evaluation_nm)" width="50"
+                    height="50">
+                </td>
+                <td>
                   <div class="d-flex">
                     <button class="btn btn-info btn-sm text-white mx-2"
                       @click="openEditFindingModal(finding, findingIndex)">Edit</button>
@@ -162,7 +230,6 @@
                   </div>
                 </td>
               </tr>
-
             </tbody>
           </table>
         </div>
@@ -314,12 +381,17 @@ import ApiService from '@/store/api.service'
 import VueMultiselect from 'vue-multiselect'
 import { GET_4S_FINDINGS } from '@/store/modules/finding.module'
 import Swal from 'sweetalert2'
+import { toast } from 'vue3-toastify'
 
 export default {
   name: 'Temuan4S',
   components: { Loading, VueMultiselect },
   data() {
     return {
+      changeOpts: [],
+      deptOpts: [],
+      evaluationOpts: [],
+      imgEvaluation: ['1.png'],
       totalDate: 48,
       isLoading: false,
       isUpdateFindingLoading: false,
@@ -422,6 +494,28 @@ export default {
     },
   },
   methods: {
+    getImage(eval_nm) {
+      return `./tanoko/${this.evaluationOpts.findIndex(x => x.system_value == eval_nm) + '.png'}`
+    },
+    async getSystem() {
+      try {
+        ApiService.setHeader()
+        const changeOpts = await ApiService.get(`master/systems/get/OPT_CHANGE`)
+        const depts = await ApiService.get('master/systems/get/OPT_DEPT')
+        let evaluation = await ApiService.get('master/systems/get/EVALUATION')
+        // console.log(changeOpts);
+        this.changeOpts = changeOpts.data.data
+        this.deptOpts = depts.data.data
+        this.evaluationOpts = evaluation.data.data
+        // .map(item => {
+        //   item.path = this.evaluationOpts.findIndex(x => x.system_value == finding.evaluation_nm)
+        // })
+      } catch (error) {
+        toast.error(error.response.data.message, {
+          autoClose: 1000,
+        })
+      }
+    },
     addScheduleCheck(mainScheduleID, subScheduleID) {
       this.$router.push(`/4s/schedule-check/${mainScheduleID}/${subScheduleID}`)
     },
@@ -638,6 +732,7 @@ export default {
 
 
   async mounted() {
+    await this.getSystem()
     await this.getFindings()
     await this.getLines()
     await this.getGroup()
@@ -815,5 +910,8 @@ export default {
   z-index: 3;
   background-color: white;
 }
+
+
+/* highlight on hover */
 </style>
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>

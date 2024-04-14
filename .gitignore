@@ -7,6 +7,7 @@ tests/e2e/reports/
 .env.local
 .env.*.local
 *sandbox*.*
+*copy*.*
 
 # dependencies
 /node_modules
