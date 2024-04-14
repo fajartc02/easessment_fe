@@ -4,11 +4,9 @@
       <div class="d-flex row align-items-center">
         <div class="col-10">Master Job</div>
         <div class="col">
-          <button
-            class="btn btn-success"
-            @click="this.$router.push('/master/job/form')"
-          >
-            Job<CIcon icon="cil-plus" size="sm" />
+          <button class="btn btn-success" @click="this.$router.push('/master/job/form')">
+            Job
+            <CIcon icon="cil-plus" size="sm" />
           </button>
         </div>
       </div>
@@ -24,22 +22,14 @@
         <div class="col">
           <CInputGroup class="mb-3">
             <CInputGroupText>Line</CInputGroupText>
-            <Select2
-              v-model="filtered.line_id"
-              class="form-control"
-              :options="getLinesOpts"
-            />
+            <Select2 v-model="filtered.line_id" class="form-control" :options="getLinesOpts" />
           </CInputGroup>
         </div>
         <div class="col">
           <CInputGroup class="mb-3">
             <CInputGroupText>Pos</CInputGroupText>
-            <Select2
-              :disabled="filtered.line_id == -1"
-              v-model="filtered.pos_id"
-              class="form-control"
-              :options="getPosOpts"
-            />
+            <Select2 :disabled="filtered.line_id == -1" v-model="filtered.pos_id" class="form-control"
+              :options="getPosOpts" />
           </CInputGroup>
         </div>
         <div class="col-2">
@@ -101,38 +91,15 @@
         <div class="col-3">
           <label>Row per page:</label>
           <select class="form-control" v-model="filtered.limit">
-            <option
-              v-for="limit in limitOpts"
-              :key="limit.label"
-              :value="limit.vals"
-            >
+            <option v-for="limit in limitOpts" :key="limit.label" :value="limit.vals">
               {{ limit.label }}
             </option>
           </select>
         </div>
         <div class="col-4 overflow-auto">
           <label>Total Page: {{ filtered.totalPage }}</label>
-          <nav aria-label="Page navigation example">
-            <ul class="pagination">
-              <li class="page-item">
-                <button class="page-link" @click="pageControl(-1)">
-                  Previous
-                </button>
-              </li>
-              <li
-                v-for="page in pages"
-                :key="page.label"
-                :class="page.is_active"
-              >
-                <button class="page-link" @click="pageControl(0, page.label)">
-                  {{ page.label }}
-                </button>
-              </li>
-              <li class="page-item">
-                <button class="page-link" @click="pageControl(1)">Next</button>
-              </li>
-            </ul>
-          </nav>
+          <CustPagination :totalItems="filtered.total_data" :items-per-page="filtered.limit"
+            :current-page="filtered.currentPage" @page-changed="handlePageChange" />
         </div>
       </div>
     </div>
@@ -145,6 +112,7 @@ import { GET_POS } from '@/store/modules/pos.module'
 import { GET_JOB, DELETE_JOB } from '@/store/modules/job.module'
 import { mapGetters } from 'vuex'
 import Swal from 'sweetalert2'
+import CustPagination from '@/components/pagination/CustPagination.vue';
 
 export default {
   name: 'Job',
@@ -160,7 +128,7 @@ export default {
         totalPage: 1,
         currentPage: 1,
         job_no: null,
-        // job_type_id: null
+        total_data: 0
       },
       pages: [],
       jobState: [],
@@ -189,7 +157,9 @@ export default {
       this.jobState = []
       if (this.jobData.length > 0) {
         this.jobState = this.jobData
+        this.filtered.limit = this.jobData[0].limit
         this.filtered.totalPage = this.jobData[0].total_page
+        this.filtered.total_data = this.jobData[0].total_data
         this.pageControl()
       }
     },
@@ -206,6 +176,9 @@ export default {
   },
   computed: {
     ...mapGetters(['jobData', 'getLinesOpts', 'getPosOpts']),
+  },
+  components: {
+    CustPagination
   },
   methods: {
     pageControl(state = 0, page = null) {
@@ -233,6 +206,10 @@ export default {
     },
     async getPos(query) {
       this.$store.dispatch(GET_POS, query)
+    },
+    async handlePageChange(page) {
+      this.filtered.currentPage = page;
+      this.$store.dispatch(GET_JOB, this.filtered)
     },
     async getJob(isSearch = false) {
       if (isSearch) {
