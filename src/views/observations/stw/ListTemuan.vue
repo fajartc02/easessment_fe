@@ -1297,7 +1297,7 @@ export default {
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
 
-<style>
+<style scoped>
 .fixed-td {
   position: absolute;
 }
@@ -1359,7 +1359,7 @@ export default {
 #fixCol-6 {
   position: sticky;
   top: 0px;
-  left: 460px;
+  left: 380px;
   z-index: 3;
   background-color: white;
 }

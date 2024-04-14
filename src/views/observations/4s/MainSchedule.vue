@@ -1009,7 +1009,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .status-wrapper {
   width: 30px;
   height: 30px;

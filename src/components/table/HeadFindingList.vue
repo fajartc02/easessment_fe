@@ -150,7 +150,7 @@ export default {
 #fixCol-head-6 {
   position: sticky;
   top: 0px;
-  left: 460px;
+  left: 380px;
   z-index: 3;
   background-color: white;
 }
