@@ -350,6 +350,9 @@ export default {
     }
   },
   async mounted() {
+    if (localStorage.getItem('line_id')) {
+      this.filter.line_id = localStorage.getItem('line_id')
+    }
     this.filter.current_page = this.getPagination.current_page
     this.filter.limit = this.getPagination.limit
     this.filter.total_data = this.getPagination.total_data
