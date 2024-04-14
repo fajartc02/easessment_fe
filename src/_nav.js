@@ -89,7 +89,7 @@ export default [{
     },
     {
         component: 'CNavItem',
-        name: 'Main Schedule',
+        name: 'Main Schedule OM',
         to: '/om/main-schedule',
         icon: 'cil-speedometer'
     },
