@@ -316,7 +316,7 @@ import { GET_4S_FINDINGS } from '@/store/modules/finding.module'
 import Swal from 'sweetalert2'
 
 export default {
-  name: 'Temuan',
+  name: 'Temuan4S',
   components: { Loading, VueMultiselect },
   data() {
     return {

@@ -172,7 +172,7 @@ const routes = [{
             },
             {
                 path: '/4s/kanban',
-                name: 'Kanban',
+                name: 'Kanban4S',
                 component: () =>
                     import ('@/views/observations/4s/Kanban4s.vue'),
             },
@@ -184,55 +184,55 @@ const routes = [{
             },
             {
                 path: '/4s/temuan',
-                name: 'Temuan',
+                name: 'Temuan4S',
                 component: () =>
-                    import ('@/views/observations/4s/Temuan.vue'),
+                    import ('@/views/observations/4s/Temuan4S.vue'),
             },
             {
                 path: '/4s/grafik',
-                name: 'Grafik',
-                component: () => 
-                import ('@/views/observations/4s/Grafik.vue'),
-            },   
+                name: 'Grafik4S',
+                component: () =>
+                    import ('@/views/observations/4s/Grafik4S.vue'),
+            },
 
             // OM
             {
                 path: '/om/main-schedule',
                 name: 'OM Main Schedule',
-                component: () => 
-                import ('@/views/observations/om/MainSchedule.vue'),
+                component: () =>
+                    import ('@/views/observations/om/MainSchedule.vue'),
             },
             // {
             //     path: '/om/schedule-check/:mainScheduleID/:subScheduleID',
             //     name: 'Schedule Check',
             //     component: () =>
             //     import ('@/views/observations/om/ScheduleCheck.vue'),
-            // },    
+            // },
             {
                 path: '/om/kanban',
                 name: 'Kanban',
                 component: () =>
-                import ('@/views/observations/om/Kanbanom.vue'),
-            }, 
+                    import ('@/views/observations/om/Kanbanom.vue'),
+            },
             {
                 path: '/master/kanban',
                 name: 'Kanbanom',
                 component: () =>
                     import ('@/views/observations/om/Kanbanom.vue'),
-            }, 
+            },
             {
                 path: '/om/temuan',
                 name: 'Temuan',
                 component: () =>
-                import ('@/views/observations/om/Temuan.vue'),
-            }, 
+                    import ('@/views/observations/om/Temuan.vue'),
+            },
             {
                 path: '/om/grafik',
                 name: 'Grafik',
                 component: () =>
-                import ('@/views/observations/om/Grafik.vue'),
-            },  
- 
+                    import ('@/views/observations/om/Grafik.vue'),
+            },
+
             {
                 path: '/stw/member-voice',
                 name: 'MemberVoice',
@@ -258,10 +258,10 @@ const routes = [{
             },
             // OM
             {
-              path: '/master/om-item-check-kanban',
-              name: 'Om Item Check Kanban',
-              component: () =>
-                import('@/views/observations/om/OmItemCheckKanban.vue'),
+                path: '/master/om-item-check-kanban',
+                name: 'Om Item Check Kanban',
+                component: () =>
+                    import ('@/views/observations/om/OmItemCheckKanban.vue'),
             },
         ],
     },
