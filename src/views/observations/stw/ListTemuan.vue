@@ -160,17 +160,17 @@
                       border-radius: 4px;
                       border: 2px dotted #64748b;
                       ${finding.status_check == 'PROGRESS'
-                  ? 'background-color: #fff'
-                  : ''
-                };
+                      ? 'background-color: #fff'
+                      : ''
+                    };
                       ${finding.status_check == 'DELAY'
-                  ? 'background-color: #fee2e2'
-                  : ''
-                };
+                      ? 'background-color: #fee2e2'
+                      : ''
+                    };
                       ${finding.status_check == 'DONE'
-                  ? 'background-color: #bbf7d0'
-                  : ''
-                };
+                      ? 'background-color: #bbf7d0'
+                      : ''
+                    };
                       `"></div>
 
                   <div class="my-2" v-if="n >= finding.w_str_act_date && n <= finding.w_end_act_date
@@ -180,17 +180,17 @@
                       border-radius: 4px;
                       border: 2px solid #64748b;
                       ${finding.status_check == 'PROGRESS'
-                  ? 'background-color: #fff'
-                  : ''
-                };
+                      ? 'background-color: #fff'
+                      : ''
+                    };
                       ${finding.status_check == 'DELAY'
-                  ? 'background-color: #fee2e2'
-                  : ''
-                };
+                      ? 'background-color: #fee2e2'
+                      : ''
+                    };
                       ${finding.status_check == 'DONE'
-                  ? 'background-color: #bbf7d0'
-                  : ''
-                };
+                      ? 'background-color: #bbf7d0'
+                      : ''
+                    };
                       `"></div>
                 </td>
                 <td>
@@ -1304,7 +1304,7 @@ export default {
 
 .tableFixHead {
   overflow: auto;
-  height: 300px;
+  height: 100%;
 }
 
 .tableFixHead th {
