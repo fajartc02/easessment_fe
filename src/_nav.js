@@ -76,12 +76,12 @@ export default [{
         to: '/4s/temuan',
         icon: 'cil-speedometer'
     },
-    {
-        component: 'CNavItem',
-        name: 'Grafik 4S',
-        to: '/4s/grafik',
-        icon: 'cil-speedometer'
-    },
+    // {
+    //     component: 'CNavItem',
+    //     name: 'Grafik 4S',
+    //     to: '/4s/grafik',
+    //     icon: 'cil-speedometer'
+    // },
 
     {
         component: 'CNavTitle', // --- OM MENU
@@ -92,7 +92,7 @@ export default [{
         name: 'Main Schedule',
         to: '/om/main-schedule',
         icon: 'cil-speedometer'
-    }, 
+    },
     {
         component: 'CNavItem',
         name: 'Kanban OM',
@@ -104,7 +104,7 @@ export default [{
         name: 'Temuan OM',
         to: '/om/temuan',
         icon: 'cil-speedometer'
-    }, 
+    },
     {
         component: 'CNavItem',
         name: 'Grafik OM',
@@ -158,10 +158,10 @@ export default [{
         icon: 'cil-clipboard',
     },
     {
-      component: 'CNavItem',
-      name: 'Item Check Kanban OM',
-      to: '/master/om-item-check-kanban',
-      icon: 'cil-clipboard',
+        component: 'CNavItem',
+        name: 'Item Check Kanban OM',
+        to: '/master/om-item-check-kanban',
+        icon: 'cil-clipboard',
     },
     {
         component: 'CNavItem',
