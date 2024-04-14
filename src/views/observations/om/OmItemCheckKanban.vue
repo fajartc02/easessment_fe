@@ -4,8 +4,8 @@
       <h4>Master OM Item Check Kanban</h4>
     </div>
     <div class="flex-column">
-      <button class="btn btn-primary" @click="() => { isAddModal = true }">Add Item Check</button>
-      <FormOmItemCheckKanban :visible="isAddModal" @visible="isAddModal = $event" />
+      <button class="btn btn-primary" @click="() => { showFormModal = true }">Add Item Check</button>
+      <FormOmItemCheckKanban :loadedData="selectedEdit" :visible="showFormModal" @visible="onVisibleFormDialog($event)" />
     </div>
   </div>
   <div class="card">
@@ -38,7 +38,7 @@
       </div>
     </div>
     <div class="card-body">
-      <TableOmItemCheckKanban :filter="filter" />
+      <TableOmItemCheckKanban :filter="filter" @selectedEdit="onSelectedEdit($event)" />
     </div>
     <div class="card-footer">
       <div class="row">
@@ -54,7 +54,6 @@
           </div>
         </div>
         <div class="col">
-
         </div>
         <div class="col-xl-3" v-if="filter.total_data > 1">
           <CustPagination :totalItems="filter.total_data" :items-per-page="filter.limit"
@@ -92,8 +91,9 @@ export default {
         total_data: 1,
         current_page: 1,
       },
-      isAddModal: false,
-      isLoading: false
+      showFormModal: false,
+      isLoading: false,
+      selectedEdit: null,
     }
   },
   computed: {
@@ -101,15 +101,9 @@ export default {
       'getLinesOpts',
       'getFreqsOpts',
       'getMachinesOpts',
-      'getLinesOptsWithoutAll',
-      'getFreqsOptsWithoutAll',
-      'getMachinesOptsWithoutAll',
+      'getItemChecksWithStatusModal',
       'getPagination',
     ]),
-    getLineName() {
-      let line = this.getLinesOptsWithoutAll.find(line => line.id == this.newItemCheck.line_id)
-      return line.text
-    }
   },
   watch: {
     getPagination: {
@@ -129,22 +123,6 @@ export default {
       },
       deep: true
     },
-    ['filter.line_id']: function () {
-      // this.changesLine()
-
-    },
-    newItemCheck: {
-      handler() {
-        if (this.newItemCheck.line_id)
-        {
-          this.$store.dispatch(GET_MACHINES, { line_id: this.newItemCheck.line_id })
-        }
-      },
-      deep: true
-    },
-    isAddModal: function (newVal, oldVal){
-      console.log('parent Prop changed: ', newVal, ' | was: ', oldVal)
-    }
   },
   methods: {
     async getLines() {
@@ -190,16 +168,41 @@ export default {
       this.filter.current_page = page;
       this.$store.dispatch(GET_OM_ITEM_CHECKS, this.filter)
     },
+    onSelectedEdit(event) {
+      if (event)
+      {
+        this.selectedEdit = {
+          id: event.om_item_check_kanban_id,
+          line_id: event.line_id,
+          freq_id: event.freq_id,
+          machine_id: event.machine_id,
+          item_check_nm: event.item_check_nm,
+          location_nm: event.location_nm,
+          method_nm: event.method_nm,
+          standart_nm: event.standart_nm,
+          standart_time: event.standart_time,
+        }
+        this.showFormModal = true
+      }
+    },
+    onVisibleFormDialog(event) {
+      this.showFormModal = event.visible
+      if (event.refresh)
+      {
+        this.$store.dispatch(GET_OM_ITEM_CHECKS, this.filter)
+      }
+    }
   },
   async mounted() {
     this.filter.current_page = this.getPagination.current_page
     this.filter.limit = this.getPagination.limit
     this.filter.total_data = this.getPagination.total_data
     this.isLoading = true
-    await this.getLines();
-    await this.getMachines();
-    await this.fetchFreqs();
-    await this.$store.dispatch(GET_OM_ITEM_CHECKS, this.filter)
+
+    this.getLines();
+    this.fetchFreqs();
+    this.getMachines();
+    this.$store.dispatch(GET_OM_ITEM_CHECKS, this.filter)
   },
   components: {
     TableOmItemCheckKanban,

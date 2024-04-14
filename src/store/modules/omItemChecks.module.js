@@ -87,6 +87,12 @@ const actions = {
   },
   [POST_OM_ITEM_CHECK]({ commit }, data = null) {
     ApiService.setHeader()
+
+    if (data.line_id)
+    {
+      delete data.line_id
+    }
+
     return new Promise((resolve, reject) => {
       ApiService.post('master/om-item-check-kanbans/add', data)
         .then((result) => {
@@ -104,12 +110,17 @@ const actions = {
     let ID = data.id
     delete data.id
 
+    if (data.line_id)
+    {
+      delete data.line_id
+    }
+
     return new Promise((resolve, reject) => {
       console.log(data);
       ApiService.put(`master/om-item-check-kanbans/edit/${ID}`, data)
         .then((result) => {
-          const kanban = result.data
-          resolve(kanban.data)
+          const itemCheck = result.data
+          resolve(itemCheck.data)
           console.log(commit);
         }).catch((err) => {
           reject(err)
@@ -121,9 +132,9 @@ const actions = {
     ApiService.setHeader()
     return new Promise((resolve, reject) => {
       ApiService.delete(`master/om-item-check-kanbans/delete/${id}`)
-        .then((result) => {
-          const kanban = result.data
-          resolve(kanban.data)
+        .then(() => {
+          /* const itemCheck = result.data
+          resolve(itemCheck.data) */
           console.log(commit);
         }).catch((err) => {
           reject(err)

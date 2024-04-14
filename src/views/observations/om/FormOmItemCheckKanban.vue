@@ -39,7 +39,7 @@
         <CInputGroupText>Method Name</CInputGroupText>
         <CFormSelect v-model="form.method_nm">
           <option value="null">Select Method</option>
-          <option v-for="opt in optMethods" :key="opt.system_id" :value="opt.system_value">{{ opt.system_value }}
+          <option v-for="opt in optMethods" :key="opt.id" :value="opt.text">{{ opt.text }}
           </option>
         </CFormSelect>
       </CInputGroup>
@@ -47,7 +47,7 @@
         <CInputGroupText>Standart Name</CInputGroupText>
         <CFormSelect v-model="form.standart_nm">
           <option value="null">Select Standart</option>
-          <option v-for="opt in optStandarts" :key="opt.system_id" :value="opt.system_value">{{ opt.system_value }}
+          <option v-for="opt in optStandarts" :key="opt.id" :value="opt.text">{{ opt.text }}
           </option>
         </CFormSelect>
       </CInputGroup>
@@ -57,7 +57,7 @@
       </CInputGroup>
     </CModalBody>
     <CModalFooter>
-      <button class="btn btn-sm btn-primary" @click="edit()">
+      <button class="btn btn-sm btn-primary" @click="submit()">
         <template v-if="isLoading">
           <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
           Loading...
@@ -79,6 +79,17 @@ import { GET_SYSTEMS } from '@/store/modules/system.module'
 import { mapGetters } from 'vuex'
 import Swal from 'sweetalert2'
 
+const defaultForm = {
+  line_id: null,
+  freq_id: null,
+  machine_id: null,
+  item_check_nm: null,
+  location_nm: null,
+  method_nm: null,
+  standart_nm: null,
+  standart_time: null,
+}
+
 export default {
   name: 'FormOmItemCheckKanban',
   props: {
@@ -96,16 +107,8 @@ export default {
       optStandarts: [],
       optMethods: [],
       optKanbans: [],
-      form: {
-        line_id: null,
-        freq_id: null,
-        machine_id: null,
-        item_check_nm: null,
-        location_nm: null,
-        method_nm: null,
-        standart_nm: null,
-        standart_time: null,
-      },
+      form: defaultForm,
+      isLoading: false,
     }
   },
   watch: {
@@ -118,6 +121,32 @@ export default {
       },
       deep: true
     },
+    loadedData: {
+      handler() {
+        if (this.loadedData)
+        {
+          this.form = this.loadedData
+
+          const existMethod= this.optMethods.find((item) => item.text == this.loadedData.method_nm)
+          if (!existMethod)
+          {
+            this.form.method_nm = null
+          }
+
+          const existsStandart = this.optStandarts.find((item) => item.text == this.loadedData.standart_nm)
+          if (!existsStandart)
+          {
+            this.form.standart_nm = null
+          }
+        }
+        else
+        {
+          this.form = this.defaultForm
+        }
+
+      },
+      deep: true
+    }
   },
   computed: {
     ...mapGetters([
@@ -167,7 +196,12 @@ export default {
         this.$store.dispatch(GET_SYSTEMS, {
           system_type: 'OM_STANDARD'
         }).then(res => {
-          this.optStandarts = res
+          this.optStandarts = res.map((item) => {
+            return {
+              id: item.id,
+              text: item.system_value
+            }
+          })
         })
       } catch (error)
       {
@@ -181,13 +215,29 @@ export default {
         this.$store.dispatch(GET_SYSTEMS, {
           system_type: 'OM_METHOD'
         }).then(res => {
-          this.optMethods = res
+          this.optMethods = res.map((item) => {
+            return {
+              id: item.id,
+              text: item.system_value
+            }
+          })
         })
       } catch (error)
       {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
+    },
+    async submit() {
+      this.isLoading = true
+      if (this.loadedData)
+      {
+        await this.edit()
+      } else
+      {
+        await this.post()
+      }
+      this.isLoading = false
     },
     async post() {
       try
@@ -201,8 +251,11 @@ export default {
         {
           await this.$store.dispatch(POST_OM_ITEM_CHECK, this.form)
             .then(() => {
-              Swal.fire('Berhasil menambah machine', '', 'success')
-              //this.$router.push('/master/machine')
+              Swal.fire('Berhasil menambah OM Item Check Kanban', '', 'success')
+              this.$emit('visible', {
+                visible: false,
+                refresh: true
+              });
             })
           return;
         }
@@ -225,8 +278,11 @@ export default {
         {
           await this.$store.dispatch(PUT_OM_ITEM_CHECK, this.form)
             .then(() => {
-              Swal.fire('Berhasil edit OM Item Check', '', 'success')
-              //this.$router.push('/master/machine')
+              Swal.fire('Berhasil edit OM Item Check Kanban', '', 'success')
+              this.$emit('visible', {
+                visible: false,
+                refresh: true
+              });
             })
           return;
         }
@@ -234,11 +290,15 @@ export default {
       } catch (error)
       {
         console.log(error);
-        Swal.fire('Gagal edit machine', '', 'error')
+        Swal.fire('Gagal edit OM Item Check Kanban', '', 'error')
       }
     },
     cancel() {
-      this.$emit('visible', false);
+      this.$emit('visible', {
+        visible: false,
+        refresh: false
+      });
+
       this.form = {
         line_id: null,
         freq_id: null,
@@ -249,8 +309,8 @@ export default {
     this.getLines()
     this.getFreqs()
     this.getMachines()
-    this.getOptStandartsSystem()
-    this.getOptMethodsSystem()
+    await this.getOptStandartsSystem()
+    await this.getOptMethodsSystem()
   }
 }
 </script>

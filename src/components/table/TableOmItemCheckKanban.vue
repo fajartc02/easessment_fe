@@ -45,24 +45,11 @@
             {{ itemCheck.freq_nm }}
           </td>
           <td class="text-center">
-
-          </td>
-
-          <td class="text-center">
-            <button class="btn btn-sm btn-warning" @click="() => { itemCheck.statusEdit = true }">Edit</button>
-            <CModal backdrop="static" :visible="itemCheck.statusEdit" @close="() => { itemCheck.statusEdit = false }"
-              clos size="lg">
-              <CModalHeader>
-                <CModalTitle>Edit Item Check Kanban</CModalTitle>
-              </CModalHeader>
-              <CModalBody>
-
-              </CModalBody>
-            </CModal>
+            <button class="btn btn-sm btn-warning" @click="edit(itemCheck)">Edit</button>
           </td>
           <td class="text-center">
             <button class="btn btn-sm btn-danger"
-              @click="ActionDeleteItemChecks(itemCheck.itemCheck_id)">Delete</button>
+              @click="ActionDeleteItemChecks(itemCheck.om_item_check_kanban_id)">Delete</button>
           </td>
         </tr>
       </template>
@@ -146,6 +133,9 @@ export default {
         console.log(error)
         if (error.response.status == 401) this.$router.push('/login')
       }
+    },
+    edit(event) {
+      this.$emit('selectedEdit', event);
     }
   },
   props: {

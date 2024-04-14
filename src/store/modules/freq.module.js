@@ -18,7 +18,6 @@ const getters = {
     getFreqsOpts(state) {
         if (state.freqs) {
             let mapFreqs = []
-            console.log(state.freqs);
             if (state.freqs) {
                 mapFreqs = state.freqs.map(freq => {
                     return {
