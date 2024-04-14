@@ -198,9 +198,9 @@ const routes = [{
             // OM
             {
                 path: '/om/main-schedule',
-                name: 'OM Main Schedule',
+                name: 'MainScheduleOM',
                 component: () =>
-                    import ('@/views/observations/om/MainSchedule.vue'),
+                    import ('@/views/observations/om/MainScheduleOM.vue'),
             },
             // {
             //     path: '/om/schedule-check/:mainScheduleID/:subScheduleID',

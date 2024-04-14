@@ -60,7 +60,7 @@ export default [{
     },
     {
         component: 'CNavItem',
-        name: 'Main Schedule',
+        name: 'Main Schedule 4S',
         to: '/4s/main-schedule',
         icon: 'cil-speedometer'
     },
@@ -117,6 +117,34 @@ export default [{
         name: 'Master Data',
     },
     {
+        component: 'CNavItem',
+        name: 'Kanban 4S',
+        to: '/master/kanban',
+        icon: 'cil-clipboard',
+    },
+    {
+        component: 'CNavItem',
+        name: 'Item Check Kanban OM',
+        to: '/master/om-item-check-kanban',
+        icon: 'cil-clipboard',
+    },
+    {
+        component: 'CNavGroup',
+        name: 'Master STW',
+        icon: 'cil-clipboard',
+        items: [{
+                component: 'CNavItem',
+                name: 'Pos',
+                to: '/master/pos',
+            },
+            {
+                component: 'CNavItem',
+                name: 'Job',
+                to: '/master/job',
+            },
+        ]
+    },
+    {
         component: 'CNavGroup',
         name: 'Locations',
         icon: 'cil-building',
@@ -152,45 +180,24 @@ export default [{
         ]
     },
     {
-        component: 'CNavItem',
-        name: 'Kanban 4S',
-        to: '/master/kanban',
+        component: 'CNavGroup',
+        name: 'Commons',
         icon: 'cil-clipboard',
+        items: [{
+                component: 'CNavItem',
+                name: 'Planning Shift',
+                to: '/calendar',
+            },
+            {
+                component: 'CNavItem',
+                name: 'Periodic Schedule',
+                to: '/master/periodic-schedule',
+            },
+            {
+                component: 'CNavItem',
+                name: 'Users',
+                to: '/master/user',
+            },
+        ]
     },
-    {
-        component: 'CNavItem',
-        name: 'Item Check Kanban OM',
-        to: '/master/om-item-check-kanban',
-        icon: 'cil-clipboard',
-    },
-    {
-        component: 'CNavItem',
-        name: 'Planning Shift',
-        to: '/calendar',
-        icon: 'cil-calendar',
-    },
-    {
-        component: 'CNavItem',
-        name: 'Periodic Schedule',
-        to: '/master/periodic-schedule',
-        icon: 'cil-calendar',
-    },
-    {
-        component: 'CNavItem',
-        name: 'Users',
-        to: '/master/user',
-        icon: 'cil-user',
-    },
-    {
-        component: 'CNavItem',
-        name: 'Pos',
-        to: '/master/pos',
-        icon: 'cil-border-all',
-    },
-    {
-        component: 'CNavItem',
-        name: 'Job',
-        to: '/master/job',
-        icon: 'cil-puzzle',
-    }
 ]
