@@ -217,7 +217,7 @@
                     style="width: 20px; height: 20px; border: 2px solid #64748b; background-color: #bbf7d0">
                   </div>
                 </td>
-                <td>
+                <td class="text-center">
                   <img :src="getImage(finding.evaluation_nm)" :alt="getImage(finding.evaluation_nm)" width="50"
                     height="50">
                 </td>
@@ -391,7 +391,6 @@ export default {
       changeOpts: [],
       deptOpts: [],
       evaluationOpts: [],
-      imgEvaluation: ['1.png'],
       totalDate: 48,
       isLoading: false,
       isUpdateFindingLoading: false,
