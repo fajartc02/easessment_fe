@@ -145,10 +145,6 @@ export default {
           label: 100,
           vals: 100,
         },
-        {
-          label: 'All',
-          vals: -1,
-        },
       ],
     }
   },
@@ -250,7 +246,7 @@ export default {
     },
   },
   async mounted() {
-    this.filtered.line_id = localStorage.getItem('line_id')
+    this.filtered.line_id = localStorage.getItem('line_id') ? localStorage.getItem('line_id') : -1
     await this.getLines()
     await this.getJob()
     await this.pageControl()
