@@ -418,11 +418,11 @@ export default {
       this.findingActionType = actionType
       const data = findings[0]
 
-      this.selectedLineID = data.line_id
+      this.selectedLineID = { line_name: data.line_nm, line_id: data.line_id }
       this.selectedFreqID = data.freq_id
       this.selectedZoneID = data.zone_id
       this.selectedKanbanID = data.kanban_id
-      this.selectedPIC = data.finding_pic_id
+      this.selectedPIC = { pic_name: data.finding_pic_nm, pic_id: data.finding_pic_id }
       this.findingDate = data.finding_date
       this.findingDesc = data.finding_desc
       this.planCMDate = data.plan_cm_date
@@ -432,7 +432,7 @@ export default {
       this.optChanges = data.opt_changes
       this.optDepartment = data.opt_depts
       this.cmJudg = data.cm_judg
-      this.actualPIC = data.actual_pic_id
+      this.actualPIC = { pic_name: data.actual_pic_nm, pic_id: data.actual_pic_id }
       this.actualCMDate = data.actual_cm_date
       this.evaluationName = data.evaluation_nm
 
@@ -479,11 +479,11 @@ export default {
       ApiService.setHeader()
       const findingData = {
         "schedule_item_check_kanban_id": this.selectedScheduleItemCheckKanbanID,
-        "line_id": this.selectedLineID,
+        "line_id": this.selectedLineID.line_id,
         "freq_id": this.selectedFreqID,
         "zone_id": this.selectedZoneID,
         "kanban_id": this.selectedKanbanID,
-        "finding_pic_id": this.selectedPIC,
+        "finding_pic_id": this.selectedPIC.pic_id,
         "finding_date": this.findingDate,
         "finding_desc": this.findingDesc,
         "plan_cm_date": this.planCMDate,
@@ -493,7 +493,7 @@ export default {
         "opt_changes": this.optChanges,
         "opt_depts": this.optDepartment,
         "cm_judg": this.cmJudg,
-        "actual_pic_id": this.actualPIC,
+        "actual_pic_id": this.actualPIC.pic_id,
         "actual_cm_date": this.actualCMDate,
         "evaluation_nm": this.evaluationName
       }
@@ -592,7 +592,7 @@ export default {
     },
     async getOptChangeSystem() {
       let objQuery = {
-        system_type: 'OPT_CHANGE'
+        system_type: '4S_OPT_CHANGE'
       }
       try {
         this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
@@ -605,7 +605,7 @@ export default {
     },
     async getOptDeptSystem() {
       let objQuery = {
-        system_type: 'OPT_DEPT'
+        system_type: '4S_OPT_DEPT'
       }
       try {
         this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
@@ -620,7 +620,6 @@ export default {
   updated() {
     this.mapLinesData()
     this.mapUsersData()
-    console.log(this.detailActualPIC)
   },
 
   async mounted() {

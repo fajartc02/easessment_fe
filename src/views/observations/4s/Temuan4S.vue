@@ -187,7 +187,8 @@
                 </td>
               </tr>
 
-              <tr v-else v-for=" (finding, findingIndex) in get4sFindings" :key="finding">
+              <tr v-else-if="!isLoading && get4sFindings?.length > 0" v-for=" (finding, findingIndex) in get4sFindings"
+                :key="finding">
                 <td id="fixCol-1">{{ findingIndex + 1 }}</td>
                 <td id="fixCol-2">{{ finding.line_nm }}</td>
                 <td id="fixCol-3">{{ finding.zone_nm }}</td>
@@ -230,26 +231,20 @@
                   </div>
                 </td>
               </tr>
+
+              <tr v-else>
+                <td colspan="80">
+                  <div class="alert alert-danger w-full" role="alert">
+                    Data not found!
+                  </div>
+                </td>
+              </tr>
+
             </tbody>
           </table>
         </div>
       </div>
     </div>
-
-    <!-- add modal -->
-    <CModal backdrop="static" alignment="center" :visible="addSignModal" @close="addSignModal = false" size="lg">
-      <CModalHeader>
-        <CModalTitle>Add sign </CModalTitle>
-      </CModalHeader>
-      <CModalBody>
-        asdasd
-      </CModalBody>
-      <CModalFooter>
-        <CButton color="secondary" class="text-white" @click="closeSignModal()">
-          Close
-        </CButton>
-      </CModalFooter>
-    </CModal>
 
     <!-- edit modal -->
     <CModal backdrop="static" size="xl" :visible="editFindingModal" @close="() => { editFindingModal = false }"
@@ -325,11 +320,19 @@
             </div>
             <div class="mb-2">
               <label class="mb-1">Opt Changes</label>
-              <input type="text" class="form-control" v-model="optChanges" />
+              <select class="form-select" v-model="optChanges">
+                <option v-for="optChange in changeOpts" :key="optChange">
+                  {{ optChange.system_value }}
+                </option>
+              </select>
             </div>
             <div class="mb-2">
               <label class="mb-1">Opt Department</label>
-              <input type="text" class="form-control" v-model="optDepartment" />
+              <select class="form-select" v-model="optDepartment">
+                <option v-for="optDept in deptOpts" :key="optDept">
+                  {{ optDept.system_value }}
+                </option>
+              </select>
             </div>
             <div class="mb-2">
               <label class="mb-1">CM Judg</label>
@@ -462,7 +465,9 @@ export default {
       timeCM: null,
       timeYokoten: null,
       optChanges: null,
+      optChange: null,
       optDepartment: null,
+      optDept: null,
       cmJudg: null,
       actualPIC: null,
       actualCMDate: null,
@@ -538,11 +543,11 @@ export default {
       const data = finding
       this.selectedFindingID = finding.finding_id
       this.scheduleItemCheckKanbanID = data.schedule_item_check_kanban_id
-      this.selectedLineID = data.line_id
+      this.selectedLineID = { line_name: data.line_nm, line_id: data.line_id }
       this.selectedFreqID = data.freq_id
       this.selectedZoneID = data.zone_id
       this.selectedKanbanID = data.kanban_id
-      this.selectedPIC = data.finding_pic_id
+      this.selectedPIC = { pic_name: data.finding_pic_nm, pic_id: data.finding_pic_id }
       this.findingDate = data.finding_date
       this.findingDesc = data.finding_desc
       this.planCMDate = data.plan_cm_date
@@ -552,7 +557,7 @@ export default {
       this.optChanges = data.opt_changes
       this.optDepartment = data.opt_depts
       this.cmJudg = data.cm_judg
-      this.actualPIC = data.actual_pic_id
+      this.actualPIC = { pic_name: data.actual_pic_nm, pic_id: data.actual_pic_id }
       this.actualCMDate = data.actual_cm_date
       this.evaluationName = data.evaluation_nm
 
@@ -564,11 +569,11 @@ export default {
       this.isUpdateFindingLoading = true
       const findingData = {
         "schedule_item_check_kanban_id": this.scheduleItemCheckKanbanID,
-        "line_id": this.selectedLineID,
+        "line_id": this.selectedLineID.line_id,
         "freq_id": this.selectedFreqID,
         "zone_id": this.selectedZoneID,
         "kanban_id": this.selectedKanbanID,
-        "finding_pic_id": this.selectedPIC,
+        "finding_pic_id": this.selectedPIC.pic_id,
         "finding_date": this.findingDate,
         "finding_desc": this.findingDesc,
         "plan_cm_date": this.planCMDate,
@@ -578,7 +583,7 @@ export default {
         "opt_changes": this.optChanges,
         "opt_depts": this.optDepartment,
         "cm_judg": this.cmJudg,
-        "actual_pic_id": this.actualPIC,
+        "actual_pic_id": this.actualPIC.pic_id,
         "actual_cm_date": this.actualCMDate,
         "evaluation_nm": this.evaluationName
       }
@@ -630,7 +635,7 @@ export default {
         (this.selectedGroupIDFilter = null),
         (this.selectedZoneIDFilter = null),
         (this.selectedKanbanIDFilter = null),
-        this.getSchedules()
+        this.getFindings()
     },
 
     async getUsers() {
@@ -742,6 +747,9 @@ export default {
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
+    if (localStorage.getItem('line_id')) {
+      this.selectedLineIDFilter = localStorage.getItem('line_id')
+    }
   },
 }
 </script>
