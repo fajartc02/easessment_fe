@@ -158,6 +158,12 @@ export default [{
         icon: 'cil-clipboard',
     },
     {
+      component: 'CNavItem',
+      name: 'Item Check Kanban OM',
+      to: '/master/om-item-check-kanban',
+      icon: 'cil-clipboard',
+    },
+    {
         component: 'CNavItem',
         name: 'Planning Shift',
         to: '/calendar',
@@ -186,5 +192,5 @@ export default [{
         name: 'Job',
         to: '/master/job',
         icon: 'cil-puzzle',
-    },
+    }
 ]

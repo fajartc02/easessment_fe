@@ -47,7 +47,7 @@ const actions = {
     [GET_MACHINES]({ commit }, query) {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
-            ApiService.query("master/machines", query)
+            ApiService.query("master/machines/get", query)
                 .then((result) => {
                     const machines = result.data
                     if (machines) {
@@ -64,7 +64,7 @@ const actions = {
     [POST_MACHINE]({ commit }, data = null) {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
-            ApiService.post('master/machines', data)
+            ApiService.post('master/machines/add', data)
                 .then((result) => {
                     const machinesData = result.data
                     resolve(machinesData.data)

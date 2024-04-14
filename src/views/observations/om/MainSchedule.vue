@@ -403,7 +403,7 @@ import Loading from 'vue-loading-overlay'
 import {
   GET_SCHEDULES,
   GET_SUB_SCHEDULES,
-} from '@/store/modules/schedule4s.module'
+} from '@/store/modules/scheduleom.module'
 import { GET_GROUP } from '@/store/modules/group.module'
 import { GET_LINES } from '@/store/modules/line.module'
 import { GET_ZONES } from '@/store/modules/zones.module'
@@ -530,9 +530,10 @@ export default {
           const data = res.list
           this.mainScheduleData = data
           this.isLoading = false
-          data.map((item) => {
-            this.getSubSchedules(item.main_schedule_id)
-          })
+          console.log(res)
+          // data.map((item) => {
+          //   this.getSubSchedules(item.main_schedule_id)
+          // })
         }
       })
     },
