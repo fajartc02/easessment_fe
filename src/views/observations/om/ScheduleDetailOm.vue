@@ -83,7 +83,9 @@
     <div v-if="isUpdateActualDate || isUpdateActualPic || isLoadingGetDetail"
       class="position-absolute top-0 bottom-0 left-0 right-0 w-100 h-100"
       style="background-color: rgba(255,255,255,0.7);">
-      <CSpinner aria-hidden="true" class="me-2" />
+      <div class="d-flex justify-content-center align-items-center h-100">
+        <CSpinner aria-hidden="true" />
+      </div>
     </div>
   </div>
 </template>
