@@ -7,7 +7,7 @@
   <div v-if="!isLoading">
     <div class="card">
       <div class="row">
-        <div class="col">
+        <div class="col-12">
           <div class="card-body">
             <CInputGroup class="mb-3">
               <CInputGroupText>Line</CInputGroupText>
@@ -54,7 +54,7 @@
             <CInputGroup class="mb-3">
               <CInputGroupText>Act PIC</CInputGroupText>
               <CFormInput :value="getSubSchedulesCheck?.actual_pic_nm" disabled />
-              <Select2 class="form-control" :options="Users" v-model="detailActualPIC" />
+              <Select2 class="form-control" :options="getUsersOpts" v-model="detailActualPIC" />
               <CInputGroupText>
                 <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()">{{
                   isUpdateCheckLoading ? 'updating..' : 'update' }}</button>
