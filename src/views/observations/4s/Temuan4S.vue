@@ -664,6 +664,7 @@ export default {
 
     async addFilter() {
       await this.getFindings()
+      await this.getZone()
     },
     resetFilter() {
       ; (this.selectedLineIDFilter = -1),
@@ -706,7 +707,7 @@ export default {
     },
     async getZone() {
       try {
-        this.$store.dispatch(GET_ZONES)
+        this.$store.dispatch(GET_ZONES, { line_id: this.selectedLineIDFilter })
       } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
