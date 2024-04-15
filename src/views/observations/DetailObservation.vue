@@ -209,7 +209,7 @@
                   Delete finding
                 </button>
               </div>
-              <button v-else :disabled="isCheck" class="btn btn-info" :data-target="`#staticBackdrop-${i}`" @click="() => {
+              <button v-else :disabled="isCheck" class="btn btn-info" @click="() => {
       addFindingsModal = true
       finding.finding_location = observation.pos_nm
       mapUsersData()
@@ -223,8 +223,7 @@
             </div>
 
             <!-- modal -->
-            <CModal :id="`#staticBackdrop-${i}`" backdrop="static" scrollable alignment="center"
-              :visible="addFindingsModal" size="xl">
+            <CModal scrollable alignment="center" :visible="addFindingsModal" size="xl">
               <CModalHeader>
                 <CModalTitle>Add temuan</CModalTitle>
               </CModalHeader>
@@ -754,27 +753,29 @@ export default {
           this.resultCheck.push(newObj)
         }
 
-        let formInput = {
-          observation_id: this.$route.params.id,
-          group_id: this.observation?.group_id,
-          actual_check_dt: this.form.actual_check_dt,
-          comment_sh: this.comment_sh,
-          comment_ammgr: this.comment_ammgr,
-          results_check: JSON.stringify(this.resultCheck),
-          findings: JSON.stringify(this.findings),
+        if (this.resultCheck[0].judgment_id === null || this.resultCheck[1].judgment_id === null || this.resultCheck[2].judgment_id === null || this.resultCheck[3].judgment_id === null || this.resultCheck[4].judgment_id === null) {
+          alert('Pilih semua judgement')
+        } else {
+          let formInput = {
+            observation_id: this.$route.params.id,
+            group_id: this.observation?.group_id,
+            actual_check_dt: this.form.actual_check_dt,
+            comment_sh: this.comment_sh,
+            comment_ammgr: this.comment_ammgr,
+            results_check: JSON.stringify(this.resultCheck),
+            findings: JSON.stringify(this.findings),
+          }
+
+          await this.$store
+            .dispatch(POST_OBSERVATION_CHECK, formInput)
+            .then(() => {
+              Swal.showLoading()
+              Swal.fire('Pengecekan berhasil di submit', '', 'success')
+              setTimeout(() => {
+                this.$router.push('/stw/dashboard')
+              }, 1000)
+            })
         }
-
-        console.log(formInput)
-
-        await this.$store
-          .dispatch(POST_OBSERVATION_CHECK, formInput)
-          .then(() => {
-            Swal.showLoading()
-            Swal.fire('Pengecekan berhasil di submit', '', 'success')
-            setTimeout(() => {
-              this.$router.push('/stw/dashboard')
-            }, 1000)
-          })
       } catch (error) {
         console.log(error)
         Swal.fire('Pengecekan gagal di submit', '', 'error')
