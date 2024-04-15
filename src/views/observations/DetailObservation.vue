@@ -209,7 +209,7 @@
                   Delete finding
                 </button>
               </div>
-              <button v-else :disabled="isCheck" class="btn btn-info" :data-target="`#staticBackdrop-${i}`" @click="() => {
+              <button v-else :disabled="isCheck" class="btn btn-info" @click="() => {
       addFindingsModal = true
       finding.finding_location = observation.pos_nm
       mapUsersData()
@@ -223,7 +223,7 @@
             </div>
 
             <!-- modal -->
-            <CModal backdrop="static" scrollable alignment="center" :visible="addFindingsModal" size="xl">
+            <CModal scrollable alignment="center" :visible="addFindingsModal" size="xl">
               <CModalHeader>
                 <CModalTitle>Add temuan</CModalTitle>
               </CModalHeader>
