@@ -78,13 +78,19 @@
 
 
       <div class="card-body p-0 overflow-x-auto">
-        <div class="tableFixHead">
+
+        <div v-if="newSubScheduleData[0]?.length == 0" class="p-2">
+          <div class="alert alert-danger" role="alert">
+            Data not found!
+          </div>
+        </div>
+        <div v-else class="tableFixHead">
           <table class="table table-hover" style="width: 100%" v-for="mainSchedule in newSubScheduleData"
             :key="mainSchedule.id">
             <thead>
               <tr>
                 <th colspan="40" class="text-center">
-                  4S Schedule Activities ({{ mainSchedule[0].line_nm }} - {{ mainSchedule[0].group_nm }})
+                  4S Schedule Activities ({{ mainSchedule[0]?.line_nm }} - {{ mainSchedule[0]?.group_nm }})
                 </th>
               </tr>
               <tr>
@@ -142,14 +148,14 @@
                     </CDropdown>
 
                     <CDropdown variant="btn-group" v-if="!children.is_holiday && children.status == 'ACTUAL'">
-                      <CButton color="secondary" class="text-secondary bg-white"
+                      <CButton color="secondary" class="text-secondary bg-white p-2"
                         @click="addScheduleCheck(data.main_schedule_id, data.sub_schedule_id)">
                         <div class="bullet-filled"></div>
                       </CButton>
                     </CDropdown>
 
                     <CDropdown variant="btn-group" v-if="!children.is_holiday && children.status == 'PROBLEM'">
-                      <CButton color="secondary" class="text-secondary bg-white py-2 px-2"
+                      <CButton color="secondary" class="text-secondary bg-white p-2"
                         @click="addScheduleCheck(data.main_schedule_id, data.sub_schedule_id)">
                         <div class="bullet-cancel d-flex justify-content-center align-items-center"
                           style="width: 20px; height: 20px">
@@ -868,8 +874,8 @@ export default {
 }
 
 .bullet-filled {
-  width: 10px;
-  height: 10px;
+  width: 20px;
+  height: 20px;
   background-color: black;
   border: 2px solid black;
   border-radius: 10px;

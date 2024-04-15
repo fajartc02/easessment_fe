@@ -3,31 +3,30 @@
     <div class="d-flex justify-content-between">
       <div>
         <label>Total data</label>
-        <select
-          class="form-control mt-1"
-          v-model="selectedLimit"
-          @change="onPageChangeLimitClick"
-        >
-          <option
-            v-for="limit in limitOpts"
-            :key="limit.label"
-            :value="limit.vals"
-          >
+        <select class="form-control mt-1" v-model="selectedLimit" @change="onPageChangeLimitClick">
+          <option v-for="limit in limitOpts" :key="limit.label" :value="limit.vals">
             {{ limit.label }}
           </option>
         </select>
       </div>
       <div class="overflow-auto">
-        <label class="mx-2">Page </label>
+        <label class="mx-2">Page {{ totalPage }}</label>
         <nav aria-label="Page navigation example" class="mt-1 px-2">
           <ul class="pagination">
             <li class="page-item">
+              <button class="page-link text-black" :style="`${totalPage == 1 ? 'background-color: #fff;' : ''}`"
+                :disabled="totalPage == 1" @click="onPageChangeClick(-1)">
+                Prev
+              </button>
+            </li>
+            <li v-for="n in totalPage" :key="n" class="page-item">
               <button class="page-link" @click="onPageChangeClick(-1)">
-                Previous
+                {{ n }}
               </button>
             </li>
             <li class="page-item">
-              <button class="page-link" @click="onPageChangeClick(1)">
+              <button class="page-link text-black" :style="`${totalPage == 1 ? 'background-color: #fff;' : ''}`"
+                :disabled="totalPage == 1" @click="onPageChangeClick(1)">
                 Next
               </button>
             </li>
@@ -56,6 +55,10 @@ export default {
       required: true,
     },
     currentPage: {
+      type: Number,
+      required: true,
+    },
+    totalPage: {
       type: Number,
       required: true,
     },
@@ -140,5 +143,4 @@ export default {
 }
 </script>
 
-<style>
-</style>
+<style></style>
