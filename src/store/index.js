@@ -35,7 +35,8 @@ import pagination from './modules/pagination.module';
 import system from './modules/system.module';
 
 import omItemCheck from './modules/omItemChecks.module';
-import scheduleom from './modules/scheduleom.module';
+//import scheduleom from './modules/scheduleom.module';
+import omScheduleModule from './modules/omSchedule.module';
 
 export default createStore({
     state: {
@@ -86,6 +87,7 @@ export default createStore({
         system,
 
         omItemCheck,
-        scheduleom
+        //scheduleom,
+        omScheduleModule
     },
 })

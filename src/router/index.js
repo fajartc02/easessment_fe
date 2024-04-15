@@ -203,12 +203,6 @@ const routes = [{
                     import ('@/views/observations/om/MainScheduleOM.vue'),
             },
             {
-                path: '/master/kanban',
-                name: 'Kanbanom',
-                component: () =>
-                    import ('@/views/observations/om/Kanbanom.vue'),
-            },
-            {
                 path: '/om/temuan',
                 name: 'Temuan',
                 component: () =>
@@ -240,9 +234,15 @@ const routes = [{
             // OM
             {
                 path: '/master/om-item-check-kanban',
-                name: 'Om Item Check Kanban',
+                name: 'Item Check Kanban OM',
                 component: () =>
                     import ('@/views/observations/om/OmItemCheckKanban.vue'),
+            },
+            {
+              path: '/om/schedule-detail/:mainScheduleID/:subScheduleID',
+              name: 'Schedule Detail OM',
+              component: () =>
+                import('@/views/observations/om/ScheduleDetailOm.vue'),
             },
         ],
     },
