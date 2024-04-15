@@ -14,32 +14,33 @@
           <div class="col">
             <label>Shift / group</label>
             <select class="form-select" v-model="selectedGroupIDFilter" @change="addFilter()">
-              <option v-for="group in getGroups" :key="group.id" :value="group.id">
-                {{ group.group_nm }}
+              <option v-for="group in getGroupsOpts" :key="group.id" :value="group.id">
+                {{ group.text }}
               </option>
             </select>
           </div>
           <div class="col">
             <label>Zona</label>
-            <select class="form-select" v-model="selectedZoneIDFilter" @change="addFilter()">
-              <option v-for="zone in getZones" :key="zone.zone_id" :value="zone.zone_id">
-                {{ zone.zone_nm }}
-              </option>
-            </select>
+            <VueMultiselect v-model="selectedZoneIDFilter" :options="getZoneOpts" optionLabel="text" optionValue="id"
+              :customLabel="customLabel">
+            </VueMultiselect>
           </div>
           <div class="col">
             <label>Kanban</label>
             <select class="form-select" v-model="selectedKanbanIDFilter" @change="addFilter()">
-              <option v-for="kanban in getKanbans" :key="kanban.kanban_id" :value="kanban.kanban_id">
-                {{ kanban.kanban_no }}
+              <option v-for="kanban in getKanbansOpts" :key="kanban.id" :value="kanban.id">
+                {{ kanban.text }}
               </option>
             </select>
+            <!-- <VueMultiselect v-model="selectedKanbanIDFilter" :options="getKanbansOpts" optionLabel="text"
+              optionValue="id">
+            </VueMultiselect> -->
           </div>
           <div class="col">
             <label>Freq</label>
             <select class="form-select" v-model="selectedFreqIDFilter" @change="addFilter()">
-              <option v-for="freq in getFreqs" :key="freq.id" :value="freq.id">
-                {{ freq.freq_nm }}
+              <option v-for="freq in getFreqsOpts" :key="freq.id" :value="freq.id">
+                {{ freq.text }}
               </option>
             </select>
           </div>
@@ -91,7 +92,7 @@
       </div>
       <div class="card-body p-0">
         <div class="tableFixHead">
-          <table class="table table-hover" style="width: 100%;">
+          <table class="table table-hover">
             <thead class="text-center">
               <tr>
                 <th id="fixCol-head-1" rowspan="2">No</th>
@@ -259,30 +260,31 @@
           <div class="col">
             <div class="mb-2">
               <label class="mb-1">Line</label>
-              <VueMultiselect v-model="selectedLineID" :options="lineData" :custom-label="customLineFilterOptions">
+              <VueMultiselect v-model="selectedLineID" :options="getLinesOpts" optionLabel="text" optionValue="id"
+                :customLabel="customLabel">
               </VueMultiselect>
             </div>
             <div class="mb-2">
               <label class="mb-1">Freq</label>
               <select class="form-select" v-model="selectedFreqID">
-                <option v-for="freq in getFreqs" :key="freq.id" :value="freq.id">
-                  {{ freq.freq_nm }}
+                <option v-for="freq in getFreqsOpts" :key="freq.id" :value="freq.id">
+                  {{ freq.text }}
                 </option>
               </select>
             </div>
             <div class="mb-2">
               <label class="mb-1">Zone</label>
               <select class="form-select" v-model="selectedZoneID">
-                <option v-for="zone in getZones" :key="zone.zone_id" :value="zone.zone_id">
-                  {{ zone.zone_nm }}
+                <option v-for="zone in getZoneOpts" :key="zone.id" :value="zone.id">
+                  {{ zone.text }}
                 </option>
               </select>
             </div>
             <div class="mb-2">
               <label class="mb-1">Kanban</label>
               <select class="form-select" v-model="selectedKanbanID">
-                <option v-for="kanban in getKanbans" :key="kanban.kanban_id" :value="kanban.kanban_id">
-                  {{ kanban.kanban_no }}
+                <option v-for="kanban in getKanbansOpts" :key="kanban.id" :value="kanban.id">
+                  {{ kanban.text }}
                 </option>
               </select>
             </div>
@@ -407,10 +409,13 @@ export default {
       signSHData: null,
       selectedMonth: null,
       selectedLineIDFilter: null,
-      selectedGroupIDFilter: null,
-      selectedZoneIDFilter: null,
-      selectedKanbanIDFilter: null,
-      selectedFreqIDFilter: null,
+      selectedGroupIDFilter: -1,
+      selectedZoneIDFilter: {
+        id: "-1",
+        text: 'All'
+      },
+      selectedKanbanIDFilter: -1,
+      selectedFreqIDFilter: -1,
       idxMonth: [
         '01',
         '02',
@@ -487,13 +492,16 @@ export default {
   computed: {
     ...mapGetters([
       'getLinesOpts',
-      'getGroups',
-      'getZones',
-      'getKanbans',
-      'getFreqs',
+      'getGroupsOpts',
+      'getZoneOpts',
+      'getKanbansOpts',
+      'getFreqsOpts',
       'getUsersOpts',
       'get4sFindings'
     ]),
+    zoneGetID() {
+      return this.selectedZoneIDFilter.id
+    }
   },
   watch: {
     selectedMonth: function () {
@@ -504,8 +512,14 @@ export default {
           }`
       }
     },
+    zoneGetID: function () {
+      this.getFindings()
+    }
   },
   methods: {
+    customLabel(value) {
+      return `${value.text}`
+    },
     onPageChange(page) {
       if (page == -1) {
         this.currentPage = this.currentPage - 1
@@ -545,28 +559,27 @@ export default {
       this.$router.push(`/4s/schedule-check/${mainScheduleID}/${subScheduleID}`)
     },
     async getFindings() {
-      this.isLoading = true
       let objQuery = {
         line_id: this.selectedLineIDFilter,
         kanban_id: this.selectedKanbanIDFilter,
-        zone_id: this.selectedZoneIDFilter,
+        zone_id: this.zoneGetID,
         freq_id: this.selectedFreqIDFilter,
       }
       await this.$store.dispatch(GET_4S_FINDINGS, objQuery).then((res) => {
         this.findingList = res.list
         this.totalPage = res.total_page
-        if (res) {
-          this.isLoading = false
-        } else {
-          this.isLoading = false
-        }
+        // if (res) {
+        //   this.isLoading = false
+        // } else {
+        //   this.isLoading = false
+        // }
       })
     },
     openEditFindingModal(finding) {
       const data = finding
       this.selectedFindingID = finding.finding_id
       this.scheduleItemCheckKanbanID = data.schedule_item_check_kanban_id
-      this.selectedLineID = { line_name: data.line_nm, line_id: data.line_id }
+      this.selectedLineID = { text: data.line_nm, id: data.line_id }
       this.selectedFreqID = data.freq_id
       this.selectedZoneID = data.zone_id
       this.selectedKanbanID = data.kanban_id
@@ -592,7 +605,7 @@ export default {
       this.isUpdateFindingLoading = true
       const findingData = {
         "schedule_item_check_kanban_id": this.scheduleItemCheckKanbanID,
-        "line_id": this.selectedLineID.line_id,
+        "line_id": this.selectedLineID.id,
         "freq_id": this.selectedFreqID,
         "zone_id": this.selectedZoneID,
         "kanban_id": this.selectedKanbanID,
@@ -653,37 +666,24 @@ export default {
       await this.getFindings()
     },
     resetFilter() {
-      ; (this.selectedLineIDFilter = null),
-        (this.selectedFreqIDFilter = null),
-        (this.selectedGroupIDFilter = null),
-        (this.selectedZoneIDFilter = null),
-        (this.selectedKanbanIDFilter = null),
+      ; (this.selectedLineIDFilter = -1),
+        (this.selectedFreqIDFilter = -1),
+        (this.selectedGroupIDFilter = -1),
+        (this.selectedZoneIDFilter = {
+          id: "-1",
+          text: 'All'
+        }),
+        (this.selectedKanbanIDFilter = -1),
         this.getFindings()
     },
 
     async getUsers() {
       try {
-        this.$store.dispatch(GET_USERS)
-        if (this.getUsersOpts) {
-          this.mapUsersData()
-        }
+        await this.$store.dispatch(GET_USERS)
       } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
-    },
-    mapLinesData() {
-      this.getLinesOpts?.map((item) => {
-        this.lineData.push({ line_id: item.id, line_name: item.text })
-      })
-    },
-    mapUsersData() {
-      this.getUsersOpts?.map((item) => {
-        this.picData.push({ pic_id: item.id, pic_name: item.text })
-      })
-    },
-    customLineFilterOptions({ line_name }) {
-      return `${line_name}`
     },
     customPicOptions({ pic_name }) {
       return `${pic_name}`
@@ -752,27 +752,27 @@ export default {
 
   },
 
-  updated() {
-    this.mapLinesData()
-    this.mapUsersData()
-  },
-
-
   async mounted() {
+    this.isLoading = true
     await this.getSystem()
-    await this.getFindings()
     await this.getLines()
-    await this.getGroup()
-    await this.getZone()
-    await this.getKanban()
-    await this.getFreq()
-    await this.getUsers()
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
     if (localStorage.getItem('line_id')) {
       this.selectedLineIDFilter = localStorage.getItem('line_id')
     }
+    await this.getGroup()
+    await this.getZone()
+    this.selectedZoneIDFilter = {
+      id: "-1",
+      text: 'All'
+    }
+    await this.getKanban()
+    await this.getFreq()
+    await this.getUsers()
+    await this.getFindings()
+    this.isLoading = false
   },
 }
 </script>
