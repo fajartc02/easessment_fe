@@ -48,7 +48,7 @@
               <input type="date" class="form-control" v-model="detailActualDate">
               <CInputGroupText>
                 <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()"> {{
-                  isUpdateCheckLoading ? 'updating..' : 'update' }} </button>
+    isUpdateCheckLoading ? 'updating..' : 'update' }} </button>
               </CInputGroupText>
             </CInputGroup>
             <CInputGroup class="mb-3">
@@ -57,7 +57,7 @@
               <Select2 class="form-control" :options="getUsersOpts" v-model="detailActualPIC" />
               <CInputGroupText>
                 <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()">{{
-                  isUpdateCheckLoading ? 'updating..' : 'update' }}</button>
+    isUpdateCheckLoading ? 'updating..' : 'update' }}</button>
               </CInputGroupText>
             </CInputGroup>
           </div>
@@ -111,7 +111,7 @@
               <button class="btn btn-info btn-sm text-white"
                 @click="saveScheduleCheck(item.judgment_id, item.actual_time, item.item_check_kanban_id)">
                 {{ isAddCheckLoading ?
-                  'Saving...' : 'Save' }}
+    'Saving...' : 'Save' }}
               </button>
             </td>
             <td>
@@ -139,22 +139,7 @@
       <CModalBody>
         <div class="row">
           <div class="col">
-            <div class="row" v-if="findingActionType == 'update'">
-              <div class="col">
-                <div class="mb-2">
-                  <label class="mb-1">Line</label>
-                  <input type="text" class="form-control" :value="lineName" disabled>
-                </div>
-              </div>
-              <div class="col">
-                <div class="mb-2">
-                  <label class="mb-1"></label>
-                  <VueMultiselect v-model="selectedLineID" :options="lineData" :custom-label="customLineFilterOptions">
-                  </VueMultiselect>
-                </div>
-              </div>
-            </div>
-            <div class="col" v-else>
+            <div class="col">
               <div class="mb-2">
                 <label class="mb-1">Line</label>
                 <VueMultiselect v-model="selectedLineID" :options="lineData" :custom-label="customLineFilterOptions">
@@ -185,22 +170,7 @@
                 </option>
               </select>
             </div>
-            <div class="row" v-if="findingActionType == 'update'">
-              <div class="col">
-                <div class="mb-2">
-                  <label class="mb-1">Finding PIC</label>
-                  <input type="text" class="form-control" :value="findingPicName" disabled>
-                </div>
-              </div>
-              <div class="col">
-                <div class="mb-2">
-                  <label class="mb-1"></label>
-                  <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
-                  </VueMultiselect>
-                </div>
-              </div>
-            </div>
-            <div class="mb-2" v-else>
+            <div class="mb-2">
               <label class="mb-1">Finding PIC</label>
               <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
               </VueMultiselect>
@@ -257,24 +227,7 @@
                 <option value="false">Belum</option>
               </select>
             </div>
-
-            <div class="row" v-if="findingActionType == 'update'">
-              <div class="col">
-                <div class="mb-2">
-                  <label class="mb-1">Actual PIC</label>
-                  <input type="text" class="form-control" :value="actualPicName" disabled>
-                </div>
-              </div>
-              <div class="col">
-                <div class="mb-2">
-                  <label class="mb-1"></label>
-                  <VueMultiselect v-model="actualPIC" :options="picData" :custom-label="customPicOptions">
-                  </VueMultiselect>
-                </div>
-              </div>
-            </div>
-
-            <div class="mb-2" v-else>
+            <div class="mb-2">
               <label class="mb-1">Actual PIC</label>
               <VueMultiselect v-model="actualPIC" :options="picData" :custom-label="customPicOptions">
               </VueMultiselect>
