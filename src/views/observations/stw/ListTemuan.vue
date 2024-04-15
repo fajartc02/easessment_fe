@@ -112,25 +112,25 @@
                 </td>
               </tr>
               <tr v-else v-for="(finding, findingIndex) in getFindings" :key="finding.no" :style="`${this.todayDate > formatTheDate(finding.cm_str_plan_date) &&
-                finding.cm_judg == false
-                ? 'background-color: #fee2e2'
+              finding.cm_judg == false
+              ? 'background-color: #fee2e2'
+              : ''
+              }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ${finding.cm_judg ==
+                true
+                ? 'background-color: #f0fdf4'
                 : ''
-                }
+              }
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ${finding.cm_judg ==
-                  true
-                  ? 'background-color: #f0fdf4'
-                  : ''
-                }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ${finding.cm_judg ==
-                  false &&
-                  this
-                    .todayDate <
-                  formatTheDate(
-                    finding.cm_str_plan_date,
-                  )
-                  ? 'background-color: #fff'
-                  : ''
-                }
+                false &&
+                this
+                  .todayDate <
+                formatTheDate(
+                  finding.cm_str_plan_date,
+                )
+                ? 'background-color: #fff'
+                : ''
+              }
                 `">
                 <th id="fixCol-1">{{ findingIndex + 1 }}</th>
                 <td id="fixCol-2" class="px-2">{{ finding.line_nm }}</td>
@@ -154,43 +154,43 @@
                 <td>{{ finding.cm_pic_nm }}</td>
                 <td v-for="n in num" :key="n" style="min-width: 30px !important; padding: 5px">
                   <div v-if="n >= finding.w_str_plan_date && n <= finding.w_end_plan_date
-                  " :style="`
+              " :style="`
                       width: 100%;
                       height: 25px;
                       border-radius: 4px;
                       border: 2px dotted #64748b;
                       ${finding.status_check == 'PROGRESS'
-                      ? 'background-color: #fff'
-                      : ''
-                    };
+                ? 'background-color: #fff'
+                : ''
+              };
                       ${finding.status_check == 'DELAY'
-                      ? 'background-color: #fee2e2'
-                      : ''
-                    };
+                ? 'background-color: #fee2e2'
+                : ''
+              };
                       ${finding.status_check == 'DONE'
-                      ? 'background-color: #bbf7d0'
-                      : ''
-                    };
+                ? 'background-color: #bbf7d0'
+                : ''
+              };
                       `"></div>
 
                   <div class="my-2" v-if="n >= finding.w_str_act_date && n <= finding.w_end_act_date
-                  " :style="`
+              " :style="`
                       width: 100%;
                       height: 25px;
                       border-radius: 4px;
                       border: 2px solid #64748b;
                       ${finding.status_check == 'PROGRESS'
-                      ? 'background-color: #fff'
-                      : ''
-                    };
+                ? 'background-color: #fff'
+                : ''
+              };
                       ${finding.status_check == 'DELAY'
-                      ? 'background-color: #fee2e2'
-                      : ''
-                    };
+                ? 'background-color: #fee2e2'
+                : ''
+              };
                       ${finding.status_check == 'DONE'
-                      ? 'background-color: #bbf7d0'
-                      : ''
-                    };
+                ? 'background-color: #bbf7d0'
+                : ''
+              };
                       `"></div>
                 </td>
                 <td>
@@ -207,12 +207,12 @@
                   <div class="d-flex m-2">
                     <div class="d-flex" style="width: 400px">
                       <input type="text" class="form-control w-full" :value="finding.cm_comments" @input="
-                        updateCMComments(
-                          finding.finding_id,
-                          $event.target.value,
-                          findingIndex,
-                        )
-                        " />
+              updateCMComments(
+                finding.finding_id,
+                $event.target.value,
+                findingIndex,
+              )
+              " />
                       <button class="btn btn-info btn-sm text-white w-full mx-1" @click="saveCMComments()">
                         save
                       </button>
@@ -222,24 +222,30 @@
                 <td class="px-1">
                   <div class="px-2 d-flex">
                     <button @click="() => {
-                      getDetailTemuan(findingIndex)
-                      addSignModal = true
-                    }
-                      " class="btn btn-info btn-sm text-white w-full my-1">
+              openFindingImage(finding.finding_img)
+            }
+              " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
+                      Finding image
+                    </button>
+                    <button @click="() => {
+              getDetailTemuan(findingIndex)
+              addSignModal = true
+            }
+              " class="btn btn-info btn-sm text-white w-full my-1">
                       Add sign
                     </button>
                     <button class="btn btn-info btn-sm text-white w-full mx-1 my-1" style="margin-right: 10px" @click="() => {
-                      getDetailTemuan(findingIndex)
-                      detailTemuanModal = true
-                    }
-                      ">
+              getDetailTemuan(findingIndex)
+              detailTemuanModal = true
+            }
+              ">
                       Detail
                     </button>
                     <button @click="() => {
-                      getDetailTemuan(findingIndex)
-                      editTemuanModal = true
-                    }
-                      " class="btn btn-info btn-sm text-white w-full my-1">
+              getDetailTemuan(findingIndex)
+              editTemuanModal = true
+            }
+              " class="btn btn-info btn-sm text-white w-full my-1">
                       Edit
                     </button>
                     <button @click="deleteFinding(finding.finding_id)"
@@ -287,12 +293,10 @@
           </table>
         </div>
       </div>
-      <!-- pagination -->
       <Pagination :totalPages="10" :perPage="10" :currentPage="currentPage" @changePage="onPageChange"
         @changeLimit="onPageChangeLimit" />
     </div>
 
-    <!-- modals -->
     <!-- detail modal -->
     <ModalFindingDetail :detailTemuanModal="detailTemuanModal" @close-modal="() => detailTemuanModal = false"
       :findingDetail="findingDetail" :formatTheDate="formatTheDate" />
@@ -620,16 +624,16 @@
       </CModalBody>
       <CModalFooter>
         <CButton color="info" class="text-white" @click="() => {
-          updateFindingList()
-        }
-          ">
+              updateFindingList()
+            }
+              ">
           Update data
         </CButton>
         <CButton color="secondary" class="text-white" @click="() => {
-          selectedFindingIndex = null
-          editTemuanModal = false
-        }
-          ">
+              selectedFindingIndex = null
+              editTemuanModal = false
+            }
+              ">
           Close
         </CButton>
       </CModalFooter>
@@ -660,6 +664,12 @@
           </div>
           <!-- to add sign -->
           <div v-else>
+
+            <div v-if="updatedLHRedSign" style="border: 1px solid #eaeaea; width: 100%; height: 100px">
+              <img :src="updatedLHRedSign" alt="" style="width: 100%; height: 100%">
+            </div>
+
+
             <button class="btn btn-info my-2 btn-sm text-white" @click="showAddSignature('lhred')">
               Add signature
             </button>
@@ -709,6 +719,11 @@
           </div>
           <!-- to add sign -->
           <div v-else>
+
+            <div v-if="updatedLHWhiteSign" style="border: 1px solid #eaeaea; width: 100%; height: 100px">
+              <img :src="updatedLHWhiteSign" alt="" style="width: 100%; height: 100%">
+            </div>
+
             <button class="btn btn-info my-2 btn-sm text-white" @click="showAddSignature('lhwhite')">
               Add signature
             </button>
@@ -758,6 +773,11 @@
           </div>
           <!-- to add sign -->
           <div v-else>
+
+            <div v-if="updatedSHSign" style="border: 1px solid #eaeaea; width: 100%; height: 100px">
+              <img :src="updatedSHSign" alt="" style="width: 100%; height: 100%">
+            </div>
+
             <button class="btn btn-info my-2 btn-sm text-white" @click="showAddSignature('sh')">
               Add signature
             </button>
@@ -791,15 +811,35 @@
       </CModalBody>
       <CModalFooter>
         <CButton color="secondary" class="text-white" @click="() => {
-          selectedFindingIndex = null
-          addSignModal = false
-          getFindingsFunc()
-        }
-          ">
+              selectedFindingIndex = null
+              addSignModal = false
+              getFindingsFunc()
+            }
+              ">
           Close
         </CButton>
       </CModalFooter>
     </CModal>
+
+    <!-- finding image detail modal -->
+    <CModal backdrop="static" alignment="center" :visible="findingImageModal" @close="findingImageModal = false"
+      size="lg" scrollable>
+      <CModalHeader>
+        <CModalTitle>Finding Image Detail</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <img :src="selectedFindingImage" width="100%" alt="" />
+      </CModalBody>
+      <CModalFooter>
+        <CButton color="secondary" class="text-white" @click="() => {
+              findingImageModal = false
+            }
+              ">
+          Close
+        </CButton>
+      </CModalFooter>
+    </CModal>
+
   </div>
 </template>
 
@@ -880,6 +920,8 @@ export default {
       findingDataToExport: null,
       cm_comments: null,
       APPURL: process.env.VUE_APP_URL,
+      findingImageModal: false,
+      selectedFindingImage: null
     }
   },
   updated() {
@@ -1220,6 +1262,10 @@ export default {
         )
       }
     },
+    openFindingImage(findingImage) {
+      this.findingImageModal = true
+      this.selectedFindingImage = findingImage
+    },
     getDetailTemuan(findingIndex) {
       const data = this.getFindings[findingIndex]
       this.selectedFindingID = data.finding_id
@@ -1355,7 +1401,6 @@ export default {
   z-index: 3;
   background-color: white;
 }
-
 #fixCol-6 {
   position: sticky;
   top: 0px;
