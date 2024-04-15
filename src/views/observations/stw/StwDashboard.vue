@@ -165,11 +165,11 @@
       </div>
     </div>
     <!-- Yamazumi -->
-    <div class="card">
+    <!-- <div class="card">
       <div class="card-body">
         <Yamazumi />
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -182,7 +182,7 @@ import {
 } from '@/store/modules/observation.module'
 import { mapGetters } from 'vuex'
 import Loading from 'vue-loading-overlay'
-import Yamazumi from '@/components/yamazumi/Yamazumi.vue'
+// import Yamazumi from '@/components/yamazumi/Yamazumi.vue'
 import TooltipStwSchedule from '@/components/TooltipSchedule/TooltipStwSchedule.vue'
 
 export default {
@@ -364,7 +364,7 @@ export default {
   },
   components: {
     Loading,
-    Yamazumi,
+    // Yamazumi,
     TooltipStwSchedule
   },
 }
