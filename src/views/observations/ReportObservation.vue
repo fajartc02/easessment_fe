@@ -1,4 +1,5 @@
 <template>
+  <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="true" />
   <div class="card">
     <button class="btn btn-primary" @click="exportToPDF()">Export PDF</button>
   </div>
@@ -87,23 +88,23 @@
             </CFormSelect>
           </td>
           <td v-if="item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
-      item.judgment_id
-      ">
+            item.judgment_id
+          ">
             <div>
               {{ item.findings[0]?.factor_nm }}
             </div>
           </td>
           <td v-else></td>
           <td v-if="item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
-      item.judgment_id
-      ">
+            item.judgment_id
+          ">
             <div>
               {{ item.findings[0]?.finding_desc }}
             </div>
           </td>
           <td v-if="item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
-      item.judgment_id
-      ">
+            item.judgment_id
+          ">
             <div v-if="item.findings[0]?.finding_img">
               <!-- <input type="image" :src="item.findings[0]?.finding_img" width="200" /> -->
               <img :src="item.findings[0]?.finding_pict" width="100">
@@ -131,6 +132,8 @@
 import html2pdf from 'html2pdf.js'
 import ApiService from '@/store/api.service'
 import moment from 'moment'
+
+import Loading from 'vue-loading-overlay'
 export default {
   name: 'ReportObservation',
   data() {
@@ -146,6 +149,7 @@ export default {
       isCheck: false,
       xlDemo: false,
       ignoringExport: false,
+      isLoading: false
     }
   },
   computed: {
@@ -170,6 +174,7 @@ export default {
       })
     },
     async getDetail() {
+      this.isLoading = true
       ApiService.setHeader()
       const detailObser = await ApiService.get(
         `operational/observation/schedule`,
@@ -187,8 +192,12 @@ export default {
       this.resultCheck = resCheckData
       if (resCheckData.length > 0) {
         setTimeout(() => {
-          this.exportToPDF(`REPORT_SW_${this.observation.job_no}_${this.observation.pos_nm}.pdf`);
-        }, 2000)
+          if (this.$route.query?.is_back) {
+            this.exportToPDF(`REPORT_SW_${this.observation.job_no}_${this.observation.pos_nm}.pdf`);
+            this.$router.go(-1);
+          }
+          this.isLoading = false
+        }, 3000)
       }
     },
     async getJudgments() {
@@ -242,6 +251,9 @@ export default {
       await this.getJudgments()
       await this.getFactors()
     },
+  },
+  components: {
+    Loading
   },
   async mounted() {
     console.log(this.$route.params.id)
