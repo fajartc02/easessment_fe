@@ -57,17 +57,13 @@
                   <td>{{ itemcheck.item_check_nm }}</td>
                   <td>{{ +itemcheck.standart_time }}</td>
                   <td>
-                    <div class="row">
-                      <div class="col">
-                        <img
-                          src="https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
-                          width="100">
+                    <div class="row" v-if="itemcheck.ilustration_imgs">
+                      <div v-for="img in itemcheck.ilustration_imgs" class="col" :key="img.path">
+                        <img :src="img.img" width="100">
                       </div>
-                      <div class="col">
-                        <img
-                          src="https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM="
-                          width="100">
-                      </div>
+                    </div>
+                    <div v-else>
+                      <span class="text-danger">No Ilustrations</span>
                     </div>
                   </td>
                 </tr>

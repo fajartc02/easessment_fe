@@ -152,9 +152,7 @@
             </select>
           </div>
         </div>
-        <div class="col">
-
-        </div>
+        <div class="col"></div>
         <div class="col-xl-3" v-if="filter.total_data > 1">
           <CustPagination :totalItems="filter.total_data" :items-per-page="filter.limit"
             :current-page="filter.current_page" @page-changed="handlePageChange" />
@@ -238,8 +236,7 @@ export default {
       deep: true
     },
     ['filter.line_id']: function () {
-      // this.changesLine()
-
+      // this.changesLine() 
     },
     newKanban: {
       handler() {

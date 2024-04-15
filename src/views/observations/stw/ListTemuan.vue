@@ -139,7 +139,7 @@
                 <td id="fixCol-5" class="px-2">{{ finding.finding_location }}</td>
                 <td id="fixCol-6" class="px-2">{{ finding.finding_desc }}</td>
                 <td class="px-2">
-                  {{ formatTheDate(finding.cm_str_plan_date) }}
+                  {{ finding.cm_desc }}
                 </td>
                 <td class="px-2">{{ finding.cm_priority }}</td>
                 <td colspan="2">
@@ -222,19 +222,25 @@
                 <td class="px-1">
                   <div class="px-2 d-flex">
                     <button @click="() => {
+                      openFindingImage(finding.finding_img)
+                    }
+                      " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
+                      Finding image
+                    </button>
+                    <button @click="() => {
                       getDetailTemuan(findingIndex)
                       addSignModal = true
                     }
-                      " class="btn btn-info btn-sm text-white w-full my-1">
+                      " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
                       Add sign
                     </button>
-                    <button class="btn btn-info btn-sm text-white w-full mx-1 my-1" style="margin-right: 10px" @click="() => {
+                    <!-- <button class="btn btn-info btn-sm text-white w-full mx-1 my-1" style="margin-right: 10px" @click="() => {
                       getDetailTemuan(findingIndex)
                       detailTemuanModal = true
                     }
                       ">
                       Detail
-                    </button>
+                    </button> -->
                     <button @click="() => {
                       getDetailTemuan(findingIndex)
                       editTemuanModal = true
@@ -287,12 +293,10 @@
           </table>
         </div>
       </div>
-      <!-- pagination -->
       <Pagination :totalPages="10" :perPage="10" :currentPage="currentPage" @changePage="onPageChange"
         @changeLimit="onPageChangeLimit" />
     </div>
 
-    <!-- modals -->
     <!-- detail modal -->
     <ModalFindingDetail :detailTemuanModal="detailTemuanModal" @close-modal="() => detailTemuanModal = false"
       :findingDetail="findingDetail" :formatTheDate="formatTheDate" />
@@ -660,6 +664,12 @@
           </div>
           <!-- to add sign -->
           <div v-else>
+
+            <div v-if="updatedLHRedSign" style="border: 1px solid #eaeaea; width: 100%; height: 100px">
+              <img :src="updatedLHRedSign" alt="" style="width: 100%; height: 100%">
+            </div>
+
+
             <button class="btn btn-info my-2 btn-sm text-white" @click="showAddSignature('lhred')">
               Add signature
             </button>
@@ -709,6 +719,11 @@
           </div>
           <!-- to add sign -->
           <div v-else>
+
+            <div v-if="updatedLHWhiteSign" style="border: 1px solid #eaeaea; width: 100%; height: 100px">
+              <img :src="updatedLHWhiteSign" alt="" style="width: 100%; height: 100%">
+            </div>
+
             <button class="btn btn-info my-2 btn-sm text-white" @click="showAddSignature('lhwhite')">
               Add signature
             </button>
@@ -758,6 +773,11 @@
           </div>
           <!-- to add sign -->
           <div v-else>
+
+            <div v-if="updatedSHSign" style="border: 1px solid #eaeaea; width: 100%; height: 100px">
+              <img :src="updatedSHSign" alt="" style="width: 100%; height: 100%">
+            </div>
+
             <button class="btn btn-info my-2 btn-sm text-white" @click="showAddSignature('sh')">
               Add signature
             </button>
@@ -800,6 +820,26 @@
         </CButton>
       </CModalFooter>
     </CModal>
+
+    <!-- finding image detail modal -->
+    <CModal backdrop="static" alignment="center" :visible="findingImageModal" @close="findingImageModal = false"
+      size="lg" scrollable>
+      <CModalHeader>
+        <CModalTitle>Finding Image Detail</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <img :src="selectedFindingImage" width="100%" alt="" />
+      </CModalBody>
+      <CModalFooter>
+        <CButton color="secondary" class="text-white" @click="() => {
+          findingImageModal = false
+        }
+          ">
+          Close
+        </CButton>
+      </CModalFooter>
+    </CModal>
+
   </div>
 </template>
 
@@ -880,6 +920,8 @@ export default {
       findingDataToExport: null,
       cm_comments: null,
       APPURL: process.env.VUE_APP_URL,
+      findingImageModal: false,
+      selectedFindingImage: null
     }
   },
   updated() {
@@ -1220,6 +1262,10 @@ export default {
         )
       }
     },
+    openFindingImage(findingImage) {
+      this.findingImageModal = true
+      this.selectedFindingImage = findingImage
+    },
     getDetailTemuan(findingIndex) {
       const data = this.getFindings[findingIndex]
       this.selectedFindingID = data.finding_id
@@ -1253,7 +1299,7 @@ export default {
       window.open(`${process.env.VUE_APP_URL}/file?path=${filePath}`, '_blank')
     },
     downloadReport(obsID) {
-      this.$router.push(`/observation/report/${obsID}`, '_blank')
+      this.$router.push(`/observation/report/${obsID}?is_back=true`, '_blank')
     },
   },
   async mounted() {

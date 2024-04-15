@@ -7,8 +7,8 @@
       <div class="card-body px-4">
         <div v-if="cond == 'default'">
           <div class="row">
-            <div class="col-md-2 mr-2" v-if="overallGraphData">
-              <apexchart type="bar" :options="defaultOptions" :series="overallGraphData" height="100%">
+            <div class="col-md-2 mr-2" v-if="overallData">
+              <apexchart type="donut" :options="defaulOptionsOverall" :series="overallData" height="100%">
               </apexchart>
             </div>
             <div style="height: 300px" class="col-md-10 pt-2 pb-4 d-flex horizontal-scrollable">
@@ -31,8 +31,8 @@
         </div>
         <div v-else-if="cond == 'detail'">
           <div class="row">
-            <div class="col-md-2 mr-2" v-if="overallGraphData">
-              <apexchart type="bar" :options="defaultOptions" :series="overallGraphData" height="100%">
+            <div class="col-md-2 mr-2" v-if="overallData">
+              <apexchart type="donut" :options="defaulOptionsOverall" :series="overallData" height="100%">
               </apexchart>
             </div>
             <div style="height: 300px" class="col-md-10 pt-2 pb-4 d-flex horizontal-scrollable">
@@ -68,15 +68,11 @@ export default {
   name: '4SFindingGraph',
   data() {
     return {
-      overallGraphData: [
-        {
-          name: '',
-          data: [0],
-        },
-      ],
-      defaultOptions: {
+      overallData: [],
+      overallGraphData: [],
+      defaulOptionsOverall: {
         chart: {
-          type: 'bar',
+          type: 'donut',
           stacked: true,
           width: '100%',
           height: '100%',
@@ -100,9 +96,7 @@ export default {
             vertical: true,
           },
         },
-        xaxis: {
-          categories: ['Overall graph'],
-        },
+        labels: ['Problem', 'Closed', 'Remain'],
         yaxis: {
           show: false,
           min: 0,
@@ -135,6 +129,7 @@ export default {
         },
         legend: {
           show: true,
+          position: 'bottom',
         },
         colors: ['#b91c1c', '#15803d', '#a16207'],
       },
@@ -185,6 +180,15 @@ export default {
       },
     }
   },
+  watch: {
+    selectedLine: {
+      immediate: true,
+      async handler() {
+        await this.getOverallGraph()
+        await this.getGraph()
+      }
+    }
+  },
   props: {
     isLoading: {
       type: Boolean,
@@ -221,15 +225,6 @@ export default {
   },
   computed: {
     ...mapGetters(['getLinesOpts', 'getGraphs', 'get4SGraphs', 'getGroupsOpts']),
-  },
-  watch: {
-    selectedLine: {
-      immediate: true,
-      async handler() {
-        await this.getOverallGraph()
-        await this.getGraph()
-      }
-    }
   },
   methods: {
     clickHandler(event, chartContext, config) {
@@ -307,6 +302,10 @@ export default {
       await ApiService.setHeader()
       await ApiService.query('operational/4s/overall', objQuery)
         .then((res) => {
+          let mapDataOverall = res.data.data.map(item => {
+            return item.data[0]
+          })
+          this.overallData = mapDataOverall
           this.overallGraphData = res.data.data
         })
         .catch((err) => {
@@ -336,6 +335,5 @@ export default {
   components: { Loading },
 }
 </script>
-
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>

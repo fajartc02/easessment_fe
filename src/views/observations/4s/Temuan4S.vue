@@ -14,32 +14,33 @@
           <div class="col">
             <label>Shift / group</label>
             <select class="form-select" v-model="selectedGroupIDFilter" @change="addFilter()">
-              <option v-for="group in getGroups" :key="group.id" :value="group.id">
-                {{ group.group_nm }}
+              <option v-for="group in getGroupsOpts" :key="group.id" :value="group.id">
+                {{ group.text }}
               </option>
             </select>
           </div>
           <div class="col">
             <label>Zona</label>
-            <select class="form-select" v-model="selectedZoneIDFilter" @change="addFilter()">
-              <option v-for="zone in getZones" :key="zone.zone_id" :value="zone.zone_id">
-                {{ zone.zone_nm }}
-              </option>
-            </select>
+            <VueMultiselect v-model="selectedZoneIDFilter" :options="getZoneOpts" optionLabel="text" optionValue="id"
+              :customLabel="customLabel">
+            </VueMultiselect>
           </div>
           <div class="col">
             <label>Kanban</label>
             <select class="form-select" v-model="selectedKanbanIDFilter" @change="addFilter()">
-              <option v-for="kanban in getKanbans" :key="kanban.kanban_id" :value="kanban.kanban_id">
-                {{ kanban.kanban_no }}
+              <option v-for="kanban in getKanbansOpts" :key="kanban.id" :value="kanban.id">
+                {{ kanban.text }}
               </option>
             </select>
+            <!-- <VueMultiselect v-model="selectedKanbanIDFilter" :options="getKanbansOpts" optionLabel="text"
+              optionValue="id">
+            </VueMultiselect> -->
           </div>
           <div class="col">
             <label>Freq</label>
             <select class="form-select" v-model="selectedFreqIDFilter" @change="addFilter()">
-              <option v-for="freq in getFreqs" :key="freq.id" :value="freq.id">
-                {{ freq.freq_nm }}
+              <option v-for="freq in getFreqsOpts" :key="freq.id" :value="freq.id">
+                {{ freq.text }}
               </option>
             </select>
           </div>
@@ -91,7 +92,7 @@
       </div>
       <div class="card-body p-0">
         <div class="tableFixHead">
-          <table class="table table-hover" style="width: 100%;">
+          <table class="table table-hover">
             <thead class="text-center">
               <tr>
                 <th id="fixCol-head-1" rowspan="2">No</th>
@@ -187,7 +188,8 @@
                 </td>
               </tr>
 
-              <tr v-else v-for=" (finding, findingIndex) in get4sFindings" :key="finding">
+              <tr v-else-if="!isLoading && findingList?.length > 0" v-for=" (finding, findingIndex) in findingList"
+                :key="finding">
                 <td id="fixCol-1">{{ findingIndex + 1 }}</td>
                 <td id="fixCol-2">{{ finding.line_nm }}</td>
                 <td id="fixCol-3">{{ finding.zone_nm }}</td>
@@ -230,26 +232,22 @@
                   </div>
                 </td>
               </tr>
+
+              <tr v-else>
+                <td colspan="80">
+                  <div class="alert alert-danger w-full" role="alert">
+                    Data not found!
+                  </div>
+                </td>
+              </tr>
+
             </tbody>
           </table>
         </div>
       </div>
+      <Pagination :totalPages="10" :perPage="10" :currentPage="currentPage" @changePage="onPageChange"
+        :totalPage="totalPage" @changeLimit="onPageChangeLimit" />
     </div>
-
-    <!-- add modal -->
-    <CModal backdrop="static" alignment="center" :visible="addSignModal" @close="addSignModal = false" size="lg">
-      <CModalHeader>
-        <CModalTitle>Add sign </CModalTitle>
-      </CModalHeader>
-      <CModalBody>
-        asdasd
-      </CModalBody>
-      <CModalFooter>
-        <CButton color="secondary" class="text-white" @click="closeSignModal()">
-          Close
-        </CButton>
-      </CModalFooter>
-    </CModal>
 
     <!-- edit modal -->
     <CModal backdrop="static" size="xl" :visible="editFindingModal" @close="() => { editFindingModal = false }"
@@ -262,30 +260,31 @@
           <div class="col">
             <div class="mb-2">
               <label class="mb-1">Line</label>
-              <VueMultiselect v-model="selectedLineID" :options="lineData" :custom-label="customLineFilterOptions">
+              <VueMultiselect v-model="selectedLineID" :options="getLinesOpts" optionLabel="text" optionValue="id"
+                :customLabel="customLabel">
               </VueMultiselect>
             </div>
             <div class="mb-2">
               <label class="mb-1">Freq</label>
               <select class="form-select" v-model="selectedFreqID">
-                <option v-for="freq in getFreqs" :key="freq.id" :value="freq.id">
-                  {{ freq.freq_nm }}
+                <option v-for="freq in getFreqsOpts" :key="freq.id" :value="freq.id">
+                  {{ freq.text }}
                 </option>
               </select>
             </div>
             <div class="mb-2">
               <label class="mb-1">Zone</label>
               <select class="form-select" v-model="selectedZoneID">
-                <option v-for="zone in getZones" :key="zone.zone_id" :value="zone.zone_id">
-                  {{ zone.zone_nm }}
+                <option v-for="zone in getZoneOpts" :key="zone.id" :value="zone.id">
+                  {{ zone.text }}
                 </option>
               </select>
             </div>
             <div class="mb-2">
               <label class="mb-1">Kanban</label>
               <select class="form-select" v-model="selectedKanbanID">
-                <option v-for="kanban in getKanbans" :key="kanban.kanban_id" :value="kanban.kanban_id">
-                  {{ kanban.kanban_no }}
+                <option v-for="kanban in getKanbansOpts" :key="kanban.id" :value="kanban.id">
+                  {{ kanban.text }}
                 </option>
               </select>
             </div>
@@ -325,11 +324,19 @@
             </div>
             <div class="mb-2">
               <label class="mb-1">Opt Changes</label>
-              <input type="text" class="form-control" v-model="optChanges" />
+              <select class="form-select" v-model="optChanges">
+                <option v-for="optChange in changeOpts" :key="optChange">
+                  {{ optChange.system_value }}
+                </option>
+              </select>
             </div>
             <div class="mb-2">
               <label class="mb-1">Opt Department</label>
-              <input type="text" class="form-control" v-model="optDepartment" />
+              <select class="form-select" v-model="optDepartment">
+                <option v-for="optDept in deptOpts" :key="optDept">
+                  {{ optDept.system_value }}
+                </option>
+              </select>
             </div>
             <div class="mb-2">
               <label class="mb-1">CM Judg</label>
@@ -382,10 +389,12 @@ import VueMultiselect from 'vue-multiselect'
 import { GET_4S_FINDINGS } from '@/store/modules/finding.module'
 import Swal from 'sweetalert2'
 import { toast } from 'vue3-toastify'
+import Pagination from '@/components/Pagination.vue'
+
 
 export default {
   name: 'Temuan4S',
-  components: { Loading, VueMultiselect },
+  components: { Loading, VueMultiselect, Pagination },
   data() {
     return {
       changeOpts: [],
@@ -400,10 +409,13 @@ export default {
       signSHData: null,
       selectedMonth: null,
       selectedLineIDFilter: null,
-      selectedGroupIDFilter: null,
-      selectedZoneIDFilter: null,
-      selectedKanbanIDFilter: null,
-      selectedFreqIDFilter: null,
+      selectedGroupIDFilter: -1,
+      selectedZoneIDFilter: {
+        id: "-1",
+        text: 'All'
+      },
+      selectedKanbanIDFilter: -1,
+      selectedFreqIDFilter: -1,
       idxMonth: [
         '01',
         '02',
@@ -449,6 +461,7 @@ export default {
       editFindingModal: false,
 
       // finding
+      findingList: [],
       scheduleItemCheckKanbanID: null,
       selectedLineID: null,
       selectedFreqID: null,
@@ -462,25 +475,33 @@ export default {
       timeCM: null,
       timeYokoten: null,
       optChanges: null,
+      optChange: null,
       optDepartment: null,
+      optDept: null,
       cmJudg: null,
       actualPIC: null,
       actualCMDate: null,
       evaluationName: null,
       selectedScheduleItemCheckKanbanID: null,
-      selectedFindingID: null
+      selectedFindingID: null,
+      currentPage: 1,
+      totalPage: 0,
+      currentPageLimit: 5,
     }
   },
   computed: {
     ...mapGetters([
       'getLinesOpts',
-      'getGroups',
-      'getZones',
-      'getKanbans',
-      'getFreqs',
+      'getGroupsOpts',
+      'getZoneOpts',
+      'getKanbansOpts',
+      'getFreqsOpts',
       'getUsersOpts',
       'get4sFindings'
     ]),
+    zoneGetID() {
+      return this.selectedZoneIDFilter.id
+    }
   },
   watch: {
     selectedMonth: function () {
@@ -491,8 +512,27 @@ export default {
           }`
       }
     },
+    zoneGetID: function () {
+      this.getFindings()
+    }
   },
   methods: {
+    customLabel(value) {
+      return `${value.text}`
+    },
+    onPageChange(page) {
+      if (page == -1) {
+        this.currentPage = this.currentPage - 1
+        this.getFindings()
+      } else {
+        this.currentPage = this.currentPage + 1
+        this.getFindings()
+      }
+    },
+    onPageChangeLimit(limit) {
+      this.currentPageLimit = limit
+      this.getFindings()
+    },
     getImage(eval_nm) {
       return `./tanoko/${this.evaluationOpts.findIndex(x => x.system_value == eval_nm) + '.png'}`
     },
@@ -519,30 +559,31 @@ export default {
       this.$router.push(`/4s/schedule-check/${mainScheduleID}/${subScheduleID}`)
     },
     async getFindings() {
-      this.isLoading = true
       let objQuery = {
         line_id: this.selectedLineIDFilter,
         kanban_id: this.selectedKanbanIDFilter,
-        zone_id: this.selectedZoneIDFilter,
+        zone_id: this.zoneGetID,
         freq_id: this.selectedFreqIDFilter,
       }
       await this.$store.dispatch(GET_4S_FINDINGS, objQuery).then((res) => {
-        if (res) {
-          this.isLoading = false
-        } else {
-          this.isLoading = false
-        }
+        this.findingList = res.list
+        this.totalPage = res.total_page
+        // if (res) {
+        //   this.isLoading = false
+        // } else {
+        //   this.isLoading = false
+        // }
       })
     },
     openEditFindingModal(finding) {
       const data = finding
       this.selectedFindingID = finding.finding_id
       this.scheduleItemCheckKanbanID = data.schedule_item_check_kanban_id
-      this.selectedLineID = data.line_id
+      this.selectedLineID = { text: data.line_nm, id: data.line_id }
       this.selectedFreqID = data.freq_id
       this.selectedZoneID = data.zone_id
       this.selectedKanbanID = data.kanban_id
-      this.selectedPIC = data.finding_pic_id
+      this.selectedPIC = { pic_name: data.finding_pic_nm, pic_id: data.finding_pic_id }
       this.findingDate = data.finding_date
       this.findingDesc = data.finding_desc
       this.planCMDate = data.plan_cm_date
@@ -552,7 +593,7 @@ export default {
       this.optChanges = data.opt_changes
       this.optDepartment = data.opt_depts
       this.cmJudg = data.cm_judg
-      this.actualPIC = data.actual_pic_id
+      this.actualPIC = { pic_name: data.actual_pic_nm, pic_id: data.actual_pic_id }
       this.actualCMDate = data.actual_cm_date
       this.evaluationName = data.evaluation_nm
 
@@ -564,11 +605,11 @@ export default {
       this.isUpdateFindingLoading = true
       const findingData = {
         "schedule_item_check_kanban_id": this.scheduleItemCheckKanbanID,
-        "line_id": this.selectedLineID,
+        "line_id": this.selectedLineID.id,
         "freq_id": this.selectedFreqID,
         "zone_id": this.selectedZoneID,
         "kanban_id": this.selectedKanbanID,
-        "finding_pic_id": this.selectedPIC,
+        "finding_pic_id": this.selectedPIC.pic_id,
         "finding_date": this.findingDate,
         "finding_desc": this.findingDesc,
         "plan_cm_date": this.planCMDate,
@@ -578,7 +619,7 @@ export default {
         "opt_changes": this.optChanges,
         "opt_depts": this.optDepartment,
         "cm_judg": this.cmJudg,
-        "actual_pic_id": this.actualPIC,
+        "actual_pic_id": this.actualPIC.pic_id,
         "actual_cm_date": this.actualCMDate,
         "evaluation_nm": this.evaluationName
       }
@@ -625,37 +666,24 @@ export default {
       await this.getFindings()
     },
     resetFilter() {
-      ; (this.selectedLineIDFilter = null),
-        (this.selectedFreqIDFilter = null),
-        (this.selectedGroupIDFilter = null),
-        (this.selectedZoneIDFilter = null),
-        (this.selectedKanbanIDFilter = null),
-        this.getSchedules()
+      ; (this.selectedLineIDFilter = -1),
+        (this.selectedFreqIDFilter = -1),
+        (this.selectedGroupIDFilter = -1),
+        (this.selectedZoneIDFilter = {
+          id: "-1",
+          text: 'All'
+        }),
+        (this.selectedKanbanIDFilter = -1),
+        this.getFindings()
     },
 
     async getUsers() {
       try {
-        this.$store.dispatch(GET_USERS)
-        if (this.getUsersOpts) {
-          this.mapUsersData()
-        }
+        await this.$store.dispatch(GET_USERS)
       } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
-    },
-    mapLinesData() {
-      this.getLinesOpts?.map((item) => {
-        this.lineData.push({ line_id: item.id, line_name: item.text })
-      })
-    },
-    mapUsersData() {
-      this.getUsersOpts?.map((item) => {
-        this.picData.push({ pic_id: item.id, pic_name: item.text })
-      })
-    },
-    customLineFilterOptions({ line_name }) {
-      return `${line_name}`
     },
     customPicOptions({ pic_name }) {
       return `${pic_name}`
@@ -724,24 +752,27 @@ export default {
 
   },
 
-  updated() {
-    this.mapLinesData()
-    this.mapUsersData()
-  },
-
-
   async mounted() {
+    this.isLoading = true
     await this.getSystem()
-    await this.getFindings()
     await this.getLines()
-    await this.getGroup()
-    await this.getZone()
-    await this.getKanban()
-    await this.getFreq()
-    await this.getUsers()
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
+    if (localStorage.getItem('line_id')) {
+      this.selectedLineIDFilter = localStorage.getItem('line_id')
+    }
+    await this.getGroup()
+    await this.getZone()
+    this.selectedZoneIDFilter = {
+      id: "-1",
+      text: 'All'
+    }
+    await this.getKanban()
+    await this.getFreq()
+    await this.getUsers()
+    await this.getFindings()
+    this.isLoading = false
   },
 }
 </script>

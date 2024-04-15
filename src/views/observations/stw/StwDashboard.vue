@@ -96,8 +96,8 @@
               <td v-for="item in containerDate" :key="item.idx" style="min-width: 63px">
                 <template v-for="child in observation.children" :key="child.observation_id">
                   <template v-if="child.idxdate === String(item.idx)">
-                    <TooltipStwSchedule :child="child" :customTooltipStyle="customTooltipStyle"
-                      :observation="observation" :currentDate="currentDate" @detail-schedule="detailSchedule" />
+                    <TooltipStwSchedule :child="child" :customTooltipStyle="customTooltipStyle" :observation="child"
+                      :currentDate="currentDate" @detail-schedule="detailSchedule" />
                   </template>
                 </template>
               </td>
@@ -149,8 +149,8 @@
               <td v-for="item in containerDate" :key="item.idx" style="min-width: 63px">
                 <template v-for="child in observationRedShift.children" :key="child.observation_id">
                   <template v-if="child.idxdate === String(item.idx)">
-                    <TooltipStwSchedule :child="child" :customTooltipStyle="customTooltipStyle"
-                      :observation="observationRedShift" :currentDate="currentDate" @detail-schedule="detailSchedule" />
+                    <TooltipStwSchedule :child="child" :customTooltipStyle="customTooltipStyle" :observation="child"
+                      :currentDate="currentDate" @detail-schedule="detailSchedule" />
                   </template>
                 </template>
               </td>
@@ -165,11 +165,11 @@
       </div>
     </div>
     <!-- Yamazumi -->
-    <div class="card">
+    <!-- <div class="card">
       <div class="card-body">
         <Yamazumi />
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -182,7 +182,7 @@ import {
 } from '@/store/modules/observation.module'
 import { mapGetters } from 'vuex'
 import Loading from 'vue-loading-overlay'
-import Yamazumi from '@/components/yamazumi/Yamazumi.vue'
+// import Yamazumi from '@/components/yamazumi/Yamazumi.vue'
 import TooltipStwSchedule from '@/components/TooltipSchedule/TooltipStwSchedule.vue'
 
 export default {
@@ -364,7 +364,7 @@ export default {
   },
   components: {
     Loading,
-    Yamazumi,
+    // Yamazumi,
     TooltipStwSchedule
   },
 }
