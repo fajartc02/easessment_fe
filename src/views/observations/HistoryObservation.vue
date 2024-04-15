@@ -148,9 +148,11 @@ export default {
   watch: {
     observationSchedule: function () {
       console.log(this.observationSchedule)
-      this.filter.total_data = this.observationSchedule[0].total_data
-      this.filter.limit = this.observationSchedule[0].limit
-      this.filter.total_page = this.observationSchedule[0].total_page
+      if (this.observationSchedule[0]) {
+        this.filter.total_data = this.observationSchedule[0].total_data
+        this.filter.limit = this.observationSchedule[0].limit
+        this.filter.total_page = this.observationSchedule[0].total_page
+      }
     },
     filter: {
       deep: true,
