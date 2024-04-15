@@ -96,8 +96,8 @@
               <td v-for="item in containerDate" :key="item.idx" style="min-width: 63px">
                 <template v-for="child in observation.children" :key="child.observation_id">
                   <template v-if="child.idxdate === String(item.idx)">
-                    <TooltipStwSchedule :child="child" :customTooltipStyle="customTooltipStyle"
-                      :observation="observation" :currentDate="currentDate" @detail-schedule="detailSchedule" />
+                    <TooltipStwSchedule :child="child" :customTooltipStyle="customTooltipStyle" :observation="child"
+                      :currentDate="currentDate" @detail-schedule="detailSchedule" />
                   </template>
                 </template>
               </td>
@@ -149,8 +149,8 @@
               <td v-for="item in containerDate" :key="item.idx" style="min-width: 63px">
                 <template v-for="child in observationRedShift.children" :key="child.observation_id">
                   <template v-if="child.idxdate === String(item.idx)">
-                    <TooltipStwSchedule :child="child" :customTooltipStyle="customTooltipStyle"
-                      :observation="observationRedShift" :currentDate="currentDate" @detail-schedule="detailSchedule" />
+                    <TooltipStwSchedule :child="child" :customTooltipStyle="customTooltipStyle" :observation="child"
+                      :currentDate="currentDate" @detail-schedule="detailSchedule" />
                   </template>
                 </template>
               </td>
