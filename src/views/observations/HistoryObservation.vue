@@ -104,7 +104,7 @@ import Loading from 'vue-loading-overlay'
 import CustPagination from '@/components/pagination/CustPagination.vue'
 
 export default {
-  name: 'ScheduleObservation',
+  name: 'HistoryObservation',
   data() {
     return {
       filter: {

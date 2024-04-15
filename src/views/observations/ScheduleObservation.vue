@@ -7,36 +7,20 @@
           <div class="mx-2">
             <CInputGroup>
               <CInputGroupText>Line</CInputGroupText>
-              <input
-                type="month"
-                class="form-control"
-                v-model="selectedMonth"
-                @change="addFilter()"
-              />
+              <input type="month" class="form-control" v-model="selectedMonth" @change="addFilter()" />
             </CInputGroup>
           </div>
           <div class="mx-2">
             <CInputGroup>
               <CInputGroupText>Line</CInputGroupText>
-              <select
-                class="form-select"
-                v-model="selectedLine"
-                @change="addFilter()"
-              >
-                <option
-                  v-for="(line, index) in getLinesOpts"
-                  :key="index"
-                  :value="line.id"
-                >
+              <select class="form-select" v-model="selectedLine" @change="addFilter()">
+                <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
                   {{ line.text }}
                 </option>
               </select>
             </CInputGroup>
           </div>
-          <button
-            class="btn btn-sm btn-success text-white"
-            @click="this.$router.push('/schedule/observation/form')"
-          >
+          <button class="btn btn-sm btn-success text-white" @click="this.$router.push('/schedule/observation/form')">
             Add Schedule
             <CIcon icon="cil-plus" size="sm" />
           </button>
@@ -61,43 +45,29 @@
           <tr v-if="isLoading">
             <td colspan="10" class="p-0" style="height: 200px">
               <div class="vl-parent p-0" style="height: 100%">
-                <loading
-                  v-model:active="isLoading"
-                  :can-cancel="true"
-                  :is-full-page="false"
-                  :on-cancel="onCancel"
-                />
+                <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false" :on-cancel="onCancel" />
               </div>
             </td>
           </tr>
-          <tr
-            v-else
-            v-for="(obaservation, i) in observationSchedule"
-            :key="obaservation.uuid"
-          >
+          <tr v-else-if="observationSchedule.length > 0" v-for="(obaservation, i) in observationSchedule"
+            :key="obaservation.uuid">
             <td>{{ i + 1 }}</td>
             <td>{{ obaservation.line_nm }}</td>
             <td>{{ obaservation.pos_nm }}</td>
             <td>{{ obaservation.job_type_nm }}</td>
             <td v-if="obaservation.checkers.length > 0">
-              <button
-                v-for="checker in obaservation.checkers"
-                :key="checker.id"
-                class="btn btn-warning text-dark disabled"
-              >
+              <button v-for="checker in obaservation.checkers" :key="checker.id"
+                class="btn btn-warning text-dark disabled">
                 {{ checker.checker_nm }}
               </button>
             </td>
             <td>{{ obaservation.member_nm }}</td>
             <td>{{ obaservation.job_nm }}</td>
             <td>{{ `${obaservation.plan_check_dt}` }}</td>
-            <td
-              :class="
-                `${obaservation.actual_check_dt}`.split('T')[0] == 'null'
-                  ? 'bg-danger'
-                  : ''
-              "
-            >
+            <td :class="`${obaservation.actual_check_dt}`.split('T')[0] == 'null'
+                ? 'bg-danger'
+                : ''
+              ">
               {{
                 `${obaservation.actual_check_dt}`.split('T')[0] != 'null'
                   ? `${obaservation.actual_check_dt}`.split('T')[0]
@@ -106,19 +76,18 @@
             </td>
             <td>
               <div class="d-flex">
-                <button
-                  class="btn btn-info btn-sm mx-1 text-white"
-                  @click="editPos(obaservation.id)"
-                >
+                <button class="btn btn-info btn-sm mx-1 text-white" @click="editPos(obaservation.id)">
                   edit
                 </button>
-                <button
-                  class="btn btn-danger btn-sm text-white"
-                  @click="deletePos(obaservation.id)"
-                >
+                <button class="btn btn-danger btn-sm text-white" @click="deletePos(obaservation.id)">
                   delete
                 </button>
               </div>
+            </td>
+          </tr>
+          <tr v-else>
+            <td class="text-center" colspan="10">
+              <h4>Tidak ada data</h4>
             </td>
           </tr>
         </tbody>
@@ -126,13 +95,8 @@
     </div>
 
     <!-- pagination -->
-    <Pagination
-      :totalPages="10"
-      :perPage="10"
-      :currentPage="currentPage"
-      @changePage="onPageChange"
-      @changeLimit="onPageChangeLimit"
-    />
+    <Pagination :totalPages="10" :perPage="10" :currentPage="currentPage" @changePage="onPageChange"
+      @changeLimit="onPageChangeLimit" />
   </div>
 </template>
 
@@ -201,9 +165,8 @@ export default {
       if (this.selectedMonth) {
         this.generateDate()
         let idx = this.idxMonth.indexOf(this.selectedMonth.split('-')[1])
-        this.yearMonth = `${this.monthStr[idx]} ${
-          this.selectedMonth.split('-')[0]
-        }`
+        this.yearMonth = `${this.monthStr[idx]} ${this.selectedMonth.split('-')[0]
+          }`
         this.getObservations()
       }
     },
@@ -313,4 +276,3 @@ export default {
   components: { Loading, Pagination },
 }
 </script>
- 
