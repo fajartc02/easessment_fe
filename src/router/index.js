@@ -174,13 +174,19 @@ const routes = [{
                 path: '/4s/kanban',
                 name: 'Kanban4S',
                 component: () =>
-                    import ('@/views/observations/4s/Kanban4s.vue'),
+                    import ('@/views/master/4S/Kanban4s.vue'),
             },
             {
                 path: '/master/kanban',
                 name: 'Kanban4s',
                 component: () =>
-                    import ('@/views/observations/4s/Kanban4s.vue'),
+                    import ('@/views/master/4S/Kanban4s.vue'),
+            },
+            {
+                path: '/master/zone',
+                name: 'Zone4S',
+                component: () =>
+                    import ('@/views/master/4S/Zone4S.vue'),
             },
             {
                 path: '/4s/temuan',
@@ -239,10 +245,10 @@ const routes = [{
                     import ('@/views/observations/om/OmItemCheckKanban.vue'),
             },
             {
-              path: '/om/schedule-detail/:mainScheduleID/:subScheduleID',
-              name: 'Schedule Detail OM',
-              component: () =>
-                import('@/views/observations/om/ScheduleDetailOm.vue'),
+                path: '/om/schedule-detail/:mainScheduleID/:subScheduleID',
+                name: 'Schedule Detail OM',
+                component: () =>
+                    import ('@/views/observations/om/ScheduleDetailOm.vue'),
             },
         ],
     },

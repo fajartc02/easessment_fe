@@ -17,14 +17,14 @@ export default [{
     },
     {
         component: 'CNavItem',
-        name: 'Dashboard STW',
+        name: 'Main Schedule STW',
         to: '/stw/dashboard',
         icon: 'cil-speedometer',
         is_admin: false
     },
     {
         component: 'CNavItem',
-        name: 'List Temuan',
+        name: 'Temuan STW',
         to: '/stw/list-temuan',
         icon: 'cil-file',
         is_admin: false
@@ -124,6 +124,13 @@ export default [{
         component: 'CNavItem',
         name: 'Kanban 4S',
         to: '/master/kanban',
+        icon: 'cil-clipboard',
+        is_admin: true
+    },
+    {
+        component: 'CNavItem',
+        name: 'Zone 4S',
+        to: '/master/zone',
         icon: 'cil-clipboard',
         is_admin: true
     },

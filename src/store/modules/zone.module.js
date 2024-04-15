@@ -4,6 +4,10 @@ export const POST_ZONE = "postZones";
 export const PUT_ZONE = "putZones";
 export const DELETE_ZONE = "deleteZones";
 
+export const SET_LIMIT = "setLimit"
+export const SET_CURRENT_PAGE = "setPage"
+export const SET_TOTAL_DATA = "setTotalData"
+
 // mutation types
 export const SET_ZONES = "setZones";
 
@@ -32,6 +36,15 @@ const getters = {
         })
         return mapZones
     },
+    getZonesWithStatusModal(state) {
+        if (state.zones?.length > 0 && state.zones) {
+            let mapZone = state.zones.map(zone => {
+                zone.is_edit = false
+                return zone
+            })
+            return mapZone
+        }
+    },
     getZoneOptsWithoutAll(state) {
         if (state.zones) {
             const mapZones = state.zones.map(zone => {
@@ -55,8 +68,11 @@ const actions = {
                 .then((result) => {
                     const zones = result.data.data
                     if (zones) {
-                        commit(SET_ZONES, zones.list)
-                        resolve(zones.data)
+                        commit(SET_ZONES, zones.list ?? [])
+                        if (zones.limit) commit(SET_LIMIT, zones.limit)
+                        if (zones.current_page) commit(SET_CURRENT_PAGE, zones.current_page)
+                        if (zones.total_data) commit(SET_TOTAL_DATA, zones.total_data)
+                        resolve(zones.list)
                     }
                     // throw result;
                 }).catch((err) => {
