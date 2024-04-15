@@ -48,7 +48,7 @@
               <input type="date" class="form-control" v-model="detailActualDate">
               <CInputGroupText>
                 <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()"> {{
-    isUpdateCheckLoading ? 'updating..' : 'update' }} </button>
+                  isUpdateCheckLoading ? 'updating..' : 'update' }} </button>
               </CInputGroupText>
             </CInputGroup>
             <CInputGroup class="mb-3">
@@ -57,11 +57,26 @@
               <Select2 class="form-control" :options="Users" v-model="detailActualPIC" />
               <CInputGroupText>
                 <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()">{{
-    isUpdateCheckLoading ? 'updating..' : 'update' }}</button>
+                  isUpdateCheckLoading ? 'updating..' : 'update' }}</button>
               </CInputGroupText>
             </CInputGroup>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="btn btn-primary" @click="modalKanbanDetail = true">Lihat Kanban</button>
+        <CModal backdrop="static" size="xl" :visible="modalKanbanDetail" @close="() => { modalKanbanDetail = false }"
+          aria-labelledby="StaticBackdropExampleLabel">
+          <CModalHeader>
+            <CModalTitle>Kanban Check</CModalTitle>
+          </CModalHeader>
+          <CModalBody>
+            <KanbanItemCheck :kanban_id="gettingKanbanID" />
+          </CModalBody>
+        </CModal>
       </div>
     </div>
 
@@ -96,7 +111,7 @@
               <button class="btn btn-info btn-sm text-white"
                 @click="saveScheduleCheck(item.judgment_id, item.actual_time, item.item_check_kanban_id)">
                 {{ isAddCheckLoading ?
-    'Saving...' : 'Save' }}
+                  'Saving...' : 'Save' }}
               </button>
             </td>
             <td>
@@ -304,13 +319,16 @@ import { GET_FREQS } from '@/store/modules/freq.module'
 import { GET_SYSTEMS } from '@/store/modules/system.module'
 import Loading from 'vue-loading-overlay'
 
+import KanbanItemCheck from '@/components/kanban4s/KanbanItemCheck.vue'
+
 export default {
   name: "Schedule Check",
   components: {
-    VueMultiselect, Loading
+    VueMultiselect, Loading, KanbanItemCheck
   },
   data() {
     return {
+      modalKanbanDetail: false,
       isLoading: false,
       isAddCheckLoading: false,
       isUpdateCheckLoading: false,
@@ -346,7 +364,8 @@ export default {
       selectedFindingID: null,
       // detail
       detailActualPIC: null,
-      detailActualDate: null
+      detailActualDate: null,
+      gettingKanbanID: null,
     }
   },
   computed: {
@@ -380,6 +399,8 @@ export default {
       }
       await this.$store.dispatch(GET_SCHEDULES_CHECK, objQuery).then((res) => {
         if (res) {
+          console.log(res);
+          this.gettingKanbanID = res.kanban_id
           this.itemCheks = res.item_check_kanbans
           this.isLoading = false
         }
