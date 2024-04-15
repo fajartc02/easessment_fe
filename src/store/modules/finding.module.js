@@ -47,8 +47,8 @@ const actions = {
                 .then((result) => { 
                     const findingRes = result.data 
                     if (findingRes) {
-                        commit(SET_4S_FINDINGS, findingRes.data.list)
-                        resolve(findingRes.data.list)
+                        commit(SET_4S_FINDINGS, findingRes.data)
+                        resolve(findingRes.data)
                     } 
                 }).catch((err) => {
                     reject(err)

@@ -187,7 +187,7 @@
                 </td>
               </tr>
 
-              <tr v-else-if="!isLoading && get4sFindings?.length > 0" v-for=" (finding, findingIndex) in get4sFindings"
+              <tr v-else-if="!isLoading && findingList?.length > 0" v-for=" (finding, findingIndex) in findingList"
                 :key="finding">
                 <td id="fixCol-1">{{ findingIndex + 1 }}</td>
                 <td id="fixCol-2">{{ finding.line_nm }}</td>
@@ -244,6 +244,8 @@
           </table>
         </div>
       </div>
+      <Pagination :totalPages="10" :perPage="10" :currentPage="currentPage" @changePage="onPageChange"
+        :totalPage="totalPage" @changeLimit="onPageChangeLimit" />
     </div>
 
     <!-- edit modal -->
@@ -385,10 +387,12 @@ import VueMultiselect from 'vue-multiselect'
 import { GET_4S_FINDINGS } from '@/store/modules/finding.module'
 import Swal from 'sweetalert2'
 import { toast } from 'vue3-toastify'
+import Pagination from '@/components/Pagination.vue'
+
 
 export default {
   name: 'Temuan4S',
-  components: { Loading, VueMultiselect },
+  components: { Loading, VueMultiselect, Pagination },
   data() {
     return {
       changeOpts: [],
@@ -452,6 +456,7 @@ export default {
       editFindingModal: false,
 
       // finding
+      findingList: [],
       scheduleItemCheckKanbanID: null,
       selectedLineID: null,
       selectedFreqID: null,
@@ -473,7 +478,10 @@ export default {
       actualCMDate: null,
       evaluationName: null,
       selectedScheduleItemCheckKanbanID: null,
-      selectedFindingID: null
+      selectedFindingID: null,
+      currentPage: 1,
+      totalPage: 0,
+      currentPageLimit: 5,
     }
   },
   computed: {
@@ -498,6 +506,19 @@ export default {
     },
   },
   methods: {
+    onPageChange(page) {
+      if (page == -1) {
+        this.currentPage = this.currentPage - 1
+        this.getFindings()
+      } else {
+        this.currentPage = this.currentPage + 1
+        this.getFindings()
+      }
+    },
+    onPageChangeLimit(limit) {
+      this.currentPageLimit = limit
+      this.getFindings()
+    },
     getImage(eval_nm) {
       return `./tanoko/${this.evaluationOpts.findIndex(x => x.system_value == eval_nm) + '.png'}`
     },
@@ -532,6 +553,8 @@ export default {
         freq_id: this.selectedFreqIDFilter,
       }
       await this.$store.dispatch(GET_4S_FINDINGS, objQuery).then((res) => {
+        this.findingList = res.list
+        this.totalPage = res.total_page
         if (res) {
           this.isLoading = false
         } else {

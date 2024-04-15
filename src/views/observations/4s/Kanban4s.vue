@@ -238,8 +238,7 @@ export default {
       deep: true
     },
     ['filter.line_id']: function () {
-      // this.changesLine()
-
+      // this.changesLine() 
     },
     newKanban: {
       handler() {
