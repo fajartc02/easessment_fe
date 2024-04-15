@@ -71,52 +71,94 @@
         <textarea cols="30" rows="5" class="form-control" :value="findingDetail?.cm_desc" disabled></textarea>
       </div>
 
-      <div class="mb-2">
-        <label class="mb-1">CM Start Plan Date </label>
-        <input type="date" class="form-control" :value="formatTheDate(findingDetail?.cm_str_plan_date)" disabled />
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <div class="mb-2">
+            <label class="mb-1">CM Start Plan Date </label>
+            <input type="date" class="form-control" :value="formatTheDate(findingDetail?.cm_str_plan_date)" disabled />
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <div class="mb-2">
+            <label class="mb-1">CM End Plan Date </label>
+            <input type="date" class="form-control" :value="formatTheDate(findingDetail?.cm_end_plan_date)" disabled />
+          </div>
+        </div>
       </div>
-      <div class="mb-2">
-        <label class="mb-1">CM End Plan Date </label>
-        <input type="date" class="form-control" :value="formatTheDate(findingDetail?.cm_end_plan_date)" disabled />
-      </div>
-
       <hr />
 
-      <div class="mb-2">
-        <label class="mb-1">CM Start actual date</label>
-        <input type="date" class="form-control" :value="formatTheDate(findingDetail?.cm_str_act_date)" disabled />
+
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <div class="mb-2">
+            <label class="mb-1">CM Start actual date</label>
+            <input type="date" class="form-control" :value="formatTheDate(findingDetail?.cm_str_act_date)" disabled />
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <div class="mb-2">
+            <label class="mb-1">CM End actual date</label>
+            <input type="date" class="form-control" :value="formatTheDate(findingDetail?.cm_end_act_date)" disabled />
+          </div>
+        </div>
       </div>
-      <div class="mb-2">
-        <label class="mb-1">CM End actual date</label>
-        <input type="date" class="form-control" :value="formatTheDate(findingDetail?.cm_end_act_date)" disabled />
+
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <div class="mb-2">
+            <label class="mb-1">CM Training date</label>
+            <input type="date" class="form-control" disabled />
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <div class="mb-2">
+            <label class="mb-1">CM Judge</label>
+            <select class="form-select" :value="findingDetail?.cm_judg" disabled>
+              <option value="true">Sudah</option>
+              <option value="false">Belum</option>
+            </select>
+          </div>
+        </div>
       </div>
-      <div class="mb-2">
-        <label class="mb-1">CM Training date</label>
-        <input type="date" class="form-control" disabled />
+
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <div class="mb-2">
+            <label class="mb-1">CM Sign LH White</label>
+            <input type="file" class="form-control" disabled />
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <div class="mb-2">
+            <label class="mb-1">CM Sign SH</label>
+            <input type="file" class="form-control" disabled />
+          </div>
+        </div>
       </div>
-      <div class="mb-2">
-        <label class="mb-1">CM Judge</label>
-        <select class="form-select" :value="findingDetail?.cm_judg" disabled>
-          <option value="true">Sudah</option>
-          <option value="false">Belum</option>
-        </select>
+
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <div class="mb-2">
+            <label class="mb-1">CM Sign LH Red</label>
+            <input type="file" class="form-control" disabled />
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <div class="mb-2">
+            <label class="mb-1">CM Comments</label>
+            <input type="text" class="form-control" disabled />
+          </div>
+        </div>
       </div>
-      <div class="mb-2">
-        <label class="mb-1">CM Sign LH Red</label>
-        <input type="file" class="form-control" disabled />
-      </div>
-      <div class="mb-2">
-        <label class="mb-1">CM Sign LH White</label>
-        <input type="file" class="form-control" disabled />
-      </div>
-      <div class="mb-2">
-        <label class="mb-1">CM Sign SH</label>
-        <input type="file" class="form-control" disabled />
-      </div>
-      <div class="mb-2">
-        <label class="mb-1">CM Comments</label>
-        <input type="text" class="form-control" disabled />
-      </div>
+
+
+
+
+
+
+
+
+
     </CModalBody>
     <CModalFooter>
       <router-link v-if="findingDetail?.observation_id !== null" :to="`/observation/${findingDetail?.observation_id}`"
