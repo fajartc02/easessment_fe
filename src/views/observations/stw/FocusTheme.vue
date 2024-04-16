@@ -5,70 +5,36 @@
         <div class="row">
           <div class="col">
             <label>Start date</label>
-            <input
-              type="date"
-              class="form-control"
-              v-model="selectedFilterStartDate"
-              @change="addFilter()"
-            />
+            <input type="date" class="form-control" v-model="selectedFilterStartDate" @change="addFilter()" />
           </div>
           <div class="col">
             <label>End date</label>
-            <input
-              type="date"
-              class="form-control"
-              v-model="selectedFilterEndDate"
-              @change="addFilter()"
-            />
+            <input type="date" class="form-control" v-model="selectedFilterEndDate" @change="addFilter()" />
           </div>
           <div class="col">
             <label>Line</label>
-            <select
-              class="form-select"
-              v-model="selectedLine"
-              @change="addFilter()"
-            >
-              <option
-                v-for="(line, index) in getLinesOpts"
-                :key="index"
-                :value="line.id"
-              >
+            <select class="form-select" v-model="selectedLine" @change="addFilter()">
+              <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
                 {{ line.text }}
               </option>
             </select>
           </div>
         </div>
       </div>
-      <div
-        class="card-header d-flex justify-content-between align-items-center"
-      >
+      <div class="card-header d-flex justify-content-between align-items-center">
         <h5>Fokus Tema</h5>
         <div>
-          <button
-            class="btn btn-info text-white mx-2"
-            @click=";(addFocusThemeModal = true), mapUsersData()"
-          >
+          <button class="btn btn-info text-white mx-2" @click="; (addFocusThemeModal = true), mapUsersData()">
             Add fokus tema
           </button>
-          <button
-            :disabled="getFocusTheme?.length < 1"
-            class="btn btn-info text-white w-full my-1"
-          >
-            <download-excel
-              :data="json_data"
-              :fields="json_fields"
-              worksheet="My Worksheet"
-              name="focustheme.xls"
-            >
+          <button :disabled="getFocusTheme?.length < 1" class="btn btn-info text-white w-full my-1">
+            <download-excel :data="json_data" :fields="json_fields" worksheet="My Worksheet" name="focustheme.xls">
               Export all data
             </download-excel>
           </button>
         </div>
       </div>
       <div>
-        <div class="border-bottom text-center py-2">
-          <span>Periode Jan-Mar 2023</span>
-        </div>
         <table class="table table-striped text-center">
           <thead>
             <tr>
@@ -85,49 +51,29 @@
             <tr v-if="isLoading">
               <td colspan="7" class="p-0" style="height: 200px">
                 <div class="vl-parent p-0" style="height: 100%">
-                  <loading
-                    v-model:active="isLoading"
-                    :can-cancel="true"
-                    :is-full-page="false"
-                    :on-cancel="onCancel"
-                  />
+                  <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false" :on-cancel="onCancel" />
                 </div>
               </td>
             </tr>
-            <tr
-              v-else
-              v-for="(focustheme, index) in getFocusTheme"
-              :key="focustheme.ft_id"
-            >
+            <tr v-else v-for="(focustheme, index) in getFocusTheme" :key="focustheme.ft_id">
               <th scope="row">{{ index + 1 }}</th>
               <td>{{ focustheme.line_nm }}</td>
               <td>{{ focustheme.ft_desc }}</td>
               <td>{{ focustheme.ft_pillar }}</td>
               <td>
                 <div class="d-flex justify-content-center align-items-center">
-                  <FocusThemeIndicatorVue
-                    :total="focustheme.ft_evaluation_num"
-                  ></FocusThemeIndicatorVue>
+                  <FocusThemeIndicatorVue :total="focustheme.ft_evaluation_num"></FocusThemeIndicatorVue>
                 </div>
               </td>
               <td>{{ focustheme.ft_remark }}</td>
               <td>
-                <button
-                  class="btn btn-warning btn-sm text-white"
-                  @click="focusThemeDetailData(index)"
-                >
+                <button class="btn btn-warning btn-sm text-white" @click="focusThemeDetailData(index)">
                   Problems
                 </button>
-                <button
-                  class="btn btn-danger btn-sm text-white mx-2"
-                  @click="deleteFT(focustheme.ft_id)"
-                >
+                <button class="btn btn-danger btn-sm text-white mx-2" @click="deleteFT(focustheme.ft_id)">
                   Delete
                 </button>
-                <button
-                  class="btn btn-info btn-sm text-white"
-                  @click="getDetailFocusTheme(index)"
-                >
+                <button class="btn btn-info btn-sm text-white" @click="getDetailFocusTheme(index)">
                   Edit
                 </button>
               </td>
@@ -141,24 +87,13 @@
         </table>
       </div>
       <!-- pagination -->
-      <Pagination
-        :totalPages="10"
-        :perPage="10"
-        :currentPage="currentPage"
-        @changePage="onPageChange"
-        @changeLimit="onPageChangeLimit"
-      />
+      <Pagination :totalPages="10" :perPage="10" :currentPage="currentPage" @changePage="onPageChange"
+        @changeLimit="onPageChangeLimit" />
     </div>
 
     <!-- add modal -->
-    <CModal
-      scrollable
-      backdrop="static"
-      alignment="center"
-      :visible="addFocusThemeModal"
-      @close="addFocusThemeModal = false"
-      size="lg"
-    >
+    <CModal scrollable backdrop="static" alignment="center" :visible="addFocusThemeModal"
+      @close="addFocusThemeModal = false" size="lg">
       <CModalHeader>
         <CModalTitle>Add fokus tema</CModalTitle>
       </CModalHeader>
@@ -170,36 +105,26 @@
               <div>
                 <div class="mb-2">
                   <label class="mb-1">Fokus tema</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="focusThemeData.ft_desc"
-                  />
+                  <input type="text" class="form-control" v-model="focusThemeData.ft_desc" />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Line</label>
-                  <VueMultiselect
-                    v-model="selectedLineID"
-                    :options="lineData"
-                    placeholder=""
-                    :custom-label="customLineFilterOptions"
-                  >
+                  <VueMultiselect v-model="selectedLineID" :options="lineData" placeholder=""
+                    :custom-label="customLineFilterOptions">
                   </VueMultiselect>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Pilar</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="focusThemeData.ft_pillar"
-                  />
+                  <select class="form-select" v-model="focusThemeData.ft_pillar">
+                    <option selected>Select pilar</option>
+                    <option value="STW">STW</option>
+                    <option value="OM">OM</option>
+                    <option value="PM">PM</option>
+                  </select>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Evaluasi</label>
-                  <select
-                    class="form-select"
-                    v-model="focusThemeData.ft_evaluation_num"
-                  >
+                  <select class="form-select" v-model="focusThemeData.ft_evaluation_num">
                     <option selected>Select evaluasi</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -209,11 +134,7 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Remark</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="focusThemeData.ft_remark"
-                  />
+                  <input type="text" class="form-control" v-model="focusThemeData.ft_remark" />
                 </div>
               </div>
             </CAccordionBody>
@@ -224,53 +145,28 @@
               <div>
                 <div class="mb-2">
                   <label class="mb-1">Tanggal temuan</label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    v-model="findingsData.finding_date"
-                  />
+                  <input type="date" class="form-control" v-model="findingsData.finding_date" />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Line</label>
-                  <VueMultiselect
-                    v-model="selectedLineID"
-                    :options="lineData"
-                    :custom-label="customLineFilterOptions"
-                  >
+                  <VueMultiselect v-model="selectedLineID" :options="lineData" :custom-label="customLineFilterOptions">
                   </VueMultiselect>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Pos</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="findingsData.finding_location"
-                  />
+                  <input type="text" class="form-control" v-model="findingsData.finding_location" />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Finding description</label>
-                  <textarea
-                    cols="30"
-                    rows="5"
-                    class="form-control"
-                    v-model="findingsData.finding_desc"
-                  ></textarea>
+                  <textarea cols="30" rows="5" class="form-control" v-model="findingsData.finding_desc"></textarea>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM description</label>
-                  <textarea
-                    cols="30"
-                    rows="5"
-                    class="form-control"
-                    v-model="findingsData.cm_desc"
-                  ></textarea>
+                  <textarea cols="30" rows="5" class="form-control" v-model="findingsData.cm_desc"></textarea>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Priority</label>
-                  <select
-                    class="form-select"
-                    v-model="findingsData.cm_priority"
-                  >
+                  <select class="form-select" v-model="findingsData.cm_priority">
                     <option selected>Select priority</option>
                     <option value="P1">P1: Safety & Quality Issue</option>
                     <option value="P2">P2: Productivity Issue</option>
@@ -282,11 +178,7 @@
                   <label class="mb-1">Faktor </label>
                   <select class="form-select" v-model="findingsData.factor_id">
                     <option disabled>Select Factor</option>
-                    <option
-                      v-for="factor in factors"
-                      :key="factor.text"
-                      :value="factor.id"
-                    >
+                    <option v-for="factor in factors" :key="factor.text" :value="factor.id">
                       {{ factor.text }}
                     </option>
                   </select>
@@ -294,92 +186,95 @@
 
                 <div class="mb-2">
                   <label class="mb-1">PIC </label>
-                  <VueMultiselect
-                    v-model="selectedFindingPIC"
-                    :options="picData"
-                    :custom-label="customPicOptions"
-                  >
+                  <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
                   </VueMultiselect>
                 </div>
 
                 <div class="mb-2">
                   <label class="mb-1">CM Start Plan Date </label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    v-model="findingsData.cm_str_plan_date"
-                  />
+                  <input type="date" class="form-control" v-model="findingsData.cm_str_plan_date" />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM End Plan Date </label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    v-model="findingsData.cm_end_plan_date"
-                  />
+                  <input type="date" class="form-control" v-model="findingsData.cm_end_plan_date" />
+                </div>
+                <div class="mb-2">
+                  <div>
+                    <label class="mb-1">Finding image </label>
+                    <input ref="focus-theme-finding-image" type="file" class="form-control" />
+                  </div>
+                  <button class="btn btn-info my-2 text-white" :disabled="isUploadLoading" @click="
+              uploadFindingImage('focus-theme-finding-image', null)
+              ">
+                    {{ isUploadLoading ? 'Uploading' : 'Upload' }}
+                  </button>
+                  <div v-if="selectedFindingImage">
+                    <img :src="selectedFindingImage" width="300" alt="" />
+                  </div>
                 </div>
 
-                <hr />
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Start actual date</label>
+                      <input type="date" class="form-control" v-model="findingsData.cm_str_act_date" disabled />
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM End actual date</label>
+                      <input type="date" class="form-control" v-model="findingsData.cm_end_act_date" disabled />
+                    </div>
+                  </div>
+                </div>
 
-                <div class="mb-2">
-                  <label class="mb-1">CM Start actual date</label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    v-model="findingsData.cm_str_act_date"
-                    disabled
-                  />
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Training date</label>
+                      <input type="date" class="form-control" v-model="findingsData.cm_training_date" disabled />
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Judge</label>
+                      <select class="form-select" v-model="findingsData.cm_judg" disabled>
+                        <option selected>Select judgement</option>
+                        <option value="true">Sudah</option>
+                        <option value="false">Belum</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM End actual date</label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    v-model="findingsData.cm_end_act_date"
-                    disabled
-                  />
+
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Sign LH Red</label>
+                      <input type="file" class="form-control" disabled />
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Sign LH White</label>
+                      <input type="file" class="form-control" disabled />
+                    </div>
+                  </div>
                 </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Training date</label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    v-model="findingsData.cm_training_date"
-                    disabled
-                  />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Judge</label>
-                  <select
-                    class="form-select"
-                    v-model="findingsData.cm_judg"
-                    disabled
-                  >
-                    <option selected>Select judgement</option>
-                    <option value="true">Sudah</option>
-                    <option value="false">Belum</option>
-                  </select>
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Sign LH Red</label>
-                  <input type="file" class="form-control" disabled />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Sign LH White</label>
-                  <input type="file" class="form-control" disabled />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Sign SH</label>
-                  <input type="file" class="form-control" disabled />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Comments</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="findingsData.cm_comments"
-                    disabled
-                  />
+
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Sign SH</label>
+                      <input type="file" class="form-control" disabled />
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Comments</label>
+                      <input type="text" class="form-control" v-model="findingsData.cm_comments" disabled />
+                    </div>
+                  </div>
                 </div>
               </div>
             </CAccordionBody>
@@ -390,21 +285,13 @@
         <CButton color="secondary" @click="addFocusThemeModal = false">
           Close
         </CButton>
-        <CButton color="primary" @click="addFocusThemeData"
-          >Save changes</CButton
-        >
+        <CButton color="primary" @click="addFocusThemeData">Save changes</CButton>
       </CModalFooter>
     </CModal>
 
     <!-- edit modal -->
-    <CModal
-      scrollable
-      backdrop="static"
-      alignment="center"
-      :visible="editFocusThemeModal"
-      @close="editFocusThemeModal = false"
-      size="lg"
-    >
+    <CModal scrollable backdrop="static" alignment="center" :visible="editFocusThemeModal"
+      @close="editFocusThemeModal = false" size="lg">
       <CModalHeader>
         <CModalTitle>Add fokus tema</CModalTitle>
       </CModalHeader>
@@ -416,48 +303,35 @@
               <div>
                 <div class="mb-2">
                   <label class="mb-1">Fokus tema</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="focusThemeDetail.ft_desc"
-                  />
+                  <input type="text" class="form-control" v-model="focusThemeDetail.ft_desc" />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Line</label>
 
                   <div class="row">
                     <div class="col">
-                      <input
-                        type="text"
-                        disabled
-                        class="form-control"
-                        :value="getLineName(focusThemeDetail.ft_line_id)"
-                      />
+                      <input type="text" disabled class="form-control"
+                        :value="getLineName(focusThemeDetail.ft_line_id)" />
                     </div>
                     <div class="col">
-                      <VueMultiselect
-                        v-model="selectedLineID"
-                        :options="lineData"
-                        :custom-label="customLineFilterOptions"
-                      >
+                      <VueMultiselect v-model="selectedLineID" :options="lineData"
+                        :custom-label="customLineFilterOptions">
                       </VueMultiselect>
                     </div>
                   </div>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Pilar</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="focusThemeDetail.ft_pillar"
-                  />
+                  <select class="form-select" v-model="focusThemeDetail.ft_pillar">
+                    <option selected>Select pilar</option>
+                    <option value="STW">STW</option>
+                    <option value="OM">OM</option>
+                    <option value="PM">PM</option>
+                  </select>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Evaluasi</label>
-                  <select
-                    class="form-select"
-                    v-model="focusThemeDetail.ft_evaluation_num"
-                  >
+                  <select class="form-select" v-model="focusThemeDetail.ft_evaluation_num">
                     <option selected>Select evaluasi</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -467,11 +341,7 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Remark</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="focusThemeDetail.ft_remark"
-                  />
+                  <input type="text" class="form-control" v-model="focusThemeDetail.ft_remark" />
                 </div>
               </div>
             </CAccordionBody>
@@ -486,23 +356,13 @@
 
                   <div class="row">
                     <div class="col">
-                      <input
-                        type="text"
-                        class="form-control"
-                        disabled
-                        :value="
-                          formatTheDate(
-                            focusThemeDetail.findings[0].finding_date,
-                          )
-                        "
-                      />
+                      <input type="text" class="form-control" disabled :value="formatTheDate(
+              focusThemeDetail.findings[0]?.finding_date,
+            )
+              " />
                     </div>
                     <div class="col">
-                      <input
-                        type="date"
-                        class="form-control"
-                        v-model="focusThemeDetail.findings[0].finding_date"
-                      />
+                      <input type="date" class="form-control" v-model="focusThemeDetail.findings[0].finding_date" />
                     </div>
                   </div>
                 </div>
@@ -511,57 +371,33 @@
 
                   <div class="row">
                     <div class="col">
-                      <input
-                        type="text"
-                        disabled
-                        class="form-control"
-                        :value="
-                          getLineName(focusThemeDetail.findings[0].line_id)
-                        "
-                      />
+                      <input type="text" disabled class="form-control" :value="getLineName(focusThemeDetail.findings[0].line_id)
+              " />
                     </div>
                     <div class="col">
-                      <VueMultiselect
-                        v-model="selectedFindingLineID"
-                        :options="lineData"
-                        :custom-label="customLineFilterOptions"
-                      >
+                      <VueMultiselect v-model="selectedFindingLineID" :options="lineData"
+                        :custom-label="customLineFilterOptions">
                       </VueMultiselect>
                     </div>
                   </div>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Pos</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="focusThemeDetail.findings[0].finding_location"
-                  />
+                  <input type="text" class="form-control" v-model="focusThemeDetail.findings[0].finding_location" />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Finding description</label>
-                  <textarea
-                    cols="30"
-                    rows="5"
-                    class="form-control"
-                    v-model="focusThemeDetail.findings[0].finding_desc"
-                  ></textarea>
+                  <textarea cols="30" rows="5" class="form-control"
+                    v-model="focusThemeDetail.findings[0].finding_desc"></textarea>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM description</label>
-                  <textarea
-                    cols="30"
-                    rows="5"
-                    class="form-control"
-                    v-model="focusThemeDetail.findings[0].cm_desc"
-                  ></textarea>
+                  <textarea cols="30" rows="5" class="form-control"
+                    v-model="focusThemeDetail.findings[0].cm_desc"></textarea>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Priority</label>
-                  <select
-                    class="form-select"
-                    v-model="focusThemeDetail.findings[0].cm_priority"
-                  >
+                  <select class="form-select" v-model="focusThemeDetail.findings[0].cm_priority">
                     <option selected>Select priority</option>
                     <option value="P1">P1: Safety & Quality Issue</option>
                     <option value="P2">P2: Productivity Issue</option>
@@ -571,16 +407,9 @@
 
                 <div class="mb-2">
                   <label class="mb-1">Faktor </label>
-                  <select
-                    class="form-select"
-                    v-model="focusThemeDetail.findings[0].factor_id"
-                  >
+                  <select class="form-select" v-model="focusThemeDetail.findings[0].factor_id">
                     <option disabled>Select Factor</option>
-                    <option
-                      v-for="factor in factors"
-                      :key="factor.text"
-                      :value="factor.id"
-                    >
+                    <option v-for="factor in factors" :key="factor.text" :value="factor.id">
                       {{ factor.text }}
                     </option>
                   </select>
@@ -591,21 +420,11 @@
 
                   <div class="row">
                     <div class="col">
-                      <input
-                        type="text"
-                        disabled
-                        class="form-control"
-                        :value="
-                          getPicName(focusThemeDetail.findings[0].cm_pic_id)
-                        "
-                      />
+                      <input type="text" disabled class="form-control" :value="getPicName(focusThemeDetail.findings[0].cm_pic_id)
+              " />
                     </div>
                     <div class="col">
-                      <VueMultiselect
-                        v-model="selectedFindingPIC"
-                        :options="picData"
-                        :custom-label="customPicOptions"
-                      >
+                      <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
                       </VueMultiselect>
                     </div>
                   </div>
@@ -615,23 +434,13 @@
                   <label class="mb-1">CM Start Plan Date </label>
                   <div class="row">
                     <div class="col">
-                      <input
-                        type="text"
-                        class="form-control"
-                        disabled
-                        :value="
-                          formatTheDate(
-                            focusThemeDetail.findings[0].cm_str_plan_date,
-                          )
-                        "
-                      />
+                      <input type="text" class="form-control" disabled :value="formatTheDate(
+              focusThemeDetail.findings[0].cm_str_plan_date,
+            )
+              " />
                     </div>
                     <div class="col">
-                      <input
-                        type="date"
-                        class="form-control"
-                        v-model="focusThemeDetail.findings[0].cm_str_plan_date"
-                      />
+                      <input type="date" class="form-control" v-model="focusThemeDetail.findings[0].cm_str_plan_date" />
                     </div>
                   </div>
                 </div>
@@ -639,23 +448,13 @@
                   <label class="mb-1">CM End Plan Date </label>
                   <div class="row">
                     <div class="col">
-                      <input
-                        type="text"
-                        class="form-control"
-                        disabled
-                        :value="
-                          formatTheDate(
-                            focusThemeDetail.findings[0].cm_end_plan_date,
-                          )
-                        "
-                      />
+                      <input type="text" class="form-control" disabled :value="formatTheDate(
+              focusThemeDetail.findings[0].cm_end_plan_date,
+            )
+              " />
                     </div>
                     <div class="col">
-                      <input
-                        type="date"
-                        class="form-control"
-                        v-model="focusThemeDetail.findings[0].cm_end_plan_date"
-                      />
+                      <input type="date" class="form-control" v-model="focusThemeDetail.findings[0].cm_end_plan_date" />
                     </div>
                   </div>
                 </div>
@@ -666,23 +465,13 @@
                   <label class="mb-1">CM Start actual date</label>
                   <div class="row">
                     <div class="col">
-                      <input
-                        type="text"
-                        class="form-control"
-                        disabled
-                        :value="
-                          formatTheDate(
-                            focusThemeDetail.findings[0].cm_str_act_date,
-                          )
-                        "
-                      />
+                      <input type="text" class="form-control" disabled :value="formatTheDate(
+              focusThemeDetail.findings[0].cm_str_act_date,
+            )
+              " />
                     </div>
                     <div class="col">
-                      <input
-                        type="date"
-                        class="form-control"
-                        v-model="focusThemeDetail.findings[0].cm_str_act_date"
-                      />
+                      <input type="date" class="form-control" v-model="focusThemeDetail.findings[0].cm_str_act_date" />
                     </div>
                   </div>
                 </div>
@@ -690,23 +479,13 @@
                   <label class="mb-1">CM End actual date</label>
                   <div class="row">
                     <div class="col">
-                      <input
-                        type="text"
-                        class="form-control"
-                        disabled
-                        :value="
-                          formatTheDate(
-                            focusThemeDetail.findings[0].cm_end_act_date,
-                          )
-                        "
-                      />
+                      <input type="text" class="form-control" disabled :value="formatTheDate(
+              focusThemeDetail.findings[0].cm_end_act_date,
+            )
+              " />
                     </div>
                     <div class="col">
-                      <input
-                        type="date"
-                        class="form-control"
-                        v-model="focusThemeDetail.findings[0].cm_end_act_date"
-                      />
+                      <input type="date" class="form-control" v-model="focusThemeDetail.findings[0].cm_end_act_date" />
                     </div>
                   </div>
                 </div>
@@ -714,32 +493,19 @@
                   <label class="mb-1">CM Training date</label>
                   <div class="row">
                     <div class="col">
-                      <input
-                        type="text"
-                        class="form-control"
-                        disabled
-                        :value="
-                          formatTheDate(
-                            focusThemeDetail.findings[0].cm_training_date,
-                          )
-                        "
-                      />
+                      <input type="text" class="form-control" disabled :value="formatTheDate(
+              focusThemeDetail.findings[0].cm_training_date,
+            )
+              " />
                     </div>
                     <div class="col">
-                      <input
-                        type="date"
-                        class="form-control"
-                        v-model="focusThemeDetail.findings[0].cm_training_date"
-                      />
+                      <input type="date" class="form-control" v-model="focusThemeDetail.findings[0].cm_training_date" />
                     </div>
                   </div>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Judge</label>
-                  <select
-                    class="form-select"
-                    v-model="focusThemeDetail.findings[0].cm_judg"
-                  >
+                  <select class="form-select" v-model="focusThemeDetail.findings[0].cm_judg">
                     <option selected>Select judgement</option>
                     <option value="true">Sudah</option>
                     <option value="false">Belum</option>
@@ -759,11 +525,22 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">CM Comments</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="focusThemeDetail.findings[0].cm_comments"
-                  />
+                  <input type="text" class="form-control" v-model="focusThemeDetail.findings[0].cm_comments" />
+                </div>
+                <div class="mb-2">
+                  <label class="mb-1">Finding image </label> <br>
+                  <img v-if="focusThemeDetail.findings[0].finding_img" :src="focusThemeDetail.findings[0].finding_img"
+                    alt="image" class="img-fluid rounded mb-2" width="100" style="cursor: pointer"
+                    @click="showFindingImg(focusThemeDetail.findings[0].finding_img)" />
+                  <input ref="focus-theme-finding-image" type="file" class="form-control" />
+                  <button class="btn btn-info my-2 text-white" :disabled="isUploadLoading" @click="
+              uploadFindingImage('focus-theme-finding-image', focusThemeDetail.findings[0].finding_img)
+              ">
+                    {{ isUploadLoading ? 'Updating' : 'Update image' }}
+                  </button>
+                  <div v-if="selectedFindingImage">
+                    <img :src="selectedFindingImage" width="300" alt="" />
+                  </div>
                 </div>
               </div>
             </CAccordionBody>
@@ -774,21 +551,13 @@
         <CButton color="secondary" @click="editFocusThemeModal = false">
           Close
         </CButton>
-        <CButton color="primary" @click="updateFocusThemeData"
-          >Update data</CButton
-        >
+        <CButton color="primary" @click="updateFocusThemeData">Update data</CButton>
       </CModalFooter>
     </CModal>
 
     <!-- detail modal -->
-    <CModal
-      scrollable
-      backdrop="static"
-      alignment="center"
-      :visible="focusThemeDetailModal"
-      @close="focusThemeDetailModal = false"
-      size="lg"
-    >
+    <CModal scrollable backdrop="static" alignment="center" :visible="focusThemeDetailModal"
+      @close="focusThemeDetailModal = false" size="lg">
       <CModalHeader>
         <CModalTitle>Detail fokus tema</CModalTitle>
       </CModalHeader>
@@ -802,19 +571,25 @@
               <th>Finding desc</th>
               <th>CM Desc</th>
               <th>CM Judge</th>
+              <th>Finding Img</th>
             </thead>
             <tbody>
-              <tr
-                v-for="(findingDetail, index) in selectedFocusTheme.findings"
-                :key="index"
-              >
+              <tr v-for="(findingDetail, index) in selectedFocusTheme.findings" :key="index">
                 <td>{{ index + 1 }}</td>
-                <td>{{ findingDetail.line_nm }}</td>
-                <td>{{ formatTheDate(findingDetail.finding_date) }}</td>
-                <td>{{ findingDetail.finding_desc }}</td>
-                <td>{{ findingDetail.cm_desc }}</td>
+                <td>{{ findingDetail?.line_nm }}</td>
+                <td>{{ formatTheDate(findingDetail?.finding_date) }}</td>
+                <td>{{ findingDetail?.finding_desc }}</td>
+                <td>{{ findingDetail?.cm_desc }}</td>
                 <td>
                   {{ findingDetail.cm_judge == true ? 'Sudah' : 'Belum' }}
+                </td>
+                <td>
+                  <img v-if="findingDetail?.finding_img" :src="findingDetail?.finding_img" alt="image"
+                    class="img-fluid rounded" width="100" style="cursor: pointer"
+                    @click="showFindingImg(findingDetail?.finding_img)" />
+                  <div v-else>
+                    No finding img
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -822,23 +597,39 @@
         </div>
       </CModalBody>
       <CModalFooter>
-        <CButton
-          color="secondary"
-          class="text-white"
-          @click="
-            () => {
+        <CButton color="secondary" class="text-white" @click="() => {
               focusThemeDetailModal = false
               this.selectedFocusTheme = null
             }
-          "
-        >
+              ">
           Close
         </CButton>
       </CModalFooter>
     </CModal>
+
+    <!-- finding image modal -->
+    <CModal backdrop="static" alignment="center" :visible="findingImageModal" @close="findingImageModal = false"
+      size="xl" scrollable>
+      <CModalHeader>
+        <CModalTitle>Finding Image Detail</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <img :src="selectedFindingImageToDisplay" width="100%" alt="" />
+      </CModalBody>
+      <CModalFooter>
+        <CButton color="secondary" class="text-white" @click="() => {
+              findingImageModal = false
+            }
+              ">
+          Close
+        </CButton>
+      </CModalFooter>
+    </CModal>
+
+
   </div>
 </template>
-    
+
 <script>
 import moment from 'moment'
 import { GET_LINES } from '@/store/modules/line.module'
@@ -853,7 +644,7 @@ import VueMultiselect from 'vue-multiselect'
 import Swal from 'sweetalert2'
 import ApiService from '@/store/api.service'
 import Loading from 'vue-loading-overlay'
-
+import { toast } from 'vue3-toastify'
 import Pagination from '@/components/Pagination.vue'
 
 export default {
@@ -869,7 +660,8 @@ export default {
         FT_Line: 'line_nm',
       },
       json_data: null,
-      isLoading: false,
+      isUploadLoading: false,
+      isUploading: false,
       currentPage: 1,
       currentPageLimit: 5,
       selectedMonth: null,
@@ -877,6 +669,7 @@ export default {
       addFocusThemeModal: false,
       editFocusThemeModal: false,
       focusThemeDetailModal: false,
+      findingImageModal: false,
       factors: [],
       categories: [],
       lineData: [],
@@ -891,38 +684,46 @@ export default {
       focusThemeDetail: null,
       selectedFocusThemeID: null,
       focusThemeData: {
-        ft_desc: '',
+        ft_desc: null,
         ft_evaluation_num: 0,
-        ft_pillar: '',
-        ft_remark: '',
-        ft_line_id: '',
+        ft_pillar: null,
+        ft_remark: null,
+        ft_line_id: null,
       },
       findingsData: {
-        line_id: '',
-        finding_date: '',
-        finding_location: '',
-        finding_desc: '',
-        cm_desc: '',
-        cm_priority: '',
+        line_id: null,
+        finding_date: null,
+        finding_location: null,
+        finding_desc: null,
+        cm_desc: null,
+        cm_priority: null,
         category_id: null,
-        factor_id: '',
-        cm_pic_id: '',
-        cm_str_plan_date: '',
-        cm_end_plan_date: '',
-        cm_result_factor_id: '',
-        cm_str_act_date: '',
-        cm_end_act_date: '',
-        cm_training_date: '',
+        factor_id: null,
+        cm_pic_id: null,
+        finding_img: null,
+        cm_str_plan_date: null,
+        cm_end_plan_date: null,
+        cm_result_factor_id: null,
+        cm_str_act_date: null,
+        cm_end_act_date: null,
+        cm_training_date: null,
         cm_judg: false,
         cm_sign_lh_red: null,
         cm_sign_lh_white: null,
         cm_sign_sh: null,
         cm_comments: null,
       },
+      selectedFindingImage: null,
+      selectedFindingImageToDisplay: null,
+      selectedFindingImageToUpdate: null,
     }
   },
   computed: {
     ...mapGetters(['getLinesOpts', 'getUsersOpts', 'getFocusTheme']),
+  },
+  updated() {
+    this.mapLinesData()
+    this.mapUsersData()
   },
   methods: {
     onPageChange(page) {
@@ -945,6 +746,8 @@ export default {
         const day = val.split('T')[0].split('-')[2]
 
         return `${year}-${month}-${day}`
+      } else {
+        return null
       }
     },
     async getLines() {
@@ -988,27 +791,83 @@ export default {
         console.log(error)
       }
     },
-    addFocusThemeData() {
-      this.focusThemeData.ft_line_id = this.selectedLineID.line_id
 
-      this.findingsData.cm_result_factor_id = this.findingsData.factor_id
-      this.findingsData.line_id = this.selectedLineID.line_id
-      this.findingsData.cm_pic_id = this.selectedFindingPIC.pic_id
+    async uploadFindingImage(state, oldFindingImg) {
+      ApiService.setHeader()
+      let before_path = null
+      this.isUploadLoading = true
 
-      let data = {
-        ...this.focusThemeData,
-        findings: this.findingsData,
+      if (oldFindingImg !== null) {
+        before_path = oldFindingImg
+      } else {
+        before_path = null
       }
 
-      this.addFocusTheme(data)
+      this.$refs[state]
+      const image = this.$refs[state].files[0]
+      const formData = new FormData()
+      formData.append('before_path', before_path)
+      formData.append('dest', 'findings')
+      formData.append('attachment', image)
+
+      const uploadImage = await ApiService.post(
+        `/operational/findingCm/upload-image`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      )
+
+      if (uploadImage.data.data) {
+        toast.success('Finding image uploaded', {
+          autoClose: 700
+        })
+        this.isUploadLoading = false
+        this.selectedFindingImage = `${process.env.VUE_APP_URL}/file?path=${uploadImage.data.data}`
+        this.findingsData.finding_img = uploadImage.data.data
+        this.selectedFindingImageToUpdate = uploadImage.data.data
+      }
+
+    },
+    showFindingImg(findingImg) {
+      this.findingImageModal = true
+      this.selectedFindingImageToDisplay = findingImg
+    },
+    addFocusThemeData() {
+      this.focusThemeData.ft_line_id = this.selectedLineID?.line_id
+      this.findingsData.cm_result_factor_id = this.findingsData?.factor_id
+      this.findingsData.line_id = this.selectedLineID?.line_id
+      this.findingsData.cm_pic_id = this.selectedFindingPIC?.pic_id
+
+      if (!this.findingsData.finding_img || !this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.finding_location || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date) {
+        toast.error('Harap isi semua field di finding', {
+          autoClose: 1000
+        })
+      } else {
+        let data = {
+          ...this.focusThemeData,
+          findings: this.findingsData,
+        }
+        this.addFocusTheme(data)
+      }
+
     },
     async addFocusTheme(data) {
       try {
-        await this.$store.dispatch(POST_FOCUSTHEME, data).then(() => {
-          Swal.showLoading()
-          Swal.fire('Success to add focus theme data', '', 'success')
-          this.addFocusThemeModal = false
-          this.getFocusThemes()
+        await this.$store.dispatch(POST_FOCUSTHEME, data).then((res) => {
+          if (res.data.message == 'Success to POST Focus Thema') {
+            toast.success('Data added', {
+              autoClose: 1000
+            })
+            this.addFocusThemeModal = false
+            this.getFocusThemes()
+          } else {
+            toast.error('Failed to add data', {
+              autoClose: 1000
+            })
+          }
         })
       } catch (error) {
         console.log(error)
@@ -1032,18 +891,20 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           ApiService.setHeader()
-          const deleteData = ApiService.delete(
+          ApiService.delete(
             `operational/focus-thema/delete/${FTID}`,
-          )
-
-          if (deleteData) {
-            Swal.fire('Data deleted!', '', 'success')
-            this.getFocusThemes()
-          } else {
-            Swal.fire('Error', '', 'warning')
-          }
-
-          Swal.fire('Data deleted!', '', 'success')
+          ).then((res) => {
+            if (res.data.message == 'Success to DELETE Focus Theme') {
+              toast.success('Data deleted', {
+                autoClose: 1000
+              })
+              this.getFocusThemes()
+            } else {
+              toast.error('Failed to delete data', {
+                autoClose: 1000
+              })
+            }
+          })
         } else if (result.isDenied) {
           Swal.fire('Canceled', '', 'info')
         }
@@ -1088,24 +949,25 @@ export default {
           cm_result_factor_id: this.focusThemeDetail.findings[0].factor_id,
           cm_str_act_date: this.focusThemeDetail.findings[0].cm_str_act_date
             ? this.formatTheDate(
-                this.focusThemeDetail.findings[0].cm_str_act_date,
-              )
+              this.focusThemeDetail.findings[0].cm_str_act_date,
+            )
             : null,
           cm_end_act_date: this.focusThemeDetail.findings[0].cm_end_act_date
             ? this.formatTheDate(
-                this.focusThemeDetail.findings[0].cm_end_act_date,
-              )
+              this.focusThemeDetail.findings[0].cm_end_act_date,
+            )
             : null,
           cm_training_date: this.focusThemeDetail.findings[0].cm_training_date
             ? this.formatTheDate(
-                this.focusThemeDetail.findings[0].cm_training_date,
-              )
+              this.focusThemeDetail.findings[0].cm_training_date,
+            )
             : null,
           cm_judg: this.focusThemeDetail.findings[0].cm_judg,
           cm_sign_lh_red: null,
           cm_sign_lh_white: null,
           cm_sign_sh: null,
           cm_comments: this.focusThemeDetail.findings[0].cm_comments,
+          finding_img: this.selectedFindingImageToUpdate,
         },
       }
 
@@ -1116,18 +978,26 @@ export default {
 
       try {
         ApiService.setHeader()
-        const updateData = ApiService.put(
+        ApiService.put(
           `operational/focus-thema/edit/${FTID}`,
           data,
-        )
+        ).then((response) => {
+          if (response.data.message == 'Success to EDIT Focuss Thema') {
+            toast.success('Data updated', {
+              autoClose: 1000
+            })
+            this.getFocusThemes()
+            this.editFocusThemeModal = false
+            this.selectedFindingImage = null
+            this.selectedFindingImageToDisplay = null
+            this.selectedFindingImageToUpdate = null
+          } else {
+            toast.success('Failed to update data', {
+              autoClose: 1000
+            })
+          }
+        })
 
-        if (updateData) {
-          Swal.fire('Data updated!', '', 'success')
-          this.editFocusThemeModal = false
-          this.getFocusThemes()
-        } else {
-          Swal.fire('Error', '', 'warning')
-        }
       } catch (error) {
         console.log(error)
         Swal.fire('Failed to update henkaten data', '', 'error')
@@ -1214,7 +1084,7 @@ export default {
   components: { FocusThemeIndicatorVue, VueMultiselect, Loading, Pagination },
 }
 </script>
-    
+
 
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
