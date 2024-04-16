@@ -35,9 +35,6 @@
         </div>
       </div>
       <div>
-        <div class="border-bottom text-center py-2">
-          <span>Periode Jan-Mar 2023</span>
-        </div>
         <table class="table table-striped text-center">
           <thead>
             <tr>
@@ -563,7 +560,7 @@ import VueMultiselect from 'vue-multiselect'
 import Swal from 'sweetalert2'
 import ApiService from '@/store/api.service'
 import Loading from 'vue-loading-overlay'
-
+import { toast } from 'vue3-toastify'
 import Pagination from '@/components/Pagination.vue'
 
 export default {
@@ -705,16 +702,26 @@ export default {
       }
     },
     addFocusThemeData() {
-      this.focusThemeData.ft_line_id = this.selectedLineID.line_id
-      this.findingsData.cm_result_factor_id = this.findingsData.factor_id
-      this.findingsData.line_id = this.selectedLineID.line_id
-      this.findingsData.cm_pic_id = this.selectedFindingPIC.pic_id
 
-      let data = {
-        ...this.focusThemeData,
-        findings: this.findingsData,
+      this.focusThemeData.ft_line_id = this.selectedLineID?.line_id
+      this.findingsData.cm_result_factor_id = this.findingsData?.factor_id
+      this.findingsData.line_id = this.selectedLineID?.line_id
+      this.findingsData.cm_pic_id = this.selectedFindingPIC?.pic_id
+
+      if (!this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.finding_location || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date) {
+        toast.error('Harap isi semua field di finding', {
+          autoClose: 1000
+        })
+
+        console.log(this.findingsData)
+      } else {
+        let data = {
+          ...this.focusThemeData,
+          findings: this.findingsData,
+        }
+        this.addFocusTheme(data)
       }
-      this.addFocusTheme(data)
+
     },
     async addFocusTheme(data) {
       try {
