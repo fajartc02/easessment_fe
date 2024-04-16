@@ -222,8 +222,8 @@
         </table>
       </div>
       <!-- pagination -->
-      <Pagination :totalPages="10" :perPage="10" :currentPage="currentPage" @changePage="onPageChange"
-        @changeLimit="onPageChangeLimit" />
+      <Pagination :totalPages="10" :perPage="10" :currentPage="currentPage" :totalPage="totalPage"
+        @changePage="onPageChange" @changeLimit="onPageChangeLimit" />
     </div>
 
     <!-- Add MV modal -->
@@ -1018,6 +1018,7 @@ export default {
       selectedFindingImage: null,
       selectedFindingImageToDisplay: null,
       selectedFindingImageToUpdate: null,
+      totalPage: 0,
     }
   },
   computed: {
@@ -1035,13 +1036,20 @@ export default {
     this.mapUsersData()
   },
   methods: {
-    onPageChange(page) {
-      if (page == -1) {
+    onPageChange(page, type) {
+      if (type == 'prev') {
         this.currentPage = this.currentPage - 1
-        this.getMemberVoices()
-      } else {
+        this.getFindingsFunc()
+      }
+
+      if (type == 'next') {
         this.currentPage = this.currentPage + 1
-        this.getMemberVoices()
+        this.getFindingsFunc()
+      }
+
+      if (type == 'fromnumber') {
+        this.currentPage = page
+        this.getFindingsFunc()
       }
     },
     onPageChangeLimit(limit) {
@@ -1157,6 +1165,7 @@ export default {
       try {
         this.$store.dispatch(GET_MEMBERVOICE, objQuery).then((res) => {
           if (res) {
+            this.totalPage = res[0]?.total_page
             this.isLoading = false
             this.json_data = res
           }

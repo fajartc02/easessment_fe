@@ -484,7 +484,7 @@ export default {
       evaluationName: null,
       selectedScheduleItemCheckKanbanID: null,
       selectedFindingID: null,
-      currentPage: 1,
+      currentPage: 0,
       totalPage: 0,
       currentPageLimit: 5,
     }
@@ -520,13 +520,20 @@ export default {
     customLabel(value) {
       return `${value.text}`
     },
-    onPageChange(page) {
-      if (page == -1) {
+    onPageChange(page, type) {
+      if (type == 'prev') {
         this.currentPage = this.currentPage - 1
-        this.getFindings()
-      } else {
+        this.getFindingsFunc()
+      }
+
+      if (type == 'next') {
         this.currentPage = this.currentPage + 1
-        this.getFindings()
+        this.getFindingsFunc()
+      }
+
+      if (type == 'fromnumber') {
+        this.currentPage = page
+        this.getFindingsFunc()
       }
     },
     onPageChangeLimit(limit) {
@@ -568,11 +575,7 @@ export default {
       await this.$store.dispatch(GET_4S_FINDINGS, objQuery).then((res) => {
         this.findingList = res.list
         this.totalPage = res.total_page
-        // if (res) {
-        //   this.isLoading = false
-        // } else {
-        //   this.isLoading = false
-        // }
+        this.currentPage = res.current_page
       })
     },
     openEditFindingModal(finding) {

@@ -246,7 +246,7 @@
                       </div>
                       <div class="mb-2">
                         <div>
-                          <label class="mb-1">Finding image {{ selectedFindingImage ? '(Uploaded)' : '' }} </label>
+                          <label class="mb-1">Finding image </label>
                           <input :ref="`finding_image-${i}`" type="file" class="form-control" />
                         </div>
                         <button class="btn btn-info my-2 text-white" :disabled="isUploadLoading" @click="
@@ -411,7 +411,7 @@ import { POST_OBSERVATION_CHECK } from '@/store/modules/observation.module'
 import { GET_USERS } from '@/store/modules/user.module'
 import { mapGetters } from 'vuex'
 import VuePdfEmbed from 'vue-pdf-embed'
-
+import { toast } from 'vue3-toastify'
 import ApiService from '@/store/api.service'
 import moment from 'moment'
 import Swal from 'sweetalert2'
@@ -652,6 +652,9 @@ export default {
       )
 
       if (uploadImage.data.data) {
+        toast.success('Finding image uploaded', {
+          autoClose: 1000
+        })
         this.isUploadLoading = false
         this.selectedFindingImage = `${process.env.VUE_APP_URL}/file?path=${uploadImage.data.data}`
         this.finding.finding_img = uploadImage.data.data

@@ -112,25 +112,25 @@
                 </td>
               </tr>
               <tr v-else v-for="(finding, findingIndex) in getFindings" :key="finding.no" :style="`${this.todayDate > formatTheDate(finding.cm_str_plan_date) &&
-                finding.cm_judg == false
-                ? 'background-color: #fee2e2'
+              finding.cm_judg == false
+              ? 'background-color: #fee2e2'
+              : ''
+              }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ${finding.cm_judg ==
+                true
+                ? 'background-color: #f0fdf4'
                 : ''
-                }
+              }
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ${finding.cm_judg ==
-                  true
-                  ? 'background-color: #f0fdf4'
-                  : ''
-                }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ${finding.cm_judg ==
-                  false &&
-                  this
-                    .todayDate <
-                  formatTheDate(
-                    finding.cm_str_plan_date,
-                  )
-                  ? 'background-color: #fff'
-                  : ''
-                }
+                false &&
+                this
+                  .todayDate <
+                formatTheDate(
+                  finding.cm_str_plan_date,
+                )
+                ? 'background-color: #fff'
+                : ''
+              }
                 `">
                 <th id="fixCol-1">{{ findingIndex + 1 }}</th>
                 <td id="fixCol-2" class="px-2">{{ finding.line_nm }}</td>
@@ -154,43 +154,43 @@
                 <td>{{ finding.cm_pic_nm }}</td>
                 <td v-for="n in num" :key="n" style="min-width: 30px !important; padding: 5px">
                   <div v-if="n >= finding.w_str_plan_date && n <= finding.w_end_plan_date
-                  " :style="`
+              " :style="`
                       width: 100%;
                       height: 25px;
                       border-radius: 4px;
                       border: 2px dotted #64748b;
                       ${finding.status_check == 'PROGRESS'
-                      ? 'background-color: #fff'
-                      : ''
-                    };
+                ? 'background-color: #fff'
+                : ''
+              };
                       ${finding.status_check == 'DELAY'
-                      ? 'background-color: #fee2e2'
-                      : ''
-                    };
+                ? 'background-color: #fee2e2'
+                : ''
+              };
                       ${finding.status_check == 'DONE'
-                      ? 'background-color: #bbf7d0'
-                      : ''
-                    };
+                ? 'background-color: #bbf7d0'
+                : ''
+              };
                       `"></div>
 
                   <div class="my-2" v-if="n >= finding.w_str_act_date && n <= finding.w_end_act_date
-                  " :style="`
+              " :style="`
                       width: 100%;
                       height: 25px;
                       border-radius: 4px;
                       border: 2px solid #64748b;
                       ${finding.status_check == 'PROGRESS'
-                      ? 'background-color: #fff'
-                      : ''
-                    };
+                ? 'background-color: #fff'
+                : ''
+              };
                       ${finding.status_check == 'DELAY'
-                      ? 'background-color: #fee2e2'
-                      : ''
-                    };
+                ? 'background-color: #fee2e2'
+                : ''
+              };
                       ${finding.status_check == 'DONE'
-                      ? 'background-color: #bbf7d0'
-                      : ''
-                    };
+                ? 'background-color: #bbf7d0'
+                : ''
+              };
                       `"></div>
                 </td>
                 <td>
@@ -207,12 +207,12 @@
                   <div class="d-flex m-2">
                     <div class="d-flex" style="width: 400px">
                       <input type="text" class="form-control w-full" :value="finding.cm_comments" @input="
-                        updateCMComments(
-                          finding.finding_id,
-                          $event.target.value,
-                          findingIndex,
-                        )
-                        " />
+              updateCMComments(
+                finding.finding_id,
+                $event.target.value,
+                findingIndex,
+              )
+              " />
                       <button class="btn btn-info btn-sm text-white w-full mx-1" @click="saveCMComments()">
                         save
                       </button>
@@ -222,16 +222,16 @@
                 <td class="px-1">
                   <div class="px-2 d-flex">
                     <button @click="() => {
-                      openFindingImage(finding.finding_img)
-                    }
-                      " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
+              openFindingImage(finding.finding_img)
+            }
+              " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
                       Finding image
                     </button>
                     <button @click="() => {
-                      getDetailTemuan(findingIndex)
-                      addSignModal = true
-                    }
-                      " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
+              getDetailTemuan(findingIndex)
+              addSignModal = true
+            }
+              " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
                       Add sign
                     </button>
                     <!-- <button class="btn btn-info btn-sm text-white w-full mx-1 my-1" style="margin-right: 10px" @click="() => {
@@ -242,10 +242,10 @@
                       Detail
                     </button> -->
                     <button @click="() => {
-                      getDetailTemuan(findingIndex)
-                      editTemuanModal = true
-                    }
-                      " class="btn btn-info btn-sm text-white w-full my-1">
+              getDetailTemuan(findingIndex)
+              editTemuanModal = true
+            }
+              " class="btn btn-info btn-sm text-white w-full my-1">
                       Edit
                     </button>
                     <button @click="deleteFinding(finding.finding_id)"
@@ -293,8 +293,8 @@
           </table>
         </div>
       </div>
-      <Pagination :totalPages="10" :perPage="10" :currentPage="currentPage" @changePage="onPageChange"
-        @changeLimit="onPageChangeLimit" />
+      <Pagination :totalPages="10" :perPage="10" :currentPage="currentPage" :totalPage="totalPage"
+        @changePage="onPageChange" @changeLimit="onPageChangeLimit" />
     </div>
 
     <!-- detail modal -->
@@ -624,16 +624,16 @@
       </CModalBody>
       <CModalFooter>
         <CButton color="info" class="text-white" @click="() => {
-          updateFindingList()
-        }
-          ">
+              updateFindingList()
+            }
+              ">
           Update data
         </CButton>
         <CButton color="secondary" class="text-white" @click="() => {
-          selectedFindingIndex = null
-          editTemuanModal = false
-        }
-          ">
+              selectedFindingIndex = null
+              editTemuanModal = false
+            }
+              ">
           Close
         </CButton>
       </CModalFooter>
@@ -811,11 +811,11 @@
       </CModalBody>
       <CModalFooter>
         <CButton color="secondary" class="text-white" @click="() => {
-          selectedFindingIndex = null
-          addSignModal = false
-          getFindingsFunc()
-        }
-          ">
+              selectedFindingIndex = null
+              addSignModal = false
+              getFindingsFunc()
+            }
+              ">
           Close
         </CButton>
       </CModalFooter>
@@ -832,9 +832,9 @@
       </CModalBody>
       <CModalFooter>
         <CButton color="secondary" class="text-white" @click="() => {
-          findingImageModal = false
-        }
-          ">
+              findingImageModal = false
+            }
+              ">
           Close
         </CButton>
       </CModalFooter>
@@ -855,7 +855,7 @@ import ApiService from '@/store/api.service'
 import Pagination from '@/components/Pagination.vue'
 import Swal from 'sweetalert2'
 import vueSignature from 'vue-signature'
-
+import { toast } from 'vue3-toastify'
 import ModalFindingDetail from '@/components/ModalFinding/ModalFindingDetail.vue'
 import HeadFindingList from '@/components/table/HeadFindingList.vue'
 
@@ -921,12 +921,11 @@ export default {
       cm_comments: null,
       APPURL: process.env.VUE_APP_URL,
       findingImageModal: false,
-      selectedFindingImage: null
+      selectedFindingImage: null,
+      totalPage: 0,
     }
   },
-  updated() {
-    console.log(this.cm_comments)
-  },
+
   computed: {
     ...mapGetters(['getUsersOpts', 'getFindings', 'getLinesOpts']),
   },
@@ -1025,12 +1024,19 @@ export default {
         alert('Sign saved')
       }
     },
-    onPageChange(page) {
-      if (page == -1) {
+    onPageChange(page, type) {
+      if (type == 'prev') {
         this.currentPage = this.currentPage - 1
         this.getFindingsFunc()
-      } else {
+      }
+
+      if (type == 'next') {
         this.currentPage = this.currentPage + 1
+        this.getFindingsFunc()
+      }
+
+      if (type == 'fromnumber') {
+        this.currentPage = page
         this.getFindingsFunc()
       }
     },
@@ -1078,6 +1084,7 @@ export default {
       try {
         this.$store.dispatch(GET_FINDINGS, objQuery).then((res) => {
           if (res) {
+            this.totalPage = res[0]?.total_page
             this.isLoading = false
             this.json_data = res
           }
@@ -1098,10 +1105,23 @@ export default {
       }).then(async (result) => {
         if (result.isConfirmed) {
           ApiService.setHeader()
-          await ApiService.delete(`operational/findingCm/delete/${findingID}`)
-          Swal.fire('Data deleted!', '', 'success')
+          await ApiService.delete(`operational/findingCm/delete/${findingID}`).then(res => {
+            if (res.data.message == 'Success to DELETE finding') {
+              toast.success('Data deleted', {
+                autoClose: 1000
+              })
+              this.getFindingsFunc()
+            } else {
+              toast.error('Failed to add data', {
+                autoClose: 1000
+              })
+            }
+          })
         } else if (result.isDenied) {
-          Swal.fire('Canceled', '', 'info')
+          toast.error('Internal system error', {
+            autoClose: 700
+          })
+
         }
       })
     },
