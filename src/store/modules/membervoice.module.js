@@ -21,8 +21,7 @@ const actions = {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
             ApiService.query('operational/member-voice/get', query)
-                .then((result) => { 
-                    console.log(result)
+                .then((result) => {  
                     const res = result.data
                     if (res) {
                         commit(SET_MEMBERVOICES, res.data)
@@ -42,8 +41,7 @@ const actions = {
                 .then((result) => {
                     const res = result.data
                     resolve(res.data)
-                    console.log(commit);
-                    console.log(result)
+                    console.log(commit); 
                 }).catch((err) => {
                     reject(err)
                 });
