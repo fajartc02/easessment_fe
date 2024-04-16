@@ -13,7 +13,7 @@
           <div class="mx-2">
             <CInputGroup>
               <CInputGroupText>Line</CInputGroupText>
-              <select class="form-select" v-model="selectedLine" @change="addFilter()">
+              <select class="form-select" v-model="filter.line" @change="addFilter()">
                 <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
                   {{ line.text }}
                 </option>
@@ -65,8 +65,8 @@
             <td>{{ obaservation.job_nm }}</td>
             <td>{{ `${obaservation.plan_check_dt}` }}</td>
             <td :class="`${obaservation.actual_check_dt}`.split('T')[0] == 'null'
-                ? 'bg-danger'
-                : ''
+              ? 'bg-danger'
+              : ''
               ">
               {{
                 `${obaservation.actual_check_dt}`.split('T')[0] != 'null'
@@ -93,10 +93,25 @@
         </tbody>
       </table>
     </div>
-
-    <!-- pagination -->
-    <Pagination :totalPages="10" :perPage="10" :currentPage="currentPage" @changePage="onPageChange"
-      @changeLimit="onPageChangeLimit" />
+    <div class="px-3">
+      <div class="d-flex justify-content-between">
+        <div>
+          <div class="input-group mb-3">
+            <label class="input-group-text">Limit</label>
+            <select class="form-select" v-model="filter.limit">
+              <option selected value="10">10</option>
+              <option value="20">20</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+          </div>
+        </div>
+        <div v-if="filter.total_data > 1">
+          <CustPagination :totalItems="filter.total_data" :items-per-page="filter.limit"
+            :current-page="filter.current_page" @page-changed="handlePageChange" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -109,15 +124,21 @@ import {
 import { GET_LINES } from '@/store/modules/line.module'
 import Swal from 'sweetalert2'
 import Loading from 'vue-loading-overlay'
-import Pagination from '@/components/Pagination.vue'
+import CustPagination from '@/components/pagination/CustPagination.vue';
 import moment from 'moment'
 
 export default {
   name: 'ScheduleObservation',
   data() {
     return {
-      currentPage: 1,
-      currentPageLimit: 5,
+      filter: {
+        line: -1,
+        year: null,
+        month: null,
+        limit: 10,
+        current_page: 1,
+        total_data: 1
+      },
       isLoading: false,
       form: {
         line_id: null,
@@ -153,54 +174,47 @@ export default {
         'Nov',
         'Dec',
       ],
-      yearMonth: '',
       currentDate: `${new Date().getDate()}`,
     }
   },
   watch: {
-    observationSchedule: function () {
-      console.log(this.observationSchedule)
-    },
-    selectedMonth: function () {
-      if (this.selectedMonth) {
-        this.generateDate()
-        let idx = this.idxMonth.indexOf(this.selectedMonth.split('-')[1])
-        this.yearMonth = `${this.monthStr[idx]} ${this.selectedMonth.split('-')[0]
-          }`
+    filter: {
+      deep: true,
+      handler() {
         this.getObservations()
       }
     },
+    observationSchedule: {
+      deep: true,
+      handler() {
+        if (this.observationSchedule.length > 0) {
+          this.filter.total_data = this.observationSchedule[0].total_data
+          this.filter.current_page = this.observationSchedule[0].current_page
+          this.filter.limit = this.observationSchedule[0].limit
+
+        }
+      }
+    }
   },
   computed: {
     ...mapGetters(['observationSchedule', 'getLinesOpts']),
   },
   methods: {
-    onPageChange(page) {
-      if (page == -1) {
-        this.currentPage = this.currentPage - 1
-        this.getObservations()
-      } else {
-        this.currentPage = this.currentPage + 1
-        this.getObservations()
-      }
+    handlePageChange(page) {
+      this.filter.current_page = page;
+      this.$store.dispatch(GET_OBSERVATION_SCHEDULE_LIST, this.filter)
     },
     onPageChangeLimit(limit) {
-      this.currentPageLimit = limit
+      this.filter.limit = limit
       this.getObservations()
     },
     async getObservations() {
       this.isLoading = true
-
-      let objQuery = {
-        month: this.selectedMonth?.split('-')[1],
-        year: this.selectedMonth?.split('-')[0],
-        line: this.selectedLine,
-        limit: this.currentPageLimit,
-        currentPage: this.currentPage,
-      }
+      this.filter.month = this.selectedMonth?.split('-')[1]
+      this.filter.year = this.selectedMonth?.split('-')[0]
 
       await this.$store
-        .dispatch(GET_OBSERVATION_SCHEDULE_LIST, objQuery)
+        .dispatch(GET_OBSERVATION_SCHEDULE_LIST, this.filter)
         .then((res) => {
           if (res) {
             this.isLoading = false
@@ -266,13 +280,13 @@ export default {
     },
   },
   async mounted() {
+    this.filter.line = localStorage.getItem('line_id') ?? -1
     await this.getObservations()
     await this.getLines()
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
-    this.selectedLine = localStorage.getItem('line_id')
   },
-  components: { Loading, Pagination },
+  components: { Loading, CustPagination },
 }
 </script>
