@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="card-body p-0 overflow-x-auto">
-      <div v-if="mainSchedules.length > 0 && !isLoading" class="tableFixHead">
+      <div v-if="mainSchedules.length > 0" class="tableFixHead">
         <table class="table table-hover" style="width: 100%" v-for="mainSchedule in mainSchedules"
           :key="mainSchedule.id">
           <thead>
@@ -37,8 +37,8 @@
                 No Data Available
               </td>
             </tr>
-            <template v-else v-for="(data, scheduleIndex) in mainSchedule.sub_schedules" :key="scheduleIndex">
-              <tr>
+            <template v-else>
+              <tr v-for="(data, scheduleIndex) in mainSchedule.sub_schedules" :key="scheduleIndex">
                 <td id="fixCol-1">{{ scheduleIndex + 1 }}</td>
                 <td id="fixCol-2" style="min-width: 100px">{{ data.machine_nm }}</td>
                 <td id="fixCol-3" style="min-width: 160px">{{ data.item_check_nm }}</td>
@@ -83,11 +83,49 @@
                   </CDropdown>
                 </td>
               </tr>
+              <tr>
+                <td id="fixCol-sign" colspan="9" class="text-center">Sign TL </td>
+                <td v-for="sign in mainSchedule.sub_schedules[0].children" :key="sign"
+                  :style="`${sign.is_holiday ? 'background-color: #f9fafb' : ''} ${sign.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''} `">
+                  <div class="d-flex align-items-center justify-content-center w-full">
+                    <button @click="openSignModal(sign, true)"
+                      v-if="!sign.is_holiday && !sign.sign_tl"
+                      class="check-wrapper-null d-flex align-items-center justify-content-center">
+                      <CIcon icon="cil-x" class="text-danger" size="sm" />
+                    </button>
+                    <button @click="openSignModal(sign, true)"
+                      v-else-if="!sign.is_holiday && sign.sign_tl"
+                      class="check-wrapper d-flex align-items-center justify-content-center">
+                      <CIcon icon="cil-check" class="text-black" size="sm" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td id="fixCol-sign" colspan="9" class="text-center">Sign GL</td>
+                <td v-for="sign in mainSchedule.glSigns" :key="sign"
+                  :style="`${sign.is_holiday ? 'background-color: #f9fafb' : ''} `" :colspan="sign.col_span">
+                  <div class="d-flex align-items-center justify-content-center w-full">
+                    <button @click="
+                      openSignModal(sign, false)
+                      " v-if="!sign.is_holiday && !sign.sign"
+                      class="check-wrapper-null d-flex align-items-center justify-content-center">
+                      <CIcon icon="cil-x" class="text-danger" size="md" />
+                    </button>
+                    <button @click="
+                      openSignModal(sign, false)
+                      " v-else-if="!sign.is_holiday && sign.sign"
+                      class="check-wrapper d-flex align-items-center justify-content-center">
+                      <CIcon icon="cil-check" class="text-black" size="md" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
             </template>
           </tbody>
         </table>
       </div>
-      <div v-else-if="isLoading" class="text-center p-5">
+      <div v-else-if="isLoadingMain" class="text-center p-5">
         <CSpinner aria-hidden="true" />
       </div>
       <div v-else class="text-center p-5">
@@ -100,32 +138,25 @@
 import ApiService from '@/store/api.service'
 import { mapGetters } from 'vuex'
 import {
-  GET_OM_MAIN_SCHEDULES,
-  GET_OM_SUB_SCHEDULES,
   GET_OM_SUB_SCHEDULES_CHILDREN_SELECTED
 } from '@/store/modules/omSchedule.module'
-import { toast } from 'vue3-toastify'
 import Swal from 'sweetalert2'
 import moment from 'moment'
-
-const defaultFilter = {
-  line_id: null,
-  freq_id: null,
-  machine_id: null,
-  group_id: null,
-  yearMonth: null
-}
 
 export default {
   name: 'ScheduleDatesOmItemCheck',
   props: {
-    filter: {
-      type: Object,
-      default: defaultFilter
+    mainSchedules: {
+      type: Array,
     },
-    refresh: {
+    isLoadingMain: {
       type: Boolean,
-      default: false,
+    },
+    isLoadingSub: {
+      type: Boolean,
+    },
+    yearMonth: {
+      type: String,
     }
   },
   components: {
@@ -133,78 +164,13 @@ export default {
   },
   data() {
     return {
-      mainSchedules: [],
-      isLoading: false,
-      isLoadingSub: false,
     }
   },
   async mounted() {
-    this.getMainSchedules()
+
   },
   watch: {
-    getOmMainSchedules: {
-      async handler() {
-        this.mainSchedules = this.getOmMainSchedules?.list ?? []
-        if (this.getOmMainSchedules.list)
-        {
-          for (let i = 0; i < this.getOmMainSchedules.list.length; i++)
-          {
-            await this.getSubSchedules(this.getOmMainSchedules.list[i].om_main_schedule_id)
-          }
-        }
-      }
-    },
-    getOmSubSchedules: {
-      handler() {
-        if (this.getOmSubSchedules.schedule.length > 0)
-        {
-          this.getOmSubSchedules.schedule.forEach(sub => {
-            this.mainSchedules.forEach(main => {
-              if (main.om_main_schedule_id == sub.om_main_schedule_id)
-              {
-                if (!Array.isArray(main.sub_schedules))
-                {
-                  main.sub_schedules = []
-                }
 
-                main.sub_schedules.push(sub)
-                return
-              }
-            })
-          })
-        }
-        else
-        {
-          this.mainSchedules.forEach(main => {
-            main.sub_schedules = []
-          })
-        }
-      }
-    },
-    filter: {
-      async handler() {
-        if (this.filter.line_id || this.filter.yearMonth || this.filter.group_id)
-        {
-          await this.getMainSchedules()
-        }
-
-        if (this.filter.machine_id || this.filter.freq_id)
-        {
-          this.mainSchedules.forEach(main => {
-            main.sub_schedules = this.filterSubSchedules(main.sub_schedules, this.filter.machine_id, this.filter.freq_id)
-          })
-        }
-      },
-      deep: true
-    },
-    refresh: {
-      handler() {
-        if (this.refresh)
-        {
-          this.getMainSchedules()
-        }
-      }
-    }
   },
   computed: {
     ...mapGetters([
@@ -212,10 +178,10 @@ export default {
       'getOmSubSchedules',
     ]),
     getDateThisMonth() {
-      if (this.filter.yearMonth)
+      if (this.yearMonth)
       {
-        const year = this.filter.yearMonth.split('-')[0]
-        const month = +this.filter.yearMonth.split('-')[1] + 1
+        const year = this.yearMonth.split('-')[0]
+        const month = +this.yearMonth.split('-')[1] + 1
         return new Date(year, month + 1, 0).getDate()
       }
 
@@ -223,52 +189,11 @@ export default {
     },
     getMonthStr() {
       const monthStr = ['January', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
-      return monthStr[+this.filter.yearMonth.split('-')[1] - 1]
-    },
+      return monthStr[+this.yearMonth.split('-')[1] - 1]
+    }
   },
   methods: {
-    async getMainSchedules() {
-      try
-      {
-        this.isLoading = true
-        let objQuery = {
-          month_year_num: this.filter.yearMonth,
-          line_id: this.filter.line_id,
-        }
-        await this.$store.dispatch(GET_OM_MAIN_SCHEDULES, objQuery)
-        this.isLoading = false
-      }
-      catch (error)
-      {
-        if (error.response.status == 401) this.$router.push('/login')
-        console.log(error)
-        toast.error(error.response.data.message, {
-          autoClose: 1000,
-        })
-      }
-    },
-    async getSubSchedules(mainScheduleID) {
-      try
-      {
-        this.isLoadingSub = true
-        let objQuery = {
-          om_main_schedule_id: mainScheduleID,
-          freq_id: this.filter.freq_id,
-          machine_id: this.filter.machine_id
-        }
 
-        await this.$store.dispatch(GET_OM_SUB_SCHEDULES, objQuery)
-        this.isLoadingSub = false
-      }
-      catch (error)
-      {
-        if (error.response.status == 401) this.$router.push('/login')
-        console.log(error)
-        toast.error(error.response.data.message, {
-          autoClose: 1000,
-        })
-      }
-    },
     async deleteScheduleCheck(subScheduleID) {
       Swal.fire({
         title: 'Are you sure to delete this item?',
@@ -285,7 +210,7 @@ export default {
           if (deleteData)
           {
             Swal.fire('Data deleted!', '', 'success')
-            this.getMainSchedules()
+            this.$emit('refreshMainSchedule', true)
           } else
           {
             Swal.fire('Error', '', 'warning')
@@ -298,28 +223,6 @@ export default {
     },
     addScheduleCheck(subScheduleParent, subScheduleChildren) {
       this.$router.push(`/om/schedule-detail/${subScheduleParent.om_main_schedule_id}/${subScheduleChildren.om_sub_schedule_id}`)
-    },
-    filterSubSchedules(
-      childSubSchedules,
-      machine_id = null,
-      freq_id = null
-    ) {
-      if (!childSubSchedules) return []
-
-      return childSubSchedules.filter((subSchedule) => {
-        if (machine_id && freq_id)
-        {
-          return subSchedule.machine_id == machine_id && subSchedule.freq_id == freq_id
-        }
-        else if (machine_id)
-        {
-          return subSchedule.machine_id == machine_id
-        }
-        else if (freq_id)
-        {
-          return subSchedule.freq_id == freq_id
-        }
-      })
     },
     openChangeDateModal(children) {
       this.$store.dispatch(GET_OM_SUB_SCHEDULES_CHILDREN_SELECTED, children)
@@ -339,6 +242,14 @@ export default {
       }
       this.$store.dispatch(GET_OM_SUB_SCHEDULES_CHILDREN_SELECTED, res)
       this.$emit('showEditPicModal', true)
+    },
+    openSignModal(sign, isTl){
+      this.$emit('showSignModal', {
+        type: isTl ? 'SIGN_TL' : 'SIGN GL',
+        date: isTl ? sign.date : sign.start_date,
+        sign: isTl ? sign.sign_tl : sign.sign,
+        sign_checker_id: isTl ? sign.tl_sign_checker_id : sign.sign_checker_id,
+      })
     }
   },
 }
@@ -448,6 +359,14 @@ export default {
   position: sticky;
   top: 0px;
   left: 450px;
+  z-index: 3;
+  background-color: white;
+}
+
+#fixCol-sign {
+  position: sticky;
+  top: 0px;
+  left: -200px;
   z-index: 3;
   background-color: white;
 }

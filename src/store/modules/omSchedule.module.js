@@ -46,17 +46,17 @@ const actions = {
     return new Promise((resolve, reject) => {
       ApiService.query("operational/om/main-schedule", query)
         .then((result) => {
-          const data = result.data
-          if (data)
+          const response = result.data
+          if (response)
           {
-            commit(SET_OM_MAIN_SCHEDULES, data.data)
+            commit(SET_OM_MAIN_SCHEDULES, response.data)
 
             // THIS COMMIT FROM pagination.module.js
-            if (data.limit) commit(SET_LIMIT, data.limit)
-            if (data.current_page) commit(SET_CURRENT_PAGE, data.current_page)
-            if (data.total_data) commit(SET_TOTAL_DATA, data.total_data)
+            if (response.data.limit) commit(SET_LIMIT, response.data.limit)
+            if (response.data.current_page) commit(SET_CURRENT_PAGE, response.data.current_page)
+            if (response.data.total_data) commit(SET_TOTAL_DATA, response.data.total_data)
 
-            resolve(data.data)
+            resolve(response.data)
           }
           // throw result;
         }).catch((err) => {

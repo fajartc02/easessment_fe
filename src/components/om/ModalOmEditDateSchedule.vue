@@ -44,6 +44,7 @@ export default {
       isLoading: false,
       selectedSubScheduleId: null,
       selectedBeforeDate: null,
+      updateDate: null,
     }
   },
   async mounted() { },
@@ -63,9 +64,9 @@ export default {
   },
   methods: {
     async changeDate() {
+      this.isLoading = true
       try
       {
-        this.isLoading = true
         ApiService.setHeader()
         const data = {
           plan_date: this.updateDate,
@@ -77,15 +78,16 @@ export default {
           data,
         )
 
-        this.isLoading = false
         toast.success('Success to edit om schedule plan', {
           autoClose: 1000,
         })
 
+        this.isLoading = false
         this.closeModal(true)
       }
       catch (error)
       {
+        this.isLoading = false
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
         toast.error(error.response.data.message, {
@@ -94,6 +96,7 @@ export default {
       }
     },
     closeModal(refresh = false) {
+      this.updateDate = null
       if (!this.isLoading){
         this.$emit('modalEditDateListener', {
           visible: false,

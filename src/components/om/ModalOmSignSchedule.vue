@@ -1,26 +1,29 @@
 <template>
-  <CModal backdrop="static" alignment="center" :visible="visible" @close="closeSignModal()" size="lg">
+  <CModal backdrop="static" alignment="center" :visible="visible" @close="closeSignModal()">
     <CModalHeader>
       <CModalTitle>Add Sign</CModalTitle>
     </CModalHeader>
     <CModalBody>
-      <input type="image" v-if="loadedSign" :src="loadedSign" style="width: 100%; height: 100%" />
+      <input type="image" v-if="signCheckerData.sign" :src="signCheckerData.sign" style="width: 100%; height: 100%" />
       <div style="width: 100%; height: 100px; border: 1px solid #eaeaea">
         <vueSignature ref="sign" :sigOption="option" :w="'100%'" :h="'100px'">
         </vueSignature>
-        <button class="btn btn-info my-3 btn-sm text-white" :disabled="isUploadSignLoading"
-          @click="saveSignature()">
-          {{ isUploadSignLoading ? 'Saving..' : 'Save' }}
-        </button>
-        <button class="btn btn-info btn-sm mx-2 my-3 text-white" @click="clearSignature()">
-          Clear
-        </button>
       </div>
     </CModalBody>
     <CModalFooter>
-      <CButton color="secondary" class="text-white" @click="closeSignModal()">
-        Close
-      </CButton>
+      <div class="d-flex w-100">
+        <div class="flex-grow-1">
+          <CButton color="info" class="text-white me-2" @click="clearSignature()">
+            Clear
+          </CButton>
+          <CButton color="info" class="text-white" @click="saveSignature()">
+            {{ isLoading ? 'Saving..' : 'Save' }}
+          </CButton>
+        </div>
+        <CButton color="secondary" class="text-white" @click="closeSignModal()">
+          Close
+        </CButton>
+      </div>
     </CModalFooter>
   </CModal>
 </template>
@@ -40,20 +43,27 @@ export default {
       type: Boolean,
       default: false,
     },
-    signCheckerId: {
-      type: String,
+    signCheckerData: {
+      type: Object,
       default: null,
     }
   },
   data() {
     return {
-      loadedSign: null,
       writedSignature: null,
       isLoading: false,
     }
   },
   async mounted() { },
-  watch: {},
+  watch: {
+    signCheckerData: {
+      handler() {
+        console.log('====================================');
+        console.log('signcheckerdata', this.signCheckerData);
+        console.log('====================================');
+      }
+    }
+  },
   computed: {
     ...mapGetters([
       'getOmSelectedChildren',
@@ -68,43 +78,37 @@ export default {
       this.$refs.sign.clear()
     },
     async uploadSignature() {
-      try {
-        this.isUploadSignLoading = true
+      try
+      {
+        this.isLoading = true
         ApiService.setHeader()
         await ApiService.put(
-          `/operational/om/sub-schedule/sign/${this.signCheckerId}`,
+          `/operational/om/sub-schedule/sign/${this.signCheckerData.sign_checker_id}`,
           { sign: this.writedSignature },
         )
 
-        this.isUploadSignLoading = false
-        alert('Sign saved')
-        this.closeSignModal()
-      } catch (error) {
-        console.log(error)
-        if (error.response.status == 401) this.$router.push('/login')
-      }
-    },
-    closeSignModal() {
-      this.writedSignature = null
-      this.loadedSign = null
-    },
-    async getSignature() {
-      try {
-        this.isUploadSignLoading = true
-        ApiService.setHeader()
-        const getData = await ApiService.get(
-          `/operational/om/sub-schedule/sign/${this.signCheckerId}`
-        )
-
-        this.loadedSign = getData.data.data.sign
-        this.isUploadSignLoading = false
-      }
-      catch (error)
+        this.isLoading = false
+        toast.success('Success to add sign om schedule', {
+          autoClose: 10000,
+        })
+        this.closeSignModal(true)
+      } catch (error)
       {
         console.log(error)
-        if (error.response.status == 401) this.$router.push('/login')
-        toast.error(error.response.data.message, {
+        if (error?.response?.status == 401) this.$router.push('/login')
+        toast.error(error?.response?.data?.message ?? error, {
           autoClose: 1000,
+        })
+      }
+    },
+    closeSignModal(refresh = false) {
+      this.writedSignature = null
+
+      if (!this.isLoading)
+      {
+        this.$emit('modalSignListener', {
+          visible: false,
+          refresh: refresh
         })
       }
     },
