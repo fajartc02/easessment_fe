@@ -198,44 +198,83 @@
                   <label class="mb-1">CM End Plan Date </label>
                   <input type="date" class="form-control" v-model="findingsData.cm_end_plan_date" />
                 </div>
+                <div class="mb-2">
+                  <div>
+                    <label class="mb-1">Finding image </label>
+                    <input ref="focus-theme-finding-image" type="file" class="form-control" />
+                  </div>
+                  <button class="btn btn-info my-2 text-white" :disabled="isUploadLoading" @click="
+              uploadFindingImage('focus-theme-finding-image', null)
+              ">
+                    {{ isUploadLoading ? 'Uploading' : 'Upload' }}
+                  </button>
+                  <div v-if="selectedFindingImage">
+                    <img :src="selectedFindingImage" width="300" alt="" />
+                  </div>
+                </div>
 
-                <hr />
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Start actual date</label>
+                      <input type="date" class="form-control" v-model="findingsData.cm_str_act_date" disabled />
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM End actual date</label>
+                      <input type="date" class="form-control" v-model="findingsData.cm_end_act_date" disabled />
+                    </div>
+                  </div>
+                </div>
 
-                <div class="mb-2">
-                  <label class="mb-1">CM Start actual date</label>
-                  <input type="date" class="form-control" v-model="findingsData.cm_str_act_date" disabled />
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Training date</label>
+                      <input type="date" class="form-control" v-model="findingsData.cm_training_date" disabled />
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Judge</label>
+                      <select class="form-select" v-model="findingsData.cm_judg" disabled>
+                        <option selected>Select judgement</option>
+                        <option value="true">Sudah</option>
+                        <option value="false">Belum</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM End actual date</label>
-                  <input type="date" class="form-control" v-model="findingsData.cm_end_act_date" disabled />
+
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Sign LH Red</label>
+                      <input type="file" class="form-control" disabled />
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Sign LH White</label>
+                      <input type="file" class="form-control" disabled />
+                    </div>
+                  </div>
                 </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Training date</label>
-                  <input type="date" class="form-control" v-model="findingsData.cm_training_date" disabled />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Judge</label>
-                  <select class="form-select" v-model="findingsData.cm_judg" disabled>
-                    <option selected>Select judgement</option>
-                    <option value="true">Sudah</option>
-                    <option value="false">Belum</option>
-                  </select>
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Sign LH Red</label>
-                  <input type="file" class="form-control" disabled />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Sign LH White</label>
-                  <input type="file" class="form-control" disabled />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Sign SH</label>
-                  <input type="file" class="form-control" disabled />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Comments</label>
-                  <input type="text" class="form-control" v-model="findingsData.cm_comments" disabled />
+
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Sign SH</label>
+                      <input type="file" class="form-control" disabled />
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Comments</label>
+                      <input type="text" class="form-control" v-model="findingsData.cm_comments" disabled />
+                    </div>
+                  </div>
                 </div>
               </div>
             </CAccordionBody>
@@ -488,6 +527,21 @@
                   <label class="mb-1">CM Comments</label>
                   <input type="text" class="form-control" v-model="focusThemeDetail.findings[0].cm_comments" />
                 </div>
+                <div class="mb-2">
+                  <label class="mb-1">Finding image </label> <br>
+                  <img v-if="focusThemeDetail.findings[0].finding_img" :src="focusThemeDetail.findings[0].finding_img"
+                    alt="image" class="img-fluid rounded mb-2" width="100" style="cursor: pointer"
+                    @click="showFindingImg(focusThemeDetail.findings[0].finding_img)" />
+                  <input ref="focus-theme-finding-image" type="file" class="form-control" />
+                  <button class="btn btn-info my-2 text-white" :disabled="isUploadLoading" @click="
+              uploadFindingImage('focus-theme-finding-image', focusThemeDetail.findings[0].finding_img)
+              ">
+                    {{ isUploadLoading ? 'Updating' : 'Update image' }}
+                  </button>
+                  <div v-if="selectedFindingImage">
+                    <img :src="selectedFindingImage" width="300" alt="" />
+                  </div>
+                </div>
               </div>
             </CAccordionBody>
           </CAccordionItem>
@@ -517,6 +571,7 @@
               <th>Finding desc</th>
               <th>CM Desc</th>
               <th>CM Judge</th>
+              <th>Finding Img</th>
             </thead>
             <tbody>
               <tr v-for="(findingDetail, index) in selectedFocusTheme.findings" :key="index">
@@ -527,6 +582,14 @@
                 <td>{{ findingDetail?.cm_desc }}</td>
                 <td>
                   {{ findingDetail.cm_judge == true ? 'Sudah' : 'Belum' }}
+                </td>
+                <td>
+                  <img v-if="findingDetail?.finding_img" :src="findingDetail?.finding_img" alt="image"
+                    class="img-fluid rounded" width="100" style="cursor: pointer"
+                    @click="showFindingImg(findingDetail?.finding_img)" />
+                  <div v-else>
+                    No finding img
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -543,6 +606,27 @@
         </CButton>
       </CModalFooter>
     </CModal>
+
+    <!-- finding image modal -->
+    <CModal backdrop="static" alignment="center" :visible="findingImageModal" @close="findingImageModal = false"
+      size="xl" scrollable>
+      <CModalHeader>
+        <CModalTitle>Finding Image Detail</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <img :src="selectedFindingImageToDisplay" width="100%" alt="" />
+      </CModalBody>
+      <CModalFooter>
+        <CButton color="secondary" class="text-white" @click="() => {
+              findingImageModal = false
+            }
+              ">
+          Close
+        </CButton>
+      </CModalFooter>
+    </CModal>
+
+
   </div>
 </template>
 
@@ -576,7 +660,8 @@ export default {
         FT_Line: 'line_nm',
       },
       json_data: null,
-      isLoading: false,
+      isUploadLoading: false,
+      isUploading: false,
       currentPage: 1,
       currentPageLimit: 5,
       selectedMonth: null,
@@ -584,6 +669,7 @@ export default {
       addFocusThemeModal: false,
       editFocusThemeModal: false,
       focusThemeDetailModal: false,
+      findingImageModal: false,
       factors: [],
       categories: [],
       lineData: [],
@@ -598,25 +684,26 @@ export default {
       focusThemeDetail: null,
       selectedFocusThemeID: null,
       focusThemeData: {
-        ft_desc: '',
+        ft_desc: null,
         ft_evaluation_num: 0,
-        ft_pillar: '',
-        ft_remark: '',
-        ft_line_id: '',
+        ft_pillar: null,
+        ft_remark: null,
+        ft_line_id: null,
       },
       findingsData: {
-        line_id: '',
-        finding_date: '',
-        finding_location: '',
-        finding_desc: '',
-        cm_desc: '',
-        cm_priority: '',
+        line_id: null,
+        finding_date: null,
+        finding_location: null,
+        finding_desc: null,
+        cm_desc: null,
+        cm_priority: null,
         category_id: null,
-        factor_id: '',
-        cm_pic_id: '',
-        cm_str_plan_date: '',
-        cm_end_plan_date: '',
-        cm_result_factor_id: '',
+        factor_id: null,
+        cm_pic_id: null,
+        finding_img: null,
+        cm_str_plan_date: null,
+        cm_end_plan_date: null,
+        cm_result_factor_id: null,
         cm_str_act_date: null,
         cm_end_act_date: null,
         cm_training_date: null,
@@ -626,6 +713,9 @@ export default {
         cm_sign_sh: null,
         cm_comments: null,
       },
+      selectedFindingImage: null,
+      selectedFindingImageToDisplay: null,
+      selectedFindingImageToUpdate: null,
     }
   },
   computed: {
@@ -701,19 +791,60 @@ export default {
         console.log(error)
       }
     },
-    addFocusThemeData() {
 
+    async uploadFindingImage(state, oldFindingImg) {
+      ApiService.setHeader()
+      let before_path = null
+      this.isUploadLoading = true
+
+      if (oldFindingImg !== null) {
+        before_path = oldFindingImg
+      } else {
+        before_path = null
+      }
+
+      this.$refs[state]
+      const image = this.$refs[state].files[0]
+      const formData = new FormData()
+      formData.append('before_path', before_path)
+      formData.append('dest', 'findings')
+      formData.append('attachment', image)
+
+      const uploadImage = await ApiService.post(
+        `/operational/findingCm/upload-image`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      )
+
+      if (uploadImage.data.data) {
+        toast.success('Finding image uploaded', {
+          autoClose: 700
+        })
+        this.isUploadLoading = false
+        this.selectedFindingImage = `${process.env.VUE_APP_URL}/file?path=${uploadImage.data.data}`
+        this.findingsData.finding_img = uploadImage.data.data
+        this.selectedFindingImageToUpdate = uploadImage.data.data
+      }
+
+    },
+    showFindingImg(findingImg) {
+      this.findingImageModal = true
+      this.selectedFindingImageToDisplay = findingImg
+    },
+    addFocusThemeData() {
       this.focusThemeData.ft_line_id = this.selectedLineID?.line_id
       this.findingsData.cm_result_factor_id = this.findingsData?.factor_id
       this.findingsData.line_id = this.selectedLineID?.line_id
       this.findingsData.cm_pic_id = this.selectedFindingPIC?.pic_id
 
-      if (!this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.finding_location || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date) {
+      if (!this.findingsData.finding_img || !this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.finding_location || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date) {
         toast.error('Harap isi semua field di finding', {
           autoClose: 1000
         })
-
-        console.log(this.findingsData)
       } else {
         let data = {
           ...this.focusThemeData,
@@ -725,11 +856,18 @@ export default {
     },
     async addFocusTheme(data) {
       try {
-        await this.$store.dispatch(POST_FOCUSTHEME, data).then(() => {
-          Swal.showLoading()
-          Swal.fire('Success to add focus theme data', '', 'success')
-          this.addFocusThemeModal = false
-          this.getFocusThemes()
+        await this.$store.dispatch(POST_FOCUSTHEME, data).then((res) => {
+          if (res.data.message == 'Success to POST Focus Thema') {
+            toast.success('Data added', {
+              autoClose: 1000
+            })
+            this.addFocusThemeModal = false
+            this.getFocusThemes()
+          } else {
+            toast.error('Failed to add data', {
+              autoClose: 1000
+            })
+          }
         })
       } catch (error) {
         console.log(error)
@@ -753,18 +891,20 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           ApiService.setHeader()
-          const deleteData = ApiService.delete(
+          ApiService.delete(
             `operational/focus-thema/delete/${FTID}`,
-          )
-
-          if (deleteData) {
-            Swal.fire('Data deleted!', '', 'success')
-            this.getFocusThemes()
-          } else {
-            Swal.fire('Error', '', 'warning')
-          }
-
-          Swal.fire('Data deleted!', '', 'success')
+          ).then((res) => {
+            if (res.data.message == 'Success to DELETE Focus Theme') {
+              toast.success('Data deleted', {
+                autoClose: 1000
+              })
+              this.getFocusThemes()
+            } else {
+              toast.error('Failed to delete data', {
+                autoClose: 1000
+              })
+            }
+          })
         } else if (result.isDenied) {
           Swal.fire('Canceled', '', 'info')
         }
@@ -778,7 +918,6 @@ export default {
       this.mapLinesData()
     },
     updateFocusThemeData() {
-      console.log(this.focusThemeDetail.ft_pillar)
       const updateData = {
         ft_desc: this.focusThemeDetail.ft_desc,
         ft_evaluation_num: this.focusThemeDetail.ft_evaluation_num,
@@ -828,6 +967,7 @@ export default {
           cm_sign_lh_white: null,
           cm_sign_sh: null,
           cm_comments: this.focusThemeDetail.findings[0].cm_comments,
+          finding_img: this.selectedFindingImageToUpdate,
         },
       }
 
@@ -843,11 +983,18 @@ export default {
           data,
         ).then((response) => {
           if (response.data.message == 'Success to EDIT Focuss Thema') {
-            Swal.fire('Data updated!', '', 'success')
-            this.editFocusThemeModal = false
+            toast.success('Data updated', {
+              autoClose: 1000
+            })
             this.getFocusThemes()
+            this.editFocusThemeModal = false
+            this.selectedFindingImage = null
+            this.selectedFindingImageToDisplay = null
+            this.selectedFindingImageToUpdate = null
           } else {
-            Swal.fire('Error', '', 'warning')
+            toast.success('Failed to update data', {
+              autoClose: 1000
+            })
           }
         })
 

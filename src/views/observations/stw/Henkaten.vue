@@ -73,12 +73,17 @@
               <td>{{ henkaten.henkaten_flw_safety }}</td>
               <td>{{ henkaten.henkaten_flw_quality }}</td>
               <td>
-                <button class="btn btn-danger btn-sm text-white mx-2" @click="deleteHenkaten(henkaten.henkaten_id)">
-                  Delete
-                </button>
-                <button class="btn btn-info btn-sm text-white" @click="getDetailHenkaten(index)">
-                  Edit
-                </button>
+                <div class="d-flex justify-content-center align-items-baseline">
+                  <button class="btn btn-secondary btn-sm text-white"
+                    @click="showFindingImg(henkaten.findings[0]?.finding_img)"
+                    :disabled="!henkaten.findings[0]?.finding_img">Image</button>
+                  <button class="btn btn-info btn-sm text-white mx-2 my-2" @click="getDetailHenkaten(index)">
+                    Edit
+                  </button>
+                  <button class="btn btn-danger btn-sm text-white " @click="deleteHenkaten(henkaten.henkaten_id)">
+                    Delete
+                  </button>
+                </div>
               </td>
             </tr>
             <tr v-if="getHenkatens?.length < 1">
@@ -207,43 +212,83 @@
                   <input type="date" class="form-control" v-model="findingsData.cm_end_plan_date" />
                 </div>
 
-                <hr />
+                <div class="mb-2">
+                  <div>
+                    <label class="mb-1">Finding image </label>
+                    <input ref="henkaten-finding-image" type="file" class="form-control" />
+                  </div>
+                  <button class="btn btn-info my-2 text-white" :disabled="isUploadLoading" @click="
+              uploadFindingImage('henkaten-finding-image', null)
+              ">
+                    {{ isUploadLoading ? 'Uploading' : 'Upload' }}
+                  </button>
+                  <div v-if="selectedFindingImage">
+                    <img :src="selectedFindingImage" width="300" alt="" />
+                  </div>
+                </div>
 
-                <div class="mb-2">
-                  <label class="mb-1">CM Start actual date</label>
-                  <input type="date" class="form-control" v-model="findingsData.cm_str_act_date" disabled />
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Start actual date</label>
+                      <input type="date" class="form-control" v-model="findingsData.cm_str_act_date" disabled />
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM End actual date</label>
+                      <input type="date" class="form-control" v-model="findingsData.cm_end_act_date" disabled />
+                    </div>
+                  </div>
                 </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM End actual date</label>
-                  <input type="date" class="form-control" v-model="findingsData.cm_end_act_date" disabled />
+
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Training date</label>
+                      <input type="date" class="form-control" v-model="findingsData.cm_training_date" disabled />
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Judge</label>
+                      <select class="form-select" v-model="findingsData.cm_judg" disabled>
+                        <option selected>Select judgement</option>
+                        <option value="true">Sudah</option>
+                        <option value="false">Belum</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Training date</label>
-                  <input type="date" class="form-control" v-model="findingsData.cm_training_date" disabled />
+
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Sign LH Red</label>
+                      <input type="file" class="form-control" disabled />
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Sign LH White</label>
+                      <input type="file" class="form-control" disabled />
+                    </div>
+                  </div>
                 </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Judge</label>
-                  <select class="form-select" v-model="findingsData.cm_judg" disabled>
-                    <option selected>Select judgement</option>
-                    <option value="true">Sudah</option>
-                    <option value="false">Belum</option>
-                  </select>
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Sign LH Red</label>
-                  <input type="file" class="form-control" disabled />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Sign LH White</label>
-                  <input type="file" class="form-control" disabled />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Sign SH</label>
-                  <input type="file" class="form-control" disabled />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Comments</label>
-                  <input type="text" class="form-control" v-model="findingsData.cm_comments" disabled />
+
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Sign SH</label>
+                      <input type="file" class="form-control" disabled />
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Comments</label>
+                      <input type="text" class="form-control" v-model="findingsData.cm_comments" disabled />
+                    </div>
+                  </div>
                 </div>
               </div>
             </CAccordionBody>
@@ -514,6 +559,21 @@
                   <label class="mb-1">CM Comments</label>
                   <input type="text" class="form-control" v-model="henkatenDetail.findings[0].cm_comments" />
                 </div>
+                <div class="mb-2">
+                  <label class="mb-1">Finding image </label> <br>
+                  <img v-if="henkatenDetail.findings[0].finding_img" :src="henkatenDetail.findings[0].finding_img"
+                    alt="image" class="img-fluid rounded mb-2" width="100" style="cursor: pointer"
+                    @click="showFindingImg(henkatenDetail.findings[0].finding_img)" />
+                  <input ref="henkaten-finding-image" type="file" class="form-control" />
+                  <button class="btn btn-info my-2 text-white" :disabled="isUploadLoading" @click="
+              uploadFindingImage('henkaten-finding-image', henkatenDetail.findings[0].finding_img)
+              ">
+                    {{ isUploadLoading ? 'Updating' : 'Update image' }}
+                  </button>
+                  <div v-if="selectedFindingImage">
+                    <img :src="selectedFindingImage" width="300" alt="" />
+                  </div>
+                </div>
               </div>
             </CAccordionBody>
           </CAccordionItem>
@@ -530,6 +590,26 @@
         <CButton color="primary" @click="updateHenkatenData">Update data</CButton>
       </CModalFooter>
     </CModal>
+
+    <!-- finding image modal -->
+    <CModal backdrop="static" alignment="center" :visible="findingImageModal" @close="findingImageModal = false"
+      size="xl" scrollable>
+      <CModalHeader>
+        <CModalTitle>Finding Image Detail</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <img :src="selectedFindingImageToDisplay" width="100%" alt="" />
+      </CModalBody>
+      <CModalFooter>
+        <CButton color="secondary" class="text-white" @click="() => {
+              findingImageModal = false
+            }
+              ">
+          Close
+        </CButton>
+      </CModalFooter>
+    </CModal>
+
   </div>
 </template>
 
@@ -563,11 +643,13 @@ export default {
       },
       json_data: null,
       isLoading: false,
+      isUploadLoading: false,
       currentPage: 1,
       currentPageLimit: 5,
       selectedMonth: null,
       addHenkatenModal: false,
       EditHenkatenModal: false,
+      findingImageModal: false,
       selectedLineID: null,
       selectedFindingLineID: null,
       picData: [],
@@ -602,6 +684,7 @@ export default {
         category_id: null,
         factor_id: null,
         cm_pic_id: null,
+        finding_img: null,
         cm_str_plan_date: null,
         cm_end_plan_date: null,
         cm_result_factor_id: null,
@@ -614,6 +697,9 @@ export default {
         cm_sign_sh: null,
         cm_comments: null,
       },
+      selectedFindingImage: null,
+      selectedFindingImageToDisplay: null,
+      selectedFindingImageToUpdate: null,
     }
   },
   computed: {
@@ -654,6 +740,49 @@ export default {
       })
       return data[0].text
     },
+    async uploadFindingImage(state, oldFindingImg) {
+      ApiService.setHeader()
+      let before_path = null
+      this.isUploadLoading = true
+
+      if (oldFindingImg !== null) {
+        before_path = oldFindingImg
+      } else {
+        before_path = null
+      }
+
+      this.$refs[state]
+      const image = this.$refs[state].files[0]
+      const formData = new FormData()
+      formData.append('before_path', before_path)
+      formData.append('dest', 'findings')
+      formData.append('attachment', image)
+
+      const uploadImage = await ApiService.post(
+        `/operational/findingCm/upload-image`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      )
+
+      if (uploadImage.data.data) {
+        toast.success('Finding image uploaded', {
+          autoClose: 700
+        })
+        this.isUploadLoading = false
+        this.selectedFindingImage = `${process.env.VUE_APP_URL}/file?path=${uploadImage.data.data}`
+        this.findingsData.finding_img = uploadImage.data.data
+        this.selectedFindingImageToUpdate = uploadImage.data.data
+      }
+
+    },
+    showFindingImg(findingImg) {
+      this.findingImageModal = true
+      this.selectedFindingImageToDisplay = findingImg
+    },
     addHenkatenData() {
       this.henkatenData.henkaten_line_id = this.selectedLineID.line_id
       this.henkatenData.henkaten_pic = this.selectedPIC.pic_id
@@ -665,7 +794,7 @@ export default {
       this.findingsData.line_id = this.selectedLineID.line_id
       this.findingsData.cm_pic_id = this.selectedPIC.pic_id
 
-      if (!this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.finding_location || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date) {
+      if (!this.findingsData.finding_img || !this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.finding_location || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date) {
         toast.error('Harap isi semua field di finding', {
           autoClose: 1000
         })
@@ -732,6 +861,7 @@ export default {
           cm_sign_lh_white: null,
           cm_sign_sh: null,
           cm_comments: this.henkatenDetail.findings[0].cm_comments,
+          finding_img: this.selectedFindingImageToUpdate,
         },
       }
 
@@ -812,6 +942,9 @@ export default {
             })
             this.EditHenkatenModal = false
             this.getHenkaten()
+            this.selectedFindingImage = null
+            this.selectedFindingImageToDisplay = null
+            this.selectedFindingImageToUpdate = null
           } else {
             toast.error('Failed to edit data', {
               autoClose: 1000
@@ -854,6 +987,7 @@ export default {
         }
       })
     },
+
     getDetailHenkaten(index) {
       const data = this.getHenkatens[index]
       this.selectedHenkatenID = this.getHenkatens[index].henkaten_id

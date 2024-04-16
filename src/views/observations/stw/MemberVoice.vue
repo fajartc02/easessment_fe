@@ -306,8 +306,6 @@
                     </div>
                   </div>
                 </div>
-
-
               </div>
             </CAccordionBody>
           </CAccordionItem>
@@ -372,43 +370,83 @@
                   <input type="date" class="form-control" v-model="findingsData.cm_end_plan_date" />
                 </div>
 
-                <hr />
+                <div class="mb-2">
+                  <div>
+                    <label class="mb-1">Finding image </label>
+                    <input ref="mv-finding-image" type="file" class="form-control" />
+                  </div>
+                  <button class="btn btn-info my-2 text-white" :disabled="isUploadLoading" @click="
+              uploadFindingImage('mv-finding-image', null)
+              ">
+                    {{ isUploadLoading ? 'Uploading' : 'Upload' }}
+                  </button>
+                  <div v-if="selectedFindingImage">
+                    <img :src="selectedFindingImage" width="300" alt="" />
+                  </div>
+                </div>
 
-                <div class="mb-2">
-                  <label class="mb-1">CM Start actual date</label>
-                  <input type="date" class="form-control" v-model="findingsData.cm_str_act_date" disabled />
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Start actual date</label>
+                      <input type="date" class="form-control" v-model="findingsData.cm_str_act_date" disabled />
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM End actual date</label>
+                      <input type="date" class="form-control" v-model="findingsData.cm_end_act_date" disabled />
+                    </div>
+                  </div>
                 </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM End actual date</label>
-                  <input type="date" class="form-control" v-model="findingsData.cm_end_act_date" disabled />
+
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Training date</label>
+                      <input type="date" class="form-control" v-model="findingsData.cm_training_date" disabled />
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Judge</label>
+                      <select class="form-select" v-model="findingsData.cm_judg" disabled>
+                        <option selected>Select judgement</option>
+                        <option value="true">Sudah</option>
+                        <option value="false">Belum</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Training date</label>
-                  <input type="date" class="form-control" v-model="findingsData.cm_training_date" disabled />
+
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Sign LH Red</label>
+                      <input type="file" class="form-control" disabled />
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Sign LH White</label>
+                      <input type="file" class="form-control" disabled />
+                    </div>
+                  </div>
                 </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Judge</label>
-                  <select class="form-select" v-model="findingsData.cm_judg" disabled>
-                    <option selected>Select judgement</option>
-                    <option value="true">Sudah</option>
-                    <option value="false">Belum</option>
-                  </select>
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Sign LH Red</label>
-                  <input type="file" class="form-control" disabled />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Sign LH White</label>
-                  <input type="file" class="form-control" disabled />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Sign SH</label>
-                  <input type="file" class="form-control" disabled />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">CM Comments</label>
-                  <input type="text" class="form-control" v-model="findingsData.cm_comments" disabled />
+
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Sign SH</label>
+                      <input type="file" class="form-control" disabled />
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="mb-2">
+                      <label class="mb-1">CM Comments</label>
+                      <input type="text" class="form-control" v-model="findingsData.cm_comments" disabled />
+                    </div>
+                  </div>
                 </div>
               </div>
             </CAccordionBody>
@@ -731,6 +769,21 @@
                   <label class="mb-1">CM Comments</label>
                   <input type="text" class="form-control" v-model="memberVoiceDetail.findings[0].cm_comments" />
                 </div>
+                <div class="mb-2">
+                  <label class="mb-1">Finding image </label> <br>
+                  <img v-if="memberVoiceDetail.findings[0].finding_img" :src="memberVoiceDetail.findings[0].finding_img"
+                    alt="image" class="img-fluid rounded mb-2" width="100" style="cursor: pointer"
+                    @click="showFindingImg(memberVoiceDetail.findings[0].finding_img)" />
+                  <input ref="mv-finding-image" type="file" class="form-control" />
+                  <button class="btn btn-info my-2 text-white" :disabled="isUploadLoading" @click="
+              uploadFindingImage('mv-finding-image', memberVoiceDetail.findings[0].finding_img)
+              ">
+                    {{ isUploadLoading ? 'Updating' : 'Update image' }}
+                  </button>
+                  <div v-if="selectedFindingImage">
+                    <img :src="selectedFindingImage" width="300" alt="" />
+                  </div>
+                </div>
               </div>
             </CAccordionBody>
           </CAccordionItem>
@@ -810,6 +863,7 @@
                   <th>CM judge</th>
                   <th>CM comments</th>
                   <th>Status</th>
+                  <th>Finding Img</th>
                 </thead>
                 <tbody>
                   <tr v-for="(finding, findingIndex) in detailMVData?.findings" :key="findingIndex">
@@ -823,6 +877,13 @@
                     <td>{{ finding?.cm_judg }}</td>
                     <td>{{ finding?.cm_comments }}</td>
                     <td>{{ finding?.status_finding }}</td>
+                    <td>
+                      <img v-if="finding?.finding_img" :src="finding?.finding_img" alt="image" class="img-fluid rounded"
+                        width="100" style="cursor: pointer" @click="showFindingImg(finding?.finding_img)" />
+                      <div v-else>
+                        No finding img
+                      </div>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -833,6 +894,25 @@
       </CModalBody>
       <CModalFooter>
         <CButton color="secondary" class="text-white" @click="detailMVModal = false">
+          Close
+        </CButton>
+      </CModalFooter>
+    </CModal>
+
+    <!-- Finding image modal -->
+    <CModal backdrop="static" alignment="center" :visible="findingImageModal" @close="findingImageModal = false"
+      size="xl" scrollable>
+      <CModalHeader>
+        <CModalTitle>Finding Image Detail</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <img :src="selectedFindingImageToDisplay" width="100%" alt="" />
+      </CModalBody>
+      <CModalFooter>
+        <CButton color="secondary" class="text-white" @click="() => {
+              findingImageModal = false
+            }
+              ">
           Close
         </CButton>
       </CModalFooter>
@@ -871,6 +951,7 @@ export default {
       },
       json_data: null,
       isLoading: false,
+      isUploadLoading: false,
       currentPage: 1,
       currentPageLimit: 5,
       totalWeek: 48,
@@ -879,6 +960,7 @@ export default {
       selectedFilterStartDate: '',
       selectedFilterEndDate: '',
       addMemberVoiceModal: false,
+      findingImageModal: false,
       selectedLine: null, // init and filter line state
       detailMVModal: false,
       editMVModal: false,
@@ -918,6 +1000,7 @@ export default {
         category_id: null,
         factor_id: null,
         cm_pic_id: null,
+        finding_img: null,
         cm_str_plan_date: null,
         cm_end_plan_date: null,
         cm_result_factor_id: null,
@@ -932,6 +1015,9 @@ export default {
       },
       memberVoiceDataReadyToUpload: {},
       accordionAddMVActiveKey: 1,
+      selectedFindingImage: null,
+      selectedFindingImageToDisplay: null,
+      selectedFindingImageToUpdate: null,
     }
   },
   computed: {
@@ -967,6 +1053,49 @@ export default {
       await this.mapUsersData()
       this.addMemberVoiceModal = true
     },
+    async uploadFindingImage(state, oldFindingImg) {
+      ApiService.setHeader()
+      let before_path = null
+      this.isUploadLoading = true
+
+      if (oldFindingImg !== null) {
+        before_path = oldFindingImg
+      } else {
+        before_path = null
+      }
+
+      this.$refs[state]
+      const image = this.$refs[state].files[0]
+      const formData = new FormData()
+      formData.append('before_path', before_path)
+      formData.append('dest', 'findings')
+      formData.append('attachment', image)
+
+      const uploadImage = await ApiService.post(
+        `/operational/findingCm/upload-image`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      )
+
+      if (uploadImage.data.data) {
+        toast.success('Finding image uploaded', {
+          autoClose: 700
+        })
+        this.isUploadLoading = false
+        this.selectedFindingImage = `${process.env.VUE_APP_URL}/file?path=${uploadImage.data.data}`
+        this.findingsData.finding_img = uploadImage.data.data
+        this.selectedFindingImageToUpdate = uploadImage.data.data
+      }
+
+    },
+    showFindingImg(findingImg) {
+      this.findingImageModal = true
+      this.selectedFindingImageToDisplay = findingImg
+    },
     addMemberVoiceData() {
       this.memberVoiceData.line_id = this.selectedLineID.line_id
       this.memberVoiceData.mv_pic_id = this.selectedPIC.pic_id
@@ -975,7 +1104,7 @@ export default {
       this.findingsData.cm_pic_id = this.selectedPIC.pic_id
       this.findingsData.finding_location = this.memberVoiceData.mv_location
 
-      if (!this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.finding_location || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date) {
+      if (!this.findingsData.finding_img || !this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.finding_location || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date) {
         toast.error('Harap isi semua field di finding', {
           autoClose: 1000
         })
@@ -1156,6 +1285,7 @@ export default {
           cm_sign_lh_white: null,
           cm_sign_sh: null,
           cm_comments: this.memberVoiceDetail.findings[0].cm_comments,
+          finding_img: this.selectedFindingImageToUpdate,
         },
       }
 
@@ -1176,6 +1306,9 @@ export default {
               autoClose: 1000
             })
             this.getMemberVoices()
+            this.selectedFindingImage = null
+            this.selectedFindingImageToDisplay = null
+            this.selectedFindingImageToUpdate = null
           } else {
             toast.error('Failed to update data', {
               autoClose: 1000
