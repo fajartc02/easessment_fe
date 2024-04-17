@@ -73,8 +73,9 @@
             <CFormInput :value="getOmSubSchedulesDetail?.actual_pic_nm" disabled />
             <Select2 class="form-control" placeholder="Select Actual PIC" :options="getUsersOpts" v-model="actualPic" />
             <CInputGroupText>
-              <button class="btn btn-info btn-sm text-white" @click="updateSchedule()">{{
-                isUpdateActualPic ? 'updating..' : 'update' }}</button>
+              <button class="btn btn-info btn-sm text-white" @click="updateSchedule()">
+                {{ isUpdateActualPic ? 'updating..' : 'update' }}
+              </button>
             </CInputGroupText>
           </CInputGroup>
         </div>
@@ -84,7 +85,7 @@
       <h4>Item Check</h4>
       <table class="table table-bordered">
         <thead>
-          <tr>
+          <tr class="text-center">
             <th>No</th>
             <th>Item Check</th>
             <th>Judgement</th>
@@ -95,10 +96,10 @@
         </thead>
         <tbody>
           <tr>
-            <td>1</td>
+            <td class="text-center">1</td>
             <td> {{ getOmSubSchedulesDetail?.item_check_nm }} </td>
             <td>
-              <CFormSelect v-model="judgmentId">
+              <CFormSelect v-model="judgment_id">
                 <option>Select Judgment</option>
                 <option v-for="judg in getJudgments" :key="judg.id" :value="judg.id">
                   {{ judg.text }}
@@ -106,49 +107,32 @@
               </CFormSelect>
             </td>
             <td>
-              <CFormInput v-model="itemCheckTime" />
+              <CFormInput v-model="actualDuration" />
             </td>
             <td class="text-center">
-              <button class="btn btn-info btn-sm text-white"
-                @click="saveScheduleCheck(item.judgment_id, item.actual_time, item.item_check_kanban_id)">
+              <button class="btn btn-info btn-sm text-white" @click="updateSchedule()">
                 {{ isAddCheckLoading ?
                 'Saving...' : 'Save' }}
               </button>
             </td>
             <td class="text-center">
-              <button v-if="getOmSubSchedulesDetail?.findings.length > 0" class=" btn btn-info btn-sm text-white"
-                @click="openFindingModal()">Update finding
-              </button>
-              <button v-else class=" btn btn-info btn-sm text-white" @click="openAddFindingModal()">
-                Add finding
-              </button>
+              <template v-if="isCanAddFinding">
+                <button class=" btn btn-info btn-sm text-white" @click="openFindingModal()">
+                  {{ getOmSubSchedulesDetail?.finding ? 'Update finding' : 'Add finding' }}
+                </button>
+              </template>
+              <template v-else>
+                <span class="text-muted">No Action</span>
+              </template>
+              <!-- <button v-if="getOmSubSchedulesDetail?.findings.length > 0" class=" btn btn-info btn-sm text-white"
+                @click="openFindingModal()">
+                Detail finding
+              </button> -->
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-    <!-- <div class="mt-3">
-      <h4>Finding</h4>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>No</th>
-            <th>Card No</th>
-            <th>Problem Contents / Defect</th>
-            <th>Priority</th>
-            <th>Checker Penemu</th>
-            <th>Finding</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="text-center" colspan="6">
-              No Data Found
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div> -->
     <div v-if="isUpdateActualDate || isUpdateActualPic || isLoadingGetDetail"
       class="position-absolute top-0 bottom-0 left-0 right-0 w-100 h-100"
       style="background-color: rgba(255,255,255,0.7);">
@@ -156,7 +140,9 @@
         <CSpinner aria-hidden="true" />
       </div>
     </div>
-    <ModalFormOmFinding />
+    <ModalFormOmFinding :visible="isVisibleFindingModal"
+      :loadedFinding="getOmSubSchedulesDetail?.finding ?? getOmSubSchedulesDetail"
+      @modalFormOmFindingListener="onModalFormOmFindingListener($event)" />
   </div>
 </template>
 <script>
@@ -180,9 +166,10 @@ export default {
       isUpdateActualPic: false,
       actualDate: null,
       actualPic: null,
-      judgmentId: null,
-      itemCheckTime: null,
+      actualDuration: null,
+      judgment_id: null,
       isVisibleFindingModal: false,
+      isCanAddFinding: false
     }
   },
   methods: {
@@ -226,7 +213,9 @@ export default {
 
         const data = {
           actual_date: this.actualDate,
-          actual_pic_id: this.actualPic
+          actual_pic_id: this.actualPic,
+          actual_duration: this.actualDuration,
+          judgment_id: this.judgment_id
         };
 
         ApiService.setHeader()
@@ -275,6 +264,13 @@ export default {
     openFindingModal() {
       this.isVisibleFindingModal = true
     },
+    onModalFormOmFindingListener(event) {
+      this.isVisibleFindingModal = false
+      if (event.refresh)
+      {
+        this.getSubScheduleDetail()
+      }
+    },
     customPicOptions({ text }) {
       return `${text}`
     },
@@ -293,7 +289,9 @@ export default {
   watch: {
     getOmSubSchedulesDetail: {
       handler() {
-
+        this.isCanAddFinding = this.getOmSubSchedulesDetail.is_abnormal
+        this.judgment_id = this.getOmSubSchedulesDetail.judgment_id
+        this.actualDuration = this.getOmSubSchedulesDetail.actual_duration
       }
     },
   },
@@ -304,3 +302,8 @@ export default {
   }
 }
 </script>
+<style>
+.input-group-text {
+  font-weight: bold;
+}
+</style>
