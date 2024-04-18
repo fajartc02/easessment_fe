@@ -76,9 +76,9 @@
             </td>
             <td>
               <div class="d-flex">
-                <button class="btn btn-info btn-sm mx-1 text-white" @click="editPos(obaservation.id)">
+                <!-- <button class="btn btn-info btn-sm mx-1 text-white" @click="editPos(obaservation.id)">
                   edit
-                </button>
+                </button> -->
                 <button class="btn btn-danger btn-sm text-white" @click="deletePos(obaservation.id)">
                   delete
                 </button>

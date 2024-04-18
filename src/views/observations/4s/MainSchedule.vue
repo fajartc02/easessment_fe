@@ -85,19 +85,19 @@
           </div>
         </div>
         <div v-else class="tableFixHead">
-          <table class="table table-hover" style="width: 100%" v-for="mainSchedule in newSubScheduleData"
+          <table class="table table-hover" style="width: 100%;" v-for="mainSchedule in newSubScheduleData"
             :key="mainSchedule.id">
-            <thead>
+            <thead class="bg-dark text-light">
               <tr>
                 <th colspan="40" class="text-center">
                   4S Schedule Activities ({{ mainSchedule[0]?.line_nm }} - {{ mainSchedule[0]?.group_nm }})
                 </th>
               </tr>
               <tr>
-                <th id="fixCol-1" rowspan="2">No</th>
-                <th id="fixCol-2" rowspan="2">Zona</th>
-                <th id="fixCol-3" rowspan="2">No Kanban</th>
-                <th id="fixCol-4" rowspan="2">Area</th>
+                <th id="fixCol-1" class="bg-dark" rowspan="2">No</th>
+                <th id="fixCol-2" class="bg-dark" rowspan="2">Zona</th>
+                <th id="fixCol-3" class="bg-dark" rowspan="2">No Kanban</th>
+                <th id="fixCol-4" class="bg-dark" rowspan="2">Area</th>
                 <th rowspan="2">Time</th>
                 <th rowspan="2">PIC</th>
                 <th rowspan="2">Freq</th>
@@ -110,11 +110,11 @@
             <tbody>
               <template v-if="!isLoading">
                 <tr v-for="(data, scheduleIndex) in mainSchedule" :key="scheduleIndex">
-                  <td id="fixCol-1">{{ scheduleIndex + 1 }}</td>
-                  <td id="fixCol-2" style="min-width: 100px">
+                  <td id="fixCol-1" style="background-color: white;">{{ scheduleIndex + 1 }}</td>
+                  <td id="fixCol-2" style="min-width: 100px;background-color: white;">
                     {{ data.zone_nm }}</td>
-                  <td id="fixCol-3" style="min-width: 120px">{{ data.kanban_no }}</td>
-                  <td id="fixCol-4" style="min-width: 200px">{{ data.area_nm }}</td>
+                  <td id="fixCol-3" style="min-width: 120px;background-color: white;">{{ data.kanban_no }}</td>
+                  <td id="fixCol-4" style="min-width: 200px;background-color: white;">{{ data.area_nm }}</td>
                   <td style="min-width: 50px">{{ data.standart_time }}</td>
                   <td style="min-width: 100px">
                     <div style="cursor: pointer;" v-if="data.pic_nm"
@@ -131,8 +131,8 @@
                   <td> {{ data.freq_nm }}</td>
 
                   <td v-for="(children, childrenIndex) in data?.children" :key="childrenIndex" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
-              } ${children.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''
-              } `">
+                    } ${children.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''
+                    } `">
 
                     <CDropdown variant="btn-group" v-if="!children.is_holiday && children.status == 'PLANNING'">
                       <CButton color="secondary" class="text-secondary bg-white"
@@ -172,19 +172,19 @@
               <tr v-if="newSubScheduleData && !isLoading">
                 <td colspan="7" class="text-center">Sign TL 1 </td>
                 <td v-for="children in mainSchedule[0].children" :key="children" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
-              } ${children.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''
-              } `">
+                  } ${children.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''
+                  } `">
 
                   <div class="d-flex align-items-center justify-content-center w-full">
                     <button @click="
-              openSignModal(children.tl1_sign_checker_id, 'sign_tl_1')
-              " v-if="!children.is_holiday && !children.sign_tl_1"
+                      openSignModal(children.tl1_sign_checker_id, 'sign_tl_1')
+                      " v-if="!children.is_holiday && !children.sign_tl_1"
                       class="check-wrapper-null d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-x" class="text-danger" size="sm" />
                     </button>
                     <button @click="
-              openSignModal(children.tl1_sign_checker_id, 'sign_tl_1')
-              " v-else-if="!children.is_holiday && children.sign_tl_1"
+                      openSignModal(children.tl1_sign_checker_id, 'sign_tl_1')
+                      " v-else-if="!children.is_holiday && children.sign_tl_1"
                       class="check-wrapper d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-check" class="text-black" size="sm" />
                     </button>
@@ -197,19 +197,19 @@
               <tr v-if="newSubScheduleData && !isLoading">
                 <td colspan="7" class="text-center">Sign TL 2</td>
                 <td v-for="children in mainSchedule[0].children" :key="children" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
-              } ${children.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''
-              }`">
+                  } ${children.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''
+                  }`">
 
                   <div class="d-flex align-items-center justify-content-center w-full">
                     <button @click="
-              openSignModal(children.tl2_sign_checker_id, 'sign_tl_2')
-              " v-if="!children.is_holiday && !children.sign_tl_2"
+                      openSignModal(children.tl2_sign_checker_id, 'sign_tl_2')
+                      " v-if="!children.is_holiday && !children.sign_tl_2"
                       class="check-wrapper-null d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-x" class="text-danger" size="sm" />
                     </button>
                     <button @click="
-              openSignModal(children.tl2_sign_checker_id, 'sign_tl_2')
-              " v-else-if="!children.is_holiday && children.sign_tl_2"
+                      openSignModal(children.tl2_sign_checker_id, 'sign_tl_2')
+                      " v-else-if="!children.is_holiday && children.sign_tl_2"
                       class="check-wrapper d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-check" class="text-black" size="md" />
                     </button>
@@ -222,17 +222,17 @@
               <tr v-if="signGLData && !isLoading">
                 <td colspan="7" class="text-center">Sign GL</td>
                 <td v-for="children in signGLData" :key="children" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
-              } `" :colspan="children.col_span">
+                  } `" :colspan="children.col_span">
                   <div class="d-flex align-items-center justify-content-center w-full">
                     <button @click="
-              openSignModal(children.sign_checker_id, 'sign_gl')
-              " v-if="!children.is_holiday && !children.sign"
+                      openSignModal(children.sign_checker_id, 'sign_gl')
+                      " v-if="!children.is_holiday && !children.sign"
                       class="check-wrapper-null d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-x" class="text-danger" size="md" />
                     </button>
                     <button @click="
-              openSignModal(children.sign_checker_id, 'sign_gl')
-              " v-else-if="!children.is_holiday && children.sign"
+                      openSignModal(children.sign_checker_id, 'sign_gl')
+                      " v-else-if="!children.is_holiday && children.sign"
                       class="check-wrapper d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-check" class="text-black" size="md" />
                     </button>
@@ -244,17 +244,17 @@
               <tr v-if="signSHData && !isLoading">
                 <td colspan="7" class="text-center">Sign SH</td>
                 <td class="" v-for="children in signSHData" :key="children" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
-              }`" :colspan="children.col_span">
+                  }`" :colspan="children.col_span">
                   <div class="d-flex align-items-center justify-content-center w-full">
                     <button @click="
-              openSignModal(children.sign_checker_id, 'sign_sh')
-              " v-if="!children.is_holiday && !children.sign"
+                      openSignModal(children.sign_checker_id, 'sign_sh')
+                      " v-if="!children.is_holiday && !children.sign"
                       class="check-wrapper-null d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-x" class="text-danger" size="md" />
                     </button>
                     <button @click="
-              openSignModal(children.sign_checker_id, 'sign_sh')
-              " v-else-if="!children.is_holiday && children.sign"
+                      openSignModal(children.sign_checker_id, 'sign_sh')
+                      " v-else-if="!children.is_holiday && children.sign"
                       class="check-wrapper d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-check" class="text-black" size="md" />
                     </button>
@@ -898,7 +898,6 @@ export default {
   position: sticky;
   top: 0;
   z-index: 1;
-  background-color: white;
 }
 
 #fixCol-1 {
@@ -907,7 +906,6 @@ export default {
   top: 0px;
   left: 0px;
   z-index: 3;
-  background-color: white;
 }
 
 #fixCol-2 {
@@ -915,7 +913,6 @@ export default {
   top: 0px;
   left: 37px;
   z-index: 3;
-  background-color: white;
 }
 
 #fixCol-3 {
@@ -924,7 +921,6 @@ export default {
   top: 0px;
   left: 125px;
   z-index: 3;
-  background-color: white;
 }
 
 #fixCol-4 {
@@ -932,7 +928,6 @@ export default {
   top: 0px;
   left: 220px;
   z-index: 3;
-  background-color: white;
 }
 </style>
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>

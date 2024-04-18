@@ -26,7 +26,7 @@ export default [{
         component: 'CNavItem',
         name: 'Temuan STW',
         to: '/stw/list-temuan',
-        icon: 'cil-file',
+        icon: 'cil-grid',
         is_admin: false
     },
     {
@@ -86,7 +86,7 @@ export default [{
         component: 'CNavItem',
         name: 'Temuan 4S',
         to: '/4s/temuan',
-        icon: 'cil-speedometer',
+        icon: 'cil-grid',
         is_admin: false
     },
     // {
@@ -112,51 +112,78 @@ export default [{
         component: 'CNavItem',
         name: 'Temuan OM',
         to: '/om/temuan',
-        icon: 'cil-speedometer',
+        icon: 'cil-grid',
         is_admin: false
     },
     {
         component: 'CNavTitle', // --- MASTER MENU
         name: 'Master Data',
-        is_admin: true
+        is_admin: false
     },
     {
         component: 'CNavItem',
         name: 'Kanban 4S',
         to: '/master/kanban',
         icon: 'cil-clipboard',
-        is_admin: true
+        is_admin: false
     },
     {
         component: 'CNavItem',
         name: 'Zone 4S',
         to: '/master/zone',
-        icon: 'cil-clipboard',
-        is_admin: true
+        icon: 'cil-location-pin',
+        is_admin: false
     },
     {
         component: 'CNavItem',
         name: 'Item Check Kanban OM',
         to: '/master/om-item-check-kanban',
-        icon: 'cil-clipboard',
+        icon: 'cil-settings',
+        is_admin: false
+    },
+    {
+        component: 'CNavItem',
+        name: 'Machine',
+        to: '/master/machine',
+        is_admin: false,
+        icon: 'cil-media-play',
+    },
+    {
+        component: 'CNavItem',
+        name: 'Planning Shift',
+        to: '/calendar',
+        is_admin: false,
+        icon: 'cil-calendar',
+    },
+    {
+        component: 'CNavItem',
+        name: 'Periodic Schedule',
+        is_admin: false,
+        to: '/master/periodic-schedule',
+        icon: 'cil-calendar',
+    },
+    {
+        component: 'CNavItem',
+        name: 'Users',
+        to: '/master/user',
         is_admin: true
     },
     {
         component: 'CNavGroup',
         name: 'Master STW',
         icon: 'cil-clipboard',
-        is_admin: true,
+        is_admin: false,
         items: [{
                 component: 'CNavItem',
                 name: 'Pos',
                 to: '/master/pos',
-                is_admin: true
+                is_admin: false
             },
             {
                 component: 'CNavItem',
                 name: 'Job',
                 to: '/master/job',
-                is_admin: true
+                is_admin: false
             },
         ]
     },
@@ -191,37 +218,6 @@ export default [{
                 to: '/master/line',
                 is_admin: true
                     // icon: 'cil-border-all',
-            },
-            {
-                component: 'CNavItem',
-                name: 'Machine',
-                to: '/master/machine',
-                is_admin: true
-                    // icon: 'cil-border-all',
-            },
-        ]
-    },
-    {
-        component: 'CNavGroup',
-        name: 'Commons',
-        icon: 'cil-clipboard',
-        items: [{
-                component: 'CNavItem',
-                name: 'Planning Shift',
-                to: '/calendar',
-                is_admin: true
-            },
-            {
-                component: 'CNavItem',
-                name: 'Periodic Schedule',
-                is_admin: true,
-                to: '/master/periodic-schedule',
-            },
-            {
-                component: 'CNavItem',
-                name: 'Users',
-                to: '/master/user',
-                is_admin: true
             },
         ]
     },
