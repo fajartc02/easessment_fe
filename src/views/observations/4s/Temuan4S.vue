@@ -21,20 +21,15 @@
           </div>
           <div class="col">
             <label>Zona</label>
-            <VueMultiselect v-model="selectedZoneIDFilter" :options="getZoneOpts" optionLabel="text" optionValue="id"
-              :customLabel="customLabel">
+            <VueMultiselect v-model="selectedZoneIDFilter" :options="getZoneOpts" :customLabel="customLabel"
+              @select="addFilter()">
             </VueMultiselect>
           </div>
           <div class="col">
             <label>Kanban</label>
-            <select class="form-select" v-model="selectedKanbanIDFilter" @change="addFilter()">
-              <option v-for="kanban in getKanbansOpts" :key="kanban.id" :value="kanban.id">
-                {{ kanban.text }}
-              </option>
-            </select>
-            <!-- <VueMultiselect v-model="selectedKanbanIDFilter" :options="getKanbansOpts" optionLabel="text"
-              optionValue="id">
-            </VueMultiselect> -->
+            <VueMultiselect v-model="selectedKanbanIDFilter" :options="getKanbansOpts"
+              :custom-label="customKanbanFilterOptions" @select="addFilter()">
+            </VueMultiselect>
           </div>
           <div class="col">
             <label>Freq</label>
@@ -414,7 +409,10 @@ export default {
         id: "-1",
         text: 'All'
       },
-      selectedKanbanIDFilter: -1,
+      selectedKanbanIDFilter: {
+        id: "-1",
+        text: 'All'
+      },
       selectedFreqIDFilter: -1,
       idxMonth: [
         '01',
@@ -501,6 +499,9 @@ export default {
     ]),
     zoneGetID() {
       return this.selectedZoneIDFilter.id
+    },
+    kanbanGetID() {
+      return this.selectedKanbanID.id
     }
   },
   watch: {
@@ -553,9 +554,6 @@ export default {
         this.changeOpts = changeOpts.data.data
         this.deptOpts = depts.data.data
         this.evaluationOpts = evaluation.data.data
-        // .map(item => {
-        //   item.path = this.evaluationOpts.findIndex(x => x.system_value == finding.evaluation_nm)
-        // })
       } catch (error) {
         toast.error(error.response.data.message, {
           autoClose: 1000,
@@ -568,7 +566,7 @@ export default {
     async getFindings() {
       let objQuery = {
         line_id: this.selectedLineIDFilter,
-        kanban_id: this.selectedKanbanIDFilter,
+        kanban_id: this.selectedKanbanIDFilter.id,
         zone_id: this.zoneGetID,
         freq_id: this.selectedFreqIDFilter,
       }
@@ -676,7 +674,10 @@ export default {
           id: "-1",
           text: 'All'
         }),
-        (this.selectedKanbanIDFilter = -1),
+        (this.selectedKanbanIDFilter = {
+          id: "-1",
+          text: 'All'
+        }),
         this.getFindings()
     },
 
@@ -751,6 +752,9 @@ export default {
           dateObj.bg = `bg-secondary`
         this.containerDate.push(dateObj)
       }
+    },
+    customKanbanFilterOptions({ text }) {
+      return `${text}`
     },
 
   },
