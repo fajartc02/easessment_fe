@@ -137,7 +137,23 @@
                 <td id="fixCol-3" class="px-2">{{ finding.source_category }}</td>
                 <td id="fixCol-4" class="px-2">{{ formatTheDate(finding.finding_date) }}</td>
                 <td id="fixCol-5" class="px-2">{{ finding.finding_location }}</td>
-                <td id="fixCol-6" class="px-2">{{ finding.finding_desc }}</td>
+                <td id="fixCol-6" class="px-2">
+                  <template v-if="finding.finding_desc.length > 30 && !finding.is_open">
+                    {{ finding.finding_desc.slice(0, 30) }}
+                    <span class="text-info" @click="() => {
+                      finding.finding_desc = finding.finding_desc
+                      finding.is_open = true
+                    }">...</span>
+                  </template>
+                  <template v-else-if="finding.is_open">
+                    <div style="overflow: auto;padding: 20px;">
+                      {{ finding.finding_desc }}
+                    </div>
+                  </template>
+                  <template v-else>
+                    {{ finding.finding_desc }}
+                  </template>
+                </td>
                 <td class="px-2">
                   {{ finding.cm_desc }}
                 </td>
@@ -1404,6 +1420,9 @@ export default {
 
 #fixCol-6 {
   position: sticky;
+  max-width: 300px;
+  min-width: 300px;
+  width: 300px;
   top: 0px;
   left: 370px;
   z-index: 3;
