@@ -226,10 +226,12 @@ export default {
 
         if (isActualDate)
         {
+          this.actualDate = null
           this.isUpdateActualDate = false
         }
         else
         {
+          this.actualPic = null
           this.isUpdateActualPic = false
         }
 

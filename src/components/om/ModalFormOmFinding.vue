@@ -333,6 +333,8 @@ export default {
         cm_sign_sh: this.$refs.cm_sign_sh.isEmpty() ? null : this.$refs.cm_sign_sh.save(),
       }
 
+      //console.log('form', this.form)
+
       if (this.loadedFinding?.finding_id)
       {
         await this.updateFinding()
@@ -418,6 +420,7 @@ export default {
   watch: {
     loadedFinding: {
       handler() {
+        //console.log('loadedFinding', this.loadedFinding);
         this.form = {
           finding_id: this.loadedFinding?.finding_id,
           line_id: this.loadedFinding?.line_id,

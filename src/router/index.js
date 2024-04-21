@@ -210,9 +210,9 @@ const routes = [{
             },
             {
                 path: '/om/temuan',
-                name: 'Temuan',
+                name: 'OmTemuan',
                 component: () =>
-                    import ('@/views/observations/om/Temuan.vue'),
+                    import ('@/views/observations/om/OmTemuan.vue'),
             },
             {
                 path: '/stw/member-voice',

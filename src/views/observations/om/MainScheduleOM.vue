@@ -53,7 +53,7 @@
               <div class="d-flex align-items-center">
                 <div class="bullet-cancel d-flex justify-content-center align-items-center"
                   style="width: 20px; height: 20px">
-                  <CIcon icon="cil-x" class="text-danger" size="sm" />
+                  <CIcon icon="cil-x" class="text-danger" />
                 </div>
                 <span class="mx-2">Ada Temuan Abnormally</span>
               </div>
@@ -61,10 +61,9 @@
           </div>
         </div>
       </div>
-      <ScheduleDatesOmItemCheck :mainSchedules="mainSchedules" :isLoadingMain="isLoadingMain"
-        :isLoadingSub="isLoadingSub" :yearMonth="selectedMonth" @refreshMainSchedule="getMainSchedules()"
-        @showEditDateModal="isVisibleEditDateModal = true" @showEditPicModal="isVisibleEditPicModal = true"
-        @showSignModal="onShowSignModal($event)" />
+      <ScheduleDatesOmItemCheck :yearMonth="selectedMonth"
+        @refreshMainSchedule="onRefreshMainSchedule()" @showEditDateModal="isVisibleEditDateModal = true"
+        @showEditPicModal="isVisibleEditPicModal = true" @showSignModal="onShowSignModal($event)" />
       <div class="card-footer">
         <div class="d-flex justify-content-between">
           <div>
@@ -101,7 +100,7 @@ import { GET_FREQS } from '@/store/modules/freq.module'
 import { GET_MACHINES } from '@/store/modules/machine.module'
 import {
   GET_OM_MAIN_SCHEDULES,
-  GET_OM_SUB_SCHEDULES
+  GET_OM_SUB_SCHEDULES_FILTER
 } from '@/store/modules/omSchedule.module'
 import { mapGetters } from 'vuex'
 import { toast } from 'vue3-toastify'
@@ -126,7 +125,6 @@ const defaultFilter = {
 export default {
   name: 'Main Schedule',
   components: {
-    //Loading,
     ScheduleDatesOmItemCheck,
     CustPagination,
     ModalOmSignSchedule,
@@ -146,9 +144,6 @@ export default {
       isVisibleEditDateModal: false,
       isVisibleEditPicModal: false,
       isCompleteFirstLoadMainSchedule: false,
-      isLoadingMain: false,
-      isLoadingSub: false,
-      mainSchedules: [],
     }
   },
   computed: {
@@ -166,7 +161,7 @@ export default {
         freq_id: this.selectedFreqID,
         machine: this.selectedMachineObj,
       }
-    }
+    },
   },
   watch: {
     selectedGroupID: function () {
@@ -216,85 +211,19 @@ export default {
       },
       deep: true
     },
-    getOmMainSchedules: {
-      async handler() {
-        this.mainSchedules = (this.getOmMainSchedules?.list ?? []).map((item) => {
-          item.sub_schedules = []
-          item.clearSubSchedules = []
-          item.glSigns = []
-          return item
-        })
-
-        if (this.getOmMainSchedules.list)
-        {
-          for (let i = 0; i < this.getOmMainSchedules.list.length; i++)
-          {
-            await this.getSubSchedules(this.getOmMainSchedules.list[i].om_main_schedule_id)
-          }
-        }
-      }
-    },
-    getOmSubSchedules: {
-      handler() {
-        if (!this.getOmSubSchedules) return;
-        const glSigns = this.getOmSubSchedules.sign_checker_gl || [];
-        const schedule = this.getOmSubSchedules.schedule || [];
-        const temp = [...this.mainSchedules];
-
-        schedule.forEach((sub) => {
-          const mainIndex = temp.findIndex(main => main.om_main_schedule_id === sub.om_main_schedule_id);
-          if (mainIndex !== -1)
-          {
-            const main = temp[mainIndex];
-            main.sub_schedules.push(Object.assign({}, sub));
-            main.clearSubSchedules.push(Object.assign({}, sub));
-          }
-        });
-
-
-        glSigns.forEach((sign) => {
-          const mainIndex = temp.findIndex(main => main.om_main_schedule_id === sign.om_main_schedule_id);
-          if (mainIndex !== -1)
-          {
-            const main = temp[mainIndex];
-            main.glSigns.push(Object.assign({}, sign));
-          }
-        });
-
-        console.log('====================================');
-        console.log(temp);
-        console.log('====================================');
-
-        this.mainSchedules = temp;
-      }
-    },
     subScheduleFilter(newVal, oldVal) {
-      this.isLoadingSub = true
-
       if (
         (newVal.freq_id != null && newVal.freq_id != oldVal.freq_id)
         || (newVal.machine != null && newVal.machine.id != oldVal.machine.id)
       )
       {
-
-        this.mainSchedules.forEach(main => {
-          main.sub_schedules = this.filterSubSchedules(
-            main.clearSubSchedules,
-            newVal.machine.id,
-            newVal.machine.text,
-            newVal.freq_id
-          )
-        })
+        this.$store.dispatch(GET_OM_SUB_SCHEDULES_FILTER, newVal)
       }
       else
       {
-        this.mainSchedules.forEach(main => {
-          main.sub_schedules = main.clearSubSchedules
-        })
+        this.$store.dispatch(GET_OM_SUB_SCHEDULES_FILTER, false)
       }
-
-      this.isLoadingSub = false
-    }
+    },
   },
   methods: {
     resetFilter() {
@@ -376,28 +305,6 @@ export default {
         })
       }
     },
-    async getSubSchedules(mainScheduleID) {
-      try
-      {
-        this.isLoadingSub = true
-        let objQuery = {
-          om_main_schedule_id: mainScheduleID,
-          freq_id: this.filter.freq_id,
-          machine_id: this.filter.machine_id
-        }
-
-        await this.$store.dispatch(GET_OM_SUB_SCHEDULES, objQuery)
-        this.isLoadingSub = false
-      }
-      catch (error)
-      {
-        if (error.response.status == 401) this.$router.push('/login')
-        console.log(error)
-        toast.error(error.response.data.message, {
-          autoClose: 1000,
-        })
-      }
-    },
     async onModalEditDateListener(event) {
       this.isVisibleEditDateModal = false
       if (event.refresh)
@@ -428,30 +335,9 @@ export default {
       this.filter.current_page = page;
       this.getMainSchedules()
     },
-    filterSubSchedules(
-      childSubSchedules,
-      machine_id,
-      machine_nm,
-      freq_id
-    ) {
-      //if (!childSubSchedules) return []
-
-      let res = childSubSchedules
-      if (machine_id != null && machine_id != '-1' && freq_id != null && freq_id != '-1')
-      {
-        res = childSubSchedules.filter((subSchedule) => (subSchedule.machine_id == machine_id || subSchedule.machine_nm == machine_nm) && subSchedule.freq_id == freq_id)
-      }
-      else if (machine_id != null && machine_id != '-1')
-      {
-        res = childSubSchedules.filter((subSchedule) => subSchedule.machine_id == machine_id || subSchedule.machine_nm == machine_nm)
-      }
-      else if (freq_id != null && freq_id != '-1')
-      {
-        res = childSubSchedules.filter((subSchedule) => subSchedule.freq_id == freq_id)
-      }
-
-
-      return res
+    onRefreshMainSchedule() {
+      //this.$router.go(0)
+      this.getMainSchedules()
     },
   },
 

@@ -38,6 +38,7 @@ import omItemCheck from './modules/omItemChecks.module';
 //import scheduleom from './modules/scheduleom.module';
 import omScheduleModule from './modules/omSchedule.module';
 import judgmentModule from './modules/judgment.module';
+import omFindingModule from './modules/omFinding.module';
 
 export default createStore({
     state: {
@@ -91,6 +92,8 @@ export default createStore({
         //scheduleom,
         omScheduleModule,
 
-        judgmentModule
+        judgmentModule,
+
+        omFindingModule
     },
 })

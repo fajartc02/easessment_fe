@@ -104,7 +104,7 @@ export default {
       window.addEventListener("resize", resizeCanvas(canvas));
       resizeCanvas(canvas);
 
-      if (_this.defaultUrl !== "")
+      if (_this.defaultUrl && _this.defaultUrl !== "")
       {
         _this.fromDataURL(_this.defaultUrl);
       }

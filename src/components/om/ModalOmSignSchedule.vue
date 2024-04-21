@@ -4,10 +4,10 @@
       <CModalTitle>Add Sign</CModalTitle>
     </CModalHeader>
     <CModalBody>
-      <input type="image" v-if="signCheckerData.sign" :src="signCheckerData.sign" style="width: 100%; height: 100%" />
+      <!-- <input type="image" v-if="signCheckerData.sign" :src="signCheckerData.sign" style="width: 100%; height: 100%" /> -->
       <div style="width: 100%; height: 100px; border: 1px solid #eaeaea">
-        <vueSignature ref="sign" :sigOption="option" :w="'100%'" :h="'100px'">
-        </vueSignature>
+        <CustomSignature ref="sign" :sigOption="option" :w="'100%'" :h="'100px'" :defaultUrl="signCheckerData?.sign">
+        </CustomSignature>
       </div>
     </CModalBody>
     <CModalFooter>
@@ -28,15 +28,15 @@
   </CModal>
 </template>
 <script>
-import vueSignature from 'vue-signature'
 import ApiService from '@/store/api.service'
+import CustomSignature from '@/components/CustomSignature'
 import { mapGetters } from 'vuex'
 import { toast } from 'vue3-toastify'
 
 export default {
   name: 'ModalOmAddSignSchedule',
   components: {
-    vueSignature,
+    CustomSignature
   },
   props: {
     visible: {
@@ -71,8 +71,17 @@ export default {
   },
   methods: {
     saveSignature() {
-      this.writedSignature = this.$refs.sign.save()
-      this.uploadSignature()
+      if (!this.$refs.sign.isEmpty())
+      {
+        this.writedSignature = this.$refs.sign.save()
+        this.uploadSignature()
+      }
+      else
+      {
+        toast.warning('Please write sign first', {
+          autoClose: 5000,
+        })
+      }
     },
     clearSignature() {
       this.$refs.sign.clear()
@@ -92,7 +101,8 @@ export default {
           autoClose: 10000,
         })
         this.closeSignModal(true)
-      } catch (error)
+      }
+      catch (error)
       {
         console.log(error)
         if (error?.response?.status == 401) this.$router.push('/login')

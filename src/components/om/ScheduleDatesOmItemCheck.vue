@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="card-body p-0 overflow-x-auto">
-      <div v-if="mainSchedules.length > 0" class="tableFixHead">
-        <table class="table table-hover" style="width: 100%" v-for="mainSchedule in mainSchedules"
-          :key="mainSchedule.id">
+      <div v-if="!getIsLoadingMainSchedule && getOmMainSchedules?.length > 0" class="tableFixHead">
+        <table class="table table-hover" style="width: 100%" v-for="mainSchedule in getOmMainSchedules"
+          :key="mainSchedule">
           <thead>
             <tr>
               <th colspan="40" class="text-center">
@@ -38,7 +38,7 @@
               </td>
             </tr>
             <template v-else>
-              <tr v-for="(data, scheduleIndex) in mainSchedule.sub_schedules" :key="scheduleIndex">
+              <tr v-for="(data, scheduleIndex) in mainSchedule.sub_schedules" :key="data">
                 <td id="fixCol-1">{{ scheduleIndex + 1 }}</td>
                 <td id="fixCol-2" style="min-width: 100px">{{ data.machine_nm }}</td>
                 <td id="fixCol-3" style="min-width: 160px">{{ data.item_check_nm }}</td>
@@ -57,7 +57,7 @@
                 </td>
                 <td> {{ data.standart_nm }}</td>
                 <td> {{ data.freq_nm }}</td>
-                <td v-for="(children, childrenIndex) in data?.children" :key="childrenIndex"
+                <td v-for="(children, childrenIndex) in data?.children" :key="`sch-${childrenIndex}`"
                   :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''}`">
                   <CDropdown variant="btn-group"
                     v-if="!children.is_holiday && children.status && children.status != ''">
@@ -88,13 +88,11 @@
                 <td v-for="sign in mainSchedule.sub_schedules[0].children" :key="sign"
                   :style="`${sign.is_holiday ? 'background-color: #f9fafb' : ''} ${sign.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''} `">
                   <div class="d-flex align-items-center justify-content-center w-full">
-                    <button @click="openSignModal(sign, true)"
-                      v-if="!sign.is_holiday && !sign.sign_tl"
+                    <button @click="openSignModal(sign, true)" v-if="!sign.is_holiday && !sign.sign_tl"
                       class="check-wrapper-null d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-x" class="text-danger" size="sm" />
                     </button>
-                    <button @click="openSignModal(sign, true)"
-                      v-else-if="!sign.is_holiday && sign.sign_tl"
+                    <button @click="openSignModal(sign, true)" v-else-if="!sign.is_holiday && sign.sign_tl"
                       class="check-wrapper d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-check" class="text-black" size="sm" />
                     </button>
@@ -110,13 +108,13 @@
                       openSignModal(sign, false)
                       " v-if="!sign.is_holiday && !sign.sign"
                       class="check-wrapper-null d-flex align-items-center justify-content-center">
-                      <CIcon icon="cil-x" class="text-danger" size="md" />
+                      <CIcon icon="cil-x" class="text-danger" />
                     </button>
                     <button @click="
                       openSignModal(sign, false)
                       " v-else-if="!sign.is_holiday && sign.sign"
                       class="check-wrapper d-flex align-items-center justify-content-center">
-                      <CIcon icon="cil-check" class="text-black" size="md" />
+                      <CIcon icon="cil-check" class="text-black" />
                     </button>
                   </div>
                 </td>
@@ -125,7 +123,7 @@
           </tbody>
         </table>
       </div>
-      <div v-else-if="isLoadingMain" class="text-center p-5">
+      <div v-else-if="getIsLoadingMainSchedule" class="text-center p-5">
         <CSpinner aria-hidden="true" />
       </div>
       <div v-else class="text-center p-5">
@@ -136,25 +134,17 @@
 </template>
 <script>
 import ApiService from '@/store/api.service'
-import { mapGetters } from 'vuex'
+
 import {
   GET_OM_SUB_SCHEDULES_CHILDREN_SELECTED
 } from '@/store/modules/omSchedule.module'
 import Swal from 'sweetalert2'
 import moment from 'moment'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'ScheduleDatesOmItemCheck',
   props: {
-    mainSchedules: {
-      type: Array,
-    },
-    isLoadingMain: {
-      type: Boolean,
-    },
-    isLoadingSub: {
-      type: Boolean,
-    },
     yearMonth: {
       type: String,
     }
@@ -164,18 +154,19 @@ export default {
   },
   data() {
     return {
+
     }
   },
   async mounted() {
 
   },
   watch: {
-
   },
   computed: {
     ...mapGetters([
       'getOmMainSchedules',
-      'getOmSubSchedules',
+      'getIsLoadingMainSchedule',
+      'getIsLoadingSubSchedule'
     ]),
     getDateThisMonth() {
       if (this.yearMonth)
@@ -189,7 +180,15 @@ export default {
     },
     getMonthStr() {
       const monthStr = ['January', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
-      return monthStr[+this.yearMonth.split('-')[1] - 1]
+      if (this.yearMonth)
+      {
+        return monthStr[+this.yearMonth.split('-')[1] - 1]
+      }
+
+      return monthStr[moment().format('MM')]
+    },
+    isLoadingSub() {
+      return typeof this.getIsLoadingSubSchedule == 'boolean' ? this.getIsLoadingSubSchedule : this.getIsLoadingSubSchedule.loading
     }
   },
   methods: {
@@ -201,11 +200,11 @@ export default {
         showCancelButton: true,
         confirmButtonText: 'Sure',
         denyButtonText: `No`,
-      }).then((result) => {
+      }).then(async (result) => {
         if (result.isConfirmed)
         {
           ApiService.setHeader()
-          const deleteData = ApiService.delete(`operational/om/sub-schedule/delete/${subScheduleID}`)
+          const deleteData = await ApiService.delete(`operational/om/sub-schedule/delete/${subScheduleID}`)
 
           if (deleteData)
           {
@@ -243,14 +242,14 @@ export default {
       this.$store.dispatch(GET_OM_SUB_SCHEDULES_CHILDREN_SELECTED, res)
       this.$emit('showEditPicModal', true)
     },
-    openSignModal(sign, isTl){
+    openSignModal(sign, isTl) {
       this.$emit('showSignModal', {
         type: isTl ? 'SIGN_TL' : 'SIGN GL',
         date: isTl ? sign.date : sign.start_date,
         sign: isTl ? sign.sign_tl : sign.sign,
         sign_checker_id: isTl ? sign.tl_sign_checker_id : sign.sign_checker_id,
       })
-    }
+    },
   },
 }
 </script>
