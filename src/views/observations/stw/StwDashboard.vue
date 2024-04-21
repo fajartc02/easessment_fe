@@ -195,7 +195,7 @@ export default {
       isLoading: false,
       isRedShiftLoading: false,
       currentPage: 1,
-      currentPageLimit: 5,
+      currentPageLimit: 100,
       selectedMonth: null,
       selectedFilterStartDate: '',
       selectedFilterEndDate: '',
