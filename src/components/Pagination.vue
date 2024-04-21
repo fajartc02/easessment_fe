@@ -10,23 +10,25 @@
         </select>
       </div>
       <div class="overflow-auto">
-        <label class="mx-2">Page {{ totalPage }}</label>
+        <label class="mx-2">Page {{ currentPage }}</label>
         <nav aria-label="Page navigation example" class="mt-1 px-2">
           <ul class="pagination">
             <li class="page-item">
-              <button class="page-link text-black" :style="`${totalPage == 1 ? 'background-color: #fff;' : ''}`"
-                :disabled="totalPage == 1" @click="onPageChangeClick(-1)">
+              <button class="page-link text-black" :disabled="totalPage == 1 || currentPage == 1"
+                :style="`${totalPage == 1 ? 'background-color: #fff;' : ''}`" @click="onPageChangeClick(-1, 'prev')">
                 Prev
               </button>
             </li>
             <li v-for="n in totalPage" :key="n" class="page-item">
-              <button class="page-link" @click="onPageChangeClick(-1)">
+              <button class="page-link" @click="onPageChangeClick(n, 'fromnumber')" :disabled="n == currentPage"
+                :style="`${n == currentPage ? 'background-color: #eaeaea;' : ''}`">
                 {{ n }}
               </button>
             </li>
             <li class="page-item">
               <button class="page-link text-black" :style="`${totalPage == 1 ? 'background-color: #fff;' : ''}`"
-                :disabled="totalPage == 1" @click="onPageChangeClick(1)">
+                :disabled="totalPage == 1 || totalPage == undefined || currentPage == totalPage"
+                @click="onPageChangeClick(1, 'next')">
                 Next
               </button>
             </li>
@@ -118,8 +120,8 @@ export default {
     },
   },
   methods: {
-    onPageChangeClick(val) {
-      this.$emit('changePage', val)
+    onPageChangeClick(page, type) {
+      this.$emit('changePage', page, type)
     },
     onPageChangeLimitClick() {
       this.$emit('changeLimit', this.selectedLimit)

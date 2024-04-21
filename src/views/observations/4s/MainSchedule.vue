@@ -17,19 +17,15 @@
           </div>
           <div class="col">
             <label>Zona</label>
-            <select class="form-select" v-model="selectedZoneID" @change="addFilter()">
-              <option v-for="zone in getZoneOpts" :key="zone.id" :value="zone.id">
-                {{ zone.text }}
-              </option>
-            </select>
+            <VueMultiselect v-model="selectedZoneID" :options="getZoneOpts" :customLabel="customLabel"
+              @select="addFilter()">
+            </VueMultiselect>
           </div>
           <div class="col">
             <label>Kanban</label>
-            <select class="form-select" v-model="selectedKanbanID" @change="addFilter()">
-              <option v-for="kanban in getKanbansOpts" :key="kanban.id" :value="kanban.id">
-                {{ kanban.text }}
-              </option>
-            </select>
+            <VueMultiselect v-model="selectedKanbanID" :options="getKanbansOpts" :custom-label="customLabel"
+              @select="addFilter()">
+            </VueMultiselect>
           </div>
           <div class="col">
             <label>Freq</label>
@@ -436,8 +432,14 @@ export default {
       selectedMonth: null,
       selectedLineID: null,
       selectedGroupID: "-1",
-      selectedZoneID: "-1",
-      selectedKanbanID: "-1",
+      selectedZoneID: {
+        id: "-1",
+        text: 'All'
+      },
+      selectedKanbanID: {
+        id: "-1",
+        text: 'All'
+      },
       selectedFreqID: "-1",
       idxMonth: [
         '01',
@@ -488,9 +490,6 @@ export default {
       newSubScheduleData: [],
       mainSubScheduleID: []
     }
-  },
-  updated() {
-    console.log(this.newSubScheduleData)
   },
   computed: {
     ...mapGetters([
@@ -551,8 +550,8 @@ export default {
       let objQuery = {
         main_schedule_id: mainScheduleID,
         line_id: this.selectedLineID,
-        kanban_id: this.selectedKanbanID,
-        zone_id: this.selectedZoneID,
+        kanban_id: this.selectedKanbanID.id,
+        zone_id: this.selectedZoneID.id,
         freq_id: this.selectedFreqID,
         month_year_num: this.selectedMonth,
       }
@@ -643,8 +642,14 @@ export default {
       this.selectedLineID = "-1"
       this.selectedFreqID = "-1"
       this.selectedGroupID = "-1"
-      this.selectedZoneID = "-1"
-      this.selectedKanbanID = "-1"
+      this.selectedZoneID = {
+        id: "-1",
+        text: 'All'
+      }
+      this.selectedKanbanID = {
+        id: "-1",
+        text: 'All'
+      }
       this.getSchedules()
     },
 
@@ -819,6 +824,9 @@ export default {
       this.editDataModal = true
       this.selectedSubScheduleID = subScheduleID
       this.mapUsersData()
+    },
+    customLabel(value) {
+      return `${value.text}`
     },
   },
 

@@ -21,20 +21,15 @@
           </div>
           <div class="col">
             <label>Zona</label>
-            <VueMultiselect v-model="selectedZoneIDFilter" :options="getZoneOpts" optionLabel="text" optionValue="id"
-              :customLabel="customLabel">
+            <VueMultiselect v-model="selectedZoneIDFilter" :options="getZoneOpts" :customLabel="customLabel"
+              @select="addFilter()">
             </VueMultiselect>
           </div>
           <div class="col">
             <label>Kanban</label>
-            <select class="form-select" v-model="selectedKanbanIDFilter" @change="addFilter()">
-              <option v-for="kanban in getKanbansOpts" :key="kanban.id" :value="kanban.id">
-                {{ kanban.text }}
-              </option>
-            </select>
-            <!-- <VueMultiselect v-model="selectedKanbanIDFilter" :options="getKanbansOpts" optionLabel="text"
-              optionValue="id">
-            </VueMultiselect> -->
+            <VueMultiselect v-model="selectedKanbanIDFilter" :options="getKanbansOpts"
+              :custom-label="customKanbanFilterOptions" @select="addFilter()">
+            </VueMultiselect>
           </div>
           <div class="col">
             <label>Freq</label>
@@ -414,7 +409,10 @@ export default {
         id: "-1",
         text: 'All'
       },
-      selectedKanbanIDFilter: -1,
+      selectedKanbanIDFilter: {
+        id: "-1",
+        text: 'All'
+      },
       selectedFreqIDFilter: -1,
       idxMonth: [
         '01',
@@ -484,7 +482,7 @@ export default {
       evaluationName: null,
       selectedScheduleItemCheckKanbanID: null,
       selectedFindingID: null,
-      currentPage: 1,
+      currentPage: 0,
       totalPage: 0,
       currentPageLimit: 5,
     }
@@ -501,6 +499,9 @@ export default {
     ]),
     zoneGetID() {
       return this.selectedZoneIDFilter.id
+    },
+    kanbanGetID() {
+      return this.selectedKanbanID.id
     }
   },
   watch: {
@@ -520,13 +521,20 @@ export default {
     customLabel(value) {
       return `${value.text}`
     },
-    onPageChange(page) {
-      if (page == -1) {
+    onPageChange(page, type) {
+      if (type == 'prev') {
         this.currentPage = this.currentPage - 1
-        this.getFindings()
-      } else {
+        this.getFindingsFunc()
+      }
+
+      if (type == 'next') {
         this.currentPage = this.currentPage + 1
-        this.getFindings()
+        this.getFindingsFunc()
+      }
+
+      if (type == 'fromnumber') {
+        this.currentPage = page
+        this.getFindingsFunc()
       }
     },
     onPageChangeLimit(limit) {
@@ -546,9 +554,6 @@ export default {
         this.changeOpts = changeOpts.data.data
         this.deptOpts = depts.data.data
         this.evaluationOpts = evaluation.data.data
-        // .map(item => {
-        //   item.path = this.evaluationOpts.findIndex(x => x.system_value == finding.evaluation_nm)
-        // })
       } catch (error) {
         toast.error(error.response.data.message, {
           autoClose: 1000,
@@ -561,18 +566,14 @@ export default {
     async getFindings() {
       let objQuery = {
         line_id: this.selectedLineIDFilter,
-        kanban_id: this.selectedKanbanIDFilter,
+        kanban_id: this.selectedKanbanIDFilter.id,
         zone_id: this.zoneGetID,
         freq_id: this.selectedFreqIDFilter,
       }
       await this.$store.dispatch(GET_4S_FINDINGS, objQuery).then((res) => {
         this.findingList = res.list
         this.totalPage = res.total_page
-        // if (res) {
-        //   this.isLoading = false
-        // } else {
-        //   this.isLoading = false
-        // }
+        this.currentPage = res.current_page
       })
     },
     openEditFindingModal(finding) {
@@ -674,7 +675,10 @@ export default {
           id: "-1",
           text: 'All'
         }),
-        (this.selectedKanbanIDFilter = -1),
+        (this.selectedKanbanIDFilter = {
+          id: "-1",
+          text: 'All'
+        }),
         this.getFindings()
     },
 
@@ -749,6 +753,9 @@ export default {
           dateObj.bg = `bg-secondary`
         this.containerDate.push(dateObj)
       }
+    },
+    customKanbanFilterOptions({ text }) {
+      return `${text}`
     },
 
   },
