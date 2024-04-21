@@ -9,10 +9,15 @@ const routes = [{
         component: DefaultLayout,
         redirect: '/',
         children: [{
-                path: '/pm-dashboard',
-                name: 'PM Dashboard',
+                path: '/',
+                name: 'Dashboard',
                 component: () =>
                     import ('@/views/dashboard/Dashboard.vue'),
+            }, {
+                path: '/today-activities',
+                name: 'TodayActivities',
+                component: () =>
+                    import ('@/views/dashboard/TodayActivities.vue'),
             }, {
                 path: '/calendar',
                 name: 'CalendarPlanning',

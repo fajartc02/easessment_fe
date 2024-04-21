@@ -10,6 +10,14 @@ export default [{
         icon: 'cil-speedometer',
         is_admin: false
     },
+    //
+    {
+        component: 'CNavItem',
+        name: 'Today Activities',
+        to: '/today-activities',
+        icon: 'cil-calendar',
+        is_admin: false
+    },
     {
         component: 'CNavTitle', // --- HISTORY MENU
         name: 'STW',
@@ -166,7 +174,8 @@ export default [{
         component: 'CNavItem',
         name: 'Users',
         to: '/master/user',
-        is_admin: true
+        is_admin: true,
+        icon: 'cil-user',
     },
     {
         component: 'CNavGroup',
