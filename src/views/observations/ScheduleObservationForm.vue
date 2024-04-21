@@ -40,6 +40,8 @@
       </CInputGroup>
       <CInputGroup class="mb-3">
         <CInputGroupText>Petugas</CInputGroupText>
+        <!-- <Select2 v-model="checkers" class="form-control" :options="getUsersOptsWithoutAll" :multiple="true"
+          :disabled="selectedLine == -1" /> -->
         <treeselect :disabled="selectedLine == -1" class="w-50" v-model="checkers" :multiple="true"
           :options="getUsersTreeselect" />
       </CInputGroup>
@@ -72,10 +74,8 @@ import { GET_GROUP } from '@/store/modules/group.module'
 import { mapGetters } from 'vuex'
 
 // import formatDate from '@/functions/formatDate'
-
-import Treeselect from 'vue3-treeselect'
-
 import 'vue3-treeselect/dist/vue3-treeselect.css'
+import Treeselect from 'vue3-treeselect'
 import moment from 'moment'
 
 import Swal from 'sweetalert2'
@@ -92,9 +92,12 @@ export default {
         member_nm: null,
         plan_check_dt: moment(new Date()).format('YYYY-MM-DD')
       },
-      checkers: null,
+      checkers: [],
       isUpdate: false
     }
+  },
+  components: {
+    Treeselect
   },
   watch: {
     selectedLine: async function () {
@@ -121,15 +124,13 @@ export default {
       let observation = this.observationSchedule[0]
       if (observation?.checkers.length > 0) {
         this.checkers = await observation.checkers.map(checker => {
+          checker.label = checker.checker_nm
           return checker.checker_nm
         })
       }
 
     }
 
-  },
-  components: {
-    Treeselect
   },
   computed: {
     ...mapGetters([
