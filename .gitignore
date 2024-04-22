@@ -8,6 +8,8 @@ tests/e2e/reports/
 .env.*.local
 *sandbox*.*
 *copy*.*
+/dist copy
+/dist_dev
 
 # dependencies
 /node_modules
