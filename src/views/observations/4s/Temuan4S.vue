@@ -21,15 +21,12 @@
           </div>
           <div class="col">
             <label>Zona</label>
-            <VueMultiselect v-model="selectedZoneIDFilter" :options="getZoneOpts" :customLabel="customLabel"
-              @select="addFilter()">
-            </VueMultiselect>
+            <Select2 class="form-control" v-model="selectedZoneIDFilter" :options="getZoneOpts" @select="addFilter()" />
           </div>
           <div class="col">
             <label>Kanban</label>
-            <VueMultiselect v-model="selectedKanbanIDFilter" :options="getKanbansOpts"
-              :custom-label="customKanbanFilterOptions" @select="addFilter()">
-            </VueMultiselect>
+            <Select2 class="form-control" v-model="selectedKanbanIDFilter" :options="getKanbansOpts"
+              @select="addFilter()" />
           </div>
           <div class="col">
             <label>Freq</label>
@@ -405,14 +402,8 @@ export default {
       selectedMonth: null,
       selectedLineIDFilter: null,
       selectedGroupIDFilter: -1,
-      selectedZoneIDFilter: {
-        id: "-1",
-        text: 'All'
-      },
-      selectedKanbanIDFilter: {
-        id: "-1",
-        text: 'All'
-      },
+      selectedZoneIDFilter: "-1",
+      selectedKanbanIDFilter: "-1",
       selectedFreqIDFilter: -1,
       idxMonth: [
         '01',
@@ -486,6 +477,9 @@ export default {
       totalPage: 0,
       currentPageLimit: 5,
     }
+  },
+  updated() {
+    console.log(this.getZoneOpts)
   },
   computed: {
     ...mapGetters([
@@ -566,7 +560,7 @@ export default {
     async getFindings() {
       let objQuery = {
         line_id: this.selectedLineIDFilter,
-        kanban_id: this.selectedKanbanIDFilter.id,
+        kanban_id: this.selectedKanbanIDFilter,
         zone_id: this.zoneGetID,
         freq_id: this.selectedFreqIDFilter,
       }
@@ -665,20 +659,13 @@ export default {
 
     async addFilter() {
       await this.getFindings()
-      await this.getZone()
     },
     resetFilter() {
-      ; (this.selectedLineIDFilter = -1),
+      (this.selectedLineIDFilter = -1),
         (this.selectedFreqIDFilter = -1),
         (this.selectedGroupIDFilter = -1),
-        (this.selectedZoneIDFilter = {
-          id: "-1",
-          text: 'All'
-        }),
-        (this.selectedKanbanIDFilter = {
-          id: "-1",
-          text: 'All'
-        }),
+        this.selectedZoneIDFilter = "-1"
+      this.selectedKanbanIDFilter = "-1",
         this.getFindings()
     },
 
@@ -772,10 +759,6 @@ export default {
     }
     await this.getGroup()
     await this.getZone()
-    this.selectedZoneIDFilter = {
-      id: "-1",
-      text: 'All'
-    }
     await this.getKanban()
     await this.getFreq()
     await this.getUsers()
