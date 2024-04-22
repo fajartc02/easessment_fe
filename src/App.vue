@@ -8,6 +8,6 @@
 
 thead th {
   background-color: #4F5D73 !important;
-  color: white;
+  color: white !important;
 }
 </style>

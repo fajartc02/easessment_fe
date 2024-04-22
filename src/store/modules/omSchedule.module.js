@@ -94,13 +94,12 @@ const actions = {
         return item
       })
 
+      commit(SET_OM_MAIN_SCHEDULES, list)
+
       if (list.length > 0)
       {
         for (let i = 0; i < list.length; i++)
         {
-          console.log('====================================');
-          console.log('list sub before', list[i].sub_schedules);
-          console.log('====================================');
           commit(SET_IS_LOADING_SUB_SCHEDULE, {
             om_main_schedule_id: list[i].om_main_schedule_id,
             loading: true
@@ -122,10 +121,6 @@ const actions = {
             om_main_schedule_id: list[i].om_main_schedule_id,
             loading: false
           })
-
-          console.log('====================================');
-          console.log('list sub after', list[i].sub_schedules);
-          console.log('====================================');
         }
       }
 
