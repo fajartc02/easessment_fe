@@ -58,9 +58,8 @@
                 <td> {{ data.standart_nm }}</td>
                 <td> {{ data.freq_nm }}</td>
                 <td v-for="(children, childrenIndex) in data?.children" :key="`sch-${childrenIndex}`"
-                  :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''}`">
-                  <CDropdown variant="btn-group"
-                    v-if="!children.is_holiday && children.status && children.status != ''">
+                  :style="`${children.is_holiday ? 'background-color: #AEAEAE' : ''}`">
+                  <CDropdown variant="btn-group" v-if="children.status && children.status != ''">
                     <CButton color="secondary" class="text-secondary bg-white"
                       :class="{ 'py-2 px-2': children.status == 'PROBLEM' }" @click="addScheduleCheck(data, children)">
                       <div v-if="children.status == 'PLANNING'" class="bullet"></div>
