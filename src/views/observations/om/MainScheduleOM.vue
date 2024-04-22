@@ -61,9 +61,9 @@
           </div>
         </div>
       </div>
-      <ScheduleDatesOmItemCheck :yearMonth="selectedMonth"
-        @refreshMainSchedule="onRefreshMainSchedule()" @showEditDateModal="isVisibleEditDateModal = true"
-        @showEditPicModal="isVisibleEditPicModal = true" @showSignModal="onShowSignModal($event)" />
+      <ScheduleDatesOmItemCheck :yearMonth="selectedMonth" @refreshMainSchedule="onRefreshMainSchedule()"
+        @showEditDateModal="isVisibleEditDateModal = true" @showEditPicModal="isVisibleEditPicModal = true"
+        @showSignModal="onShowSignModal($event)" />
       <div class="card-footer">
         <div class="d-flex justify-content-between">
           <div>
@@ -172,8 +172,7 @@ export default {
         ...this.filter,
         line_id: this.selectedLineID
       }
-      if (this.isCompleteFirstLoadMainSchedule)
-      {
+      if (this.isCompleteFirstLoadMainSchedule) {
         this.getMainSchedules()
       }
     },
@@ -195,8 +194,7 @@ export default {
         ...this.filter,
         yearMonth: this.selectedMonth
       }
-      if (this.isCompleteFirstLoadMainSchedule)
-      {
+      if (this.isCompleteFirstLoadMainSchedule) {
         this.getMainSchedules()
       }
     },
@@ -215,12 +213,10 @@ export default {
       if (
         (newVal.freq_id != null && newVal.freq_id != oldVal.freq_id)
         || (newVal.machine != null && newVal.machine.id != oldVal.machine.id)
-      )
-      {
+      ) {
         this.$store.dispatch(GET_OM_SUB_SCHEDULES_FILTER, newVal)
       }
-      else
-      {
+      else {
         this.$store.dispatch(GET_OM_SUB_SCHEDULES_FILTER, false)
       }
     },
@@ -234,11 +230,9 @@ export default {
       this.filter = defaultFilter
     },
     async getLines() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_LINES)
-      } catch (error)
-      {
+      } catch (error) {
         console.log(error)
         if (error?.response?.status == 401) this.$router.push('/login')
         toast.error(error.response.data.message, {
@@ -247,11 +241,9 @@ export default {
       }
     },
     async getGroup() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_GROUP)
-      } catch (error)
-      {
+      } catch (error) {
         console.log(error)
         if (error?.response?.status == 401) this.$router.push('/login')
         toast.error(error.response.data.message, {
@@ -260,11 +252,9 @@ export default {
       }
     },
     async getFreq() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_FREQS)
-      } catch (error)
-      {
+      } catch (error) {
         console.log(error)
         if (error?.response?.status == 401) this.$router.push('/login')
         toast.error(error.response.data.message, {
@@ -273,11 +263,9 @@ export default {
       }
     },
     async getMachines() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_MACHINES, { line_id: this.filter.line_id })
-      } catch (error)
-      {
+      } catch (error) {
         console.log(error)
         if (error?.response?.status == 401) this.$router.push('/login')
         toast.error(error.response.data.message, {
@@ -286,8 +274,7 @@ export default {
       }
     },
     async getMainSchedules() {
-      try
-      {
+      try {
         let objQuery = {
           month_year_num: this.filter.yearMonth,
           line_id: this.filter.line_id,
@@ -296,8 +283,7 @@ export default {
         }
         await this.$store.dispatch(GET_OM_MAIN_SCHEDULES, objQuery)
       }
-      catch (error)
-      {
+      catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
         toast.error(error.response.data.message, {
@@ -307,23 +293,20 @@ export default {
     },
     async onModalEditDateListener(event) {
       this.isVisibleEditDateModal = false
-      if (event.refresh)
-      {
+      if (event.refresh) {
         this.getMainSchedules()
       }
     },
     onModalEditPicListener(event) {
       this.isVisibleEditPicModal = false
-      if (event.refresh)
-      {
+      if (event.refresh) {
         this.getMainSchedules()
       }
     },
     onModalSignListener(event) {
       this.isVisibleSignModal = false
       this.selectedSignChecker = null
-      if (event.refresh)
-      {
+      if (event.refresh) {
         this.getMainSchedules()
       }
     },
@@ -350,8 +333,7 @@ export default {
     const date = moment().format('YYYY-MM-DD').split('-')
     this.selectedMonth = `${date[0]}-${date[1]}`
 
-    if (localStorage.getItem('line_id'))
-    {
+    if (localStorage.getItem('line_id')) {
       this.selectedLineID = localStorage.getItem('line_id')
     }
 
