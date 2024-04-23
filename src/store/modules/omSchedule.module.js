@@ -78,7 +78,7 @@ const getters = {
 };
 
 const actions = {
-  async [GET_OM_MAIN_SCHEDULES]({ commit }, query) {
+  async [GET_OM_MAIN_SCHEDULES]({ dispatch, commit }, query) {
     commit(SET_IS_LOADING_MAIN_SCHEDULE, true)
     ApiService.setHeader()
     const mainScheduleRequest = await ApiService.query("operational/om/main-schedule", query)
@@ -125,6 +125,18 @@ const actions = {
       }
 
       commit(SET_OM_MAIN_SCHEDULES, list)
+
+      if (
+        (query.freq_id || query.machine)
+        && (query.freq_id != null || query.machine?.id != null)
+        && (query.freq_id != '-1' || query.machine?.id != '-1')
+      )
+      {
+        dispatch(GET_OM_SUB_SCHEDULES_FILTER, {
+          freq_id: query.freq_id,
+          machine: query.machine
+        })
+      }
 
       // THIS COMMIT FROM pagination.module.js
       if (mainScheduleResponse.data.limit) commit(SET_LIMIT, mainScheduleResponse.data.limit)

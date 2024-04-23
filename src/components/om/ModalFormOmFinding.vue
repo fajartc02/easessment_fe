@@ -420,7 +420,7 @@ export default {
   watch: {
     loadedFinding: {
       handler() {
-        //console.log('loadedFinding', this.loadedFinding);
+        console.log('loadedFinding', this.loadedFinding);
         this.form = {
           finding_id: this.loadedFinding?.finding_id,
           line_id: this.loadedFinding?.line_id,
@@ -450,6 +450,10 @@ export default {
             text: this.loadedFinding?.finding_pic_nm,
           }
         }
+        else
+        {
+          this.selectedFindingPic = null
+        }
 
         if (this.loadedFinding?.actual_pic_id)
         {
@@ -457,6 +461,10 @@ export default {
             id: this.loadedFinding?.actual_pic_id,
             text: this.loadedFinding?.actual_pic_nm,
           }
+        }
+        else
+        {
+          this.selectedActualPic = null
         }
       }
     }

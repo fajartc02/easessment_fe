@@ -165,6 +165,12 @@
                     <input v-if="finding.finding_sign_lh" type="image" :src="finding.finding_sign_lh" alt=""
                       width="200" />
                   </td>
+                  <td>
+                    {{ finding.plan_cm_desc }}
+                  </td>
+                  <td class="text-center">
+                    {{ finding.dept }}
+                  </td>
                   <td v-for="item in totalDate" :key="item.idx" style="min-width: 30px">
                     <div v-if="item == finding.week_plan"
                       style="width: 20px; height: 20px; border: 2px dotted #64748b; background-color: #bbf7d0">
@@ -174,7 +180,7 @@
                     </div>
                   </td>
                   <td class="text-center align-middle">
-                    <img :src="progressNumImg(finding.progress_num)" :alt="progressNumImg(finding.progress_num)"
+                    <img v-if="finding.progress_num - 1 > 0" :src="progressNumImg(finding.progress_num)" :alt="progressNumImg(finding.progress_num)"
                       width="30" height="30">
                   </td>
                   <td class="text-center align-middle">
@@ -228,7 +234,7 @@ export default {
   },
   data() {
     return {
-      totalDate: 50,
+      totalDate: 48,
       priorities: null,
     }
   },
@@ -273,7 +279,7 @@ export default {
           if (deleteData)
           {
             Swal.fire('Data deleted!', '', 'success')
-            this.getFindings()
+            this.$emit('refreshDeleted', true)
           } else
           {
             Swal.fire('Error', '', 'warning')
