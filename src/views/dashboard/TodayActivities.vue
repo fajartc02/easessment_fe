@@ -80,13 +80,13 @@
                 <div class="card p-2" style="border-left: 5px solid cyan;">
                   <div class="d-flex flex-row justify-content-between align-items-center">
                     <div class="d-flex flex-column">
-                      Pos: {{ item.pos_nm }} |
-                      Member: {{ item.member_nm }} |
-                      Group: {{ item.group_nm }}
+                      Line: {{ item.line_nm }} |
+                      Area: {{ item.area_nm }}
                     </div>
                     <div class="d-flex flex-column">
+                      <!-- /4s/schedule-check/b7e6f2b1-ab08-4090-a1d6-7294fb79b6bd/63e99f7d-9ebe-411d-a9e2-b8f866382fc9 -->
                       <button class="btn btn-sm btn-primary"
-                        @click="$router.push(`/observation/${item.observation_id}`)">Check</button>
+                        @click="$router.push(`/4s/schedule-check/${item.main_schedule_id}/${item.sub_schedule_id}`)">Check</button>
                     </div>
                   </div>
                 </div>
@@ -115,13 +115,13 @@
                 <div class="card p-2" style="border-left: 5px solid cyan;">
                   <div class="d-flex flex-row justify-content-between align-items-center">
                     <div class="d-flex flex-column">
-                      Pos: {{ item.pos_nm }} |
-                      Member: {{ item.member_nm }} |
-                      Group: {{ item.group_nm }}
+                      Line: {{ item.line_nm }} |
+                      M/C: {{ item.machine_nm }} |
+                      Itemcheck: {{ item.item_check_nm }}
                     </div>
                     <div class="d-flex flex-column">
                       <button class="btn btn-sm btn-primary"
-                        @click="$router.push(`/observation/${item.observation_id}`)">Check</button>
+                        @click="$router.push(`/om/schedule-detail/${item.om_main_schedule_id}/${item.om_sub_schedule_id}`)">Check</button>
                     </div>
                   </div>
                 </div>
@@ -256,6 +256,8 @@ export default {
     filter: {
       handler() {
         this.getSTWData()
+        this.get4SData()
+        this.getOMData()
       },
       deep: true
     }
@@ -314,6 +316,32 @@ export default {
         this.isLoading = false
         toast.error(error.response.data.message)
       }
+    },
+    async get4SData() {
+      try {
+        this.isLoading = true
+        let { data } = await ApiService.query(`/operational/4s/sub-schedule/today`, this.filter)
+        // /operational/4s/sub-schedule/today?date=2024-04-23
+        console.log(data);
+        this.data4S = data.data ?? []
+        this.isLoading = false
+      } catch (error) {
+        this.isLoading = false
+        toast.error(error.response.data.message)
+      }
+    },
+    async getOMData() {
+      try {
+        this.isLoading = true
+        let { data } = await ApiService.query(`/operational/om/sub-schedule/today`, this.filter)
+        // /operational/4s/sub-schedule/today?date=2024-04-23
+        console.log(data);
+        this.dataOM = data.data ?? []
+        this.isLoading = false
+      } catch (error) {
+        this.isLoading = false
+        toast.error(error.response.data.message)
+      }
     }
   },
   async mounted() {
@@ -322,6 +350,8 @@ export default {
     this.generateDateOfThisWeek()
     await this.ActionGetLines()
     await this.getSTWData()
+    await this.get4SData()
+    await this.getOMData()
   },
   beforeUnmount() {
     window.removeEventListener('resize', this.onResize);
