@@ -6,24 +6,28 @@
           :key="mainSchedule">
           <thead>
             <tr>
-              <th colspan="40" class="text-center">
+              <th id="fixCol-header" colspan="40" class="text-center">
                 OM Schedule Activities ({{ mainSchedule.line_nm }} - {{ mainSchedule.group_nm }})
               </th>
             </tr>
             <tr>
-              <th id="fixCol-1" rowspan="2">No</th>
-              <th id="fixCol-2" rowspan="2">Machine</th>
-              <th id="fixCol-3" rowspan="2">Item</th>
-              <th id="fixCol-4" rowspan="2">Location</th>
-              <th id="fixCol-5" rowspan="2">Methode</th>
+              <th :id="isLoadingSub || mainSchedule.sub_schedules?.length == 0 ? '' : 'fixCol-1'" rowspan="2">No</th>
+              <th :id="isLoadingSub || mainSchedule.sub_schedules?.length == 0 ? '' : 'fixCol-2'" rowspan="2">Machine
+              </th>
+              <th :id="isLoadingSub || mainSchedule.sub_schedules?.length == 0 ? '' : 'fixCol-3'" rowspan="2">Item</th>
+              <th :id="isLoadingSub || mainSchedule.sub_schedules?.length == 0 ? '' : 'fixCol-4'" rowspan="2">Location
+              </th>
+              <th :id="isLoadingSub || mainSchedule.sub_schedules?.length == 0 ? '' : 'fixCol-5'" rowspan="2">Methode
+              </th>
               <th rowspan="2">Duration</th>
               <th rowspan="2">PIC</th>
               <th rowspan="2">Standart</th>
-              <th rowspan="2">Periode</th>
+              <th :id="isLoadingSub || mainSchedule.sub_schedules?.length == 0 ? '' : 'fixCol-6'" rowspan="2">Periode
+              </th>
               <th :colspan="getDateThisMonth" class="text-center">{{ getMonthStr }}</th>
             </tr>
             <tr>
-              <td v-for="n in getDateThisMonth" :key="n">{{ n }}</td>
+              <td v-for="n in getDateThisMonth" :key="n" class="text-center">{{ n }}</td>
             </tr>
           </thead>
           <tbody>
@@ -56,7 +60,7 @@
                   </div>
                 </td>
                 <td> {{ data.standart_nm }}</td>
-                <td> {{ data.freq_nm }}</td>
+                <td id="fixCol-6"> {{ data.freq_nm }}</td>
                 <td v-for="(children, childrenIndex) in data?.children" :key="`sch-${childrenIndex}`"
                   :style="`${children.is_holiday ? 'background-color: #AEAEAE' : ''}`">
                   <CDropdown variant="btn-group" v-if="children.status && children.status != ''">
@@ -367,5 +371,11 @@ export default {
   left: -200px;
   z-index: 3;
   background-color: white;
+}
+
+#fixCol-header {
+  position: sticky;
+  left: -200px;
+  z-index: 3;
 }
 </style>

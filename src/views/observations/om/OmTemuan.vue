@@ -42,7 +42,7 @@
           </div>
         </div>
       </div>
-      <TableOmFinding @showFormModalOmFinding="onShowFormModalOmFinding()" />
+      <TableOmFinding @showFormModalOmFinding="onShowFormModalOmFinding()" @refreshDeleted="onRefreshDeleted($event)" />
       <div class="card-footer">
         <div class="d-flex justify-content-between">
           <div>
@@ -210,6 +210,12 @@ export default {
         this.getFindings()
       }
     },
+    onRefreshDeleted(event) {
+      if (event)
+      {
+        this.getFindings()
+      }
+    }
   },
   async mounted() {
     await this.getLines()

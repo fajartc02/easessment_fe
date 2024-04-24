@@ -279,14 +279,15 @@ export default {
           month_year_num: this.filter.yearMonth,
           line_id: this.filter.line_id,
           current_page: this.filter.current_page,
-          limit: this.filter.limit
+          limit: this.filter.limit,
+          ...this.subScheduleFilter
         }
         await this.$store.dispatch(GET_OM_MAIN_SCHEDULES, objQuery)
       }
       catch (error) {
-        if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
-        toast.error(error.response.data.message, {
+        if (error?.response?.status == 401) this.$router.push('/login')
+        toast.error(error?.response?.data?.message ?? error, {
           autoClose: 10000,
         })
       }
