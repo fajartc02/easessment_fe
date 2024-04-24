@@ -420,7 +420,7 @@ export default {
   watch: {
     loadedFinding: {
       handler() {
-        console.log('loadedFinding', this.loadedFinding);
+        //console.log('loadedFinding', this.loadedFinding);
         this.form = {
           finding_id: this.loadedFinding?.finding_id,
           line_id: this.loadedFinding?.line_id,
