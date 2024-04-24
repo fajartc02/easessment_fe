@@ -72,8 +72,7 @@
 
 
       <div class="card-body p-0 overflow-x-auto">
-
-        <div v-if="newSubScheduleData[0]?.length == 0" class="p-2">
+        <div v-if="newSubScheduleData[0]?.length == 0 || isMainScheduleEmpty" class="p-2">
           <div class="alert alert-danger" role="alert">
             Data not found!
           </div>
@@ -421,6 +420,7 @@ export default {
     return {
       totalDate: 31,
       isLoading: true,
+      isMainScheduleEmpty: false,
       isAddPICLoading: false,
       isChangeDateLoading: false,
       mainScheduleData: null,
@@ -483,9 +483,6 @@ export default {
       mainSubScheduleID: []
     }
   },
-  updated() {
-    console.log(this.selectedZoneID)
-  },
   computed: {
     ...mapGetters([
       'getLinesOpts',
@@ -531,10 +528,15 @@ export default {
         if (res) {
           const data = res.list
           this.mainScheduleData = data
-          data.map((item) => {
-            this.mainSubScheduleID.push(item.main_schedule_id)
-            this.getSubSchedules(item.main_schedule_id)
-          })
+          if (data?.length > 0) {
+            data?.map((item) => {
+              this.mainSubScheduleID.push(item.main_schedule_id)
+              this.getSubSchedules(item.main_schedule_id)
+            })
+          } else {
+            this.isMainScheduleEmpty = true
+            this.isLoading = false
+          }
         }
       })
     },
@@ -820,6 +822,9 @@ export default {
   },
 
   async mounted() {
+    if (localStorage.getItem('line_id')) {
+      this.selectedLineID = localStorage.getItem('line_id')
+    }
     this.newSubScheduleData = []
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
@@ -830,9 +835,6 @@ export default {
     await this.getKanban()
     await this.getFreq()
     await this.getUsers()
-    if (localStorage.getItem('line_id')) {
-      this.selectedLineID = localStorage.getItem('line_id')
-    }
     await this.getSchedules()
   },
 

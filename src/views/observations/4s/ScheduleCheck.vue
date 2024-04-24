@@ -23,7 +23,7 @@
             </CInputGroup>
             <CInputGroup class="mb-3">
               <CInputGroupText>Plan Date</CInputGroupText>
-              <CFormInput :value="getSubSchedulesCheck?.actual_time?.substring(0, 10)" disabled />
+              <CFormInput :value="getSubSchedulesCheck?.plan_time?.substring(0, 10)" disabled />
             </CInputGroup>
             <CInputGroup class="mb-3">
               <CInputGroupText>Plan PIC</CInputGroupText>
@@ -121,7 +121,7 @@
                 finding</button>
               <button v-else-if="item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d'"
                 class=" btn btn-info btn-sm text-white"
-                @click="openAddFindingModal(item.schedule_item_check_kanban_id, 'add')">Add
+                @click="openAddFindingModal(item.schedule_item_check_kanban_id, null, 'add')">Add
                 finding</button>
             </td>
 
@@ -142,13 +142,12 @@
             <div class="col">
               <div class="mb-2">
                 <label class="mb-1">Line</label>
-                <VueMultiselect v-model="selectedLineID" :options="lineData" :custom-label="customLineFilterOptions">
-                </VueMultiselect>
+                <input type="text" :value="getSubSchedulesCheck?.line_nm" class="form-control" disabled>
               </div>
             </div>
             <div class="mb-2">
               <label class="mb-1">Freq</label>
-              <select class="form-select" v-model="selectedFreqID">
+              <select class="form-select" v-model="selectedFreqID" disabled>
                 <option v-for="freq in getFreqs" :key="freq.id" :value="freq.id">
                   {{ freq.freq_nm }}
                 </option>
@@ -156,7 +155,7 @@
             </div>
             <div class="mb-2">
               <label class="mb-1">Zone</label>
-              <select class="form-select" v-model="selectedZoneID">
+              <select class="form-select" v-model="selectedZoneID" disabled>
                 <option v-for="zone in getZones" :key="zone.zone_id" :value="zone.zone_id">
                   {{ zone.zone_nm }}
                 </option>
@@ -164,7 +163,7 @@
             </div>
             <div class="mb-2">
               <label class="mb-1">Kanban</label>
-              <select class="form-select" v-model="selectedKanbanID">
+              <select class="form-select" v-model="selectedKanbanID" disabled>
                 <option v-for="kanban in getKanbans" :key="kanban.kanban_id" :value="kanban.kanban_id">
                   {{ kanban.kanban_no }}
                 </option>
@@ -237,8 +236,12 @@
               <input type="date" class="form-control" v-model="actualCMDate" />
             </div>
             <div class="mb-2">
-              <label class="mb-1">Evaluation Name</label>
-              <input type="text" class="form-control" v-model="evaluationName" />
+              <label class="mb-1">Evaluation</label>
+              <select class="form-select" v-model="evaluationName">
+                <option v-for="optEval in optEvaluation" :key="optEval" :value="optEval.system_value">
+                  {{ optEval.system_value }}
+                </option>
+              </select>
             </div>
           </div>
         </div>
@@ -271,7 +274,7 @@ import { GET_KANBANS } from '@/store/modules/kanban.module'
 import { GET_FREQS } from '@/store/modules/freq.module'
 import { GET_SYSTEMS } from '@/store/modules/system.module'
 import Loading from 'vue-loading-overlay'
-
+import { toast } from 'vue3-toastify'
 import KanbanItemCheck from '@/components/kanban4s/KanbanItemCheck.vue'
 
 export default {
@@ -312,6 +315,7 @@ export default {
       evaluationName: null,
       selectedScheduleItemCheckKanbanID: null,
       optChangeData: null,
+      optEvaluation: null,
       optDeptData: null,
       findingActionType: null,
       selectedFindingID: null,
@@ -352,7 +356,6 @@ export default {
       }
       await this.$store.dispatch(GET_SCHEDULES_CHECK, objQuery).then((res) => {
         if (res) {
-          console.log(res);
           this.gettingKanbanID = res.kanban_id
           this.itemCheks = res.item_check_kanbans
           this.isLoading = false
@@ -371,14 +374,17 @@ export default {
       }
       const judgments = await ApiService.post(`operational/4s/schedule-item-check-kanban/add`, data)
       if (judgments.data.message == 'Success to add 4s schedule item check kanban') {
-        alert('Success add data')
+        toast.success('Success add data', {
+          autoClose: 700
+        })
         this.isAddCheckLoading = false
         this.selectedScheduleItemCheckKanbanID = judgments.data.data.schedule_item_check_kanban_id
       } else {
         alert('Failed add data')
       }
     },
-    openAddFindingModal(scheduleItemCheckKanbanID) {
+    openAddFindingModal(scheduleItemCheckKanbanID, findings, actionType) {
+      this.findingActionType = actionType
       if (scheduleItemCheckKanbanID !== null) {
         this.selectedScheduleItemCheckKanbanID = scheduleItemCheckKanbanID
       }
@@ -407,7 +413,7 @@ export default {
       this.optDepartment = data.opt_depts
       this.cmJudg = data.cm_judg
       this.actualPIC = { pic_name: data.actual_pic_nm, pic_id: data.actual_pic_id }
-      this.actualCMDate = data.actual_cm_date
+      this.actualCMDate = data.actual_cm_date.substring(0, 10)
       this.evaluationName = data.evaluation_nm
 
       this.lineName = data.line_nm
@@ -420,7 +426,8 @@ export default {
       ApiService.setHeader()
       const findingData = {
         "schedule_item_check_kanban_id": this.selectedScheduleItemCheckKanbanID,
-        "line_id": this.selectedLineID.line_id,
+        // "line_id": this.selectedLineID.line_id,
+        "line_id": this.getSubSchedulesCheck?.line_id,
         "freq_id": this.selectedFreqID,
         "zone_id": this.selectedZoneID,
         "kanban_id": this.selectedKanbanID,
@@ -439,14 +446,19 @@ export default {
         "evaluation_nm": this.evaluationName
       }
 
+      console.log(findingData)
+
       const add = await ApiService.post(`operational/4s/finding/add`, findingData)
       if (add.data.message == 'Success to add 4s finding') {
-        alert('Success add data')
+        toast.success('Success add data', {
+          autoClose: 700
+        })
         this.addFindingModal = false
         await this.getScheduleCheck()
       } else {
-        alert('Failed add data')
-
+        toast.error('Failed', {
+          autoClose: 700
+        })
       }
     },
     async updateFinding() {
@@ -474,11 +486,15 @@ export default {
 
       const update = await ApiService.put(`operational/4s/finding/edit/${this.selectedFindingID}`, findingData)
       if (update.data.message == 'Success to edit 4s finding') {
-        alert('Success edit data')
+        toast.success('Success edit data', {
+          autoClose: 700
+        })
         this.addFindingModal = false
         await this.getScheduleCheck()
       } else {
-        alert('Failed edit data')
+        toast.error('Failed', {
+          autoClose: 700
+        })
       }
     },
     async updateScheduleCheckData() {
@@ -590,6 +606,19 @@ export default {
         console.log(error)
       }
     },
+    async getEvaluation() {
+      let objQuery = {
+        system_type: '4S_EVALUATION'
+      }
+      try {
+        this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
+          this.optEvaluation = res
+        })
+      } catch (error) {
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
+      }
+    },
   },
   updated() {
     this.mapLinesData()
@@ -606,6 +635,11 @@ export default {
     await this.getKanban()
     await this.getOptChangeSystem()
     await this.getOptDeptSystem()
+    await this.getEvaluation()
+
+    this.selectedFreqID = this.getSubSchedulesCheck?.freq_id
+    this.selectedZoneID = this.getSubSchedulesCheck?.zone_id
+    this.selectedKanbanID = this.getSubSchedulesCheck?.kanban_id
   }
 }
 </script>
