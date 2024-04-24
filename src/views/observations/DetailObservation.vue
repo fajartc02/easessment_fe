@@ -43,17 +43,17 @@
         </div>
         <div class="d-flex col-3 text-right justify-content-around">
           <CButton variant="ghost" color="info" @click="() => {
-      demoTSK = true
-    }
-      ">{{ tskLabel }}</CButton>
+            demoTSK = true
+          }
+            ">{{ tskLabel }}</CButton>
           <CModal size="xl" :visible="demoTSK" @close="() => {
-      demoTSK = false
-    }
-      ">
+            demoTSK = false
+          }
+            ">
             <CModalHeader>
               <CModalTitle v-if="observation.job_type_nm">{{
-      tskLabel
-    }}</CModalTitle>
+                tskLabel
+              }}</CModalTitle>
             </CModalHeader>
             <CModalBody>
               <vue-pdf-embed v-if="tskFile" :source="tskFile" />
@@ -62,13 +62,13 @@
             </CModalBody>
           </CModal>
           <CButton variant="ghost" color="info" @click="() => {
-      demoTSKK = true
-    }
-      ">{{ tskkLabel }}</CButton>
+            demoTSKK = true
+          }
+            ">{{ tskkLabel }}</CButton>
           <CModal size="xl" :visible="demoTSKK" @close="() => {
-      demoTSKK = false
-    }
-      ">
+            demoTSKK = false
+          }
+            ">
             <CModalHeader>
               <CModalTitle>{{ tskkLabel }}</CModalTitle>
             </CModalHeader>
@@ -79,13 +79,13 @@
             </CModalBody>
           </CModal>
           <CButton variant="ghost" color="info" @click="() => {
-      demoSOP = true
-    }
-      ">SOP</CButton>
+            demoSOP = true
+          }
+            ">SOP</CButton>
           <CModal size="xl" :visible="demoSOP" @close="() => {
-      demoSOP = false
-    }
-      ">
+            demoSOP = false
+          }
+            ">
             <CModalHeader>
               <CModalTitle>SOP</CModalTitle>
             </CModalHeader>
@@ -124,8 +124,8 @@
           <td class="p-2">{{ item.category_nm }}</td>
           <td>
             <div v-if="item.job_type_nm !== 'Type 3' &&
-      item.category_nm == 'Standarize Work'
-      ">
+              item.category_nm == 'Standarize Work'
+            ">
               <div class="d-flex">
                 <input type="number" :disabled="isCheck" v-model="item.stw_ct1" class="form-control text-center"
                   style="width: 70px" placeholder="CT1" />
@@ -167,11 +167,11 @@
           </td>
           <td>
             <div v-if="((item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' ||
-      item.judgment_id == 'dcb12fa6-0d1e-4d29-ab3d-7576c863ed2e') &&
-      item.judgment_id) ||
-      (judgementID == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
-        i == 0)
-      ">
+              item.judgment_id == 'dcb12fa6-0d1e-4d29-ab3d-7576c863ed2e') &&
+              item.judgment_id) ||
+              (judgementID == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
+                i == 0)
+            ">
               <div v-if="item.findings.length > 0">
                 {{ item.findings[0].factor_nm }}
               </div>
@@ -187,22 +187,22 @@
             </div>
           </td>
           <td v-if="((item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' ||
-      item.judgment_id == 'dcb12fa6-0d1e-4d29-ab3d-7576c863ed2e') &&
-      item.judgment_id) ||
-      (judgementID == '2e247c66-3e9c-44b6-951a-0a26791ad37d' && i == 0)
-      ">
+            item.judgment_id == 'dcb12fa6-0d1e-4d29-ab3d-7576c863ed2e') &&
+            item.judgment_id) ||
+            (judgementID == '2e247c66-3e9c-44b6-951a-0a26791ad37d' && i == 0)
+          ">
 
             <div v-if="item.findings.length == 0">
               <div v-if="findings.filter((find) => {
-      return find.category_id == item.id
-    }).length > 0
-      ">
+                return find.category_id == item.id
+              }).length > 0
+              ">
                 <button :disabled="isCheck" class="btn btn-info" @click="() => {
-      addFindingsModal = true
-      mapUsersData()
-      editFinding(item.id)
-    }
-      ">
+                  addFindingsModal = true
+                  mapUsersData()
+                  editFinding(item.id)
+                }
+                  ">
                   Edit finding
                 </button>
                 <button :disabled="isCheck" class="btn btn-warning" @click="deleteFinding(item.id)">
@@ -210,11 +210,11 @@
                 </button>
               </div>
               <button v-else :disabled="isCheck" class="btn btn-info" @click="() => {
-      addFindingsModal = true
-      finding.finding_location = observation.pos_nm
-      mapUsersData()
-    }
-      ">
+                addFindingsModal = true
+                finding.finding_location = observation.pos_nm
+                mapUsersData()
+              }
+                ">
                 Add findings
               </button>
             </div>
@@ -250,8 +250,8 @@
                           <input :ref="`finding_image-${i}`" type="file" class="form-control" />
                         </div>
                         <button class="btn btn-info my-2 text-white" :disabled="isUploadLoading" @click="
-      uploadFindingImage(`finding_image-${i}`, finding)
-      ">
+                          uploadFindingImage(`finding_image-${i}`, finding)
+                          ">
                           {{ isUploadLoading ? 'Uploading' : 'Upload' }}
                         </button>
                         <div v-if="selectedFindingImage">
@@ -351,9 +351,9 @@
               </CModalBody>
               <CModalFooter>
                 <div v-if="findings.filter((fin) => {
-      return fin.category_id == item.id
-    }).length == 0
-      ">
+                  return fin.category_id == item.id
+                }).length == 0
+                ">
                   <CButton color="primary" class="text-white" @click="addFindingData(item.id, item.factor_id, finding)">
                     Save finding data</CButton>
                 </div>
@@ -399,6 +399,24 @@
       <button class="btn btn-secondary mx-2" :disabled="!isCheck" @click="viewReport()">
         View Report
       </button>
+      <CButton color="info" @click="() => { xlDemo = true }">Lihat Video</CButton>
+      <CModal size="xl" :visible="xlDemo" @close="() => { xlDemo = false }">
+        <CModalHeader>
+          <CModalTitle>Video Observasi SW</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <div class="row">
+            <div class="col border-all">
+              <h6>Before & After</h6>
+              <video muted style="width: 100%;height: 100%;" autoplay controls>
+                <source src="../../assets/video1.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+
+        </CModalBody>
+      </CModal>
     </div>
   </div>
 
@@ -421,6 +439,7 @@ export default {
   name: 'DetailSchedule',
   data() {
     return {
+      xlDemo: false,
       observation: null,
       isUploadLoading: false,
       form: {
