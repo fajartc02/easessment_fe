@@ -1,7 +1,7 @@
 <template>
   <CModal backdrop="static" :visible="visible" @close="closeModal()" size="xl">
     <CModalHeader>
-      <CModalTitle>Add OM Finding</CModalTitle>
+      <CModalTitle>{{ title }}</CModalTitle>
     </CModalHeader>
     <CModalBody>
       <div class="row px-3 pt-4">
@@ -416,6 +416,9 @@ export default {
   },
   computed: {
     ...mapGetters(['getUsersOpts']),
+    title() {
+      return this.loadedFinding?.finding_id ? "Edit OM Finding" : "Add OM Finding"
+    }
   },
   watch: {
     loadedFinding: {
