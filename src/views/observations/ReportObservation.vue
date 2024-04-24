@@ -8,31 +8,7 @@
       <div class="row">
         <div class="col-10">Checksheet Observasi SW</div>
         <div class="col">
-          <!-- <CButton v-if="!ignoringExport" color="info" @click="() => { xlDemo = true }">Lihat Video</CButton>
-                    <CModal size="xl" :visible="xlDemo" @close="() => { xlDemo = false }">
-                        <CModalHeader>
-                        <CModalTitle>Video Observasi SW</CModalTitle>
-                        </CModalHeader>
-                        <CModalBody>
-                            <div class="row">
-                                <div class="col border-all">
-                                    <h6>Before</h6>
-                                    <video muted style="width: 100%;height: 100%;" autoplay controls>
-                                        <source src="../../assets/video1.mp4" type="video/mp4">
-                                        Your browser does not support the video tag.
-                                    </video>
-                                </div>
-                                <div class="col border-all">
-                                    <h6>After</h6>
-                                    <video muted style="width: 100%;height: 100%;" autoplay controls>
-                                        <source src="../../assets/video2.mp4" type="video/mp4">
-                                        Your browser does not support the video tag.
-                                    </video>
-                                </div>
-                            </div>
 
-                        </CModalBody>
-                    </CModal> -->
         </div>
       </div>
     </div>
