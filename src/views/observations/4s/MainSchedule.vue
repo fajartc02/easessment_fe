@@ -17,13 +17,15 @@
           </div>
           <div class="col">
             <label>Zona</label>
-            <Select2 class="form-control" v-model="selectedZoneID" :options="getZoneOpts" @select="addFilter()" />
-
+            <Select2 v-if="getZoneOpts.length > 1" class="form-control" v-model="selectedZoneID" :options="getZoneOpts"
+              @select="addFilter()" :disabled="getZoneOpts.length == 1" />
+            <input v-else type="text" class="form-control" value="tidak ada zona" disabled>
           </div>
           <div class="col">
             <label>Kanban</label>
-            <Select2 class="form-control" v-model="selectedKanbanID" :options="getKanbansOpts" @select="addFilter()" />
-
+            <Select2 v-if="getZoneOpts.length > 1" class="form-control" v-model="selectedKanbanID"
+              :options="getKanbansOpts" @select="addFilter()" />
+            <input v-else type="text" class="form-control" value="tidak ada kanban" disabled>
           </div>
           <div class="col">
             <label>Freq</label>
@@ -124,8 +126,8 @@
                   <td> {{ data.freq_nm }}</td>
 
                   <td v-for="(children, childrenIndex) in data?.children" :key="childrenIndex" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
-              } ${children.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''
-              } `">
+                    } ${children.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''
+                    } `">
 
                     <CDropdown variant="btn-group" v-if="!children.is_holiday && children.status == 'PLANNING'">
                       <CButton color="secondary" class="text-secondary bg-white"
@@ -165,19 +167,19 @@
               <tr v-if="newSubScheduleData && !isLoading">
                 <td colspan="7" class="text-center">Sign TL 1 </td>
                 <td v-for="children in mainSchedule[0].children" :key="children" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
-              } ${children.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''
-              } `">
+                  } ${children.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''
+                  } `">
 
                   <div class="d-flex align-items-center justify-content-center w-full">
                     <button @click="
-              openSignModal(children.tl1_sign_checker_id, 'sign_tl_1')
-              " v-if="!children.is_holiday && !children.sign_tl_1"
+                      openSignModal(children.tl1_sign_checker_id, 'sign_tl_1')
+                      " v-if="!children.is_holiday && !children.sign_tl_1"
                       class="check-wrapper-null d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-x" class="text-danger" size="sm" />
                     </button>
                     <button @click="
-              openSignModal(children.tl1_sign_checker_id, 'sign_tl_1')
-              " v-else-if="!children.is_holiday && children.sign_tl_1"
+                      openSignModal(children.tl1_sign_checker_id, 'sign_tl_1')
+                      " v-else-if="!children.is_holiday && children.sign_tl_1"
                       class="check-wrapper d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-check" class="text-black" size="sm" />
                     </button>
@@ -190,19 +192,19 @@
               <tr v-if="newSubScheduleData && !isLoading">
                 <td colspan="7" class="text-center">Sign TL 2</td>
                 <td v-for="children in mainSchedule[0].children" :key="children" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
-              } ${children.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''
-              }`">
+                  } ${children.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''
+                  }`">
 
                   <div class="d-flex align-items-center justify-content-center w-full">
                     <button @click="
-              openSignModal(children.tl2_sign_checker_id, 'sign_tl_2')
-              " v-if="!children.is_holiday && !children.sign_tl_2"
+                      openSignModal(children.tl2_sign_checker_id, 'sign_tl_2')
+                      " v-if="!children.is_holiday && !children.sign_tl_2"
                       class="check-wrapper-null d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-x" class="text-danger" size="sm" />
                     </button>
                     <button @click="
-              openSignModal(children.tl2_sign_checker_id, 'sign_tl_2')
-              " v-else-if="!children.is_holiday && children.sign_tl_2"
+                      openSignModal(children.tl2_sign_checker_id, 'sign_tl_2')
+                      " v-else-if="!children.is_holiday && children.sign_tl_2"
                       class="check-wrapper d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-check" class="text-black" size="md" />
                     </button>
@@ -215,17 +217,17 @@
               <tr v-if="signGLData && !isLoading">
                 <td colspan="7" class="text-center">Sign GL</td>
                 <td v-for="children in signGLData" :key="children" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
-              } `" :colspan="children.col_span">
+                  } `" :colspan="children.col_span">
                   <div class="d-flex align-items-center justify-content-center w-full">
                     <button @click="
-              openSignModal(children.sign_checker_id, 'sign_gl')
-              " v-if="!children.is_holiday && !children.sign"
+                      openSignModal(children.sign_checker_id, 'sign_gl')
+                      " v-if="!children.is_holiday && !children.sign"
                       class="check-wrapper-null d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-x" class="text-danger" size="md" />
                     </button>
                     <button @click="
-              openSignModal(children.sign_checker_id, 'sign_gl')
-              " v-else-if="!children.is_holiday && children.sign"
+                      openSignModal(children.sign_checker_id, 'sign_gl')
+                      " v-else-if="!children.is_holiday && children.sign"
                       class="check-wrapper d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-check" class="text-black" size="md" />
                     </button>
@@ -237,17 +239,17 @@
               <tr v-if="signSHData && !isLoading">
                 <td colspan="7" class="text-center">Sign SH</td>
                 <td class="" v-for="children in signSHData" :key="children" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
-              }`" :colspan="children.col_span">
+                  }`" :colspan="children.col_span">
                   <div class="d-flex align-items-center justify-content-center w-full">
                     <button @click="
-              openSignModal(children.sign_checker_id, 'sign_sh')
-              " v-if="!children.is_holiday && !children.sign"
+                      openSignModal(children.sign_checker_id, 'sign_sh')
+                      " v-if="!children.is_holiday && !children.sign"
                       class="check-wrapper-null d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-x" class="text-danger" size="md" />
                     </button>
                     <button @click="
-              openSignModal(children.sign_checker_id, 'sign_sh')
-              " v-else-if="!children.is_holiday && children.sign"
+                      openSignModal(children.sign_checker_id, 'sign_sh')
+                      " v-else-if="!children.is_holiday && children.sign"
                       class="check-wrapper d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-check" class="text-black" size="md" />
                     </button>
@@ -511,6 +513,12 @@ export default {
           }`
       }
     },
+    selectedLineID: function () {
+      this.getZone()
+    },
+    selectedZoneID: function () {
+      this.getKanban()
+    }
   },
   methods: {
     addScheduleCheck(mainScheduleID, subScheduleID) {
@@ -681,7 +689,7 @@ export default {
     },
     async getZone() {
       try {
-        this.$store.dispatch(GET_ZONES)
+        this.$store.dispatch(GET_ZONES, { line_id: this.selectedLineID ?? -1 })
       } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
@@ -689,7 +697,7 @@ export default {
     },
     async getKanban() {
       try {
-        this.$store.dispatch(GET_KANBANS)
+        this.$store.dispatch(GET_KANBANS, { zone_id: this.selectedZoneID ?? -1 })
       } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
