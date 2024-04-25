@@ -17,11 +17,15 @@
           </div>
           <div class="col">
             <label>Machine</label>
-            <select class="form-select" v-model="selectedMachineObj" :disabled="!selectedLineID">
+            <!-- <select v-if="getMachinesOpts.length > 1" class="form-select" v-model="selectedMachineID"
+              :disabled="!selectedLineID">
               <option v-for="machine in getMachinesOpts" :key="machine.id" :value="machine">
                 {{ machine.text }}
               </option>
-            </select>
+            </select> -->
+            <Select2 v-if="getMachinesOpts.length > 1" class="form-control" v-model="selectedMachineID"
+              :options="getMachinesOpts" :disabled="getMachinesOpts.length == 1" />
+            <input v-else type="text" class="form-control" value="tidak ada mesin" disabled>
           </div>
           <div class="col">
             <label>Freq</label>
@@ -136,7 +140,7 @@ export default {
       selectedMonth: null,
       selectedLineID: null,
       selectedGroupID: "-1",
-      selectedMachineObj: { id: '-1', text: 'All' },
+      selectedMachineID: -1,
       selectedFreqID: "-1",
       selectedSignChecker: null,
       filter: defaultFilter,
@@ -159,7 +163,7 @@ export default {
     subScheduleFilter() {
       return {
         freq_id: this.selectedFreqID,
-        machine: this.selectedMachineObj,
+        machine: this.selectedMachineID,
       }
     },
   },
@@ -172,6 +176,7 @@ export default {
         ...this.filter,
         line_id: this.selectedLineID
       }
+      this.getMachines();
       if (this.isCompleteFirstLoadMainSchedule) {
         this.getMainSchedules()
       }
@@ -182,11 +187,10 @@ export default {
         freq_id: this.selectedFreqID
       }
     },
-    selectedMachineObj: function () {
+    selectedMachineID: function () {
       this.filter = {
         ...this.filter,
-        machine_id: this.selectedMachineObj.id,
-        machine_nm: this.selectedMachineObj.text
+        machine_id: this.selectedMachineID,
       }
     },
     selectedMonth: function () {
@@ -226,7 +230,7 @@ export default {
       this.selectedLineID = "-1"
       this.selectedFreqID = "-1"
       this.selectedGroupID = "-1"
-      this.selectedMachineObj = { id: '-1', text: 'All' }
+      this.selectedMachineID = -1
       this.filter = defaultFilter
     },
     async getLines() {

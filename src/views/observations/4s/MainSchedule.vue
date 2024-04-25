@@ -17,13 +17,15 @@
           </div>
           <div class="col">
             <label>Zona</label>
-            <Select2 class="form-control" v-model="selectedZoneID" :options="getZoneOpts" @select="addFilter()" />
-
+            <Select2 v-if="getZoneOpts.length > 1" class="form-control" v-model="selectedZoneID" :options="getZoneOpts"
+              @select="addFilter()" :disabled="getZoneOpts.length == 1" />
+            <input v-else type="text" class="form-control" value="tidak ada zona" disabled>
           </div>
           <div class="col">
             <label>Kanban</label>
-            <Select2 class="form-control" v-model="selectedKanbanID" :options="getKanbansOpts" @select="addFilter()" />
-
+            <Select2 v-if="getZoneOpts.length > 1" class="form-control" v-model="selectedKanbanID"
+              :options="getKanbansOpts" @select="addFilter()" />
+            <input v-else type="text" class="form-control" value="tidak ada kanban" disabled>
           </div>
           <div class="col">
             <label>Freq</label>
@@ -537,6 +539,12 @@ export default {
           }`
       }
     },
+    selectedLineID: function () {
+      this.getZone()
+    },
+    selectedZoneID: function () {
+      this.getKanban()
+    }
   },
   methods: {
     addScheduleCheck(mainScheduleID, subScheduleID) {
@@ -723,21 +731,17 @@ export default {
       }
     },
     async getZone() {
-      try
-      {
-        this.$store.dispatch(GET_ZONES)
-      } catch (error)
-      {
+      try {
+        this.$store.dispatch(GET_ZONES, { line_id: this.selectedLineID ?? -1 })
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getKanban() {
-      try
-      {
-        this.$store.dispatch(GET_KANBANS)
-      } catch (error)
-      {
+      try {
+        this.$store.dispatch(GET_KANBANS, { zone_id: this.selectedZoneID ?? -1 })
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }

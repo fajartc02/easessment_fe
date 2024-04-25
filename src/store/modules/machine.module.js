@@ -20,7 +20,7 @@ const getters = {
             const mapMachines = state.machines.map(machine => {
                 return {
                     id: machine.id,
-                    text: machine.machine_nm
+                    text: `${machine.op_no != '-' ? machine.op_no + " - " : ''}` + machine.machine_nm
                 }
             })
             mapMachines.push({
@@ -28,6 +28,8 @@ const getters = {
                 text: 'All'
             })
             return mapMachines
+        } else {
+            return []
         }
     },
     getMachinesOptsWithoutAll(state) {
@@ -35,7 +37,7 @@ const getters = {
             const mapMachines = state.machines.map(machine => {
                 return {
                     id: machine.id,
-                    text: machine.machine_nm
+                    text: `${machine.op_no != '-' ? machine.op_no + " - " : ''}` + machine.machine_nm
                 }
             })
             return mapMachines
