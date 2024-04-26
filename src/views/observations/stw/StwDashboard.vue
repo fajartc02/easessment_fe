@@ -62,106 +62,121 @@
       </div>
 
       <!-- white shift -->
-      <div class="tableFixHead">
-        <table class="table table-bordered text-center table-stripped">
-          <thead>
-            <tr>
-              <th id="fixCol-head-1" rowspan="2">No</th>
-              <th id="fixCol-head-2" rowspan="2">Line</th>
-              <th id="fixCol-head-3" rowspan="2">Pos</th>
-              <th id="fixCol-head-4" rowspan="2">Observer</th>
-              <th id="fixCol-head-5" rowspan="2">Shift</th>
-              <th :colspan="containerDate.length">{{ yearMonth }}</th>
-            </tr>
-            <tr>
-              <th v-for="date in containerDate" :key="date" :class="date.bg">
-                {{ date.idx }}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-if="isLoading">
-              <td colspan="40" class="p-0" style="height: 200px">
-                <div class="vl-parent p-0" style="height: 100%">
-                  <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false" :on-cancel="onCancel" />
-                </div>
-              </td>
-            </tr>
-            <tr v-else v-for="(observation, i) in observationSchedule" :key="observation.pos_id">
-              <td id="fixCol-1">{{ i + 1 }}</td>
-              <td id="fixCol-2">{{ observation.line_snm }}</td>
-              <td id="fixCol-3">{{ observation.pos_nm }}</td>
-              <td id="fixCol-4">{{ observation.checkers[0] }}</td>
-              <td id="fixCol-5">{{ observation.group_nm }}</td>
-              <td v-for="item in containerDate" :key="item.idx" style="min-width: 63px">
-                <template v-for="child in observation.children" :key="child.observation_id">
-                  <template v-if="child.idxdate === String(item.idx)">
-                    <TooltipStwSchedule :child="child" :customTooltipStyle="customTooltipStyle" :observation="child"
-                      :currentDate="currentDate" @detail-schedule="detailSchedule" />
-                  </template>
-                </template>
-              </td>
-            </tr>
-            <tr v-if="observationSchedule?.length < 1">
-              <td colspan="50">
-                <h3 class="my-2">Data kosong</h3>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="card">
+        <div class="card-header">
+          <h6>White Shift</h6>
+        </div>
+        <div class="card-body">
+          <div class="tableFixHead">
+            <table class="table table-bordered text-center table-stripped">
+              <thead>
+                <tr>
+                  <th id="fixCol-head-1" rowspan="2">No</th>
+                  <th id="fixCol-head-2" rowspan="2">Line</th>
+                  <th id="fixCol-head-3" rowspan="2">Pos</th>
+                  <th id="fixCol-head-4" rowspan="2">Observer</th>
+                  <th id="fixCol-head-5" rowspan="2">Shift</th>
+                  <th :colspan="containerDate.length">{{ yearMonth }}</th>
+                </tr>
+                <tr>
+                  <th v-for="date in containerDate" :key="date" :class="date.bg">
+                    {{ date.idx }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-if="isLoading">
+                  <td colspan="40" class="p-0" style="height: 200px">
+                    <div class="vl-parent p-0" style="height: 100%">
+                      <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false"
+                        :on-cancel="onCancel" />
+                    </div>
+                  </td>
+                </tr>
+                <tr v-else v-for="(observation, i) in observationSchedule" :key="observation.pos_id">
+                  <td id="fixCol-1">{{ i + 1 }}</td>
+                  <td id="fixCol-2">{{ observation.line_snm }}</td>
+                  <td id="fixCol-3">{{ observation.pos_nm }}</td>
+                  <td id="fixCol-4">{{ observation.checkers[0] }}</td>
+                  <td id="fixCol-5">{{ observation.group_nm }}</td>
+                  <td v-for="item in containerDate" :key="item.idx" style="min-width: 63px">
+                    <template v-for="child in observation.children" :key="child.observation_id">
+                      <template v-if="child.idxdate === String(item.idx)">
+                        <TooltipStwSchedule :child="child" :customTooltipStyle="customTooltipStyle" :observation="child"
+                          :currentDate="currentDate" @detail-schedule="detailSchedule" />
+                      </template>
+                    </template>
+                  </td>
+                </tr>
+                <tr v-if="observationSchedule?.length < 1">
+                  <td colspan="50">
+                    <h3 class="my-2">Data kosong</h3>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       <hr />
 
       <!-- Red shift table -->
-      <div class="tableFixHead">
-        <table class="table table-bordered text-center">
-          <thead>
-            <tr>
-              <th id="fixCol-head-1" rowspan="2">No</th>
-              <th id="fixCol-head-2" rowspan="2">Line</th>
-              <th id="fixCol-head-3" rowspan="2">Pos</th>
-              <th id="fixCol-head-4" rowspan="2">Observer</th>
-              <th id="fixCol-head-5" rowspan="2">Shift</th>
-              <th :colspan="containerDate.length">{{ yearMonth }}</th>
-            </tr>
-            <tr>
-              <th v-for="date in containerDate" :key="date" :class="date.bg">
-                {{ date.idx }}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-if="isRedShiftLoading">
-              <td colspan="40" class="p-0" style="height: 200px">
-                <div class="vl-parent p-0" style="height: 100%">
-                  <loading v-model:active="isRedShiftLoading" :can-cancel="true" :is-full-page="false"
-                    :on-cancel="onCancel" />
-                </div>
-              </td>
-            </tr>
-            <tr v-for="(observationRedShift, i) in observationScheduleRedShift" :key="observationRedShift.pos_id">
-              <td id="fixCol-1">{{ i + 1 }}</td>
-              <td id="fixCol-2">{{ observationRedShift.line_snm }}</td>
-              <td id="fixCol-3">{{ observationRedShift.pos_nm }}</td>
-              <td id="fixCol-4">{{ observationRedShift.checkers[0] }}</td>
-              <td id="fixCol-5">{{ observationRedShift.group_nm }}</td>
-              <td v-for="item in containerDate" :key="item.idx" style="min-width: 63px">
-                <template v-for="child in observationRedShift.children" :key="child.observation_id">
-                  <template v-if="child.idxdate === String(item.idx)">
-                    <TooltipStwSchedule :child="child" :customTooltipStyle="customTooltipStyle" :observation="child"
-                      :currentDate="currentDate" @detail-schedule="detailSchedule" />
-                  </template>
-                </template>
-              </td>
-            </tr>
-            <tr v-if="observationScheduleRedShift?.length < 1">
-              <td colspan="50">
-                <h3 class="my-2">Data kosong</h3>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="card">
+        <div class="card-header">
+          <h6>Red Shift</h6>
+        </div>
+        <div class="card-body">
+          <div class="tableFixHead">
+            <table class="table table-bordered text-center">
+              <thead>
+                <tr>
+                  <th id="fixCol-head-1" rowspan="2">No</th>
+                  <th id="fixCol-head-2" rowspan="2">Line</th>
+                  <th id="fixCol-head-3" rowspan="2">Pos</th>
+                  <th id="fixCol-head-4" rowspan="2">Observer</th>
+                  <th id="fixCol-head-5" rowspan="2">Shift</th>
+                  <th :colspan="containerDate.length">{{ yearMonth }}</th>
+                </tr>
+                <tr>
+                  <th v-for="date in containerDate" :key="date" :class="date.bg">
+                    {{ date.idx }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-if="isRedShiftLoading">
+                  <td colspan="40" class="p-0" style="height: 200px">
+                    <div class="vl-parent p-0" style="height: 100%">
+                      <loading v-model:active="isRedShiftLoading" :can-cancel="true" :is-full-page="false"
+                        :on-cancel="onCancel" />
+                    </div>
+                  </td>
+                </tr>
+                <tr v-for="(observationRedShift, i) in observationScheduleRedShift" :key="observationRedShift.pos_id">
+                  <td id="fixCol-1">{{ i + 1 }}</td>
+                  <td id="fixCol-2">{{ observationRedShift.line_snm }}</td>
+                  <td id="fixCol-3">{{ observationRedShift.pos_nm }}</td>
+                  <td id="fixCol-4">{{ observationRedShift.checkers[0] }}</td>
+                  <td id="fixCol-5">{{ observationRedShift.group_nm }}</td>
+                  <td v-for="item in containerDate" :key="item.idx" style="min-width: 63px">
+                    <template v-for="child in observationRedShift.children" :key="child.observation_id">
+                      <template v-if="child.idxdate === String(item.idx)">
+                        <TooltipStwSchedule :child="child" :customTooltipStyle="customTooltipStyle" :observation="child"
+                          :currentDate="currentDate" @detail-schedule="detailSchedule" />
+                      </template>
+                    </template>
+                  </td>
+                </tr>
+                <tr v-if="observationScheduleRedShift?.length < 1">
+                  <td colspan="50">
+                    <h3 class="my-2">Data kosong</h3>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
     <!-- Yamazumi -->
@@ -370,7 +385,6 @@ export default {
 }
 </script>
 
-
 <style scoped>
 .fixed-td {
   position: absolute;
@@ -378,7 +392,7 @@ export default {
 
 .tableFixHead {
   overflow: auto;
-  height: 100%;
+  height: 35vh;
 }
 
 .tableFixHead th {

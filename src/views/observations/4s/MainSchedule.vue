@@ -79,7 +79,7 @@
             Data not found!
           </div>
         </div>
-        <div v-else class="tableFixHead">
+        <div class="tableFixHead" v-else>
           <table class="table table-hover" style="width: 100%;" v-for="mainSchedule in newSubScheduleData"
             :key="mainSchedule.id">
             <thead class="bg-dark text-light">
@@ -99,7 +99,7 @@
                 <th :colspan="getDateThisMonth" class="text-center">{{ getMonthStr }}</th>
               </tr>
               <tr>
-                <td v-for="n in getDateThisMonth" :key="n">{{ n }}</td>
+                <th v-for="n in getDateThisMonth" :key="n">{{ n }}</th>
               </tr>
             </thead>
             <tbody>
@@ -903,7 +903,19 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.tableFixHead {
+  overflow: auto;
+  height: 100vh;
+}
+
+.tableFixHead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: white;
+}
+
 .status-wrapper {
   width: 30px;
   height: 30px;
@@ -950,30 +962,19 @@ export default {
   border-radius: 10px;
 }
 
-.tableFixHead {
-  overflow: auto;
-  height: 100%;
-}
-
-.tableFixHead th {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-
 #fixCol-1 {
   position: sticky;
   width: 38px;
   top: 0px;
   left: 0px;
-  z-index: 3;
+  /* z-index: 3; */
 }
 
 #fixCol-2 {
   position: sticky;
   top: 0px;
   left: 37px;
-  z-index: 3;
+  /* z-index: 3; */
 }
 
 #fixCol-3 {
@@ -981,14 +982,14 @@ export default {
   min-width: 121px;
   top: 0px;
   left: 125px;
-  z-index: 3;
+  /* z-index: 3; */
 }
 
 #fixCol-4 {
   position: sticky;
   top: 0px;
   left: 220px;
-  z-index: 3;
+  /* z-index: 3; */
 }
 </style>
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
