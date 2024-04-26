@@ -27,7 +27,7 @@
               <th :colspan="getDateThisMonth" class="text-center">{{ getMonthStr }}</th>
             </tr>
             <tr>
-              <td v-for="n in getDateThisMonth" :key="n" class="text-center">{{ n }}</td>
+              <th v-for="n in getDateThisMonth" :key="n" class="text-center">{{ n }}</th>
             </tr>
           </thead>
           <tbody>
@@ -172,8 +172,7 @@ export default {
       'getIsLoadingSubSchedule'
     ]),
     getDateThisMonth() {
-      if (this.yearMonth)
-      {
+      if (this.yearMonth) {
         const year = this.yearMonth.split('-')[0]
         const month = +this.yearMonth.split('-')[1] + 1
         return new Date(year, month + 1, 0).getDate()
@@ -183,8 +182,7 @@ export default {
     },
     getMonthStr() {
       const monthStr = ['January', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
-      if (this.yearMonth)
-      {
+      if (this.yearMonth) {
         return monthStr[+this.yearMonth.split('-')[1] - 1]
       }
 
@@ -204,21 +202,17 @@ export default {
         confirmButtonText: 'Sure',
         denyButtonText: `No`,
       }).then(async (result) => {
-        if (result.isConfirmed)
-        {
+        if (result.isConfirmed) {
           ApiService.setHeader()
           const deleteData = await ApiService.delete(`operational/om/sub-schedule/delete/${subScheduleID}`)
 
-          if (deleteData)
-          {
+          if (deleteData) {
             Swal.fire('Data deleted!', '', 'success')
             this.$emit('refreshMainSchedule', true)
-          } else
-          {
+          } else {
             Swal.fire('Error', '', 'warning')
           }
-        } else if (result.isDenied)
-        {
+        } else if (result.isDenied) {
           Swal.fire('Canceled', '', 'info')
         }
       })
@@ -232,14 +226,12 @@ export default {
     },
     openEditPicModal(children) {
       let res = {}
-      if (children.children)
-      {
+      if (children.children) {
         res = {
           om_sub_schedule_id: children.om_sub_schedule_id,
         }
       }
-      else
-      {
+      else {
         res = children
       }
       this.$store.dispatch(GET_OM_SUB_SCHEDULES_CHILDREN_SELECTED, res)
@@ -305,7 +297,7 @@ export default {
 
 .tableFixHead {
   overflow: auto;
-  height: 100%;
+  height: 100vh;
 }
 
 .tableFixHead th {
@@ -320,7 +312,6 @@ export default {
   width: 38px;
   top: 0px;
   left: 0px;
-  z-index: 3;
   background-color: white;
 }
 
@@ -328,7 +319,6 @@ export default {
   position: sticky;
   top: 0px;
   left: 37px;
-  z-index: 3;
   background-color: white;
 }
 
@@ -337,7 +327,6 @@ export default {
   min-width: 121px;
   top: 0px;
   left: 125px;
-  z-index: 3;
   background-color: white;
 }
 
@@ -345,7 +334,6 @@ export default {
   position: sticky;
   top: 0px;
   left: 270px;
-  z-index: 3;
   background-color: white;
 }
 
@@ -353,7 +341,6 @@ export default {
   position: sticky;
   top: 0px;
   left: 370px;
-  z-index: 3;
   background-color: white;
 }
 
@@ -361,7 +348,6 @@ export default {
   position: sticky;
   top: 0px;
   left: 450px;
-  z-index: 3;
   background-color: white;
 }
 
@@ -369,13 +355,11 @@ export default {
   position: sticky;
   top: 0px;
   left: -200px;
-  z-index: 3;
   background-color: white;
 }
 
 #fixCol-header {
   position: sticky;
   left: -200px;
-  z-index: 3;
 }
 </style>

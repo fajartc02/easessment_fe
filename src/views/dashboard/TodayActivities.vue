@@ -35,7 +35,8 @@
           <div class="row">
             <template v-if="dataSTW.length > 0 && !isLoading">
               <div v-for="(item) in dataSTW" :key="item.observation_id" class="col-12 col-md-4 col-lg-4 mt-1">
-                <div class="card p-2 py-4" style="border-left: 5px solid cyan;min-height: 100px;">
+                <div class="card p-2 py-4"
+                  :style="`border-left: 5px solid ${item.color_status ? item.color_status : 'cyan'};min-height: 100px;`">
                   <div class="d-flex flex-row justify-content-between align-items-center">
                     <div class="d-flex flex-column">
                       Line: {{ item.line_snm }} |
