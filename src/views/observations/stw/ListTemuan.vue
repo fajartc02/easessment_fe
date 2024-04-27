@@ -159,14 +159,20 @@
                 </td>
                 <td class="px-2">{{ finding.cm_priority }}</td>
                 <td colspan="2">
-                  {{ finding.factor_nm == 'Safety' ? 'v' : ' ' }}
+                  <CIcon v-if="finding.factor_nm == 'Safety'" icon="cil-check" size="sm" />
                 </td>
-                <td>{{ finding.factor_nm == 'Method' ? 'v' : ' ' }}</td>
+                <td>
+                  <CIcon v-if="finding.factor_nm == 'Method'" icon="cil-check" size="sm" />
+                </td>
                 <td colspan="2">
-                  {{ finding.factor_nm == 'Man' ? 'v' : ' ' }}
+                  <CIcon v-if="finding.factor_nm == 'Man'" icon="cil-check" size="sm" />
                 </td>
-                <td>{{ finding.factor_nm == 'Material' ? 'v' : ' ' }}</td>
-                <td>{{ finding.factor_nm == 'Machine' ? 'v' : ' ' }}</td>
+                <td>
+                  <CIcon v-if="finding.factor_nm == 'Material'" icon="cil-check" size="sm" />
+                </td>
+                <td>
+                  <CIcon v-if="finding.factor_nm == 'Machine'" icon="cil-check" size="sm" />
+                </td>
                 <td>{{ finding.cm_pic_nm }}</td>
                 <td v-for="n in num" :key="n" style="min-width: 30px !important; padding: 5px">
                   <div v-if="n >= finding.w_str_plan_date && n <= finding.w_end_plan_date
