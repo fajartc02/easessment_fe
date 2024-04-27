@@ -26,8 +26,14 @@
               <CFormInput :value="getSubSchedulesCheck?.plan_time?.substring(0, 10)" disabled />
             </CInputGroup>
             <CInputGroup class="mb-3">
-              <CInputGroupText>Plan PIC</CInputGroupText>
-              <CFormInput :value="getSubSchedulesCheck?.pic_nm" disabled />
+              <CInputGroupText>Act Date</CInputGroupText>
+              <CFormInput v-if="getSubSchedulesCheck?.actual_time"
+                :value="getSubSchedulesCheck?.actual_time.substring(0, 10)" disabled />
+              <input type="date" class="form-control" v-model="detailActualDate">
+              <CInputGroupText>
+                <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()"> {{
+                  isUpdateCheckLoading ? 'updating..' : 'update' }} </button>
+              </CInputGroupText>
             </CInputGroup>
           </div>
         </div>
@@ -42,14 +48,8 @@
               <CFormInput :value="getSubSchedulesCheck?.kanban_no" disabled />
             </CInputGroup>
             <CInputGroup class="mb-3">
-              <CInputGroupText>Act Date</CInputGroupText>
-              <CFormInput v-if="getSubSchedulesCheck?.actual_time"
-                :value="getSubSchedulesCheck?.actual_time.substring(0, 10)" disabled />
-              <input type="date" class="form-control" v-model="detailActualDate">
-              <CInputGroupText>
-                <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()"> {{
-    isUpdateCheckLoading ? 'updating..' : 'update' }} </button>
-              </CInputGroupText>
+              <CInputGroupText>Plan PIC</CInputGroupText>
+              <CFormInput :value="getSubSchedulesCheck?.pic_nm" disabled />
             </CInputGroup>
             <CInputGroup class="mb-3">
               <CInputGroupText>Act PIC</CInputGroupText>
@@ -57,7 +57,7 @@
               <Select2 class="form-control" :options="getUsersOpts" v-model="detailActualPIC" />
               <CInputGroupText>
                 <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()">{{
-    isUpdateCheckLoading ? 'updating..' : 'update' }}</button>
+                  isUpdateCheckLoading ? 'updating..' : 'update' }}</button>
               </CInputGroupText>
             </CInputGroup>
           </div>
@@ -111,7 +111,7 @@
               <button class="btn btn-info btn-sm text-white"
                 @click="saveScheduleCheck(item.judgment_id, item.actual_time, item.item_check_kanban_id)">
                 {{ isAddCheckLoading ?
-    'Saving...' : 'Save' }}
+                  'Saving...' : 'Save' }}
               </button>
             </td>
             <td>
@@ -183,17 +183,17 @@
               <input type="text" class="form-control" v-model="findingDesc" />
             </div>
             <div class="mb-2">
-              <label class="mb-1">Plan CM Date</label>
+              <label class="mb-1">Plan Countermeasure Date</label>
               <input type="date" class="form-control" v-model="planCMDate" />
             </div>
             <div class="mb-2">
-              <label class="mb-1">Plan CM Desc</label>
+              <label class="mb-1">Plan Countermeasure Desc</label>
               <input type="text" class="form-control" v-model="planCMDesc" />
             </div>
           </div>
           <div class="col">
             <div class="mb-2">
-              <label class="mb-1">Time CM</label>
+              <label class="mb-1">Time Countermeasure</label>
               <input type="text" class="form-control" v-model="timeCM" />
             </div>
             <div class="mb-2">
@@ -220,7 +220,7 @@
               </select>
             </div>
             <div class="mb-2">
-              <label class="mb-1">CM Judg</label>
+              <label class="mb-1">Countermeasure Judg</label>
               <select v-model="cmJudg" class="form-select">
                 <option value="true">Sudah</option>
                 <option value="false">Belum</option>
@@ -232,7 +232,7 @@
               </VueMultiselect>
             </div>
             <div class="mb-2">
-              <label class="mb-1">Actual CM Date</label>
+              <label class="mb-1">Actual Countermeasure Date</label>
               <input type="date" class="form-control" v-model="actualCMDate" />
             </div>
             <div class="mb-2">
@@ -301,9 +301,9 @@ export default {
       selectedKanbanID: null,
       selectedZoneID: null,
       selectedPIC: null,
-      findingDate: null,
+      findingDate: moment().format('YYYY-MM-DD'),
       findingDesc: null,
-      planCMDate: null,
+      planCMDate: moment().format('YYYY-MM-DD'),
       planCMDesc: null,
       timeCM: null,
       timeYokoten: null,
