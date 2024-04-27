@@ -7,11 +7,11 @@
           <table class="table mb-0">
             <tr>
               <th><img src="@/../public/tanoko/0.png" width="20" height="20"></th>
-              <th>Progress 1</th>
+              <th>Order Part</th>
               <th><img src="@/../public/tanoko/1.png" width="20" height="20"></th>
-              <th>Progress 2</th>
+              <th>Countermeasure</th>
               <th><img src="@/../public/tanoko/2.png" width="20" height="20"></th>
-              <th>Progress 3</th>
+              <th>Monitor / Follow</th>
               <th><img src="@/../public/tanoko/3.png" width="20" height="20"></th>
               <th>Finish</th>
             </tr>
@@ -180,8 +180,8 @@
                     </div>
                   </td>
                   <td class="text-center align-middle">
-                    <img v-if="finding.progress_num - 1 > 0" :src="progressNumImg(finding.progress_num)" :alt="progressNumImg(finding.progress_num)"
-                      width="30" height="30">
+                    <img v-if="finding.progress_num - 1 > 0" :src="progressNumImg(finding.progress_num)"
+                      :alt="progressNumImg(finding.progress_num)" width="30" height="30">
                   </td>
                   <td class="text-center align-middle">
                     <input v-if="finding.cm_sign_lh" type="image" :src="finding.cm_sign_lh" alt="" width="200" />
@@ -243,8 +243,7 @@ export default {
       return `./tanoko/${progressNum - 1}.png`
     },
     async getOptSystems(type, id = null, textHandler = null) {
-      try
-      {
+      try {
         const response = await this.$store.dispatch(GET_SYSTEMS, {
           system_type: type
         })
@@ -256,8 +255,7 @@ export default {
           }
         })
       }
-      catch (error)
-      {
+      catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
         return []
@@ -271,21 +269,17 @@ export default {
         confirmButtonText: 'Sure',
         denyButtonText: `No`,
       }).then((result) => {
-        if (result.isConfirmed)
-        {
+        if (result.isConfirmed) {
           ApiService.setHeader()
           const deleteData = ApiService.delete(`operational/om/finding/delete/${findingID}`)
 
-          if (deleteData)
-          {
+          if (deleteData) {
             Swal.fire('Data deleted!', '', 'success')
             this.$emit('refreshDeleted', true)
-          } else
-          {
+          } else {
             Swal.fire('Error', '', 'warning')
           }
-        } else if (result.isDenied)
-        {
+        } else if (result.isDenied) {
           Swal.fire('Canceled', '', 'info')
         }
       })
