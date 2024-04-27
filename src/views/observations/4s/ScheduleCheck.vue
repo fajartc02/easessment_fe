@@ -111,7 +111,7 @@
               <button class="btn btn-info btn-sm text-white"
                 @click="saveScheduleCheck(item.judgment_id, item.actual_time, item.item_check_kanban_id)">
                 {{ isAddCheckLoading ?
-                  'Saving...' : 'Save' }}
+                'Saving...' : 'Save' }}
               </button>
             </td>
             <td>
@@ -138,26 +138,26 @@
       </CModalHeader>
       <CModalBody>
         <div class="row">
-          <div class="col">
-            <div class="col">
-              <div class="mb-2">
-                <label class="mb-1">Line</label>
-                <input type="text" :value="getSubSchedulesCheck?.line_nm" class="form-control" disabled>
-              </div>
-            </div>
+          <div class="col-md-6">
             <div class="mb-2">
-              <label class="mb-1">Freq</label>
-              <select class="form-select" v-model="selectedFreqID" disabled>
-                <option v-for="freq in getFreqs" :key="freq.id" :value="freq.id">
-                  {{ freq.freq_nm }}
-                </option>
-              </select>
+              <label class="mb-1">Line</label>
+              <input type="text" :value="getSubSchedulesCheck?.line_nm" class="form-control" disabled>
             </div>
             <div class="mb-2">
               <label class="mb-1">Zone</label>
               <select class="form-select" v-model="selectedZoneID" disabled>
                 <option v-for="zone in getZones" :key="zone.zone_id" :value="zone.zone_id">
                   {{ zone.zone_nm }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-2">
+              <label class="mb-1">Freq</label>
+              <select class="form-select" v-model="selectedFreqID" disabled>
+                <option v-for="freq in getFreqs" :key="freq.id" :value="freq.id">
+                  {{ freq.freq_nm }}
                 </option>
               </select>
             </div>
@@ -169,75 +169,117 @@
                 </option>
               </select>
             </div>
-            <div class="mb-2">
-              <label class="mb-1">Finding PIC</label>
-              <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
-              </VueMultiselect>
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">Finding Date</label>
-              <input type="date" class="form-control" v-model="findingDate" />
-            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
             <div class="mb-2">
               <label class="mb-1">Finding Desc</label>
-              <input type="text" class="form-control" v-model="findingDesc" />
+              <input type="text" class="form-control" v-model="findingDesc" placeholder="Write Finding Desc" />
             </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-2">
+              <label class="mb-1">Finding Date</label>
+              <input type="date" class="form-control" v-model="findingDate" placeholder="Select Finding Date" />
+            </div>
+            <div class="mb-2">
+              <label class="mb-1">Finding PIC</label>
+              <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions"
+                class="vue-multi-select">
+              </VueMultiselect>
+            </div>
+
+          </div>
+          <div class="col-md-6">
+            <div class="mb-2">
+              <label class="mb-1">Reduce Time Countermeasure (Menit)</label>
+              <div class="d-flex align-items-center">
+                <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" v-model="enabledReduceTime"
+                  class="me-2" style="height: 20px; width: 20px;">
+                <input type="text" class="form-control" v-model="timeCM" :disabled="!enabledReduceTime"
+                  @keypress="$event.key.match(/^[\d]$/) ? '' : $event.preventDefault()" />
+              </div>
+            </div>
+            <div class="mb-2">
+              <label class="mb-1">Actual PIC</label>
+              <VueMultiselect v-model="actualPIC" :options="picData" :custom-label="customPicOptions"
+                class="vue-multi-select">
+              </VueMultiselect>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Plan Countermeasure Date</label>
               <input type="date" class="form-control" v-model="planCMDate" />
             </div>
+          </div>
+          <div class="col-md-6">
             <div class="mb-2">
-              <label class="mb-1">Plan Countermeasure Desc</label>
-              <input type="text" class="form-control" v-model="planCMDesc" />
+              <label class="mb-1">Actual Countermeasure Date</label>
+              <input type="date" class="form-control" v-model="actualCMDate" />
             </div>
           </div>
-          <div class="col">
+        </div>
+        <div class="row">
+          <div class="col-md-12">
             <div class="mb-2">
-              <label class="mb-1">Time Countermeasure</label>
-              <input type="text" class="form-control" v-model="timeCM" />
+              <label class="mb-1">Plan Countermeasure Desc</label>
+              <input type="text" class="form-control" v-model="planCMDesc"
+                placeholder="Write Plan Countermeasure Desc" />
             </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
             <div class="mb-2">
-              <label class="mb-1">Time Yokoten</label>
+              <label class="mb-1">Yokoten</label>
               <select v-model="timeYokoten" class="form-select">
+                <option value="null" selected>Select Yokoten</option>
                 <option value="true">Sudah</option>
-                <option value="false">Belum</option>
+                <option value="false" selected>Belum</option>
               </select>
             </div>
             <div class="mb-2">
-              <label class="mb-1">Opt Changes</label>
+              <label class="mb-1">Department Terkait</label>
+              <select class="form-select" v-model="optDepartment">
+                <option value="null" selected>Select Department Terkait</option>
+                <option v-for="optDept in optDeptData" :key="optDept" :value="optDept.system_value">
+                  {{ optDept.system_value }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-2">
+              <label class="mb-1">Perubahan Standart</label>
               <select class="form-select" v-model="optChanges">
+                <option value="null" selected>Select Standart</option>
                 <option v-for="optChange in optChangeData" :key="optChange" :value="optChange.system_value">
                   {{ optChange.system_value }}
                 </option>
               </select>
             </div>
             <div class="mb-2">
-              <label class="mb-1">Opt Department</label>
-              <select class="form-select" v-model="optDepartment">
-                <option v-for="optDept in optDeptData" :key="optDept" :value="optDept.system_value">
-                  {{ optDept.system_value }}
-                </option>
-              </select>
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">Countermeasure Judg</label>
+              <label class="mb-1">Status Countermeasure</label>
               <select v-model="cmJudg" class="form-select">
+                <option value="null" selected>Select Status Countermeasure</option>
                 <option value="true">Sudah</option>
                 <option value="false">Belum</option>
               </select>
             </div>
-            <div class="mb-2">
-              <label class="mb-1">Actual PIC</label>
-              <VueMultiselect v-model="actualPIC" :options="picData" :custom-label="customPicOptions">
-              </VueMultiselect>
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">Actual Countermeasure Date</label>
-              <input type="date" class="form-control" v-model="actualCMDate" />
-            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
             <div class="mb-2">
               <label class="mb-1">Evaluation</label>
               <select class="form-select" v-model="evaluationName">
+                <option value="null" selected>Select Evaluation</option>
                 <option v-for="optEval in optEvaluation" :key="optEval" :value="optEval.system_value">
                   {{ optEval.system_value }}
                 </option>
@@ -256,8 +298,6 @@
         <CButton color="primary" v-else @click="updateFinding()"> {{ findingActionType }} finding data</CButton>
       </CModalFooter>
     </CModal>
-
-
   </div>
 </template>
 
@@ -323,6 +363,7 @@ export default {
       detailActualPIC: null,
       detailActualDate: null,
       gettingKanbanID: null,
+      enabledReduceTime: false,
     }
   },
   computed: {
@@ -335,7 +376,8 @@ export default {
       'getFreqs',
     ]),
     Users() {
-      if (this.getUsersOpts) {
+      if (this.getUsersOpts)
+      {
         let container = this.getUsersOpts.map(user => {
           return {
             id: user.id,
@@ -343,7 +385,8 @@ export default {
           }
         })
         return container;
-      } else {
+      } else
+      {
         return [];
       }
     }
@@ -355,7 +398,8 @@ export default {
         sub_schedule_id: this.$route.params.subScheduleID
       }
       await this.$store.dispatch(GET_SCHEDULES_CHECK, objQuery).then((res) => {
-        if (res) {
+        if (res)
+        {
           this.gettingKanbanID = res.kanban_id
           this.itemCheks = res.item_check_kanbans
           this.isLoading = false
@@ -373,26 +417,30 @@ export default {
         "checked_date": moment().toISOString().split('T')[0]
       }
       const judgments = await ApiService.post(`operational/4s/schedule-item-check-kanban/add`, data)
-      if (judgments.data.message == 'Success to add 4s schedule item check kanban') {
+      if (judgments.data.message == 'Success to add 4s schedule item check kanban')
+      {
         toast.success('Success add data', {
           autoClose: 700
         })
         this.isAddCheckLoading = false
         this.selectedScheduleItemCheckKanbanID = judgments.data.data.schedule_item_check_kanban_id
-      } else {
+      } else
+      {
         alert('Failed add data')
       }
     },
     openAddFindingModal(scheduleItemCheckKanbanID, findings, actionType) {
       this.findingActionType = actionType
-      if (scheduleItemCheckKanbanID !== null) {
+      if (scheduleItemCheckKanbanID !== null)
+      {
         this.selectedScheduleItemCheckKanbanID = scheduleItemCheckKanbanID
       }
       this.addFindingModal = true
     },
     openEditFindingModal(scheduleItemCheckKanbanID, findings, actionType) {
       this.selectedFindingID = findings[0].finding_id
-      if (scheduleItemCheckKanbanID !== null) {
+      if (scheduleItemCheckKanbanID !== null)
+      {
         this.selectedScheduleItemCheckKanbanID = scheduleItemCheckKanbanID
       }
       this.findingActionType = actionType
@@ -421,6 +469,13 @@ export default {
       this.actualPicName = data.actual_pic_nm
 
       this.addFindingModal = true
+      if (data.time_cm)
+      {
+        this.enabledReduceTime = true
+      } else
+      {
+        this.enabledReduceTime = false
+      }
     },
     async addFinding() {
       ApiService.setHeader()
@@ -449,13 +504,15 @@ export default {
       console.log(findingData)
 
       const add = await ApiService.post(`operational/4s/finding/add`, findingData)
-      if (add.data.message == 'Success to add 4s finding') {
+      if (add.data.message == 'Success to add 4s finding')
+      {
         toast.success('Success add data', {
           autoClose: 700
         })
         this.addFindingModal = false
         await this.getScheduleCheck()
-      } else {
+      } else
+      {
         toast.error('Failed', {
           autoClose: 700
         })
@@ -485,13 +542,15 @@ export default {
       }
 
       const update = await ApiService.put(`operational/4s/finding/edit/${this.selectedFindingID}`, findingData)
-      if (update.data.message == 'Success to edit 4s finding') {
+      if (update.data.message == 'Success to edit 4s finding')
+      {
         toast.success('Success edit data', {
           autoClose: 700
         })
         this.addFindingModal = false
         await this.getScheduleCheck()
-      } else {
+      } else
+      {
         toast.error('Failed', {
           autoClose: 700
         })
@@ -505,7 +564,8 @@ export default {
         actual_pic_id: this.detailActualPIC
       }
       const updateData = await ApiService.put(`operational/4s/sub-schedule/edit/${this.$route.params.subScheduleID}`, data)
-      if (updateData.data.message == 'Success to edit 4s schedule plan') {
+      if (updateData.data.message == 'Success to edit 4s schedule plan')
+      {
         this.detailActualDate = null
         this.detailActualPIC = null
         this.getScheduleCheck()
@@ -518,23 +578,29 @@ export default {
       this.judgments = judgments.data.data
     },
     async getLines() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_LINES)
-        if (this.getLinesOpts) {
+        if (this.getLinesOpts)
+        {
           this.mapLinesData()
         }
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getUsers() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_USERS)
-        if (this.getUsersOpts) {
+        if (this.getUsersOpts)
+        {
           this.mapUsersData()
         }
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -557,25 +623,31 @@ export default {
     },
 
     async getZone() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_ZONES)
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getKanban() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_KANBANS)
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getFreq() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_FREQS)
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -584,11 +656,13 @@ export default {
       let objQuery = {
         system_type: '4S_OPT_CHANGE'
       }
-      try {
+      try
+      {
         this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
           this.optChangeData = res
         })
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -597,11 +671,13 @@ export default {
       let objQuery = {
         system_type: '4S_OPT_DEPT'
       }
-      try {
+      try
+      {
         this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
           this.optDeptData = res
         })
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -610,11 +686,13 @@ export default {
       let objQuery = {
         system_type: '4S_EVALUATION'
       }
-      try {
+      try
+      {
         this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
           this.optEvaluation = res
         })
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -644,5 +722,14 @@ export default {
 }
 </script>
 
-<style></style>
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
+<style>
+.h-10 {
+  height: 10px !important;
+}
+
+.vue-multi-select {
+  width: auto !important;
+  flex: 1 1 auto !important;
+}
+</style>

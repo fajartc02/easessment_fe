@@ -71,7 +71,7 @@
             </VueMultiselect>
           </CInputGroup>
           <CInputGroup class="mb-3">
-            <CInputGroupText>Actual CM Date</CInputGroupText>
+            <CInputGroupText>Actual Countermeasure Date</CInputGroupText>
             <input type="date" class="form-control" v-model="form.actual_cm_date">
           </CInputGroup>
           <CInputGroup class="mb-3">
