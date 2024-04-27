@@ -12,6 +12,7 @@ import { GET_GROUP } from '@/store/modules/group.module'
 import { mapGetters } from 'vuex'
 import ApiService from '@/store/api.service'
 import moment from 'moment'
+import idLocale from '@fullcalendar/core/locales/id';
 // import { toast } from 'vue3-toastify/index'
 // import { formatDate } from '@fullcalendar/core'
 
@@ -22,12 +23,14 @@ export default defineComponent({
   data() {
     return {
       calendarOptions: {
+        locales: [idLocale],
         plugins: [
           dayGridPlugin,
           timeGridPlugin,
-          interactionPlugin // needed for dateClick
+          interactionPlugin, // needed for dateClick
         ],
         headerToolbar: {
+          locale: 'id'
           // left: 'prev,next today',
           // center: 'title',
           // right: 'dayGridMonth,timeGridWeek,timeGridDay'
@@ -176,6 +179,9 @@ export default defineComponent({
           await ApiService.delete(`/master/shifts/delete/${clickInfo.event._def.extendedProps.shift_id}`)
           this.isLoading = false
           this.calendarOptions = {
+            config: {
+              locale: 'ID'
+            },
             plugins: [
               dayGridPlugin,
               timeGridPlugin,
@@ -325,10 +331,10 @@ export default defineComponent({
             :style="`${arg.event.title == 'WHITE' ? 'background-color: #ffffff' : arg.event.title == 'RED' ? 'background-color: #f99a9a' : 'background-color: #f95e5e'}`">
             <div class="card-body p-0 overflow-auto">
               <i style="color: black;">{{
-    arg.event.extendedProps.is_holiday ? arg.event.extendedProps.created_by ?
-      arg.event.extendedProps.holiday_desc :
-      `${arg.event.title}` :
-      arg.event.title + '-' + arg.event.extendedProps.shift_type }}</i>
+                arg.event.extendedProps.is_holiday ? arg.event.extendedProps.created_by ?
+                  arg.event.extendedProps.holiday_desc :
+                  `${arg.event.title}` :
+                  arg.event.title + '-' + arg.event.extendedProps.shift_type }}</i>
             </div>
           </div>
         </template>
@@ -336,6 +342,12 @@ export default defineComponent({
     </div>
   </div>
 </template>
+
+<style>
+.fc-col-header-cell-cushion {
+  color: white;
+}
+</style>
 
 <style lang='css' scoped>
 h2 {
