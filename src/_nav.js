@@ -67,7 +67,7 @@ export default [{
     },
     {
         component: 'CNavItem',
-        name: 'Schedule Observasi',
+        name: 'Create Schedule',
         to: '/schedule/observation',
         icon: 'cil-clipboard',
         is_admin: false
