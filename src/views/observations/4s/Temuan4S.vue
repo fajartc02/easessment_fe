@@ -536,6 +536,9 @@ export default {
       this.getFindings()
     },
     getImage(eval_nm) {
+      console.log(eval_nm);
+      // const labels = ['Order Part', 'Countermeasure', 'Monitor/Follow', 'Finish']
+      // console.log(labels.findIndex[eval_nm]);
       return `./tanoko/${this.evaluationOpts.findIndex(x => x.system_value == eval_nm) + '.png'}`
     },
     async getSystem() {
