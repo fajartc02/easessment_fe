@@ -294,11 +294,11 @@
               <input type="text" class="form-control" v-model="findingDesc" />
             </div>
             <div class="mb-2">
-              <label class="mb-1">Plan CM Date</label>
+              <label class="mb-1">Plan Countermeasure Date</label>
               <input type="date" class="form-control" v-model="planCMDate" />
             </div>
             <div class="mb-2">
-              <label class="mb-1">Plan CM Desc</label>
+              <label class="mb-1">Plan Countermeasure Desc</label>
               <input type="text" class="form-control" v-model="planCMDesc" />
             </div>
           </div>
@@ -331,7 +331,7 @@
               </select>
             </div>
             <div class="mb-2">
-              <label class="mb-1">CM Judg</label>
+              <label class="mb-1">Countermeasure Judg</label>
               <select v-model="cmJudg" class="form-select">
                 <option value="true">Sudah</option>
                 <option value="false">Belum</option>
@@ -343,7 +343,7 @@
               </VueMultiselect>
             </div>
             <div class="mb-2">
-              <label class="mb-1">Actual CM Date</label>
+              <label class="mb-1">Actual Countermeasure Date</label>
               <input type="date" class="form-control" v-model="actualCMDate" />
             </div>
             <div class="mb-2">
@@ -500,7 +500,8 @@ export default {
   },
   watch: {
     selectedMonth: function () {
-      if (this.selectedMonth) {
+      if (this.selectedMonth)
+      {
         this.generateDate()
         let idx = this.idxMonth.indexOf(this.selectedMonth.split('-')[1])
         this.yearMonth = `${this.monthStr[idx]} ${this.selectedMonth.split('-')[0]
@@ -516,17 +517,20 @@ export default {
       return `${value.text}`
     },
     onPageChange(page, type) {
-      if (type == 'prev') {
+      if (type == 'prev')
+      {
         this.currentPage = this.currentPage - 1
         this.getFindingsFunc()
       }
 
-      if (type == 'next') {
+      if (type == 'next')
+      {
         this.currentPage = this.currentPage + 1
         this.getFindingsFunc()
       }
 
-      if (type == 'fromnumber') {
+      if (type == 'fromnumber')
+      {
         this.currentPage = page
         this.getFindingsFunc()
       }
@@ -542,7 +546,8 @@ export default {
       return `./tanoko/${this.evaluationOpts.findIndex(x => x.system_value == eval_nm) + '.png'}`
     },
     async getSystem() {
-      try {
+      try
+      {
         ApiService.setHeader()
         const changeOpts = await ApiService.get(`master/systems/get/4S_OPT_CHANGE`)
         const depts = await ApiService.get('master/systems/get/4S_OPT_DEPT')
@@ -551,7 +556,8 @@ export default {
         this.changeOpts = changeOpts.data.data
         this.deptOpts = depts.data.data
         this.evaluationOpts = evaluation.data.data
-      } catch (error) {
+      } catch (error)
+      {
         toast.error(error.response.data.message, {
           autoClose: 1000,
         })
@@ -623,12 +629,14 @@ export default {
       }
 
       const add = await ApiService.put(`operational/4s/finding/edit/${this.selectedFindingID}`, findingData)
-      if (add.data.message == 'Success to edit 4s finding') {
+      if (add.data.message == 'Success to edit 4s finding')
+      {
         alert('Success update data')
         this.editFindingModal = false
         this.isUpdateFindingLoading = false
         await this.getFindings()
-      } else {
+      } else
+      {
         alert('Failed update data')
         this.isUpdateFindingLoading = false
         this.editFindingModal = false
@@ -643,17 +651,21 @@ export default {
         confirmButtonText: 'Sure',
         denyButtonText: `No`,
       }).then((result) => {
-        if (result.isConfirmed) {
+        if (result.isConfirmed)
+        {
           ApiService.setHeader()
           const deleteData = ApiService.delete(`operational/4s/finding/delete/${findingID}`)
 
-          if (deleteData) {
+          if (deleteData)
+          {
             Swal.fire('Data deleted!', '', 'success')
             this.getFindings()
-          } else {
+          } else
+          {
             Swal.fire('Error', '', 'warning')
           }
-        } else if (result.isDenied) {
+        } else if (result.isDenied)
+        {
           Swal.fire('Canceled', '', 'info')
         }
       })
@@ -673,9 +685,11 @@ export default {
     },
 
     async getUsers() {
-      try {
+      try
+      {
         await this.$store.dispatch(GET_USERS)
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -684,41 +698,51 @@ export default {
       return `${pic_name}`
     },
     async getLines() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_LINES)
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getGroup() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_GROUP)
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getZone() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_ZONES, { line_id: this.selectedLineIDFilter })
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getKanban() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_KANBANS)
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getFreq() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_FREQS)
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -730,7 +754,8 @@ export default {
       var lastDay = new Date(year, month, 0)
       let container = []
       this.containerDate = []
-      for (let i = 1; i <= lastDay.getDate(); i++) {
+      for (let i = 1; i <= lastDay.getDate(); i++)
+      {
         let setDt = new Date(selectedMonth).setDate(i)
         let newDate = new Date(setDt)
         container.push(newDate.getDate())
@@ -757,7 +782,8 @@ export default {
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
-    if (localStorage.getItem('line_id')) {
+    if (localStorage.getItem('line_id'))
+    {
       this.selectedLineIDFilter = localStorage.getItem('line_id')
     }
     await this.getGroup()

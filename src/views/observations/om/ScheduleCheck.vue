@@ -43,7 +43,7 @@
                             <input type="date" class="form-control" v-model="detailActualDate">
                             <CInputGroupText>
                                 <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()"> {{
-                                isUpdateCheckLoading ? 'updating..' : 'update' }} </button>
+                                    isUpdateCheckLoading ? 'updating..' : 'update' }} </button>
                             </CInputGroupText>
                         </CInputGroup>
                         <CInputGroup class="mb-3">
@@ -52,7 +52,7 @@
                             <Select2 class="form-control" :options="Users" v-model="detailActualPIC" />
                             <CInputGroupText>
                                 <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()">{{
-                                isUpdateCheckLoading ? 'updating..' : 'update' }}</button>
+                                    isUpdateCheckLoading ? 'updating..' : 'update' }}</button>
                             </CInputGroupText>
                         </CInputGroup>
                     </div>
@@ -91,7 +91,7 @@
                             <button class="btn btn-info btn-sm text-white"
                                 @click="saveScheduleCheck(item.judgment_id, item.actual_time, item.item_check_kanban_id)">
                                 {{ isAddCheckLoading ?
-                                'Saving...' : 'Save' }}
+                                    'Saving...' : 'Save' }}
                             </button>
                         </td>
                         <td>
@@ -198,11 +198,11 @@
                             <input type="text" class="form-control" v-model="findingDesc" />
                         </div>
                         <div class="mb-2">
-                            <label class="mb-1">Plan CM Date</label>
+                            <label class="mb-1">Plan Countermeasure Date</label>
                             <input type="date" class="form-control" v-model="planCMDate" />
                         </div>
                         <div class="mb-2">
-                            <label class="mb-1">Plan CM Desc</label>
+                            <label class="mb-1">Plan Countermeasure Desc</label>
                             <input type="text" class="form-control" v-model="planCMDesc" />
                         </div>
                     </div>
@@ -236,7 +236,7 @@
                             </select>
                         </div>
                         <div class="mb-2">
-                            <label class="mb-1">CM Judg</label>
+                            <label class="mb-1">Countermeasure Judg</label>
                             <select v-model="cmJudg" class="form-select">
                                 <option value="true">Sudah</option>
                                 <option value="false">Belum</option>
@@ -266,7 +266,7 @@
                             </VueMultiselect>
                         </div>
                         <div class="mb-2">
-                            <label class="mb-1">Actual CM Date</label>
+                            <label class="mb-1">Actual Countermeasure Date</label>
                             <input type="date" class="form-control" v-model="actualCMDate" />
                         </div>
                         <div class="mb-2">
@@ -355,7 +355,8 @@ export default {
             'getFreqs',
         ]),
         Users() {
-            if (this.getUsersOpts) {
+            if (this.getUsersOpts)
+            {
                 let container = this.getUsersOpts.map(user => {
                     return {
                         id: user.id,
@@ -363,7 +364,8 @@ export default {
                     }
                 })
                 return container;
-            } else {
+            } else
+            {
                 return [];
             }
         }
@@ -375,7 +377,8 @@ export default {
                 sub_schedule_id: this.$route.params.subScheduleID
             }
             await this.$store.dispatch(GET_SCHEDULES_CHECK, objQuery).then((res) => {
-                if (res) {
+                if (res)
+                {
                     this.itemCheks = res.item_check_kanbans
                 }
             })
@@ -391,16 +394,19 @@ export default {
                 "checked_date": moment().toISOString().split('T')[0]
             }
             const judgments = await ApiService.post(`operational/4s/schedule-item-check-kanban/add`, data)
-            if (judgments.data.message == 'Success to add 4s schedule item check kanban') {
+            if (judgments.data.message == 'Success to add 4s schedule item check kanban')
+            {
                 alert('Success add data')
                 this.isAddCheckLoading = false
                 this.selectedScheduleItemCheckKanbanID = judgments.data.data.schedule_item_check_kanban_id
-            } else {
+            } else
+            {
                 alert('Failed add data')
             }
         },
         openAddFindingModal(scheduleItemCheckKanbanID) {
-            if (scheduleItemCheckKanbanID !== null) {
+            if (scheduleItemCheckKanbanID !== null)
+            {
                 this.selectedScheduleItemCheckKanbanID = scheduleItemCheckKanbanID
             }
             this.addFindingModal = true
@@ -457,11 +463,13 @@ export default {
             }
 
             const add = await ApiService.post(`operational/4s/finding/add`, findingData)
-            if (add.data.message == 'Success to add 4s finding') {
+            if (add.data.message == 'Success to add 4s finding')
+            {
                 alert('Success add data')
                 this.addFindingModal = false
                 await this.getScheduleCheck()
-            } else {
+            } else
+            {
                 alert('Failed add data')
 
             }
@@ -474,7 +482,8 @@ export default {
                 actual_pic_id: this.detailActualPIC
             }
             const updateData = await ApiService.put(`operational/4s/sub-schedule/edit/${this.$route.params.subScheduleID}`, data)
-            if (updateData.data.message == 'Success to edit 4s schedule plan') {
+            if (updateData.data.message == 'Success to edit 4s schedule plan')
+            {
                 this.detailActualDate = null
                 this.detailActualPIC = null
                 this.getScheduleCheck()
@@ -487,23 +496,29 @@ export default {
             this.judgments = judgments.data.data
         },
         async getLines() {
-            try {
+            try
+            {
                 this.$store.dispatch(GET_LINES)
-                if (this.getLinesOpts) {
+                if (this.getLinesOpts)
+                {
                     this.mapLinesData()
                 }
-            } catch (error) {
+            } catch (error)
+            {
                 if (error.response.status == 401) this.$router.push('/login')
                 console.log(error)
             }
         },
         async getUsers() {
-            try {
+            try
+            {
                 this.$store.dispatch(GET_USERS)
-                if (this.getUsersOpts) {
+                if (this.getUsersOpts)
+                {
                     this.mapUsersData()
                 }
-            } catch (error) {
+            } catch (error)
+            {
                 if (error.response.status == 401) this.$router.push('/login')
                 console.log(error)
             }
@@ -526,25 +541,31 @@ export default {
         },
 
         async getZone() {
-            try {
+            try
+            {
                 this.$store.dispatch(GET_ZONES)
-            } catch (error) {
+            } catch (error)
+            {
                 if (error.response.status == 401) this.$router.push('/login')
                 console.log(error)
             }
         },
         async getKanban() {
-            try {
+            try
+            {
                 this.$store.dispatch(GET_KANBANS)
-            } catch (error) {
+            } catch (error)
+            {
                 if (error.response.status == 401) this.$router.push('/login')
                 console.log(error)
             }
         },
         async getFreq() {
-            try {
+            try
+            {
                 this.$store.dispatch(GET_FREQS)
-            } catch (error) {
+            } catch (error)
+            {
                 if (error.response.status == 401) this.$router.push('/login')
                 console.log(error)
             }
@@ -553,11 +574,13 @@ export default {
             let objQuery = {
                 system_type: 'OPT_CHANGE'
             }
-            try {
+            try
+            {
                 this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
                     this.optChangeData = res
                 })
-            } catch (error) {
+            } catch (error)
+            {
                 if (error.response.status == 401) this.$router.push('/login')
                 console.log(error)
             }
@@ -566,11 +589,13 @@ export default {
             let objQuery = {
                 system_type: 'OPT_DEPT'
             }
-            try {
+            try
+            {
                 this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
                     this.optDeptData = res
                 })
-            } catch (error) {
+            } catch (error)
+            {
                 if (error.response.status == 401) this.$router.push('/login')
                 console.log(error)
             }

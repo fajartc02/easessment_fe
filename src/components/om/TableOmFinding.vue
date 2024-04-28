@@ -351,7 +351,7 @@ export default {
   width: 40px;
   top: 0px;
   left: 0px;
-  z-index: 3;
+  z-index: 999;
   background-color: white;
 }
 
@@ -359,7 +359,7 @@ export default {
   position: sticky;
   top: 0px;
   left: 30px;
-  z-index: 3;
+  z-index: 999;
   background-color: white;
   min-width: 80px;
 }
@@ -369,7 +369,7 @@ export default {
   min-width: 121px;
   top: 0px;
   left: 100px;
-  z-index: 3;
+  z-index: 999;
   background-color: white;
 }
 
@@ -377,7 +377,7 @@ export default {
   position: sticky;
   top: 0px;
   left: 200px;
-  z-index: 3;
+  z-index: 999;
   min-width: 85px;
   background-color: white;
 }
@@ -387,7 +387,7 @@ export default {
   position: sticky;
   top: 0px;
   left: 270px;
-  z-index: 3;
+  z-index: 999;
   background-color: white;
 }
 
@@ -395,7 +395,7 @@ export default {
   position: sticky;
   top: 0px;
   left: 450px;
-  z-index: 3;
+  z-index: 999;
   background-color: white;
 }
 </style>

@@ -67,20 +67,20 @@
 
 
       <div class="mb-2">
-        <label class="mb-1">CM description</label>
+        <label class="mb-1">Countermeasure description</label>
         <textarea cols="30" rows="5" class="form-control" :value="findingDetail?.cm_desc" disabled></textarea>
       </div>
 
       <div class="row">
         <div class="col-lg-6 col-md-6 col-sm-12">
           <div class="mb-2">
-            <label class="mb-1">CM Start Plan Date </label>
+            <label class="mb-1">Countermeasure Start Plan Date </label>
             <input type="date" class="form-control" :value="formatTheDate(findingDetail?.cm_str_plan_date)" disabled />
           </div>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12">
           <div class="mb-2">
-            <label class="mb-1">CM End Plan Date </label>
+            <label class="mb-1">Countermeasure End Plan Date </label>
             <input type="date" class="form-control" :value="formatTheDate(findingDetail?.cm_end_plan_date)" disabled />
           </div>
         </div>
@@ -91,13 +91,13 @@
       <div class="row">
         <div class="col-lg-6 col-md-6 col-sm-12">
           <div class="mb-2">
-            <label class="mb-1">CM Start actual date</label>
+            <label class="mb-1">Countermeasure Start actual date</label>
             <input type="date" class="form-control" :value="formatTheDate(findingDetail?.cm_str_act_date)" disabled />
           </div>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12">
           <div class="mb-2">
-            <label class="mb-1">CM End actual date</label>
+            <label class="mb-1">Countermeasure End actual date</label>
             <input type="date" class="form-control" :value="formatTheDate(findingDetail?.cm_end_act_date)" disabled />
           </div>
         </div>
@@ -106,13 +106,13 @@
       <div class="row">
         <div class="col-lg-6 col-md-6 col-sm-12">
           <div class="mb-2">
-            <label class="mb-1">CM Training date</label>
+            <label class="mb-1">Countermeasure Training date</label>
             <input type="date" class="form-control" disabled />
           </div>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12">
           <div class="mb-2">
-            <label class="mb-1">CM Judge</label>
+            <label class="mb-1">Countermeasure Judge</label>
             <select class="form-select" :value="findingDetail?.cm_judg" disabled>
               <option value="true">Sudah</option>
               <option value="false">Belum</option>
@@ -124,13 +124,13 @@
       <div class="row">
         <div class="col-lg-6 col-md-6 col-sm-12">
           <div class="mb-2">
-            <label class="mb-1">CM Sign LH White</label>
+            <label class="mb-1">Countermeasure Sign LH White</label>
             <input type="file" class="form-control" disabled />
           </div>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12">
           <div class="mb-2">
-            <label class="mb-1">CM Sign SH</label>
+            <label class="mb-1">Countermeasure Sign SH</label>
             <input type="file" class="form-control" disabled />
           </div>
         </div>
@@ -139,13 +139,13 @@
       <div class="row">
         <div class="col-lg-6 col-md-6 col-sm-12">
           <div class="mb-2">
-            <label class="mb-1">CM Sign LH Red</label>
+            <label class="mb-1">Countermeasure Sign LH Red</label>
             <input type="file" class="form-control" disabled />
           </div>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12">
           <div class="mb-2">
-            <label class="mb-1">CM Comments</label>
+            <label class="mb-1">Countermeasure Comments</label>
             <input type="text" class="form-control" disabled />
           </div>
         </div>

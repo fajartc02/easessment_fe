@@ -30,7 +30,7 @@
       <th rowspan="3" class="px-2">LH Red sign</th>
       <th rowspan="3" class="px-2">LH White sign</th>
       <th rowspan="3" class="px-2">SH/AM/Mgr Sign</th>
-      <th rowspan="3" class="px-2">CM Comment</th>
+      <th rowspan="3" class="px-2">Countermeasure Comment</th>
       <th rowspan="3">Actions</th>
     </tr>
     <tr>

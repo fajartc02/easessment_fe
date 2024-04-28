@@ -95,15 +95,15 @@
       <div class="row px-3">
         <div class="col-md-6">
           <CInputGroup class="mb-3">
-            <CInputGroupText>Plan CM Date</CInputGroupText>
+            <CInputGroupText>Plan Countermeasure Date</CInputGroupText>
             <input type="date" class="form-control" v-model="form.plan_cm_date">
           </CInputGroup>
         </div>
         <div class="col-md-6">
           <CInputGroup class="mb-3">
-            <CInputGroupText>CM Judg</CInputGroupText>
-            <CFormSelect v-model="form.cm_judg">
-              <option value="null">Select CM Judg</option>
+            <CInputGroupText>Countermeasure Judg</CInputGroupText>
+            <CFormSelect v-model="form.cm_judg" :disabled="isEdit">
+              <option value="null">Select Countermeasure Judg</option>
               <option value="true">Done</option>
               <option value="false">Not Yet</option>
             </CFormSelect>
@@ -113,7 +113,7 @@
       <div class="row px-3">
         <div class="col-md-12">
           <CInputGroup class="mb-3">
-            <CInputGroupText>Plan CM Desc</CInputGroupText>
+            <CInputGroupText>Plan Countermeasure Desc</CInputGroupText>
             <CFormInput v-model="form.plan_cm_desc" />
           </CInputGroup>
         </div>
@@ -160,12 +160,12 @@
       <div class="row px-3 mt-3">
         <div class="col-md-12">
           <div class="d-flex mb-1">
-            <h5 class="me-3">CM LH Sign</h5>
+            <h5 class="me-3">Countermeasure LH Sign</h5>
             <CButton color="info" class="btn-sm text-white me-2" @click="clearSignature('cm_sign_lh')">
               Clear
             </CButton>
           </div>
-          <Watermark :options="wmSign('CM LH Sign')">
+          <Watermark :options="wmSign('Countermeasure LH Sign')">
             <div style="width: 100%; height: 100px; border: 1px solid #eaeaea">
               <CustomSignature ref="cm_sign_lh" :sigOption="signOption" :w="'100%'" :h="'100px'"
                 :defaultUrl="loadedFinding?.cm_sign_lh">
@@ -177,12 +177,12 @@
       <div class="row px-3 mt-3">
         <div class="col-md-12">
           <div class="d-flex mb-1">
-            <h5 class="me-3">CM SH Sign</h5>
+            <h5 class="me-3">Countermeasure SH Sign</h5>
             <CButton color="info" class="btn-sm text-white me-2" @click="clearSignature('cm_sign_sh')">
               Clear
             </CButton>
           </div>
-          <Watermark :options="wmSign('CM SH Sign')">
+          <Watermark :options="wmSign('Countermeasure SH Sign')">
             <div style="width: 100%; height: 100px; border: 1px solid #eaeaea">
               <CustomSignature ref="cm_sign_sh" :sigOption="signOption" :w="'100%'" :h="'100px'"
                 :defaultUrl="loadedFinding?.cm_sign_sh">
@@ -417,6 +417,9 @@ export default {
   },
   computed: {
     ...mapGetters(['getUsersOpts']),
+    isEdit() {
+      return this.loadedFinding?.finding_id
+    },
     title() {
       return this.loadedFinding?.finding_id ? "Edit OM Finding" : "Add OM Finding"
     }

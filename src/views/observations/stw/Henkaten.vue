@@ -174,7 +174,7 @@
                   <textarea cols="30" rows="5" class="form-control" v-model="henkatenData.henkaten_desc"></textarea>
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">CM description</label>
+                  <label class="mb-1">Countermeasure description</label>
                   <textarea cols="30" rows="5" class="form-control" v-model="findingsData.cm_desc"></textarea>
                 </div>
                 <div class="mb-2">
@@ -204,11 +204,11 @@
                 </div>
 
                 <div class="mb-2">
-                  <label class="mb-1">CM Start Plan Date </label>
+                  <label class="mb-1">Countermeasure Start Plan Date </label>
                   <input type="date" class="form-control" v-model="findingsData.cm_str_plan_date" />
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">CM End Plan Date </label>
+                  <label class="mb-1">Countermeasure End Plan Date </label>
                   <input type="date" class="form-control" v-model="findingsData.cm_end_plan_date" />
                 </div>
 
@@ -230,13 +230,13 @@
                 <div class="row">
                   <div class="col">
                     <div class="mb-2">
-                      <label class="mb-1">CM Start actual date</label>
+                      <label class="mb-1">Countermeasure Start actual date</label>
                       <input type="date" class="form-control" v-model="findingsData.cm_str_act_date" disabled />
                     </div>
                   </div>
                   <div class="col">
                     <div class="mb-2">
-                      <label class="mb-1">CM End actual date</label>
+                      <label class="mb-1">Countermeasure End actual date</label>
                       <input type="date" class="form-control" v-model="findingsData.cm_end_act_date" disabled />
                     </div>
                   </div>
@@ -245,13 +245,13 @@
                 <div class="row">
                   <div class="col">
                     <div class="mb-2">
-                      <label class="mb-1">CM Training date</label>
+                      <label class="mb-1">Countermeasure Training date</label>
                       <input type="date" class="form-control" v-model="findingsData.cm_training_date" disabled />
                     </div>
                   </div>
                   <div class="col">
                     <div class="mb-2">
-                      <label class="mb-1">CM Judge</label>
+                      <label class="mb-1">Countermeasure Judge</label>
                       <select class="form-select" v-model="findingsData.cm_judg" disabled>
                         <option selected>Select judgement</option>
                         <option value="true">Sudah</option>
@@ -264,13 +264,13 @@
                 <div class="row">
                   <div class="col">
                     <div class="mb-2">
-                      <label class="mb-1">CM Sign LH Red</label>
+                      <label class="mb-1">Countermeasure Sign LH Red</label>
                       <input type="file" class="form-control" disabled />
                     </div>
                   </div>
                   <div class="col">
                     <div class="mb-2">
-                      <label class="mb-1">CM Sign LH White</label>
+                      <label class="mb-1">Countermeasure Sign LH White</label>
                       <input type="file" class="form-control" disabled />
                     </div>
                   </div>
@@ -279,13 +279,13 @@
                 <div class="row">
                   <div class="col">
                     <div class="mb-2">
-                      <label class="mb-1">CM Sign SH</label>
+                      <label class="mb-1">Countermeasure Sign SH</label>
                       <input type="file" class="form-control" disabled />
                     </div>
                   </div>
                   <div class="col">
                     <div class="mb-2">
-                      <label class="mb-1">CM Comments</label>
+                      <label class="mb-1">Countermeasure Comments</label>
                       <input type="text" class="form-control" v-model="findingsData.cm_comments" disabled />
                     </div>
                   </div>
@@ -422,7 +422,7 @@
                     v-model="henkatenDetail.findings[0].finding_desc"></textarea>
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">CM description</label>
+                  <label class="mb-1">Countermeasure description</label>
                   <textarea cols="30" rows="5" class="form-control"
                     v-model="henkatenDetail.findings[0].cm_desc"></textarea>
                 </div>
@@ -462,7 +462,7 @@
                 </div>
 
                 <div class="mb-2">
-                  <label class="mb-1">CM Start Plan Date </label>
+                  <label class="mb-1">Countermeasure Start Plan Date </label>
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(
@@ -476,7 +476,7 @@
                   </div>
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">CM End Plan Date </label>
+                  <label class="mb-1">Countermeasure End Plan Date </label>
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(
@@ -493,7 +493,7 @@
                 <hr />
 
                 <div class="mb-2">
-                  <label class="mb-1">CM Start actual date</label>
+                  <label class="mb-1">Countermeasure Start actual date</label>
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(
@@ -507,7 +507,7 @@
                   </div>
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">CM End actual date</label>
+                  <label class="mb-1">Countermeasure End actual date</label>
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(
@@ -521,7 +521,7 @@
                   </div>
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">CM Training date</label>
+                  <label class="mb-1">Countermeasure Training date</label>
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(
@@ -535,7 +535,7 @@
                   </div>
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">CM Judge</label>
+                  <label class="mb-1">Countermeasure Judge</label>
                   <select class="form-select" v-model="henkatenDetail.findings[0].cm_judg">
                     <option selected>Select judgement</option>
                     <option value="true">Sudah</option>
@@ -544,19 +544,19 @@
                 </div>
 
                 <div class="mb-2">
-                  <label class="mb-1">CM Sign LH Red</label>
+                  <label class="mb-1">Countermeasure Sign LH Red</label>
                   <input type="file" class="form-control" disabled />
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">CM Sign LH White</label>
+                  <label class="mb-1">Countermeasure Sign LH White</label>
                   <input type="file" class="form-control" disabled />
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">CM Sign SH</label>
+                  <label class="mb-1">Countermeasure Sign SH</label>
                   <input type="file" class="form-control" disabled />
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">CM Comments</label>
+                  <label class="mb-1">Countermeasure Comments</label>
                   <input type="text" class="form-control" v-model="henkatenDetail.findings[0].cm_comments" />
                 </div>
                 <div class="mb-2">
@@ -707,10 +707,12 @@ export default {
   },
   methods: {
     onPageChange(page) {
-      if (page == -1) {
+      if (page == -1)
+      {
         this.currentPage = this.currentPage - 1
         this.getHenkaten()
-      } else {
+      } else
+      {
         this.currentPage = this.currentPage + 1
         this.getHenkaten()
       }
@@ -720,7 +722,8 @@ export default {
       this.getHenkaten()
     },
     formatTheDate(val) {
-      if (val) {
+      if (val)
+      {
         const year = val.split('T')[0].split('-')[0]
         const month = val.split('T')[0].split('-')[1]
         const day = val.split('T')[0].split('-')[2]
@@ -745,9 +748,11 @@ export default {
       let before_path = null
       this.isUploadLoading = true
 
-      if (oldFindingImg !== null) {
+      if (oldFindingImg !== null)
+      {
         before_path = oldFindingImg
-      } else {
+      } else
+      {
         before_path = null
       }
 
@@ -768,7 +773,8 @@ export default {
         },
       )
 
-      if (uploadImage.data.data) {
+      if (uploadImage.data.data)
+      {
         toast.success('Finding image uploaded', {
           autoClose: 700
         })
@@ -794,11 +800,13 @@ export default {
       this.findingsData.line_id = this.selectedLineID.line_id
       this.findingsData.cm_pic_id = this.selectedPIC.pic_id
 
-      if (!this.findingsData.finding_img || !this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.finding_location || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date) {
+      if (!this.findingsData.finding_img || !this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.finding_location || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date)
+      {
         toast.error('Harap isi semua field di finding', {
           autoClose: 1000
         })
-      } else {
+      } else
+      {
         let data = {
           ...this.henkatenData,
           findings: this.findingsData,
@@ -884,27 +892,32 @@ export default {
         currentPage: this.currentPage,
       }
 
-      try {
+      try
+      {
         this.$store.dispatch(GET_HENKATEN, objQuery).then((res) => {
-          if (res) {
+          if (res)
+          {
             this.isLoading = false
             this.json_data = res
           }
         })
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
         this.isLoading = false
       }
     },
     async addHenkaten(data) {
-      try {
+      try
+      {
         ApiService.setHeader()
         ApiService.post(
           `operational/henkaten/add`,
           data,
         ).then(res => {
-          if (res.data.message == 'Success to POST Henkaten') {
+          if (res.data.message == 'Success to POST Henkaten')
+          {
             toast.success('Data added', {
               autoClose: 1000
             })
@@ -912,14 +925,16 @@ export default {
             this.getHenkaten()
             this.henkatenDetail = null
             this.selectedHenkatenID = null
-          } else {
+          } else
+          {
             this.addHenkatenModal = false
             toast.error('Failed to add data', {
               autoClose: 1000
             })
           }
         })
-      } catch (error) {
+      } catch (error)
+      {
         console.log(error)
         toast.error('Internal server error', {
           autoClose: 1000
@@ -930,13 +945,15 @@ export default {
     async updateHenkaten(data) {
       const henkatenID = this.selectedHenkatenID
 
-      try {
+      try
+      {
         ApiService.setHeader()
         ApiService.put(
           `operational/henkaten/edit/${henkatenID}`,
           data,
         ).then(res => {
-          if (res.data.message == 'Success to EDIT Henkaten') {
+          if (res.data.message == 'Success to EDIT Henkaten')
+          {
             toast.success('Data updated', {
               autoClose: 1000
             })
@@ -945,13 +962,15 @@ export default {
             this.selectedFindingImage = null
             this.selectedFindingImageToDisplay = null
             this.selectedFindingImageToUpdate = null
-          } else {
+          } else
+          {
             toast.error('Failed to edit data', {
               autoClose: 1000
             })
           }
         })
-      } catch (error) {
+      } catch (error)
+      {
         console.log(error)
         Swal.fire('Failed to update henkaten data', '', 'error')
         this.EditHenkatenModal = false
@@ -965,24 +984,28 @@ export default {
         confirmButtonText: 'Sure',
         denyButtonText: `No`,
       }).then((result) => {
-        if (result.isConfirmed) {
+        if (result.isConfirmed)
+        {
           ApiService.setHeader()
           ApiService.delete(
             `operational/henkaten/delete/${henkatenID}`,
           ).then(res => {
-            if (res.data.message == 'Success to DELETE Henkaten') {
+            if (res.data.message == 'Success to DELETE Henkaten')
+            {
               toast.success('Data deleted', {
                 autoClose: 1000
               })
               this.getHenkaten()
-            } else {
+            } else
+            {
               toast.error('Failed to delete data', {
                 autoClose: 1000
               })
             }
           })
 
-        } else if (result.isDenied) {
+        } else if (result.isDenied)
+        {
           Swal.fire('Canceled', '', 'info')
         }
       })
@@ -1014,23 +1037,29 @@ export default {
       this.categories = category
     },
     async getLines() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_LINES)
-        if (this.getLinesOpts) {
+        if (this.getLinesOpts)
+        {
           this.mapLinesData()
         }
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getUsers() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_USERS)
-        if (this.getUsersOpts) {
+        if (this.getUsersOpts)
+        {
           this.mapUsersData()
         }
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
