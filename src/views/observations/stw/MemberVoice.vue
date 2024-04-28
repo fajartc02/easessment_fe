@@ -312,7 +312,9 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Plan tgl penganggulangan</label>
-                  <input type="date" class="form-control" v-model="memberVoiceData.mv_plan_date" />
+                  <input type="date" class="form-control" v-model="memberVoiceData.mv_plan_date" @change="() => {
+                    findingsData.cm_str_plan_date = memberVoiceData.mv_plan_date
+                  }" />
                 </div>
 
                 <div class="mb-2">
@@ -1056,8 +1058,7 @@ export default {
   },
   watch: {
     selectedPIC(newVal) {
-      if (newVal)
-      {
+      if (newVal) {
         this.accordionAddMVActiveKey = 2
       }
     },
@@ -1068,20 +1069,17 @@ export default {
   },
   methods: {
     onPageChange(page, type) {
-      if (type == 'prev')
-      {
+      if (type == 'prev') {
         this.currentPage = this.currentPage - 1
         this.getFindingsFunc()
       }
 
-      if (type == 'next')
-      {
+      if (type == 'next') {
         this.currentPage = this.currentPage + 1
         this.getFindingsFunc()
       }
 
-      if (type == 'fromnumber')
-      {
+      if (type == 'fromnumber') {
         this.currentPage = page
         this.getFindingsFunc()
       }
@@ -1100,11 +1098,9 @@ export default {
       let before_path = null
       this.isUploadLoading = true
 
-      if (oldFindingImg !== null)
-      {
+      if (oldFindingImg !== null) {
         before_path = oldFindingImg
-      } else
-      {
+      } else {
         before_path = null
       }
 
@@ -1125,8 +1121,7 @@ export default {
         },
       )
 
-      if (uploadImage.data.data)
-      {
+      if (uploadImage.data.data) {
         toast.success('Finding image uploaded', {
           autoClose: 700
         })
@@ -1149,13 +1144,11 @@ export default {
       this.findingsData.cm_pic_id = this.selectedPIC.pic_id
       this.findingsData.finding_location = this.memberVoiceData.mv_location
 
-      if (!this.findingsData.finding_img || !this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.finding_location || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date)
-      {
+      if (!this.findingsData.finding_img || !this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.finding_location || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date) {
         toast.error('Harap isi semua field di finding', {
           autoClose: 1000
         })
-      } else
-      {
+      } else {
         let data = {
           ...this.memberVoiceData,
           findings: this.findingsData,
@@ -1165,26 +1158,21 @@ export default {
       }
     },
     async getLines() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_LINES)
-        if (this.getLines)
-        {
+        if (this.getLines) {
           this.mapLinesData()
         }
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getUsers() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_USERS)
         this.mapUsersData()
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -1206,48 +1194,41 @@ export default {
         currentPage: this.currentPage,
       }
 
-      try
-      {
+      try {
         this.$store.dispatch(GET_MEMBERVOICE, objQuery).then((res) => {
-          if (res)
-          {
+          if (res) {
             this.totalPage = res[0]?.total_page
             this.isLoading = false
             this.json_data = res
           }
         })
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
         this.isLoading = false
       }
     },
     async addMemberVoice(data) {
-      try
-      {
+      try {
         ApiService.setHeader()
         ApiService.post(
           `operational/member-voice/add`,
           data,
         ).then(res => {
-          if (res.data.message == 'Success to POST Member Voice')
-          {
+          if (res.data.message == 'Success to POST Member Voice') {
             toast.success('Data added', {
               autoClose: 1000
             })
             this.getMemberVoices()
             this.addMemberVoiceModal = false
-          } else
-          {
+          } else {
             this.addMemberVoiceModal = false
             toast.error('Failed to add data', {
               autoClose: 1000
             })
           }
         })
-      } catch (error)
-      {
+      } catch (error) {
         console.log(error)
         toast.error('Internal server error', {
           autoClose: 1000
@@ -1263,27 +1244,23 @@ export default {
         confirmButtonText: 'Sure',
         denyButtonText: `No`,
       }).then((result) => {
-        if (result.isConfirmed)
-        {
+        if (result.isConfirmed) {
           ApiService.setHeader()
           ApiService.delete(
             `operational/member-voice/delete/${MVID}`,
           ).then(res => {
-            if (res.data.message == 'Success to DELETE Member Voice')
-            {
+            if (res.data.message == 'Success to DELETE Member Voice') {
               toast.success('Data deleted', {
                 autoClose: 1000
               })
               this.getMemberVoices()
-            } else
-            {
+            } else {
               toast.error('Failed to delete data', {
                 autoClose: 1000
               })
             }
           })
-        } else if (result.isDenied)
-        {
+        } else if (result.isDenied) {
           Swal.fire('Canceled', '', 'info')
         }
       })
@@ -1358,15 +1335,13 @@ export default {
     updateMemberVoice(data) {
       const MVID = this.selectedMVID
 
-      try
-      {
+      try {
         ApiService.setHeader()
         ApiService.put(
           `operational/member-voice/edit/${MVID}`,
           data,
         ).then(res => {
-          if (res.data.message == 'Success to EDIT Member Voice')
-          {
+          if (res.data.message == 'Success to EDIT Member Voice') {
             this.editMVModal = false
             toast.success('Data updated', {
               autoClose: 1000
@@ -1375,15 +1350,13 @@ export default {
             this.selectedFindingImage = null
             this.selectedFindingImageToDisplay = null
             this.selectedFindingImageToUpdate = null
-          } else
-          {
+          } else {
             toast.error('Failed to update data', {
               autoClose: 1000
             })
           }
         })
-      } catch (error)
-      {
+      } catch (error) {
         console.log(error)
         Swal.fire('Failed to update henkaten data', '', 'error')
         this.editFocusThemeModal = false
@@ -1427,8 +1400,7 @@ export default {
     },
 
     formatTheDate(val) {
-      if (val)
-      {
+      if (val) {
         const year = val.split('T')[0].split('-')[0]
         const month = val.split('T')[0].split('-')[1]
         const day = val.split('T')[0].split('-')[2]
@@ -1450,8 +1422,7 @@ export default {
       this.getMemberVoices()
     },
     getLineName(lineID) {
-      if (lineID)
-      {
+      if (lineID) {
         const data = this.getLinesOpts.filter((line) => {
           return line.id === lineID
         })
