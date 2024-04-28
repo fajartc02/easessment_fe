@@ -203,11 +203,11 @@
                     size="sm" />
                 </td>
                 <td v-for="item in totalDate" :key="item.idx" style="min-width: 30px">
-                  <div v-if="item == finding.week_plan"
+                  <div v-if="item == finding.week_plan - 1"
                     style="width: 20px; height: 20px; border: 2px dotted #64748b; background-color: #bbf7d0">
                   </div>
 
-                  <div v-if="item == finding.week_actual" class="mt-2"
+                  <div v-if="item == finding.week_actual - 1" class="mt-2"
                     style="width: 20px; height: 20px; border: 2px solid #64748b; background-color: #bbf7d0">
                   </div>
                 </td>
