@@ -172,7 +172,7 @@ export default {
     },
     async getUser(query = null) {
       if (query) {
-        await this.$store.dispatch(GET_USERS, query)
+        await this.$store.dispatch(GET_USERS, { group_id: query.group_id })
         return
       }
       await this.$store.dispatch(GET_USERS)

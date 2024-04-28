@@ -25,10 +25,10 @@
         <h5>Henkaten List</h5>
         <div>
           <button class="btn btn-info text-white mx-2" @click="() => {
-              addHenkatenModal = true
-              mapUsersData()
-            }
-              ">
+            addHenkatenModal = true
+            mapUsersData()
+          }
+            ">
             Add henkaten
           </button>
           <button :disabled="getHenkatens?.length < 1" class="btn btn-info text-white w-full my-1">
@@ -152,7 +152,7 @@
               </div>
             </CAccordionBody>
           </CAccordionItem>
-          <CAccordionItem :item-key="2">
+          <CAccordionItem :item-key="1">
             <CAccordionHeader> Findings input </CAccordionHeader>
             <CAccordionBody>
               <div>
@@ -218,8 +218,8 @@
                     <input ref="henkaten-finding-image" type="file" class="form-control" />
                   </div>
                   <button class="btn btn-info my-2 text-white" :disabled="isUploadLoading" @click="
-              uploadFindingImage('henkaten-finding-image', null)
-              ">
+                    uploadFindingImage('henkaten-finding-image', null)
+                    ">
                     {{ isUploadLoading ? 'Uploading' : 'Upload' }}
                   </button>
                   <div v-if="selectedFindingImage">
@@ -380,7 +380,7 @@
               </div>
             </CAccordionBody>
           </CAccordionItem>
-          <CAccordionItem :item-key="2">
+          <CAccordionItem :item-key="1">
             <CAccordionHeader> Findings input </CAccordionHeader>
             <CAccordionBody>
               <div>
@@ -390,7 +390,7 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(henkatenDetail.findings[0].finding_date)
-              " />
+                        " />
                     </div>
                     <div class="col">
                       <input type="date" class="form-control" v-model="henkatenDetail.findings[0].finding_date" />
@@ -452,7 +452,7 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" disabled class="form-control" :value="getPicName(henkatenDetail.findings[0].cm_pic_id)
-              " />
+                        " />
                     </div>
                     <div class="col">
                       <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
@@ -466,9 +466,9 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(
-              henkatenDetail.findings[0].cm_str_plan_date,
-            )
-              " />
+                        henkatenDetail.findings[0].cm_str_plan_date,
+                      )
+                        " />
                     </div>
                     <div class="col">
                       <input type="date" class="form-control" v-model="henkatenDetail.findings[0].cm_str_plan_date" />
@@ -480,9 +480,9 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(
-              henkatenDetail.findings[0].cm_end_plan_date,
-            )
-              " />
+                        henkatenDetail.findings[0].cm_end_plan_date,
+                      )
+                        " />
                     </div>
                     <div class="col">
                       <input type="date" class="form-control" v-model="henkatenDetail.findings[0].cm_end_plan_date" />
@@ -497,9 +497,9 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(
-              henkatenDetail.findings[0].cm_str_act_date,
-            )
-              " />
+                        henkatenDetail.findings[0].cm_str_act_date,
+                      )
+                        " />
                     </div>
                     <div class="col">
                       <input type="date" class="form-control" v-model="henkatenDetail.findings[0].cm_str_act_date" />
@@ -511,9 +511,9 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(
-              henkatenDetail.findings[0].cm_end_act_date,
-            )
-              " />
+                        henkatenDetail.findings[0].cm_end_act_date,
+                      )
+                        " />
                     </div>
                     <div class="col">
                       <input type="date" class="form-control" v-model="henkatenDetail.findings[0].cm_end_act_date" />
@@ -525,9 +525,9 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(
-              henkatenDetail.findings[0].cm_training_date,
-            )
-              " />
+                        henkatenDetail.findings[0].cm_training_date,
+                      )
+                        " />
                     </div>
                     <div class="col">
                       <input type="date" class="form-control" v-model="henkatenDetail.findings[0].cm_training_date" />
@@ -566,8 +566,8 @@
                     @click="showFindingImg(henkatenDetail.findings[0].finding_img)" />
                   <input ref="henkaten-finding-image" type="file" class="form-control" />
                   <button class="btn btn-info my-2 text-white" :disabled="isUploadLoading" @click="
-              uploadFindingImage('henkaten-finding-image', henkatenDetail.findings[0].finding_img)
-              ">
+                    uploadFindingImage('henkaten-finding-image', henkatenDetail.findings[0].finding_img)
+                    ">
                     {{ isUploadLoading ? 'Updating' : 'Update image' }}
                   </button>
                   <div v-if="selectedFindingImage">
@@ -581,10 +581,10 @@
       </CModalBody>
       <CModalFooter>
         <CButton color="secondary" @click="() => {
-              EditHenkatenModal = false
-              selectedHenkatenID = null
-            }
-              ">
+          EditHenkatenModal = false
+          selectedHenkatenID = null
+        }
+          ">
           Close
         </CButton>
         <CButton color="primary" @click="updateHenkatenData">Update data</CButton>
@@ -602,9 +602,9 @@
       </CModalBody>
       <CModalFooter>
         <CButton color="secondary" class="text-white" @click="() => {
-              findingImageModal = false
-            }
-              ">
+          findingImageModal = false
+        }
+          ">
           Close
         </CButton>
       </CModalFooter>

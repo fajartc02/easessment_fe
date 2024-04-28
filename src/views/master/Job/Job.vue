@@ -124,7 +124,7 @@ export default {
       filtered: {
         line_id: -1,
         pos_id: -1,
-        limit: 5,
+        limit: 10,
         totalPage: 1,
         currentPage: 1,
         job_no: null,

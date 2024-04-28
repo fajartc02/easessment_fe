@@ -4,6 +4,25 @@
       <div class="card-header text-center">
         <h6>Grafik Temuan OM</h6>
       </div>
+      <div class="card-header align-end overflow-auto">
+        <div class="row">
+          <div class="col-10"></div>
+          <div class="col">
+            <table>
+              <tr>
+                <td>
+                  <div class="card" style="width: 20px;height: 20px;background-color: #b91c1c;"></div>
+                </td>
+                <td>: Red Tag</td>
+                <td>
+                  <div class="card" style="width: 20px;height: 20px;background-color: #e5e5e5;"></div>
+                </td>
+                <td>: White Tag</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
       <div class="card-body px-4">
         <div v-if="cond == 'default'">
           <div class="row">
@@ -123,8 +142,33 @@ export default {
           style: {
             fontSize: '20px',
           },
+          background: {
+            enabled: true,
+            foreColor: '#000',
+            padding: 4,
+            borderRadius: 2,
+            borderWidth: 1,
+            borderColor: '#fff',
+            opacity: 0.9,
+            dropShadow: {
+              enabled: false,
+              top: 1,
+              left: 1,
+              blur: 1,
+              color: '#000',
+              opacity: 0.45
+            }
+          },
+          dropShadow: {
+            enabled: false,
+            top: 1,
+            left: 1,
+            blur: 1,
+            color: '#000',
+            opacity: 0.45
+          },
           formatter: function (val) {
-            return `${val} %`
+            return `${Math.round(val)} %`
           },
         },
         legend: {
@@ -143,7 +187,34 @@ export default {
             show: false,
           },
         },
-        colors: ['#b91c1c', '#ebe8e8'],
+        dataLabels: {
+          background: {
+            enabled: true,
+            foreColor: '#000',
+            padding: 4,
+            borderRadius: 2,
+            borderWidth: 1,
+            borderColor: '#fff',
+            opacity: 0.9,
+            dropShadow: {
+              enabled: false,
+              top: 1,
+              left: 1,
+              blur: 1,
+              color: '#000',
+              opacity: 0.45
+            }
+          },
+          dropShadow: {
+            enabled: false,
+            top: 1,
+            left: 1,
+            blur: 1,
+            color: '#000',
+            opacity: 0.45
+          },
+        },
+        colors: ['#b91c1c', '#e5e5e5'],
         legend: {
           show: false,
         },
@@ -232,8 +303,7 @@ export default {
       console.log(event)
       console.log(chartContext)
       console.log(config)
-      if (config.seriesIndex != -1)
-      {
+      if (config.seriesIndex != -1) {
         let cm_judg = false
 
 
@@ -247,21 +317,17 @@ export default {
 
     },
     async getGroup() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_GROUP)
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getLines() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_LINES)
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -269,11 +335,9 @@ export default {
     async addFilter() {
       await this.getGraph()
       await this.getOverallGraph()
-      if (this.selectedLine == '-1')
-      {
+      if (this.selectedLine == '-1') {
         this.$emit('emit-cond', 'default')
-      } else if (this.selectedLine !== '-1')
-      {
+      } else if (this.selectedLine !== '-1') {
         this.$emit('emit-cond', 'detail')
       }
     },
@@ -290,8 +354,7 @@ export default {
       this.$store
         .dispatch(GET_OM_GRAPH, objQuery)
         .then((res) => {
-          if (res)
-          {
+          if (res) {
             this.$emit('emit-isLoading', false)
           }
         })
@@ -323,12 +386,10 @@ export default {
     },
   },
   async mounted() {
-    if (localStorage.getItem('line_id'))
-    {
+    if (localStorage.getItem('line_id')) {
       this.$emit('emit-lineID', localStorage.getItem('line_id'))
       this.$emit('emit-line', localStorage.getItem('line_id'))
-    } else
-    {
+    } else {
       this.$emit('emit-lineID', -1)
       this.$emit('emit-line', -1)
     }

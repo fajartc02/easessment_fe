@@ -62,7 +62,9 @@
               <td>{{ focustheme.ft_pillar }}</td>
               <td>
                 <div class="d-flex justify-content-center align-items-center">
-                  <FocusThemeIndicatorVue :total="focustheme.ft_evaluation_num"></FocusThemeIndicatorVue>
+                  <img :src="getImage(focustheme.ft_evaluation_num - 1)"
+                    :alt="getImage(focustheme.ft_evaluation_num - 1)" width="50" height="50">
+                  <!-- <FocusThemeIndicatorVue :total="focustheme.ft_evaluation_num"></FocusThemeIndicatorVue> -->
                 </div>
               </td>
               <td>{{ focustheme.ft_remark }}</td>
@@ -125,11 +127,10 @@
                 <div class="mb-2">
                   <label class="mb-1">Evaluasi</label>
                   <select class="form-select" v-model="focusThemeData.ft_evaluation_num">
-                    <option selected>Select evaluasi</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
+                    <option value="1">1: Order Part</option>
+                    <option value="2">2: Countermeasure</option>
+                    <option value="3">3: Monitor/Follow</option>
+                    <option value="4">4: Finish</option>
                   </select>
                 </div>
                 <div class="mb-2">
@@ -139,7 +140,7 @@
               </div>
             </CAccordionBody>
           </CAccordionItem>
-          <CAccordionItem :item-key="2">
+          <CAccordionItem :item-key="1">
             <CAccordionHeader> Findings input </CAccordionHeader>
             <CAccordionBody>
               <div>
@@ -204,8 +205,8 @@
                     <input ref="focus-theme-finding-image" type="file" class="form-control" />
                   </div>
                   <button class="btn btn-info my-2 text-white" :disabled="isUploadLoading" @click="
-              uploadFindingImage('focus-theme-finding-image', null)
-              ">
+                    uploadFindingImage('focus-theme-finding-image', null)
+                    ">
                     {{ isUploadLoading ? 'Uploading' : 'Upload' }}
                   </button>
                   <div v-if="selectedFindingImage">
@@ -296,8 +297,8 @@
         <CModalTitle>Add fokus tema</CModalTitle>
       </CModalHeader>
       <CModalBody>
-        <CAccordion :active-item-key="1" always-open>
-          <CAccordionItem :item-key="1">
+        <CAccordion always-open>
+          <CAccordionItem>
             <CAccordionHeader> Focus theme edit </CAccordionHeader>
             <CAccordionBody>
               <div>
@@ -332,11 +333,10 @@
                 <div class="mb-2">
                   <label class="mb-1">Evaluasi</label>
                   <select class="form-select" v-model="focusThemeDetail.ft_evaluation_num">
-                    <option selected>Select evaluasi</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
+                    <option value="1">1: Order Part</option>
+                    <option value="2">2: Countermeasure</option>
+                    <option value="3">3: Monitor/Follow</option>
+                    <option value="4">4: Finish</option>
                   </select>
                 </div>
                 <div class="mb-2">
@@ -346,7 +346,7 @@
               </div>
             </CAccordionBody>
           </CAccordionItem>
-          <CAccordionItem :item-key="2">
+          <CAccordionItem>
             <CAccordionHeader> Findings input </CAccordionHeader>
 
             <CAccordionBody>
@@ -357,11 +357,11 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(
-              focusThemeDetail.findings[0]?.finding_date,
-            )
-              " />
+                        focusThemeDetail.findings[0]?.finding_date,
+                      )
+                        " />
                     </div>
-                    <div class="col">
+                    <div class="col" v-if="focusThemeDetail.findings">
                       <input type="date" class="form-control" v-model="focusThemeDetail.findings[0].finding_date" />
                     </div>
                   </div>
@@ -372,7 +372,7 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" disabled class="form-control" :value="getLineName(focusThemeDetail.findings[0].line_id)
-              " />
+                        " />
                     </div>
                     <div class="col">
                       <VueMultiselect v-model="selectedFindingLineID" :options="lineData"
@@ -421,7 +421,7 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" disabled class="form-control" :value="getPicName(focusThemeDetail.findings[0].cm_pic_id)
-              " />
+                        " />
                     </div>
                     <div class="col">
                       <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
@@ -435,9 +435,9 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(
-              focusThemeDetail.findings[0].cm_str_plan_date,
-            )
-              " />
+                        focusThemeDetail.findings[0].cm_str_plan_date,
+                      )
+                        " />
                     </div>
                     <div class="col">
                       <input type="date" class="form-control" v-model="focusThemeDetail.findings[0].cm_str_plan_date" />
@@ -449,9 +449,9 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(
-              focusThemeDetail.findings[0].cm_end_plan_date,
-            )
-              " />
+                        focusThemeDetail.findings[0].cm_end_plan_date,
+                      )
+                        " />
                     </div>
                     <div class="col">
                       <input type="date" class="form-control" v-model="focusThemeDetail.findings[0].cm_end_plan_date" />
@@ -466,9 +466,9 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(
-              focusThemeDetail.findings[0].cm_str_act_date,
-            )
-              " />
+                        focusThemeDetail.findings[0].cm_str_act_date,
+                      )
+                        " />
                     </div>
                     <div class="col">
                       <input type="date" class="form-control" v-model="focusThemeDetail.findings[0].cm_str_act_date" />
@@ -480,9 +480,9 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(
-              focusThemeDetail.findings[0].cm_end_act_date,
-            )
-              " />
+                        focusThemeDetail.findings[0].cm_end_act_date,
+                      )
+                        " />
                     </div>
                     <div class="col">
                       <input type="date" class="form-control" v-model="focusThemeDetail.findings[0].cm_end_act_date" />
@@ -494,9 +494,9 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(
-              focusThemeDetail.findings[0].cm_training_date,
-            )
-              " />
+                        focusThemeDetail.findings[0].cm_training_date,
+                      )
+                        " />
                     </div>
                     <div class="col">
                       <input type="date" class="form-control" v-model="focusThemeDetail.findings[0].cm_training_date" />
@@ -534,8 +534,8 @@
                     @click="showFindingImg(focusThemeDetail.findings[0].finding_img)" />
                   <input ref="focus-theme-finding-image" type="file" class="form-control" />
                   <button class="btn btn-info my-2 text-white" :disabled="isUploadLoading" @click="
-              uploadFindingImage('focus-theme-finding-image', focusThemeDetail.findings[0].finding_img)
-              ">
+                    uploadFindingImage('focus-theme-finding-image', focusThemeDetail.findings[0].finding_img)
+                    ">
                     {{ isUploadLoading ? 'Updating' : 'Update image' }}
                   </button>
                   <div v-if="selectedFindingImage">
@@ -598,10 +598,10 @@
       </CModalBody>
       <CModalFooter>
         <CButton color="secondary" class="text-white" @click="() => {
-              focusThemeDetailModal = false
-              this.selectedFocusTheme = null
-            }
-              ">
+          focusThemeDetailModal = false
+          this.selectedFocusTheme = null
+        }
+          ">
           Close
         </CButton>
       </CModalFooter>
@@ -618,9 +618,9 @@
       </CModalBody>
       <CModalFooter>
         <CButton color="secondary" class="text-white" @click="() => {
-              findingImageModal = false
-            }
-              ">
+          findingImageModal = false
+        }
+          ">
           Close
         </CButton>
       </CModalFooter>
@@ -639,7 +639,7 @@ import {
 } from '@/store/modules/focustheme.module'
 import { GET_USERS } from '@/store/modules/user.module'
 import { mapGetters } from 'vuex'
-import FocusThemeIndicatorVue from '@/components/FocusThemeIndicator.vue'
+// import FocusThemeIndicatorVue from '@/components/FocusThemeIndicator.vue'
 import VueMultiselect from 'vue-multiselect'
 import Swal from 'sweetalert2'
 import ApiService from '@/store/api.service'
@@ -659,6 +659,7 @@ export default {
         FT_Pillar: 'ft_pillar',
         FT_Line: 'line_nm',
       },
+      evaluationOpts: [],
       json_data: null,
       isUploadLoading: false,
       isUploading: false,
@@ -721,12 +722,20 @@ export default {
   },
   computed: {
     ...mapGetters(['getLinesOpts', 'getUsersOpts', 'getFocusTheme']),
+
   },
   updated() {
     this.mapLinesData()
     this.mapUsersData()
   },
   methods: {
+    getImage(eval_nm) {
+      console.log(eval_nm);
+      console.log(this.evaluationOpts);
+      const labels = ['Order Part', 'Countermeasure', 'Monitor/Follow', 'Finish']
+      console.log(labels[eval_nm]);
+      return `./tanoko/${this.evaluationOpts.findIndex(x => x.system_value == labels[eval_nm]) + '.png'}`
+    },
     onPageChange(page, type) {
       if (type == 'prev') {
         this.currentPage = this.currentPage - 1
@@ -798,6 +807,18 @@ export default {
         if (error.response.status == 401) this.$router.push('/login')
         this.isLoading = false
         console.log(error)
+      }
+    },
+
+    async getSystem() {
+      try {
+        ApiService.setHeader()
+        let evaluation = await ApiService.get('master/systems/get/4S_EVALUATION')
+        this.evaluationOpts = evaluation.data.data
+      } catch (error) {
+        toast.error(error.response.data.message, {
+          autoClose: 1000,
+        })
       }
     },
 
@@ -940,7 +961,7 @@ export default {
             ? this.selectedFindingLineID.line_id
             : this.focusThemeDetail.findings[0].line_id,
           finding_date: this.formatTheDate(
-            this.focusThemeDetail.findings[0].finding_date,
+            this.focusThemeDetail.findings[0]?.finding_date,
           ),
           finding_location: this.focusThemeDetail.findings[0].finding_location,
           finding_desc: this.focusThemeDetail.findings[0].finding_desc,
@@ -1084,13 +1105,14 @@ export default {
     this.selectedLine = localStorage.getItem('line_id')
     this.selectedFilterStartDate = `${year}-01-01`
     this.selectedFilterEndDate = `${year}-12-31`
+    await this.getSystem()
     await this.getLines()
     await this.getFocusThemes()
     await this.getFactors()
     await this.getCategories()
     await this.getUsers()
   },
-  components: { FocusThemeIndicatorVue, VueMultiselect, Loading, Pagination },
+  components: { VueMultiselect, Loading, Pagination },
 }
 </script>
 

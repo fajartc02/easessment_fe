@@ -10,7 +10,7 @@
         </select>
       </div>
     </div>
-    <div class="card">
+    <div class="card p-3">
       <div class="card-header">
         <div class="d-flex flex-row justify-content-between align-items-center">
           <template v-if="isMobile">
@@ -27,117 +27,141 @@
           </template>
         </div>
       </div>
-      <div class="card-body p-0">
-        <div class="card p-3">
-          <ul>
-            <li>STW Activities</li>
-          </ul>
-          <div class="row">
-            <template v-if="dataSTW.length > 0 && !isLoading">
-              <div v-for="(item) in dataSTW" :key="item.observation_id" class="col-12 col-md-4 col-lg-4 mt-1">
-                <div class="card p-2 py-4"
-                  :style="`border-left: 5px solid ${item.color_status ? item.color_status : 'cyan'};min-height: 100px;`">
-                  <div class="d-flex flex-row justify-content-between align-items-center">
-                    <div class="d-flex flex-column">
-                      Line: {{ item.line_snm }} |
-                      Pos: {{ item.pos_nm }} |
-                      Member: {{ item.member_nm }} |
-                      Group: {{ item.group_nm }}
-                    </div>
-                    <div class="d-flex flex-column">
-                      <template v-if="!item.actual_check_dt">
-                        <button class="btn btn-sm btn-primary"
-                          @click="$router.push(`/observation/${item.observation_id}`)">Check</button>
-                      </template>
-                      <template v-else>
-                        <button class="btn btn-sm btn-success"
-                          @click="$router.push(`/observation/${item.observation_id}`)">Details</button>
-                      </template>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </template>
-            <template v-else-if="isLoading">
-              <div class="col-12 col-md-4 col-lg-4">
-                <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
-                Loading...
-              </div>
-            </template>
-            <template v-else>
-              <NoDataContent />
-            </template>
+      <card-status-schedules :achievementsSTW="getCountTotalSTW" :achievements4S="getCountTotal4S"
+        :achievementsOM="getCountTotalOM" />
+      <div class="card-header align-start overflow-auto">
+        <div class="row">
+          <div class="col">
+            <table>
+              <tr>
+                <td>
+                  <div class="card" style="width: 20px;height: 20px;background-color: cyan;"></div>
+                </td>
+                <td>: On Progress</td>
+                <td>
+                  <div class="card" style="width: 20px;height: 20px;background-color: #01FF4F;"></div>
+                </td>
+                <td>: Done</td>
+                <td>
+                  <div class="card" style="width: 20px;height: 20px;background-color: red;"></div>
+                </td>
+                <td>: Done</td>
+              </tr>
+            </table>
           </div>
         </div>
       </div>
-      <div class="card-body p-0 mt-3">
-        <div class="card p-3">
-          <ul>
-            <li>4S Activities</li>
-          </ul>
-          <div class="row">
-            <template v-if="data4S.length > 0 && !isLoading">
-              <div v-for="(item) in data4S" :key="item.observation_id" class="col-12 col-md-4 col-lg-4">
-                <div class="card p-2" style="border-left: 5px solid cyan;">
-                  <div class="d-flex flex-row justify-content-between align-items-center">
-                    <div class="d-flex flex-column">
-                      Line: {{ item.line_nm }} |
-                      Area: {{ item.area_nm }}
-                    </div>
-                    <div class="d-flex flex-column">
-                      <!-- /4s/schedule-check/b7e6f2b1-ab08-4090-a1d6-7294fb79b6bd/63e99f7d-9ebe-411d-a9e2-b8f866382fc9 -->
+      <div class="card-body">
+        <ul>
+          <li>STW Activities</li>
+        </ul>
+        <div class="row">
+          <template v-if="dataSTW.length > 0 && !isLoading">
+            <div v-for="(item) in dataSTW" :key="item.observation_id" class="col-12 col-md-4 col-lg-4 mt-1">
+              <div class="card p-2"
+                :style="`border-left: 5px solid ${item.color_status ? item.color_status : 'cyan'};min-height: 100px;`">
+                <div class="d-flex flex-row justify-content-between align-items-center">
+                  <div class="d-flex flex-column">
+                    {{ item.line_snm }} |
+                    {{ item.pos_nm }} |
+                    {{ item.member_nm }} |
+                    {{ item.group_nm }}
+                  </div>
+                  <div class="d-flex flex-column">
+                    <template v-if="!item.actual_check_dt">
                       <button class="btn btn-sm btn-primary"
-                        @click="$router.push(`/4s/schedule-check/${item.main_schedule_id}/${item.sub_schedule_id}`)">Check</button>
-                    </div>
+                        @click="$router.push(`/observation/${item.observation_id}`)">Check</button>
+                    </template>
+                    <template v-else>
+                      <button class="btn btn-sm btn-success"
+                        @click="$router.push(`/observation/${item.observation_id}`)">Details</button>
+                    </template>
                   </div>
                 </div>
               </div>
-            </template>
-            <template v-else-if="isLoading">
-              <div class="col-12 col-md-4 col-lg-4">
-                <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
-                Loading...
-              </div>
-            </template>
-            <template v-else>
-              <NoDataContent />
-            </template>
-          </div>
+            </div>
+          </template>
+          <template v-else-if="isLoading">
+            <div class="col-12 col-md-4 col-lg-4">
+              <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
+              Loading...
+            </div>
+          </template>
+          <template v-else>
+            <NoDataContent />
+          </template>
         </div>
       </div>
-      <div class="card-body p-0 mt-3">
-        <div class="card p-3">
-          <ul>
-            <li>OM Activities</li>
-          </ul>
-          <div class="row">
-            <template v-if="dataOM.length > 0 && !isLoading">
-              <div v-for="(item) in dataOM" :key="item.observation_id" class="col-12 col-md-4 col-lg-4">
-                <div class="card p-2" style="border-left: 5px solid cyan;">
-                  <div class="d-flex flex-row justify-content-between align-items-center">
-                    <div class="d-flex flex-column">
-                      Line: {{ item.line_nm }} |
-                      M/C: {{ item.machine_nm }} |
-                      Itemcheck: {{ item.item_check_nm }}
-                    </div>
-                    <div class="d-flex flex-column">
-                      <button class="btn btn-sm btn-primary"
-                        @click="$router.push(`/om/schedule-detail/${item.om_main_schedule_id}/${item.om_sub_schedule_id}`)">Check</button>
-                    </div>
+      <div class="card-body">
+        <ul>
+          <li>4S Activities</li>
+        </ul>
+        <div class="row">
+          <template v-if="data4S.length > 0 && !isLoading">
+            <div v-for="(item) in data4S" :key="item.observation_id" class="col-12 col-md-4 col-lg-4">
+              <div class="card p-2" style="border-left: 5px solid cyan;min-height: 100px;">
+                <div class="d-flex flex-row justify-content-between align-items-center">
+                  <div class="d-flex flex-column">
+                    {{ item.line_nm }} |
+                    {{ item.area_nm }} |
+                    {{ item.group_nm }} |
+                    <template v-if="item.pic_nm">{{ item.pic_nm }}</template>
+                    <template v-else><i class="text-danger">Pic belum di tentukan</i></template>
+                  </div>
+                  <div class="d-flex flex-column">
+                    <!-- /4s/schedule-check/b7e6f2b1-ab08-4090-a1d6-7294fb79b6bd/63e99f7d-9ebe-411d-a9e2-b8f866382fc9 -->
+                    <button class="btn btn-sm btn-primary"
+                      @click="$router.push(`/4s/schedule-check/${item.main_schedule_id}/${item.sub_schedule_id}`)">Check</button>
                   </div>
                 </div>
               </div>
-            </template>
-            <template v-else-if="isLoading">
-              <div class="col-12 col-md-4 col-lg-4">
-                <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
-                Loading...
+            </div>
+          </template>
+          <template v-else-if="isLoading">
+            <div class="col-12 col-md-4 col-lg-4">
+              <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
+              Loading...
+            </div>
+          </template>
+          <template v-else>
+            <NoDataContent />
+          </template>
+        </div>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>OM Activities</li>
+        </ul>
+        <div class="row">
+          <template v-if="dataOM.length > 0 && !isLoading">
+            <div v-for="(item) in dataOM" :key="item.observation_id" class="col-12 col-md-4 col-lg-4">
+              <div class="card p-2" style="border-left: 5px solid cyan;min-height: 100px;">
+                <div class="d-flex flex-row justify-content-between align-items-center">
+                  <div class="d-flex flex-column">
+                    {{ item.line_nm }} |
+                    {{ item.machine_nm }} |
+                    {{ item.item_check_nm }} |
+                    {{ item.group_nm }} |
+                    <template v-if="item.pic_nm">{{ item.pic_nm }}</template>
+                    <template v-else><i class="text-danger">Pic belum di tentukan</i></template>
+                  </div>
+                  <div class="d-flex flex-column">
+                    <button class="btn btn-sm btn-primary"
+                      @click="$router.push(`/om/schedule-detail/${item.om_main_schedule_id}/${item.om_sub_schedule_id}`)">Check</button>
+                  </div>
+                </div>
               </div>
-            </template>
-            <template v-else>
-              <NoDataContent />
-            </template>
-          </div>
+            </div>
+          </template>
+          <template v-else-if="isLoading">
+            <div class="col-12 col-md-4 col-lg-4">
+              <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
+              Loading...
+            </div>
+          </template>
+          <template v-else>
+            <NoDataContent />
+          </template>
         </div>
       </div>
     </div>
@@ -150,6 +174,7 @@ import { toast } from 'vue3-toastify';
 import ApiService from '@/store/api.service';
 import { mapGetters } from 'vuex';
 import { GET_LINES } from '@/store/modules/line.module';
+import CardStatusSchedules from '@/components/card/CardStatusSchedules.vue';
 
 export default {
   name: "TodayActivity",
@@ -244,6 +269,24 @@ export default {
   },
   computed: {
     ...mapGetters(['getLinesOpts']),
+    getCountTotalSTW() {
+      return {
+        total: this.dataSTW.length,
+        done: this.dataSTW.filter(item => item.actual_check_dt).length
+      }
+    },
+    getCountTotal4S() {
+      return {
+        total: this.data4S.length,
+        done: this.data4S.filter(item => item.actual_check_dt).length
+      }
+    },
+    getCountTotalOM() {
+      return {
+        total: this.dataOM.length,
+        done: this.dataOM.filter(item => item.actual_check_dt).length
+      }
+    }
   },
   watch: {
     windowWidth() {
@@ -358,7 +401,8 @@ export default {
     window.removeEventListener('resize', this.onResize);
   },
   components: {
-    NoDataContent
+    NoDataContent,
+    CardStatusSchedules
   }
 }
 </script>
