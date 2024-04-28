@@ -4,10 +4,37 @@
       <div class="card-header text-center">
         <h6>Grafik Temuan STW</h6>
       </div>
+      <div class="card-header align-end overflow-auto">
+        <div class="row">
+          <div class="col-8"></div>
+          <div class="col">
+            <table>
+              <tr>
+                <td>
+                  <div class="card" style="width: 20px;height: 20px;background-color: #84FFCF;"></div>
+                </td>
+                <td>: Observation</td>
+                <td>
+                  <div class="card" style="width: 20px;height: 20px;background-color: #008FFB;"></div>
+                </td>
+                <td>: Member Voice</td>
+                <td>
+                  <div class="card" style="width: 20px;height: 20px;background-color: #FE4560;"></div>
+                </td>
+                <td>: Focus Theme</td>
+                <td>
+                  <div class="card" style="width: 20px;height: 20px;background-color: #FEAF1A;"></div>
+                </td>
+                <td>: Henkaten</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
       <div class="card-body px-4">
         <div v-if="cond == 'default'">
           <div class="row">
-            <div class="col-md-2 mr-2" v-if="overallData">
+            <div class="col-12 col-md-2 mr-2" v-if="overallData">
               <apexchart type="donut" :options="defaulOptionsOverall" :series="overallData" height="100%">
               </apexchart>
             </div>
@@ -31,7 +58,7 @@
         </div>
         <div v-else-if="cond == 'detail'">
           <div class="row">
-            <div class="col-md-2 mr-2" v-if="overallData">
+            <div class="col-12 col-md-2 mr-2" v-if="overallData">
               <apexchart type="donut" :options="defaulOptionsOverall" :series="overallData" height="100%">
               </apexchart>
             </div>
@@ -123,8 +150,33 @@ export default {
           style: {
             fontSize: '20px',
           },
+          background: {
+            enabled: true,
+            foreColor: '#000',
+            padding: 4,
+            borderRadius: 2,
+            borderWidth: 1,
+            borderColor: '#fff',
+            opacity: 0.9,
+            dropShadow: {
+              enabled: false,
+              top: 1,
+              left: 1,
+              blur: 1,
+              color: '#000',
+              opacity: 0.45
+            }
+          },
+          dropShadow: {
+            enabled: false,
+            top: 1,
+            left: 1,
+            blur: 1,
+            color: '#000',
+            opacity: 0.45
+          },
           formatter: function (val) {
-            return `${val} %`
+            return `${Math.round(val)} %`
           },
         },
         legend: {
@@ -141,6 +193,33 @@ export default {
           height: '100%',
           toolbar: {
             show: false,
+          },
+        },
+        dataLabels: {
+          background: {
+            enabled: true,
+            foreColor: '#000',
+            padding: 4,
+            borderRadius: 2,
+            borderWidth: 1,
+            borderColor: '#fff',
+            opacity: 0.9,
+            dropShadow: {
+              enabled: false,
+              top: 1,
+              left: 1,
+              blur: 1,
+              color: '#000',
+              opacity: 0.45
+            }
+          },
+          dropShadow: {
+            enabled: false,
+            top: 1,
+            left: 1,
+            blur: 1,
+            color: '#000',
+            opacity: 0.45
           },
         },
         legend: {
@@ -322,9 +401,9 @@ export default {
 
       await ApiService.setHeader()
       await ApiService.query('operational/graph/overall', objQuery)
-        .then((res) => {
-          let mapDataOverall = res.data.data.map(item => {
-            return Math.round(item.data[0])
+        .then(async (res) => {
+          let mapDataOverall = await res.data.data.map(item => {
+            return item.data[0]
           })
           this.overallData = mapDataOverall
           this.overallGraphData = res.data.data

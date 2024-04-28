@@ -4,6 +4,21 @@
       <div class="card-header text-center">
         <h6>Grafik Temuan 4S</h6>
       </div>
+      <div class="card-header align-end overflow-auto">
+        <div class="row">
+          <div class="col-11"></div>
+          <div class="col">
+            <table>
+              <tr>
+                <td>
+                  <div class="card" style="width: 20px;height: 20px;background-color: #008FFB;"></div>
+                </td>
+                <td>: 4S</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
       <div class="card-body px-4">
         <div v-if="cond == 'default'">
           <div class="row">
@@ -123,8 +138,33 @@ export default {
           style: {
             fontSize: '20px',
           },
+          background: {
+            enabled: true,
+            foreColor: '#000',
+            padding: 4,
+            borderRadius: 2,
+            borderWidth: 1,
+            borderColor: '#fff',
+            opacity: 0.9,
+            dropShadow: {
+              enabled: false,
+              top: 1,
+              left: 1,
+              blur: 1,
+              color: '#000',
+              opacity: 0.45
+            }
+          },
+          dropShadow: {
+            enabled: false,
+            top: 1,
+            left: 1,
+            blur: 1,
+            color: '#000',
+            opacity: 0.45
+          },
           formatter: function (val) {
-            return `${val} %`
+            return `${Math.round(val)} %`
           },
         },
         legend: {
@@ -141,6 +181,33 @@ export default {
           height: '100%',
           toolbar: {
             show: false,
+          },
+        },
+        dataLabels: {
+          background: {
+            enabled: true,
+            foreColor: '#000',
+            padding: 4,
+            borderRadius: 2,
+            borderWidth: 1,
+            borderColor: '#fff',
+            opacity: 0.9,
+            dropShadow: {
+              enabled: false,
+              top: 1,
+              left: 1,
+              blur: 1,
+              color: '#000',
+              opacity: 0.45
+            }
+          },
+          dropShadow: {
+            enabled: false,
+            top: 1,
+            left: 1,
+            blur: 1,
+            color: '#000',
+            opacity: 0.45
           },
         },
         legend: {
@@ -162,7 +229,8 @@ export default {
             },
             title: {
               formatter: (seriesName) => {
-                return `${seriesName} :`
+                console.log(seriesName);
+                return `${'4S'} :`
               },
             },
           },
@@ -303,7 +371,7 @@ export default {
       await ApiService.query('operational/4s/overall', objQuery)
         .then((res) => {
           let mapDataOverall = res.data.data.map(item => {
-            return Math.round(item.data[0])
+            return item.data[0]
           })
           this.overallData = mapDataOverall
           this.overallGraphData = res.data.data

@@ -76,7 +76,7 @@ import { mapGetters } from 'vuex'
 
 import STWFindingGraph from '@/components/graph/STWFindingGraph.vue'
 import SFindingGraph from '@/components/graph/4SFindingGraph.vue'
-import OmFindingGraph from '@/components/om/OmFindingGraph.vue'
+import OmFindingGraph from '@/components/graph/OmFindingGraph.vue'
 
 
 export default {
@@ -134,16 +134,7 @@ export default {
       this.selectedLine = -1
     }
     await this.getLines()
-    // const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
-    // const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
-    // this.selectedMonth = `${year}-${month}`
-
-    // this.selectedFilterStartDate = `${year}-01-01`
-    // this.selectedFilterEndDate = `${year}-12-31`
     await this.getGroup()
-    // await this.addFilter()
-    // await this.getGraph()
-    // await this.getOverallGraph()
   },
   components: {
     STWFindingGraph,
