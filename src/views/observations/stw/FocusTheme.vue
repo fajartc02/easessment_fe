@@ -297,8 +297,8 @@
         <CModalTitle>Add fokus tema</CModalTitle>
       </CModalHeader>
       <CModalBody>
-        <CAccordion always-open>
-          <CAccordionItem>
+        <CAccordion :active-item-key="1" always-open>
+          <CAccordionItem :item-key="1">
             <CAccordionHeader> Focus theme edit </CAccordionHeader>
             <CAccordionBody>
               <div>
@@ -307,17 +307,23 @@
                   <input type="text" class="form-control" v-model="focusThemeDetail.ft_desc" />
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">Line</label>
 
                   <div class="row">
                     <div class="col">
+                      <label class="mb-1">Line</label>
                       <input type="text" disabled class="form-control"
                         :value="getLineName(focusThemeDetail.ft_line_id)" />
                     </div>
                     <div class="col">
+                      <label class="mb-1">Edit Line</label>
                       <VueMultiselect v-model="selectedLineID" :options="lineData"
                         :custom-label="customLineFilterOptions">
                       </VueMultiselect>
+                      <small v-if="focusThemeDetail.ft_line_id" class="text-success">*Abaikan jika
+                        tidak
+                        ingin
+                        diubah</small>
+                      <small v-else class="text-danger">*Silahkan masukan line</small>
                     </div>
                   </div>
                 </div>
@@ -346,38 +352,47 @@
               </div>
             </CAccordionBody>
           </CAccordionItem>
-          <CAccordionItem>
+          <CAccordionItem :item-key="1">
             <CAccordionHeader> Findings input </CAccordionHeader>
-
             <CAccordionBody>
               <div>
                 <div class="mb-2">
-                  <label class="mb-1">Tanggal temuan</label>
-
                   <div class="row">
                     <div class="col">
+                      <label class="mb-1">Tanggal temuan</label>
                       <input type="text" class="form-control" disabled :value="formatTheDate(
                         focusThemeDetail.findings[0]?.finding_date,
                       )
                         " />
                     </div>
                     <div class="col" v-if="focusThemeDetail.findings">
+                      <label class="mb-1">Edit Tanggal temuan</label>
                       <input type="date" class="form-control" v-model="focusThemeDetail.findings[0].finding_date" />
+                      <small v-if="focusThemeDetail.findings[0].finding_date" class="text-success">*Abaikan jika
+                        tidak
+                        ingin
+                        diubah</small>
+                      <small v-else class="text-danger">*Silahkan masukan tanggal</small>
                     </div>
                   </div>
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">Line</label>
-
                   <div class="row">
                     <div class="col">
+                      <label class="mb-1">Line</label>
                       <input type="text" disabled class="form-control" :value="getLineName(focusThemeDetail.findings[0].line_id)
                         " />
                     </div>
                     <div class="col">
+                      <label class="mb-1">Edit Line</label>
                       <VueMultiselect v-model="selectedFindingLineID" :options="lineData"
                         :custom-label="customLineFilterOptions">
                       </VueMultiselect>
+                      <small v-if="focusThemeDetail.findings[0].line_id" class="text-success">*Abaikan jika
+                        tidak
+                        ingin
+                        diubah</small>
+                      <small v-else class="text-danger">*Silahkan masukan line</small>
                     </div>
                   </div>
                 </div>
@@ -406,7 +421,7 @@
                 </div>
 
                 <div class="mb-2">
-                  <label class="mb-1">Faktor </label>
+                  <label class="mb-1">Faktor</label>
                   <select class="form-select" v-model="focusThemeDetail.findings[0].factor_id">
                     <option disabled>Select Factor</option>
                     <option v-for="factor in factors" :key="factor.text" :value="factor.id">
@@ -416,45 +431,63 @@
                 </div>
 
                 <div class="mb-2">
-                  <label class="mb-1">PIC </label>
 
                   <div class="row">
                     <div class="col">
+                      <label class="mb-1">PIC</label>
                       <input type="text" disabled class="form-control" :value="getPicName(focusThemeDetail.findings[0].cm_pic_id)
                         " />
                     </div>
                     <div class="col">
+                      <label class="mb-1">Edit PIC</label>
                       <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
                       </VueMultiselect>
+                      <small v-if="focusThemeDetail.findings[0].cm_pic_id" class="text-success">*Abaikan jika
+                        tidak
+                        ingin
+                        diubah</small>
+                      <small v-else class="text-danger">*Silahkan masukan PIC</small>
                     </div>
                   </div>
                 </div>
 
                 <div class="mb-2">
-                  <label class="mb-1">Countermeasure Start Plan Date </label>
                   <div class="row">
                     <div class="col">
+                      <label class="mb-1">Countermeasure Start Plan Date </label>
                       <input type="text" class="form-control" disabled :value="formatTheDate(
                         focusThemeDetail.findings[0].cm_str_plan_date,
                       )
                         " />
                     </div>
                     <div class="col">
+                      <label class="mb-1">Edit Countermeasure Start Plan Date </label>
                       <input type="date" class="form-control" v-model="focusThemeDetail.findings[0].cm_str_plan_date" />
+                      <small v-if="focusThemeDetail.findings[0].cm_str_plan_date" class="text-success">*Abaikan jika
+                        tidak
+                        ingin
+                        diubah</small>
+                      <small v-else class="text-danger">*Silahkan masukan tanggal</small>
                     </div>
                   </div>
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">Countermeasure End Plan Date </label>
                   <div class="row">
                     <div class="col">
+                      <label class="mb-1">Countermeasure End Plan Date </label>
                       <input type="text" class="form-control" disabled :value="formatTheDate(
                         focusThemeDetail.findings[0].cm_end_plan_date,
                       )
                         " />
                     </div>
                     <div class="col">
+                      <label class="mb-1">Edit Countermeasure End Plan Date</label>
                       <input type="date" class="form-control" v-model="focusThemeDetail.findings[0].cm_end_plan_date" />
+                      <small v-if="focusThemeDetail.findings[0].cm_end_plan_date" class="text-success">*Abaikan jika
+                        tidak
+                        ingin
+                        diubah</small>
+                      <small v-else class="text-danger">*Silahkan masukan tanggal</small>
                     </div>
                   </div>
                 </div>
@@ -462,44 +495,62 @@
                 <hr />
 
                 <div class="mb-2">
-                  <label class="mb-1">Countermeasure Start actual date</label>
                   <div class="row">
                     <div class="col">
+                      <label class="mb-1">Countermeasure Start actual date</label>
                       <input type="text" class="form-control" disabled :value="formatTheDate(
                         focusThemeDetail.findings[0].cm_str_act_date,
                       )
                         " />
                     </div>
                     <div class="col">
+                      <label class="mb-1">Edit Countermeasure Start actual date</label>
                       <input type="date" class="form-control" v-model="focusThemeDetail.findings[0].cm_str_act_date" />
+                      <small v-if="focusThemeDetail.findings[0].cm_str_act_date" class="text-success">*Abaikan jika
+                        tidak
+                        ingin
+                        diubah</small>
+                      <small v-else class="text-danger">*Silahkan masukan tanggal</small>
                     </div>
                   </div>
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">Countermeasure End actual date</label>
                   <div class="row">
                     <div class="col">
+                      <label class="mb-1">Countermeasure End actual date</label>
                       <input type="text" class="form-control" disabled :value="formatTheDate(
                         focusThemeDetail.findings[0].cm_end_act_date,
                       )
                         " />
                     </div>
                     <div class="col">
+                      <label class="mb-1">Edit Countermeasure End actual date</label>
                       <input type="date" class="form-control" v-model="focusThemeDetail.findings[0].cm_end_act_date" />
+                      <small v-if="focusThemeDetail.findings[0].cm_end_act_date" class="text-success">*Abaikan jika
+                        tidak
+                        ingin
+                        diubah</small>
+                      <small v-else class="text-danger">*Silahkan masukan tanggal</small>
                     </div>
                   </div>
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">Countermeasure Training date</label>
                   <div class="row">
                     <div class="col">
+                      <label class="mb-1">Countermeasure Training date</label>
                       <input type="text" class="form-control" disabled :value="formatTheDate(
                         focusThemeDetail.findings[0].cm_training_date,
                       )
                         " />
                     </div>
                     <div class="col">
+                      <label class="mb-1">Edit Countermeasure Training date</label>
                       <input type="date" class="form-control" v-model="focusThemeDetail.findings[0].cm_training_date" />
+                      <small v-if="focusThemeDetail.findings[0].cm_training_date" class="text-success">*Abaikan jika
+                        tidak
+                        ingin
+                        diubah</small>
+                      <small v-else class="text-danger">*Silahkan masukan tanggal</small>
                     </div>
                   </div>
                 </div>
@@ -737,20 +788,17 @@ export default {
       return `./tanoko/${this.evaluationOpts.findIndex(x => x.system_value == labels[eval_nm]) + '.png'}`
     },
     onPageChange(page, type) {
-      if (type == 'prev')
-      {
+      if (type == 'prev') {
         this.currentPage = this.currentPage - 1
         this.getFindingsFunc()
       }
 
-      if (type == 'next')
-      {
+      if (type == 'next') {
         this.currentPage = this.currentPage + 1
         this.getFindingsFunc()
       }
 
-      if (type == 'fromnumber')
-      {
+      if (type == 'fromnumber') {
         this.currentPage = page
         this.getFindingsFunc()
       }
@@ -760,28 +808,23 @@ export default {
       this.getFocusThemes()
     },
     formatTheDate(val) {
-      if (val)
-      {
+      if (val) {
         const year = val.split('T')[0].split('-')[0]
         const month = val.split('T')[0].split('-')[1]
         const day = val.split('T')[0].split('-')[2]
 
         return `${year}-${month}-${day}`
-      } else
-      {
+      } else {
         return null
       }
     },
     async getLines() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_LINES)
-        if (this.getLines)
-        {
+        if (this.getLines) {
           this.mapLinesData()
         }
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -803,18 +846,15 @@ export default {
         currentPage: this.currentPage,
       }
 
-      try
-      {
+      try {
         this.$store.dispatch(GET_FOCUSTHEME, objQuery).then((res) => {
-          if (res)
-          {
+          if (res) {
             this.totalPage = res[0]?.total_page
             this.isLoading = false
             this.json_data = res
           }
         })
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         this.isLoading = false
         console.log(error)
@@ -822,13 +862,11 @@ export default {
     },
 
     async getSystem() {
-      try
-      {
+      try {
         ApiService.setHeader()
         let evaluation = await ApiService.get('master/systems/get/4S_EVALUATION')
         this.evaluationOpts = evaluation.data.data
-      } catch (error)
-      {
+      } catch (error) {
         toast.error(error.response.data.message, {
           autoClose: 1000,
         })
@@ -840,11 +878,9 @@ export default {
       let before_path = null
       this.isUploadLoading = true
 
-      if (oldFindingImg !== null)
-      {
+      if (oldFindingImg !== null) {
         before_path = oldFindingImg
-      } else
-      {
+      } else {
         before_path = null
       }
 
@@ -865,8 +901,7 @@ export default {
         },
       )
 
-      if (uploadImage.data.data)
-      {
+      if (uploadImage.data.data) {
         toast.success('Finding image uploaded', {
           autoClose: 700
         })
@@ -887,13 +922,11 @@ export default {
       this.findingsData.line_id = this.selectedLineID?.line_id
       this.findingsData.cm_pic_id = this.selectedFindingPIC?.pic_id
 
-      if (!this.findingsData.finding_img || !this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.finding_location || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date)
-      {
+      if (!this.findingsData.finding_img || !this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.finding_location || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date) {
         toast.error('Harap isi semua field di finding', {
           autoClose: 1000
         })
-      } else
-      {
+      } else {
         let data = {
           ...this.focusThemeData,
           findings: this.findingsData,
@@ -903,25 +936,21 @@ export default {
 
     },
     async addFocusTheme(data) {
-      try
-      {
+      try {
         await this.$store.dispatch(POST_FOCUSTHEME, data).then((res) => {
-          if (res.data.message == 'Success to POST Focus Thema')
-          {
+          if (res.data.message == 'Success to POST Focus Thema') {
             toast.success('Data added', {
               autoClose: 1000
             })
             this.addFocusThemeModal = false
             this.getFocusThemes()
-          } else
-          {
+          } else {
             toast.error('Failed to add data', {
               autoClose: 1000
             })
           }
         })
-      } catch (error)
-      {
+      } catch (error) {
         console.log(error)
         Swal.fire('Failed', '', 'error')
         this.addFocusThemeModal = false
@@ -929,8 +958,7 @@ export default {
     },
     focusThemeDetailData(index) {
       this.focusThemeDetailModal = true
-      if (this.getFocusTheme)
-      {
+      if (this.getFocusTheme) {
         this.selectedFocusTheme = this.getFocusTheme[index]
       }
     },
@@ -942,27 +970,23 @@ export default {
         confirmButtonText: 'Sure',
         denyButtonText: `No`,
       }).then((result) => {
-        if (result.isConfirmed)
-        {
+        if (result.isConfirmed) {
           ApiService.setHeader()
           ApiService.delete(
             `operational/focus-thema/delete/${FTID}`,
           ).then((res) => {
-            if (res.data.message == 'Success to DELETE Focus Theme')
-            {
+            if (res.data.message == 'Success to DELETE Focus Theme') {
               toast.success('Data deleted', {
                 autoClose: 1000
               })
               this.getFocusThemes()
-            } else
-            {
+            } else {
               toast.error('Failed to delete data', {
                 autoClose: 1000
               })
             }
           })
-        } else if (result.isDenied)
-        {
+        } else if (result.isDenied) {
           Swal.fire('Canceled', '', 'info')
         }
       })
@@ -1033,15 +1057,13 @@ export default {
     async updateFocusTheme(data) {
       const FTID = this.selectedFocusThemeID
 
-      try
-      {
+      try {
         ApiService.setHeader()
         ApiService.put(
           `operational/focus-thema/edit/${FTID}`,
           data,
         ).then((response) => {
-          if (response.data.message == 'Success to EDIT Focuss Thema')
-          {
+          if (response.data.message == 'Success to EDIT Focuss Thema') {
             toast.success('Data updated', {
               autoClose: 1000
             })
@@ -1050,16 +1072,14 @@ export default {
             this.selectedFindingImage = null
             this.selectedFindingImageToDisplay = null
             this.selectedFindingImageToUpdate = null
-          } else
-          {
+          } else {
             toast.success('Failed to update data', {
               autoClose: 1000
             })
           }
         })
 
-      } catch (error)
-      {
+      } catch (error) {
         console.log(error)
         Swal.fire('Failed to update henkaten data', '', 'error')
         this.editFocusThemeModal = false
@@ -1085,15 +1105,12 @@ export default {
       this.categories = category
     },
     async getUsers() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_USERS)
-        if (this.getUsersOpts)
-        {
+        if (this.getUsersOpts) {
           this.mapUsersData()
         }
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }

@@ -87,7 +87,7 @@
                 <th rowspan="3">No Proses</th>
                 <th rowspan="3">Kategori</th>
                 <th rowspan="3">Penanggulangan</th>
-                <th rowspan="3">Evaluasi Hasil</th>
+                <th rowspan="3">Hasil Evaluasi</th>
                 <th colspan="48">Waktu Pelaksanaan</th>
                 <th rowspan="3">PIC</th>
                 <th rowspan="3">Actions</th>
@@ -277,7 +277,9 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Problem</label>
-                  <input type="text" class="form-control" v-model="memberVoiceData.mv_problem" />
+                  <input type="text" class="form-control" v-model="memberVoiceData.mv_problem" @input="() => {
+                    findingsData.finding_desc = memberVoiceData.mv_problem
+                  }" />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">No Proses</label>
@@ -293,7 +295,9 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Faktor </label>
-                  <select class="form-select" v-model="memberVoiceData.mv_factor_id">
+                  <select class="form-select" v-model="memberVoiceData.mv_factor_id" @change="() => {
+                    findingsData.factor_id = memberVoiceData.mv_factor_id
+                  }">
                     <option disabled>Select Factor</option>
                     <option v-for="factor in factors" :key="factor.text" :value="factor.id">
                       {{ factor.text }}
@@ -302,16 +306,22 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Penanggulangan</label>
-                  <input type="text" class="form-control" v-model="memberVoiceData.mv_countermeasure" />
+                  <input type="text" class="form-control" v-model="memberVoiceData.mv_countermeasure" @input="() => {
+                    findingsData.cm_desc = memberVoiceData.mv_countermeasure
+                  }" />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Plan tgl penganggulangan</label>
-                  <input type="date" class="form-control" v-model="memberVoiceData.mv_plan_date" />
+                  <input type="date" class="form-control" v-model="memberVoiceData.mv_plan_date" @change="() => {
+                    findingsData.cm_str_plan_date = memberVoiceData.mv_plan_date
+                  }" />
                 </div>
 
                 <div class="mb-2">
                   <label class="mb-1">PIC</label>
-                  <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
+                  <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions" @change="() => {
+                    selectedPIC = selectedPIC
+                  }">
                   </VueMultiselect>
                 </div>
                 <div class="row">
@@ -558,50 +568,60 @@
                   <input type="text" class="form-control" v-model="memberVoiceDetail.mv_countermeasure" />
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">Plan tgl penganggulangan</label>
 
                   <div class="row">
                     <div class="col">
+                      <label class="mb-1">Plan tgl penganggulangan</label>
                       <input type="text" class="form-control" disabled
                         :value="formatTheDate(memberVoiceDetail.mv_plan_date)" />
                     </div>
                     <div class="col">
+                      <label class="mb-1">Edit Tanggal Temuan</label>
                       <input type="date" v-model="memberVoiceDetail.mv_plan_date" class="form-control" />
+                      <small class="text-success">*Abaikan jika tidak ingin diubah</small>
                     </div>
                   </div>
                 </div>
 
                 <div class="mb-2">
-                  <label class="mb-1">Aktual tgl penganggulangan</label>
 
                   <div class="row">
                     <div class="col">
+                      <label class="mb-1">Aktual tgl penganggulangan</label>
                       <input type="text" class="form-control" disabled
                         :value="formatTheDate(memberVoiceDetail.mv_actual_date)" />
                     </div>
                     <div class="col">
+                      <label class="mb-1">Edit Aktual tgl penganggulangan</label>
                       <input type="date" v-model="memberVoiceDetail.mv_actual_date" class="form-control" />
+                      <small v-if="memberVoiceDetail.mv_actual_date" class="text-success">*Abaikan jika tidak ingin
+                        diubah</small>
+                      <small v-else class="text-danger">*Silahkan masukan tanggal</small>
                     </div>
                   </div>
                 </div>
 
                 <div class="mb-2">
-                  <label class="mb-1">PIC</label>
 
                   <div class="row">
                     <div class="col">
+                      <label class="mb-1">PIC</label>
                       <input type="text" disabled class="form-control"
                         :value="getPicName(memberVoiceDetail.mv_pic_id)" />
                     </div>
                     <div class="col">
+                      <label class="mb-1">Edit PIC</label>
                       <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
                       </VueMultiselect>
+                      <small v-if="selectedPIC" class="text-success">*Abaikan jika tidak ingin
+                        diubah</small>
+                      <small v-else class="text-danger">*Silahkan masukan pic</small>
                     </div>
                   </div>
                 </div>
 
                 <div class="mb-2">
-                  <label class="mb-1">Eval hasil</label>
+                  <label class="mb-1">Hasil Evaluasi</label>
                   <input type="text" class="form-control" v-model="memberVoiceDetail.mv_evaluation" />
                 </div>
               </div>
@@ -613,32 +633,42 @@
             <CAccordionBody>
               <div>
                 <div class="mb-2">
-                  <label class="mb-1">Tanggal temuan</label>
 
                   <div class="row">
                     <div class="col">
+                      <label class="mb-1">Tanggal temuan</label>
                       <input type="text" class="form-control" disabled :value="formatTheDate(
                         memberVoiceDetail.findings[0].finding_date,
                       )
                         " />
                     </div>
                     <div class="col">
+                      <label class="mb-1">Edit Tanggal temuan</label>
                       <input type="date" class="form-control" v-model="memberVoiceDetail.findings[0].finding_date" />
+                      <small v-if="memberVoiceDetail.findings[0].finding_date" class="text-success">*Abaikan jika tidak
+                        ingin
+                        diubah</small>
+                      <small v-else class="text-danger">*Silahkan masukan tanggal</small>
                     </div>
                   </div>
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">Line</label>
 
                   <div class="row">
                     <div class="col">
+                      <label class="mb-1">Line</label>
                       <input type="text" disabled class="form-control" :value="getLineName(memberVoiceDetail.findings[0].line_id)
                         " />
                     </div>
                     <div class="col">
+                      <label class="mb-1">Edit Line</label>
                       <VueMultiselect v-model="selectedFindingLineID" :options="lineData"
                         :custom-label="customLineFilterOptions">
                       </VueMultiselect>
+                      <small v-if="selectedFindingLineID" class="text-success">*Abaikan jika tidak
+                        ingin
+                        diubah</small>
+                      <small v-else class="text-danger">*Silahkan masukan line</small>
                     </div>
                   </div>
                 </div>
@@ -677,47 +707,64 @@
                 </div>
 
                 <div class="mb-2">
-                  <label class="mb-1">PIC </label>
 
                   <div class="row">
                     <div class="col">
+                      <label class="mb-1">PIC</label>
                       <input type="text" disabled class="form-control" :value="getPicName(memberVoiceDetail.findings[0].cm_pic_id)
                         " />
                     </div>
                     <div class="col">
+                      <label class="mb-1">Edit PIC</label>
                       <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
                       </VueMultiselect>
+                      <small v-if="selectedFindingPIC" class="text-success">*Abaikan jika tidak
+                        ingin
+                        diubah</small>
+                      <small v-else class="text-danger">*Silahkan masukan pic</small>
                     </div>
                   </div>
                 </div>
 
                 <div class="mb-2">
-                  <label class="mb-1">Countermeasure Start Plan Date </label>
                   <div class="row">
                     <div class="col">
+                      <label class="mb-1">Countermeasure Start Plan Date </label>
                       <input type="text" class="form-control" disabled :value="formatTheDate(
                         memberVoiceDetail.findings[0].cm_str_plan_date,
                       )
                         " />
                     </div>
                     <div class="col">
+                      <label class="mb-1">Edit Countermeasure Start Plan Date </label>
                       <input type="date" class="form-control"
                         v-model="memberVoiceDetail.findings[0].cm_str_plan_date" />
+                      <small v-if="memberVoiceDetail.findings[0].cm_str_plan_date" class="text-success">*Abaikan jika
+                        tidak
+                        ingin
+                        diubah</small>
+                      <small v-else class="text-danger">*Silahkan masukan tanggal</small>
                     </div>
                   </div>
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">Countermeasure End Plan Date </label>
                   <div class="row">
                     <div class="col">
+                      <label class="mb-1">Countermeasure End Plan Date </label>
                       <input type="text" class="form-control" disabled :value="formatTheDate(
                         memberVoiceDetail.findings[0].cm_end_plan_date,
                       )
                         " />
                     </div>
                     <div class="col">
+                      <label class="mb-1">Edit Countermeasure End Plan Date </label>
                       <input type="date" class="form-control"
                         v-model="memberVoiceDetail.findings[0].cm_end_plan_date" />
+                      <small v-if="memberVoiceDetail.findings[0].cm_end_plan_date" class="text-success">*Abaikan jika
+                        tidak
+                        ingin
+                        diubah</small>
+                      <small v-else class="text-danger">*Silahkan masukan tanggal</small>
                     </div>
                   </div>
                 </div>
@@ -725,45 +772,63 @@
                 <hr />
 
                 <div class="mb-2">
-                  <label class="mb-1">Countermeasure Start actual date</label>
                   <div class="row">
                     <div class="col">
+                      <label class="mb-1">Countermeasure Start actual date</label>
                       <input type="text" class="form-control" disabled :value="formatTheDate(
                         memberVoiceDetail.findings[0].cm_str_act_date,
                       )
                         " />
                     </div>
                     <div class="col">
+                      <label class="mb-1">Edit Countermeasure Start actual date</label>
                       <input type="date" class="form-control" v-model="memberVoiceDetail.findings[0].cm_str_act_date" />
+                      <small v-if="memberVoiceDetail.findings[0].cm_str_act_date" class="text-success">*Abaikan jika
+                        tidak
+                        ingin
+                        diubah</small>
+                      <small v-else class="text-danger">*Silahkan masukan tanggal</small>
                     </div>
                   </div>
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">Countermeasure End actual date</label>
                   <div class="row">
                     <div class="col">
+                      <label class="mb-1">Countermeasure End actual date</label>
                       <input type="text" class="form-control" disabled :value="formatTheDate(
                         memberVoiceDetail.findings[0].cm_end_act_date,
                       )
                         " />
                     </div>
                     <div class="col">
+                      <label class="mb-1">Edit Countermeasure End actual date</label>
                       <input type="date" class="form-control" v-model="memberVoiceDetail.findings[0].cm_end_act_date" />
+                      <small v-if="memberVoiceDetail.findings[0].cm_end_act_date" class="text-success">*Abaikan jika
+                        tidak
+                        ingin
+                        diubah</small>
+                      <small v-else class="text-danger">*Silahkan masukan tanggal</small>
                     </div>
                   </div>
                 </div>
                 <div class="mb-2">
-                  <label class="mb-1">Countermeasure Training date</label>
                   <div class="row">
                     <div class="col">
+                      <label class="mb-1">Countermeasure Training date</label>
                       <input type="text" class="form-control" disabled :value="formatTheDate(
                         memberVoiceDetail.findings[0].cm_training_date,
                       )
                         " />
                     </div>
                     <div class="col">
+                      <label class="mb-1">Edit Countermeasure Training date</label>
                       <input type="date" class="form-control"
                         v-model="memberVoiceDetail.findings[0].cm_training_date" />
+                      <small v-if="memberVoiceDetail.findings[0].cm_training_date" class="text-success">*Abaikan jika
+                        tidak
+                        ingin
+                        diubah</small>
+                      <small v-else class="text-danger">*Silahkan masukan tanggal</small>
                     </div>
                   </div>
                 </div>
@@ -1048,8 +1113,7 @@ export default {
   },
   watch: {
     selectedPIC(newVal) {
-      if (newVal)
-      {
+      if (newVal) {
         this.accordionAddMVActiveKey = 2
       }
     },
@@ -1060,20 +1124,17 @@ export default {
   },
   methods: {
     onPageChange(page, type) {
-      if (type == 'prev')
-      {
+      if (type == 'prev') {
         this.currentPage = this.currentPage - 1
         this.getFindingsFunc()
       }
 
-      if (type == 'next')
-      {
+      if (type == 'next') {
         this.currentPage = this.currentPage + 1
         this.getFindingsFunc()
       }
 
-      if (type == 'fromnumber')
-      {
+      if (type == 'fromnumber') {
         this.currentPage = page
         this.getFindingsFunc()
       }
@@ -1092,11 +1153,9 @@ export default {
       let before_path = null
       this.isUploadLoading = true
 
-      if (oldFindingImg !== null)
-      {
+      if (oldFindingImg !== null) {
         before_path = oldFindingImg
-      } else
-      {
+      } else {
         before_path = null
       }
 
@@ -1117,8 +1176,7 @@ export default {
         },
       )
 
-      if (uploadImage.data.data)
-      {
+      if (uploadImage.data.data) {
         toast.success('Finding image uploaded', {
           autoClose: 700
         })
@@ -1134,20 +1192,18 @@ export default {
       this.selectedFindingImageToDisplay = findingImg
     },
     addMemberVoiceData() {
-      this.memberVoiceData.line_id = this.selectedLineID.line_id
-      this.memberVoiceData.mv_pic_id = this.selectedPIC.pic_id
-      this.findingsData.line_id = this.selectedLineID.line_id
-      this.findingsData.cm_result_factor_id = this.findingsData.factor_id
-      this.findingsData.cm_pic_id = this.selectedPIC.pic_id
+      this.memberVoiceData.line_id = this.selectedLineID?.line_id
+      this.memberVoiceData.mv_pic_id = this.selectedPIC?.pic_id
+      this.findingsData.line_id = this.selectedLineID?.line_id
+      this.findingsData.cm_result_factor_id = this.findingsData?.factor_id
+      this.findingsData.cm_pic_id = this.selectedPIC?.pic_id
       this.findingsData.finding_location = this.memberVoiceData.mv_location
 
-      if (!this.findingsData.finding_img || !this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.finding_location || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date)
-      {
+      if (!this.findingsData.finding_img || !this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.finding_location || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date) {
         toast.error('Harap isi semua field di finding', {
           autoClose: 1000
         })
-      } else
-      {
+      } else {
         let data = {
           ...this.memberVoiceData,
           findings: this.findingsData,
@@ -1157,26 +1213,21 @@ export default {
       }
     },
     async getLines() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_LINES)
-        if (this.getLines)
-        {
+        if (this.getLines) {
           this.mapLinesData()
         }
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getUsers() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_USERS)
         this.mapUsersData()
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -1198,48 +1249,41 @@ export default {
         currentPage: this.currentPage,
       }
 
-      try
-      {
+      try {
         this.$store.dispatch(GET_MEMBERVOICE, objQuery).then((res) => {
-          if (res)
-          {
+          if (res) {
             this.totalPage = res[0]?.total_page
             this.isLoading = false
             this.json_data = res
           }
         })
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
         this.isLoading = false
       }
     },
     async addMemberVoice(data) {
-      try
-      {
+      try {
         ApiService.setHeader()
         ApiService.post(
           `operational/member-voice/add`,
           data,
         ).then(res => {
-          if (res.data.message == 'Success to POST Member Voice')
-          {
+          if (res.data.message == 'Success to POST Member Voice') {
             toast.success('Data added', {
               autoClose: 1000
             })
             this.getMemberVoices()
             this.addMemberVoiceModal = false
-          } else
-          {
+          } else {
             this.addMemberVoiceModal = false
             toast.error('Failed to add data', {
               autoClose: 1000
             })
           }
         })
-      } catch (error)
-      {
+      } catch (error) {
         console.log(error)
         toast.error('Internal server error', {
           autoClose: 1000
@@ -1255,27 +1299,23 @@ export default {
         confirmButtonText: 'Sure',
         denyButtonText: `No`,
       }).then((result) => {
-        if (result.isConfirmed)
-        {
+        if (result.isConfirmed) {
           ApiService.setHeader()
           ApiService.delete(
             `operational/member-voice/delete/${MVID}`,
           ).then(res => {
-            if (res.data.message == 'Success to DELETE Member Voice')
-            {
+            if (res.data.message == 'Success to DELETE Member Voice') {
               toast.success('Data deleted', {
                 autoClose: 1000
               })
               this.getMemberVoices()
-            } else
-            {
+            } else {
               toast.error('Failed to delete data', {
                 autoClose: 1000
               })
             }
           })
-        } else if (result.isDenied)
-        {
+        } else if (result.isDenied) {
           Swal.fire('Canceled', '', 'info')
         }
       })
@@ -1350,15 +1390,13 @@ export default {
     updateMemberVoice(data) {
       const MVID = this.selectedMVID
 
-      try
-      {
+      try {
         ApiService.setHeader()
         ApiService.put(
           `operational/member-voice/edit/${MVID}`,
           data,
         ).then(res => {
-          if (res.data.message == 'Success to EDIT Member Voice')
-          {
+          if (res.data.message == 'Success to EDIT Member Voice') {
             this.editMVModal = false
             toast.success('Data updated', {
               autoClose: 1000
@@ -1367,15 +1405,13 @@ export default {
             this.selectedFindingImage = null
             this.selectedFindingImageToDisplay = null
             this.selectedFindingImageToUpdate = null
-          } else
-          {
+          } else {
             toast.error('Failed to update data', {
               autoClose: 1000
             })
           }
         })
-      } catch (error)
-      {
+      } catch (error) {
         console.log(error)
         Swal.fire('Failed to update henkaten data', '', 'error')
         this.editFocusThemeModal = false
@@ -1419,8 +1455,7 @@ export default {
     },
 
     formatTheDate(val) {
-      if (val)
-      {
+      if (val) {
         const year = val.split('T')[0].split('-')[0]
         const month = val.split('T')[0].split('-')[1]
         const day = val.split('T')[0].split('-')[2]
@@ -1442,8 +1477,7 @@ export default {
       this.getMemberVoices()
     },
     getLineName(lineID) {
-      if (lineID)
-      {
+      if (lineID) {
         const data = this.getLinesOpts.filter((line) => {
           return line.id === lineID
         })
@@ -1488,7 +1522,6 @@ export default {
 .tableFixHead th {
   position: sticky;
   top: 0;
-  z-index: 3;
   background-color: white;
 }
 
@@ -1497,6 +1530,7 @@ export default {
   width: 38px;
   top: 0px;
   left: 0px;
+  z-index: 1;
   background-color: white;
 }
 
@@ -1504,6 +1538,7 @@ export default {
   position: sticky;
   top: 0px;
   left: 37px;
+  z-index: 1;
   background-color: white;
 }
 
@@ -1512,6 +1547,7 @@ export default {
   min-width: 121px;
   top: 0px;
   left: 105px;
+  z-index: 1;
   background-color: white;
 }
 
@@ -1519,6 +1555,7 @@ export default {
   position: sticky;
   top: 0px;
   left: 230px;
+  z-index: 1;
   background-color: white;
 }
 
@@ -1526,6 +1563,7 @@ export default {
   position: sticky;
   top: 0px;
   left: 300px;
+  z-index: 1;
   background-color: white;
 }
 </style>
