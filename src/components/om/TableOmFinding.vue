@@ -1,55 +1,72 @@
 <template>
   <div>
     <div class="card-header d-flex flex-column">
-      <h5>List temuan</h5>
-      <div class="d-flex align-items-center justify-content-between mt-3">
-        <div class="d-flex flex-column align-items-center justify-content-center">
-          <table class="table mb-0">
+      <div class="d-flex justify-content-between">
+        <h4>List temuan</h4>
+      </div>
+      <div class="d-flex align-items-center justify-content-between my-3">
+        <div class="d-flex flex-column">
+          <h6 class="">Progress</h6>
+          <table class="borderless" border="0">
             <tr>
-              <th><img src="@/../public/tanoko/0.png" width="20" height="20"></th>
+              <th><img src="@/../public/tanoko/0.png" width="25" height="25"></th>
+              <th>&nbsp;</th>
               <th>Order Part</th>
-              <th><img src="@/../public/tanoko/1.png" width="20" height="20"></th>
+              <th>&nbsp;</th>
+              <th><img src="@/../public/tanoko/1.png" width="25" height="25"></th>
+              <th>&nbsp;</th>
               <th>Countermeasure</th>
-              <th><img src="@/../public/tanoko/2.png" width="20" height="20"></th>
+              <th>&nbsp;</th>
+              <th><img src="@/../public/tanoko/2.png" width="25" height="25"></th>
+              <th>&nbsp;</th>
               <th>Monitor / Follow</th>
-              <th><img src="@/../public/tanoko/3.png" width="20" height="20"></th>
+              <th>&nbsp;</th>
+              <th><img src="@/../public/tanoko/3.png" width="25" height="25"></th>
+              <th>&nbsp;</th>
               <th>Finish</th>
             </tr>
           </table>
-          <table id="tb-priority" class="mt-2 mb-2">
+        </div>
+        <div class="d-flex flex-grow-1 ">
+        </div>
+        <div class="d-flex flex-column">
+          <h6 class="">Priority</h6>
+          <table class="borderless">
             <tr>
               <template v-for="value in priorities" :key="value">
-                <th class="no-border pe-1">
+                <th>
                   <span class="circle">
                     {{ value.id }}
                   </span>
                 </th>
-                <th class="no-border">=</th>
-                <th class="no-border pe-1">{{ value.text }}</th>
+                <th>=</th>
+                <th>{{ value.text }}</th>
+                <th>&nbsp;</th>
               </template>
             </tr>
           </table>
         </div>
-        <div class="d-flex align-items-center">
-          <div class="mx-2 d-flex align-items-center">
-            <div class="d-flex align-items-center">
-              <div style="
+      </div>
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <div></div>
+        <div class="mx-2 d-flex align-items-center">
+          <div class="d-flex align-items-center">
+            <div style="
                   background-color: transparent;
                   width: 20px;
                   height: 20px;
                   border: 2px dotted black;
                 "></div>
-              <span class="mx-2">Plan</span>
-            </div>
-            <div class="d-flex align-items-center">
-              <div style="
+            <span class="mx-2">Plan</span>
+          </div>
+          <div class="d-flex align-items-center">
+            <div style="
                   background-color: transparent;
                   width: 20px;
                   height: 20px;
                   border: 2px solid black;
                 "></div>
-              <span class="mx-2">Actual</span>
-            </div>
+            <span class="mx-2">Actual</span>
           </div>
         </div>
       </div>
@@ -180,7 +197,7 @@
                     </div>
                   </td>
                   <td class="text-center align-middle">
-                    <img v-if="finding.progress_num - 1 > 0" :src="progressNumImg(finding.progress_num)"
+                    <img v-if="finding.progress_num - 1 >= 0" :src="progressNumImg(finding.progress_num)"
                       :alt="progressNumImg(finding.progress_num)" width="30" height="30">
                   </td>
                   <td class="text-center align-middle">
@@ -240,10 +257,14 @@ export default {
   },
   methods: {
     progressNumImg(progressNum) {
+      console.log('====================================');
+      console.log('progressNum', progressNum - 1);
+      console.log('====================================');
       return `./tanoko/${progressNum - 1}.png`
     },
     async getOptSystems(type, id = null, textHandler = null) {
-      try {
+      try
+      {
         const response = await this.$store.dispatch(GET_SYSTEMS, {
           system_type: type
         })
@@ -255,7 +276,8 @@ export default {
           }
         })
       }
-      catch (error) {
+      catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
         return []
@@ -269,17 +291,21 @@ export default {
         confirmButtonText: 'Sure',
         denyButtonText: `No`,
       }).then((result) => {
-        if (result.isConfirmed) {
+        if (result.isConfirmed)
+        {
           ApiService.setHeader()
           const deleteData = ApiService.delete(`operational/om/finding/delete/${findingID}`)
 
-          if (deleteData) {
+          if (deleteData)
+          {
             Swal.fire('Data deleted!', '', 'success')
             this.$emit('refreshDeleted', true)
-          } else {
+          } else
+          {
             Swal.fire('Error', '', 'warning')
           }
-        } else if (result.isDenied) {
+        } else if (result.isDenied)
+        {
           Swal.fire('Canceled', '', 'info')
         }
       })
@@ -310,10 +336,13 @@ export default {
 }
 </script>
 <style scoped>
-#tb-priority {
-  border: none !important;
+.borderless td,
+.borderless th {
+  border: none;
   border-style: hidden !important;
   border-collapse: collapse !important;
+  border-spacing: 0 !important;
+  padding: 2px;
 }
 
 .circle {

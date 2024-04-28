@@ -4,6 +4,14 @@
       <div class="card-header">
         <div class="row d-flex align-items-center">
           <div class="col">
+            <label>Start date</label>
+            <input type="date" class="form-control" v-model="filter.start_date" />
+          </div>
+          <div class="col">
+            <label>End date</label>
+            <input type="date" class="form-control" v-model="filter.end_date" />
+          </div>
+          <div class="col">
             <label>Line</label>
             <select class="form-select" v-model="filter.line_id">
               <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
@@ -76,11 +84,14 @@ import { GET_FREQS } from '@/store/modules/freq.module'
 import { GET_MACHINES } from '@/store/modules/machine.module'
 import { GET_OM_FINDINGS, GET_OM_FINDINGS_FILTER, GET_OM_FINDING_DETAIL } from '@/store/modules/omFinding.module'
 import { mapGetters } from 'vuex'
+import moment from 'moment'
 import TableOmFinding from '@/components/om/TableOmFinding.vue'
 import ModalFormOmFinding from '@/components/om/ModalFormOmFinding.vue'
 import CustPagination from '@/components/pagination/CustPagination.vue';
 
 const defaultFilter = {
+  start_date: '',
+  end_date: '',
   line_id: '-1',
   group_id: '-1',
   freq_id: '-1',
@@ -223,6 +234,13 @@ export default {
     this.getFreq()
     this.getMachines()
 
+    const year = moment().format('YYYY')
+    this.filter = {
+      ...this.filter,
+      start_date: `${year}-01-01`,
+      end_date: `${year}-12-30`
+    }
+
     if (localStorage.getItem('line_id'))
     {
       this.filter = {
@@ -230,6 +248,10 @@ export default {
         line_id: localStorage.getItem('line_id')
       }
     }
+
+    console.log('====================================');
+    console.log(this.filter);
+    console.log('====================================');
   },
 }
 </script>

@@ -4,6 +4,14 @@
       <div class="card-header">
         <div class="row d-flex align-items-center">
           <div class="col">
+            <label>Start date</label>
+            <input type="date" class="form-control" v-model="selectedFilterStartDate" @change="addFilter()" />
+          </div>
+          <div class="col">
+            <label>End date</label>
+            <input type="date" class="form-control" v-model="selectedFilterEndDate" @change="addFilter()" />
+          </div>
+          <div class="col">
             <label>Line</label>
             <select class="form-select" v-model="selectedLineIDFilter" @change="addFilter()">
               <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
@@ -399,6 +407,8 @@ export default {
       subScheduleData: null,
       signGLData: null,
       signSHData: null,
+      selectedFilterStartDate: '',
+      selectedFilterEndDate: '',
       selectedMonth: null,
       selectedLineIDFilter: null,
       selectedGroupIDFilter: -1,
@@ -572,6 +582,8 @@ export default {
         kanban_id: this.selectedKanbanIDFilter,
         zone_id: this.zoneGetID,
         freq_id: this.selectedFreqIDFilter,
+        start_date: this.selectedFilterStartDate,
+        end_date: this.selectedFilterEndDate,
       }
       await this.$store.dispatch(GET_4S_FINDINGS, objQuery).then((res) => {
         this.findingList = res.list
@@ -782,6 +794,9 @@ export default {
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
+    this.selectedFilterStartDate = `${year}-01-01`
+    this.selectedFilterEndDate = `${year}-12-30`
+    
     if (localStorage.getItem('line_id'))
     {
       this.selectedLineIDFilter = localStorage.getItem('line_id')

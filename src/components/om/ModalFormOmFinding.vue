@@ -4,7 +4,7 @@
       <CModalTitle>{{ title }}</CModalTitle>
     </CModalHeader>
     <CModalBody>
-      <div class="row px-3 pt-4">
+      <div class="row pt-4">
         <div class="col-md-6">
           <CInputGroup class="mb-3">
             <CInputGroupText>Line</CInputGroupText>
@@ -42,21 +42,35 @@
           </CInputGroup>
         </div>
       </div>
-      <div class="row px-3">
+      <div class="row">
+        <div class="col-md-6">
+          <CInputGroup class="mb-3">
+            <CInputGroupText>Finding Date</CInputGroupText>
+            <input type="date" class="form-control" v-model="form.finding_date" :disabled="isEdit">
+          </CInputGroup>
+        </div>
         <div class="col-md-6">
           <CInputGroup class="mb-3">
             <CInputGroupText>Finding PIC</CInputGroupText>
             <VueMultiselect v-model="selectedFindingPic" :options="getUsersOpts" :custom-label="customPicOptions"
-              class="vue-multi-select">
+              class="vue-multi-select" :disabled="isEdit">
             </VueMultiselect>
           </CInputGroup>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
           <CInputGroup class="mb-3">
-            <CInputGroupText>Finding Date</CInputGroupText>
-            <input type="date" class="form-control" v-model="form.finding_date">
+            <CInputGroupText>Finding Desc</CInputGroupText>
+            <CFormInput v-model="form.finding_desc" :disabled="isEdit" />
           </CInputGroup>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
           <CInputGroup class="mb-3">
             <CInputGroupText>Source TAG</CInputGroupText>
-            <CFormSelect v-model="form.source_tag">
+            <CFormSelect v-model="form.source_tag" :disabled="isEdit">
               <option value="null">Select Source TAG</option>
               <option v-for="opt in optTags" :key="opt.id" :value="opt.text">{{ opt.text }}
               </option>
@@ -65,18 +79,8 @@
         </div>
         <div class="col-md-6">
           <CInputGroup class="mb-3">
-            <CInputGroupText>Actual PIC</CInputGroupText>
-            <VueMultiselect v-model="selectedActualPic" :options="getUsersOpts" :custom-label="customPicOptions"
-              class="vue-multi-select">
-            </VueMultiselect>
-          </CInputGroup>
-          <CInputGroup class="mb-3">
-            <CInputGroupText>Actual Countermeasure Date</CInputGroupText>
-            <input type="date" class="form-control" v-model="form.actual_cm_date">
-          </CInputGroup>
-          <CInputGroup class="mb-3">
             <CInputGroupText>Priority</CInputGroupText>
-            <CFormSelect v-model="form.priority_num">
+            <CFormSelect v-model="form.priority_num" :disabled="isEdit">
               <option value="null">Select Priority</option>
               <option v-for="opt in optPriorities" :key="opt.id" :value="opt.id">{{ opt.text }}
               </option>
@@ -84,45 +88,43 @@
           </CInputGroup>
         </div>
       </div>
-      <div class="row px-3">
-        <div class="col-md-12">
-          <CInputGroup class="mb-3">
-            <CInputGroupText>Finding Desc</CInputGroupText>
-            <CFormInput v-model="form.finding_desc" />
-          </CInputGroup>
-        </div>
-      </div>
-      <div class="row px-3">
+      <div class="row">
         <div class="col-md-6">
           <CInputGroup class="mb-3">
             <CInputGroupText>Plan Countermeasure Date</CInputGroupText>
-            <input type="date" class="form-control" v-model="form.plan_cm_date">
+            <input type="date" class="form-control" v-model="form.plan_cm_date" :disabled="isEdit">
           </CInputGroup>
         </div>
         <div class="col-md-6">
           <CInputGroup class="mb-3">
-            <CInputGroupText>Countermeasure Judg</CInputGroupText>
-            <CFormSelect v-model="form.cm_judg" :disabled="isEdit">
-              <option value="null">Select Countermeasure Judg</option>
-              <option value="true">Done</option>
-              <option value="false">Not Yet</option>
+            <CInputGroupText>Departement</CInputGroupText>
+            <CFormSelect v-model="form.dept" :disabled="isEdit">
+              <option value="null">Select Departement</option>
+              <option v-for="opt in optDepts" :key="opt.id" :value="opt.text">{{ opt.text }}
+              </option>
             </CFormSelect>
           </CInputGroup>
         </div>
       </div>
-      <div class="row px-3">
+      <div class="row">
         <div class="col-md-12">
           <CInputGroup class="mb-3">
             <CInputGroupText>Plan Countermeasure Desc</CInputGroupText>
-            <CFormInput v-model="form.plan_cm_desc" />
+            <CFormInput v-model="form.plan_cm_desc" :disabled="isEdit" />
           </CInputGroup>
         </div>
       </div>
-      <div class="row px-3">
+      <div class="row">
         <div class="col-md-6">
           <CInputGroup class="mb-3">
+            <CInputGroupText>Actual PIC</CInputGroupText>
+            <VueMultiselect v-model="selectedActualPic" :options="getUsersOpts" :custom-label="customPicOptions"
+              class="vue-multi-select" :disabled="!isEdit">
+            </VueMultiselect>
+          </CInputGroup>
+          <CInputGroup class="mb-3">
             <CInputGroupText>Progress</CInputGroupText>
-            <CFormSelect v-model="form.progress_num">
+            <CFormSelect v-model="form.progress_num" :disabled="!isEdit">
               <option value="null">Select Progress</option>
               <option v-for="opt in optProgress" :key="opt.id" :value="opt.id">{{ opt.text }}
               </option>
@@ -131,61 +133,66 @@
         </div>
         <div class="col-md-6">
           <CInputGroup class="mb-3">
-            <CInputGroupText>Departement</CInputGroupText>
-            <CFormSelect v-model="form.dept">
-              <option value="null">Select Departement</option>
-              <option v-for="opt in optDepts" :key="opt.id" :value="opt.text">{{ opt.text }}
-              </option>
+            <CInputGroupText>Actual Countermeasure Date</CInputGroupText>
+            <input type="date" class="form-control" v-model="form.actual_cm_date" :disabled="!isEdit">
+          </CInputGroup>
+          <CInputGroup class="mb-3">
+            <CInputGroupText>Countermeasure Judg</CInputGroupText>
+            <CFormSelect v-model="form.cm_judg" :disabled="!isEdit">
+              <option value="null">Select Countermeasure Judg</option>
+              <option value="true">Done</option>
+              <option value="false">Not Yet</option>
             </CFormSelect>
           </CInputGroup>
         </div>
       </div>
-      <div class="row px-3 mt-2">
+      <div class="row mt-2">
         <div class="col-md-12">
           <div class="d-flex mb-1">
             <h5 class="me-3">Finding LH Sign</h5>
-            <CButton color="info" class="btn-sm text-white me-2" @click="clearSignature('finding_sign_lh')">
+            <CButton v-if="!isEdit" color="info" class="btn-sm text-white me-2"
+              @click="clearSignature('finding_sign_lh')">
               Clear
             </CButton>
           </div>
           <Watermark :options="wmSign('Finding LH Sign')">
             <div style="width: 100%; height: 100px; border: 1px solid #eaeaea">
-              <CustomSignature ref="finding_sign_lh" :sigOption="signOption" :w="'100%'" :h="'100px'"
-                :defaultUrl="loadedFinding?.finding_sign_lh">
+              <CustomSignature ref="finding_sign_lh" :w="'100%'" :h="'100px'"
+                :defaultUrl="loadedFinding?.finding_sign_lh" :disabled="isEdit">
               </CustomSignature>
             </div>
           </Watermark>
         </div>
       </div>
-      <div class="row px-3 mt-3">
+      <div class="row mt-3">
         <div class="col-md-12">
           <div class="d-flex mb-1">
             <h5 class="me-3">Countermeasure LH Sign</h5>
-            <CButton color="info" class="btn-sm text-white me-2" @click="clearSignature('cm_sign_lh')">
+            <CButton v-if="isEdit" color="info" class="btn-sm text-white me-2" @click="clearSignature('cm_sign_lh')">
               Clear
             </CButton>
           </div>
           <Watermark :options="wmSign('Countermeasure LH Sign')">
             <div style="width: 100%; height: 100px; border: 1px solid #eaeaea">
-              <CustomSignature ref="cm_sign_lh" :sigOption="signOption" :w="'100%'" :h="'100px'"
-                :defaultUrl="loadedFinding?.cm_sign_lh">
+              <CustomSignature ref="cm_sign_lh" :w="'100%'" :h="'100px'" :defaultUrl="loadedFinding?.cm_sign_lh"
+                :disabled="!isEdit">
               </CustomSignature>
             </div>
           </Watermark>
         </div>
       </div>
-      <div class="row px-3 mt-3">
+      <div class="row mt-3">
         <div class="col-md-12">
           <div class="d-flex mb-1">
             <h5 class="me-3">Countermeasure SH Sign</h5>
-            <CButton color="info" class="btn-sm text-white me-2" @click="clearSignature('cm_sign_sh')">
+            <CButton v-if="isEdit" color="info" class="btn-sm text-white me-2" @click="clearSignature('cm_sign_sh')">
               Clear
             </CButton>
           </div>
           <Watermark :options="wmSign('Countermeasure SH Sign')">
             <div style="width: 100%; height: 100px; border: 1px solid #eaeaea">
-              <CustomSignature ref="cm_sign_sh" :sigOption="signOption" :w="'100%'" :h="'100px'"
-                :defaultUrl="loadedFinding?.cm_sign_sh">
+              <CustomSignature ref="cm_sign_sh" :w="'100%'" :h="'100px'" :defaultUrl="loadedFinding?.cm_sign_sh"
+                :disabled="!isEdit">
               </CustomSignature>
             </div>
           </Watermark>
@@ -254,10 +261,6 @@ export default {
   },
   data() {
     return {
-      signOption: {
-        penColor: 'rgb(0, 0, 0)',
-        backgroundColor: 'rgb(255,255,255)',
-      },
       form: defaultForm,
       selectedFindingPic: null,
       selectedActualPic: null,
@@ -418,11 +421,11 @@ export default {
   computed: {
     ...mapGetters(['getUsersOpts']),
     isEdit() {
-      return this.loadedFinding?.finding_id
+      return this.loadedFinding?.finding_id != undefined && this.loadedFinding?.finding_id != null
     },
     title() {
       return this.loadedFinding?.finding_id ? "Edit OM Finding" : "Add OM Finding"
-    }
+    },
   },
   watch: {
     loadedFinding: {
@@ -443,7 +446,7 @@ export default {
           finding_desc: this.loadedFinding?.finding_desc,
           plan_cm_date: this.loadedFinding?.plan_cm_date,
           actual_cm_date: this.loadedFinding?.actual_cm_date,
-          cm_judg: this.loadedFinding?.cm_judg,
+          cm_judg: this.loadedFinding?.cm_judg ?? false,
           plan_cm_desc: this.loadedFinding?.plan_cm_desc,
           dept: this.loadedFinding?.dept,
           priority_num: this.loadedFinding?.priority_num,
@@ -495,5 +498,11 @@ export default {
 .canvas {
   border: 1px #b3b3b3 solid;
   border-radius: 10px;
+}
+
+.multiselect--disabled>.multiselect__tags,
+.multiselect--disabled>.multiselect__tags>.multiselect__single,
+.multiselect--disabled>.multiselect__select {
+  background: #D8DBE0 !important;
 }
 </style>

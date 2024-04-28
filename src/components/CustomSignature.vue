@@ -1,6 +1,9 @@
 <template>
-  <div :style="{ width: w, height: h }" @touchmove.prevent>
-    <canvas :id="uid" class="canvas" :data-uid="uid" :disabled="disabled"></canvas>
+  <div class="position-relative" :style="{ width: w, height: h }" @touchmove.prevent>
+    <div v-if="disabled" class="position-absolute top-0 start-0 w-100 h-100 disabled">
+    </div>
+    <canvas :id="uid" class="canvas" :data-uid="uid" :disabled="disabled"
+      :style="{ 'background-color: rgb(216, 219, 224)': disabled }"></canvas>
   </div>
 </template>
 
@@ -78,6 +81,14 @@ export default {
     {
       _this.option[item] = _this.sigOption[item]
     }
+
+   /*  if (_this.disabled)
+    {
+      _this.option = {
+        ..._this.option,
+        backgroundColor: 'rgb(216, 219, 224)',
+      }
+    } */
   },
   methods: {
     draw() {
@@ -199,9 +210,17 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 canvas {
   width: 100%;
   height: 100%;
+  z-index: 2;
+}
+
+.disabled {
+  content: '';
+  background: #D8DBE0 !important;
+  z-index: 2;
+  opacity: 0.6;
 }
 </style>

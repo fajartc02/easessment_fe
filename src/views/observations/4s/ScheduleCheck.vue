@@ -298,6 +298,8 @@
         <CButton color="primary" v-else @click="updateFinding()"> {{ findingActionType }} finding data</CButton>
       </CModalFooter>
     </CModal>
+
+    <!-- <ModalForm4sFinding :visiblee="modalFormFinding" :loadedFinding="" /> -->
   </div>
 </template>
 
@@ -316,11 +318,13 @@ import { GET_SYSTEMS } from '@/store/modules/system.module'
 import Loading from 'vue-loading-overlay'
 import { toast } from 'vue3-toastify'
 import KanbanItemCheck from '@/components/kanban4s/KanbanItemCheck.vue'
+import ModalForm4sFinding from '@/components/4s/ModalForm4sFinding.vue'
 
 export default {
   name: "Schedule Check",
   components: {
-    VueMultiselect, Loading, KanbanItemCheck
+    // eslint-disable-next-line vue/no-unused-components
+    VueMultiselect, Loading, KanbanItemCheck, ModalForm4sFinding
   },
   data() {
     return {
@@ -389,6 +393,15 @@ export default {
       {
         return [];
       }
+    },
+    loadedFinding() {
+      // should set actual_pic_id = null cause duplicate object
+      const result = this.getSubSchedulesCheck?.finding ?? {
+        ...this.getOmSubSchedulesDetail,
+        actual_pic_id: null
+      }
+
+      return result
     }
   },
   methods: {

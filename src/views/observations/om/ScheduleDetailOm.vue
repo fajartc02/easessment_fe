@@ -107,12 +107,13 @@
               </CFormSelect>
             </td>
             <td>
-              <CFormInput v-model="actualDuration" />
+              <CFormInput v-model="actualDuration"
+                @keypress="$event.key.match(/^[\d]$/) ? '' : $event.preventDefault()" />
             </td>
             <td class="text-center">
               <button class="btn btn-info btn-sm text-white" @click="updateSchedule()">
                 {{ isAddCheckLoading ?
-                  'Saving...' : 'Save' }}
+                'Saving...' : 'Save' }}
               </button>
             </td>
             <td class="text-center">
