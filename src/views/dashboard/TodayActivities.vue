@@ -29,6 +29,28 @@
       </div>
       <card-status-schedules :achievementsSTW="getCountTotalSTW" :achievements4S="getCountTotal4S"
         :achievementsOM="getCountTotalOM" />
+      <div class="card-header align-start overflow-auto">
+        <div class="row">
+          <div class="col">
+            <table>
+              <tr>
+                <td>
+                  <div class="card" style="width: 20px;height: 20px;background-color: cyan;"></div>
+                </td>
+                <td>: On Progress</td>
+                <td>
+                  <div class="card" style="width: 20px;height: 20px;background-color: #01FF4F;"></div>
+                </td>
+                <td>: Done</td>
+                <td>
+                  <div class="card" style="width: 20px;height: 20px;background-color: red;"></div>
+                </td>
+                <td>: Done</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
       <div class="card-body">
         <ul>
           <li>STW Activities</li>
