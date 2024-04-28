@@ -438,6 +438,8 @@ import vueSignature from 'vue-signature'
 import ApiService from '@/store/api.service'
 import VueMultiselect from 'vue-multiselect'
 import Swal from 'sweetalert2'
+import { toast } from 'vue3-toastify'
+
 
 
 export default {
@@ -612,8 +614,13 @@ export default {
         `/operational/4s/sub-schedule/edit/${this.selectedSubScheduleID}`,
         data,
       )
-      if (add.data.message == 'Success to edit 4s schedule plan')
-      {
+
+      if (add.data.message == 'Success to edit 4s schedule plan') {
+        toast.success('PIC added', {
+          autoClose: 700
+        })
+        this.selectedPIC = null
+
         this.isAddPICLoading = false
         this.editDataModal = false
         await this.getSchedules()
@@ -660,13 +667,16 @@ export default {
           ApiService.setHeader()
           const deleteData = ApiService.delete(`operational/4s/sub-schedule/delete/${subScheduleID}`)
 
-          if (deleteData)
-          {
-            Swal.fire('Data deleted!', '', 'success')
+
+          if (deleteData) {
+            toast.success('Data daleted', {
+              autoClose: 700
+            })
             this.getSchedules()
-          } else
-          {
-            Swal.fire('Error', '', 'warning')
+          } else {
+            toast.error('Failed to delete data', {
+              autoClose: 700
+            })
           }
         } else if (result.isDenied)
         {
@@ -849,7 +859,9 @@ export default {
       if (upload.data.message == 'success to sign 4s schedule')
       {
         this.isUploadSignLoading = false
-        alert('Sign saved')
+        toast.success('Sign saved', {
+          autoClose: 700
+        })
         this.closeSignModal()
       }
     },
