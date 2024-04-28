@@ -176,33 +176,33 @@
               <td>{{ membervoice.mv_evaluation }}</td>
               <td v-for="week in totalWeek" :key="week" style="min-width: 30px !important; padding: 5px">
                 <div v-if="week >= membervoice.w_mv_plan_date &&
-              week <= membervoice.w_mv_actual_date
-              " :style="` 
+                  week <= membervoice.w_mv_actual_date
+                " :style="`
                     width: 100%;
                     height: 25px;
-                    border-radius: 4px;  
-                    border: 2px dotted #64748b 
+                    border-radius: 4px;
+                    border: 2px dotted #64748b
                     ${membervoice.status_check == 'PROGRESS'
-                ? 'background-color: #fff'
-                : ''
-              }; 
+                  ? 'background-color: #fff'
+                  : ''
+                };
                     ${membervoice.status_check == 'DELAY'
-                ? 'background-color: #fee2e2'
-                : ''
-              }; 
+                  ? 'background-color: #fee2e2'
+                  : ''
+                };
                     ${membervoice.status_check == 'DONE'
-                ? 'background-color: #bbf7d0'
-                : ''
-              }; 
+                  ? 'background-color: #bbf7d0'
+                  : ''
+                };
                     `"></div>
               </td>
               <td>{{ membervoice.mv_pic_nm }}</td>
               <td>
                 <button class="btn btn-secondary btn-sm text-white w-full" @click="() => {
-              detailMVModal = true
-              getDetailMVData(index)
-            }
-              ">
+                  detailMVModal = true
+                  getDetailMVData(index)
+                }
+                  ">
                   Detail
                 </button>
                 <button class="btn btn-info btn-sm text-white my-1" @click="getDetailMVToEdit(index)">
@@ -309,7 +309,7 @@
               </div>
             </CAccordionBody>
           </CAccordionItem>
-          <CAccordionItem :item-key="2">
+          <CAccordionItem :item-key="1">
             <CAccordionHeader> Findings input </CAccordionHeader>
             <CAccordionBody>
               <div>
@@ -376,8 +376,8 @@
                     <input ref="mv-finding-image" type="file" class="form-control" />
                   </div>
                   <button class="btn btn-info my-2 text-white" :disabled="isUploadLoading" @click="
-              uploadFindingImage('mv-finding-image', null)
-              ">
+                    uploadFindingImage('mv-finding-image', null)
+                    ">
                     {{ isUploadLoading ? 'Uploading' : 'Upload' }}
                   </button>
                   <div v-if="selectedFindingImage">
@@ -479,7 +479,7 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(memberVoiceDetail.mv_date_finding)
-              " />
+                        " />
                     </div>
                     <div class="col">
                       <input type="date" v-model="memberVoiceDetail.mv_date_finding" class="form-control" />
@@ -585,7 +585,7 @@
               </div>
             </CAccordionBody>
           </CAccordionItem>
-          <CAccordionItem :item-key="2">
+          <CAccordionItem :item-key="1">
             <CAccordionHeader> Findings input </CAccordionHeader>
 
             <CAccordionBody>
@@ -596,9 +596,9 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(
-              memberVoiceDetail.findings[0].finding_date,
-            )
-              " />
+                        memberVoiceDetail.findings[0].finding_date,
+                      )
+                        " />
                     </div>
                     <div class="col">
                       <input type="date" class="form-control" v-model="memberVoiceDetail.findings[0].finding_date" />
@@ -611,7 +611,7 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" disabled class="form-control" :value="getLineName(memberVoiceDetail.findings[0].line_id)
-              " />
+                        " />
                     </div>
                     <div class="col">
                       <VueMultiselect v-model="selectedFindingLineID" :options="lineData"
@@ -660,7 +660,7 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" disabled class="form-control" :value="getPicName(memberVoiceDetail.findings[0].cm_pic_id)
-              " />
+                        " />
                     </div>
                     <div class="col">
                       <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
@@ -674,9 +674,9 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(
-              memberVoiceDetail.findings[0].cm_str_plan_date,
-            )
-              " />
+                        memberVoiceDetail.findings[0].cm_str_plan_date,
+                      )
+                        " />
                     </div>
                     <div class="col">
                       <input type="date" class="form-control"
@@ -689,9 +689,9 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(
-              memberVoiceDetail.findings[0].cm_end_plan_date,
-            )
-              " />
+                        memberVoiceDetail.findings[0].cm_end_plan_date,
+                      )
+                        " />
                     </div>
                     <div class="col">
                       <input type="date" class="form-control"
@@ -707,9 +707,9 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(
-              memberVoiceDetail.findings[0].cm_str_act_date,
-            )
-              " />
+                        memberVoiceDetail.findings[0].cm_str_act_date,
+                      )
+                        " />
                     </div>
                     <div class="col">
                       <input type="date" class="form-control" v-model="memberVoiceDetail.findings[0].cm_str_act_date" />
@@ -721,9 +721,9 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(
-              memberVoiceDetail.findings[0].cm_end_act_date,
-            )
-              " />
+                        memberVoiceDetail.findings[0].cm_end_act_date,
+                      )
+                        " />
                     </div>
                     <div class="col">
                       <input type="date" class="form-control" v-model="memberVoiceDetail.findings[0].cm_end_act_date" />
@@ -735,9 +735,9 @@
                   <div class="row">
                     <div class="col">
                       <input type="text" class="form-control" disabled :value="formatTheDate(
-              memberVoiceDetail.findings[0].cm_training_date,
-            )
-              " />
+                        memberVoiceDetail.findings[0].cm_training_date,
+                      )
+                        " />
                     </div>
                     <div class="col">
                       <input type="date" class="form-control"
@@ -776,8 +776,8 @@
                     @click="showFindingImg(memberVoiceDetail.findings[0].finding_img)" />
                   <input ref="mv-finding-image" type="file" class="form-control" />
                   <button class="btn btn-info my-2 text-white" :disabled="isUploadLoading" @click="
-              uploadFindingImage('mv-finding-image', memberVoiceDetail.findings[0].finding_img)
-              ">
+                    uploadFindingImage('mv-finding-image', memberVoiceDetail.findings[0].finding_img)
+                    ">
                     {{ isUploadLoading ? 'Updating' : 'Update image' }}
                   </button>
                   <div v-if="selectedFindingImage">
@@ -848,7 +848,7 @@
               </div>
             </CAccordionBody>
           </CAccordionItem>
-          <CAccordionItem :item-key="2">
+          <CAccordionItem :item-key="1">
             <CAccordionHeader> Findings </CAccordionHeader>
             <CAccordionBody>
               <table class="table table-striped table-bordered">
@@ -910,9 +910,9 @@
       </CModalBody>
       <CModalFooter>
         <CButton color="secondary" class="text-white" @click="() => {
-              findingImageModal = false
-            }
-              ">
+          findingImageModal = false
+        }
+          ">
           Close
         </CButton>
       </CModalFooter>
