@@ -59,7 +59,7 @@
           <template v-if="dataSTW.length > 0 && !isLoading">
             <div v-for="(item) in dataSTW" :key="item.observation_id" class="col-12 col-md-4 col-lg-4 mt-1">
               <div class="card p-2"
-                :style="`border-left: 5px solid ${item.color_status ? item.color_status : 'cyan'};min-height: 100px;`">
+                :style="`border-left: 10px solid ${item.color_status ? item.color_status : 'cyan'};min-height: 100px;`">
                 <div class="d-flex flex-row justify-content-between align-items-center">
                   <div class="d-flex flex-column">
                     {{ item.line_snm }} |
@@ -99,7 +99,8 @@
         <div class="row">
           <template v-if="data4S.length > 0 && !isLoading">
             <div v-for="(item) in data4S" :key="item.observation_id" class="col-12 col-md-4 col-lg-4">
-              <div class="card p-2" style="border-left: 5px solid cyan;min-height: 100px;">
+              <div class="card p-2"
+                :style="`border-left: 10px solid ${getColorStatus(item.plan_check_dt, item.actual_check_dt)};min-height: 100px;`">
                 <div class="d-flex flex-row justify-content-between align-items-center">
                   <div class="d-flex flex-column">
                     {{ item.line_nm }} |
@@ -109,7 +110,6 @@
                     <template v-else><i class="text-danger">Pic belum di tentukan</i></template>
                   </div>
                   <div class="d-flex flex-column">
-                    <!-- /4s/schedule-check/b7e6f2b1-ab08-4090-a1d6-7294fb79b6bd/63e99f7d-9ebe-411d-a9e2-b8f866382fc9 -->
                     <button class="btn btn-sm btn-primary"
                       @click="$router.push(`/4s/schedule-check/${item.main_schedule_id}/${item.sub_schedule_id}`)">Check</button>
                   </div>
@@ -135,7 +135,8 @@
         <div class="row">
           <template v-if="dataOM.length > 0 && !isLoading">
             <div v-for="(item) in dataOM" :key="item.observation_id" class="col-12 col-md-4 col-lg-4">
-              <div class="card p-2" style="border-left: 5px solid cyan;min-height: 100px;">
+              <div class="card p-2"
+                :style="`border-left: 10px solid ${getColorStatus(item.plan_check_dt, item.actual_check_dt)};min-height: 100px;`">
                 <div class="d-flex flex-row justify-content-between align-items-center">
                   <div class="d-flex flex-column">
                     {{ item.line_nm }} |
@@ -286,7 +287,7 @@ export default {
         total: this.dataOM.length,
         done: this.dataOM.filter(item => item.actual_check_dt).length
       }
-    }
+    },
   },
   watch: {
     windowWidth() {
@@ -307,6 +308,16 @@ export default {
     }
   },
   methods: {
+    getColorStatus(planDate, actualDate) {
+      let isDelay = moment(planDate).diff(moment(), 'days') < 0
+      if (!actualDate && isDelay) {
+        return '#FF0000'
+      } else if (!isDelay && actualDate) {
+        return '#01FF4F'
+      } else {
+        return '#01FFFF'
+      }
+    },
     async ActionGetLines() {
       try {
         await this.$store.dispatch(GET_LINES);
