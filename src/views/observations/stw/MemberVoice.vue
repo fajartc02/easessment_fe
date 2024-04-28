@@ -277,7 +277,9 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Problem</label>
-                  <input type="text" class="form-control" v-model="memberVoiceData.mv_problem" />
+                  <input type="text" class="form-control" v-model="memberVoiceData.mv_problem" @input="() => {
+                    findingsData.finding_desc = memberVoiceData.mv_problem
+                  }" />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">No Proses</label>
@@ -293,7 +295,9 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Faktor </label>
-                  <select class="form-select" v-model="memberVoiceData.mv_factor_id">
+                  <select class="form-select" v-model="memberVoiceData.mv_factor_id" @change="() => {
+                    findingsData.factor_id = memberVoiceData.mv_factor_id
+                  }">
                     <option disabled>Select Factor</option>
                     <option v-for="factor in factors" :key="factor.text" :value="factor.id">
                       {{ factor.text }}
@@ -302,7 +306,9 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Penanggulangan</label>
-                  <input type="text" class="form-control" v-model="memberVoiceData.mv_countermeasure" />
+                  <input type="text" class="form-control" v-model="memberVoiceData.mv_countermeasure" @input="() => {
+                    findingsData.cm_desc = memberVoiceData.mv_countermeasure
+                  }" />
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Plan tgl penganggulangan</label>
@@ -311,7 +317,9 @@
 
                 <div class="mb-2">
                   <label class="mb-1">PIC</label>
-                  <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
+                  <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions" @change="() => {
+                    selectedPIC = selectedPIC
+                  }">
                   </VueMultiselect>
                 </div>
                 <div class="row">
