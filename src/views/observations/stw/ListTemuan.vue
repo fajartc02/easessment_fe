@@ -39,7 +39,7 @@
           </div>
         </div>
       </div>
-      <div class="card-header d-flex justify-content-between align-items-center">
+      <div class="overflow-auto card-header d-flex justify-content-between align-items-center">
         <h5>List temuan</h5>
         <div class="d-flex align-items-center">
           <div class="mx-2 d-flex align-items-center">
@@ -112,25 +112,25 @@
                 </td>
               </tr>
               <tr v-else v-for="(finding, findingIndex) in getFindings" :key="finding.no" :style="`${this.todayDate > formatTheDate(finding.cm_str_plan_date) &&
-              finding.cm_judg == false
-              ? 'background-color: #fee2e2'
-              : ''
-              }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ${finding.cm_judg ==
-                true
-                ? 'background-color: #f0fdf4'
+                finding.cm_judg == false
+                ? 'background-color: #fee2e2'
                 : ''
-              }
+                }
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ${finding.cm_judg ==
-                false &&
-                this
-                  .todayDate <
-                formatTheDate(
-                  finding.cm_str_plan_date,
-                )
-                ? 'background-color: #fff'
-                : ''
-              }
+                  true
+                  ? 'background-color: #f0fdf4'
+                  : ''
+                }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ${finding.cm_judg ==
+                  false &&
+                  this
+                    .todayDate <
+                  formatTheDate(
+                    finding.cm_str_plan_date,
+                  )
+                  ? 'background-color: #fff'
+                  : ''
+                }
                 `">
                 <th id="fixCol-1">{{ findingIndex + 1 }}</th>
                 <td id="fixCol-2" class="px-2">{{ finding.line_nm }}</td>
@@ -159,54 +159,60 @@
                 </td>
                 <td class="px-2">{{ finding.cm_priority }}</td>
                 <td colspan="2">
-                  {{ finding.factor_nm == 'Safety' ? 'v' : ' ' }}
+                  <CIcon v-if="finding.factor_nm == 'Safety'" icon="cil-check" size="sm" />
                 </td>
-                <td>{{ finding.factor_nm == 'Method' ? 'v' : ' ' }}</td>
+                <td>
+                  <CIcon v-if="finding.factor_nm == 'Method'" icon="cil-check" size="sm" />
+                </td>
                 <td colspan="2">
-                  {{ finding.factor_nm == 'Man' ? 'v' : ' ' }}
+                  <CIcon v-if="finding.factor_nm == 'Man'" icon="cil-check" size="sm" />
                 </td>
-                <td>{{ finding.factor_nm == 'Material' ? 'v' : ' ' }}</td>
-                <td>{{ finding.factor_nm == 'Machine' ? 'v' : ' ' }}</td>
+                <td>
+                  <CIcon v-if="finding.factor_nm == 'Material'" icon="cil-check" size="sm" />
+                </td>
+                <td>
+                  <CIcon v-if="finding.factor_nm == 'Machine'" icon="cil-check" size="sm" />
+                </td>
                 <td>{{ finding.cm_pic_nm }}</td>
                 <td v-for="n in num" :key="n" style="min-width: 30px !important; padding: 5px">
                   <div v-if="n >= finding.w_str_plan_date && n <= finding.w_end_plan_date
-              " :style="`
+                  " :style="`
                       width: 100%;
                       height: 25px;
                       border-radius: 4px;
                       border: 2px dotted #64748b;
                       ${finding.status_check == 'PROGRESS'
-                ? 'background-color: #fff'
-                : ''
-              };
+                      ? 'background-color: #fff'
+                      : ''
+                    };
                       ${finding.status_check == 'DELAY'
-                ? 'background-color: #fee2e2'
-                : ''
-              };
+                      ? 'background-color: #fee2e2'
+                      : ''
+                    };
                       ${finding.status_check == 'DONE'
-                ? 'background-color: #bbf7d0'
-                : ''
-              };
+                      ? 'background-color: #bbf7d0'
+                      : ''
+                    };
                       `"></div>
 
                   <div class="my-2" v-if="n >= finding.w_str_act_date && n <= finding.w_end_act_date
-              " :style="`
+                  " :style="`
                       width: 100%;
                       height: 25px;
                       border-radius: 4px;
                       border: 2px solid #64748b;
                       ${finding.status_check == 'PROGRESS'
-                ? 'background-color: #fff'
-                : ''
-              };
+                      ? 'background-color: #fff'
+                      : ''
+                    };
                       ${finding.status_check == 'DELAY'
-                ? 'background-color: #fee2e2'
-                : ''
-              };
+                      ? 'background-color: #fee2e2'
+                      : ''
+                    };
                       ${finding.status_check == 'DONE'
-                ? 'background-color: #bbf7d0'
-                : ''
-              };
+                      ? 'background-color: #bbf7d0'
+                      : ''
+                    };
                       `"></div>
                 </td>
                 <td>
@@ -223,12 +229,12 @@
                   <div class="d-flex m-2">
                     <div class="d-flex" style="width: 400px">
                       <input type="text" class="form-control w-full" :value="finding.cm_comments" @input="
-              updateCMComments(
-                finding.finding_id,
-                $event.target.value,
-                findingIndex,
-              )
-              " />
+                        updateCMComments(
+                          finding.finding_id,
+                          $event.target.value,
+                          findingIndex,
+                        )
+                        " />
                       <button class="btn btn-info btn-sm text-white w-full mx-1" @click="saveCMComments()">
                         save
                       </button>
@@ -238,16 +244,16 @@
                 <td class="px-1">
                   <div class="px-2 d-flex">
                     <button @click="() => {
-              openFindingImage(finding.finding_img)
-            }
-              " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
+                      openFindingImage(finding.finding_img)
+                    }
+                      " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
                       Finding image
                     </button>
                     <button @click="() => {
-              getDetailTemuan(findingIndex)
-              addSignModal = true
-            }
-              " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
+                      getDetailTemuan(findingIndex)
+                      addSignModal = true
+                    }
+                      " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
                       Add sign
                     </button>
                     <!-- <button class="btn btn-info btn-sm text-white w-full mx-1 my-1" style="margin-right: 10px" @click="() => {
@@ -258,10 +264,10 @@
                       Detail
                     </button> -->
                     <button @click="() => {
-              getDetailTemuan(findingIndex)
-              editTemuanModal = true
-            }
-              " class="btn btn-info btn-sm text-white w-full my-1">
+                      getDetailTemuan(findingIndex)
+                      editTemuanModal = true
+                    }
+                      " class="btn btn-info btn-sm text-white w-full my-1">
                       Edit
                     </button>
                     <button @click="deleteFinding(finding.finding_id)"
@@ -330,16 +336,19 @@
         </div>
         <div class="mb-2">
           <label class="mb-1">Source cat</label>
-          <input type="text" class="form-control" v-model="findingDetail.source_category" />
+          <input type="text" class="form-control" v-model="findingDetail.source_category" disabled />
         </div>
         <div class="mb-2">
-          <label class="mb-1">Tanggal temuan</label>
+          <!-- <label class="mb-1">Tanggal temuan</label> -->
           <div class="row">
             <div class="col">
+              <label class="mb-1">Tanggal Temuan</label>
               <input type="text" class="form-control" disabled :value="formatTheDate(findingDetail?.finding_date)" />
             </div>
             <div class="col">
+              <label class="mb-1">Edit Tanggal Temuan</label>
               <input type="date" class="form-control" v-model="findingDetail.finding_date" />
+              <small class="text-success">*Abaikan jika tidak ingin diubah</small>
             </div>
           </div>
         </div>
@@ -352,15 +361,16 @@
           <textarea cols="30" rows="5" class="form-control" v-model="findingDetail.finding_desc"></textarea>
         </div>
         <div class="mb-2">
-          <label class="mb-1">Rencana perbaikan</label>
-
           <div class="row">
             <div class="col">
+              <label class="mb-1">Rencana Perbaikan</label>
               <input type="text" class="form-control" disabled
                 :value="formatTheDate(findingDetail?.cm_str_plan_date)" />
             </div>
             <div class="col">
+              <label class="mb-1">Edit Rencana Perbaikan</label>
               <input type="date" class="form-control" v-model="findingDetail.cm_str_plan_date" />
+              <small class="text-success">*Abaikan jika tidak ingin diubah</small>
             </div>
           </div>
         </div>
@@ -374,45 +384,49 @@
           </select>
         </div>
         <div class="mb-2">
-          <label class="mb-1">PIC </label>
           <div class="row">
             <div class="col">
+              <label class="mb-1">PIC </label>
               <input type="text" class="form-control py-2" :value="findingDetail?.cm_pic_nm" disabled />
             </div>
             <div class="col">
+              <label class="mb-1">Edit PIC</label>
               <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
               </VueMultiselect>
+              <small class="text-success">*Abaikan jika tidak ingin diubah</small>
             </div>
           </div>
         </div>
         <div class="mb-2">
-          <label class="mb-1">CM description</label>
+          <label class="mb-1">Countermeasure description</label>
           <textarea cols="30" rows="5" class="form-control" v-model="findingDetail.cm_desc"></textarea>
         </div>
 
         <div class="mb-2">
-          <label class="mb-1">CM Start Plan Date </label>
-
           <div class="row">
             <div class="col">
+              <label class="mb-1">Countermeasure Start Plan Date</label>
               <input type="text" class="form-control" disabled
                 :value="formatTheDate(findingDetail?.cm_str_plan_date)" />
             </div>
             <div class="col">
+              <label class="mb-1">Edit Countermeasure Start Plan Date</label>
               <input type="date" class="form-control" v-model="findingDetail.cm_str_plan_date" />
+              <small class="text-success">*Abaikan jika tidak ingin diubah</small>
             </div>
           </div>
         </div>
         <div class="mb-2">
-          <label class="mb-1">CM End Plan Date </label>
-
           <div class="row">
             <div class="col">
+              <label class="mb-1">Countermeasure End Plan Date </label>
               <input type="text" class="form-control" disabled
                 :value="formatTheDate(findingDetail?.cm_end_plan_date)" />
             </div>
             <div class="col">
+              <label class="mb-1">Edit Countermeasure End Plan Date </label>
               <input type="date" class="form-control" v-model="findingDetail.cm_end_plan_date" />
+              <small class="text-success">*Abaikan jika tidak ingin diubah</small>
             </div>
           </div>
         </div>
@@ -420,51 +434,62 @@
         <hr />
 
         <div class="mb-2">
-          <label class="mb-1">CM Start actual date</label>
-
           <div class="row">
             <div class="col">
+              <label class="mb-1">Countermeasure Start actual date</label>
               <input type="text" class="form-control" disabled :value="formatTheDate(findingDetail?.cm_str_act_date)" />
             </div>
             <div class="col">
+              <label class="mb-1">Edit Countermeasure Start actual date</label>
               <input type="date" class="form-control" v-model="findingDetail.cm_str_act_date" />
+              <small v-if="findingDetail.cm_str_act_date" class="text-success">*Abaikan jika tidak ingin
+                diubah</small>
+              <small v-else class="text-danger">*Silahkan masukan tanggal</small>
             </div>
           </div>
         </div>
         <div class="mb-2">
-          <label class="mb-1">CM End actual date</label>
 
           <div class="row">
             <div class="col">
+              <label class="mb-1">Countermeasure End actual date</label>
               <input type="text" class="form-control" disabled :value="formatTheDate(findingDetail?.cm_end_act_date)" />
             </div>
             <div class="col">
+              <label class="mb-1">Edit Countermeasure End actual date</label>
               <input type="date" class="form-control" v-model="findingDetail.cm_end_act_date" />
+              <small v-if="findingDetail.cm_end_act_date" class="text-success">*Abaikan jika tidak ingin
+                diubah</small>
+              <small v-else class="text-danger">*Silahkan masukan tanggal</small>
             </div>
           </div>
         </div>
         <div class="mb-2">
-          <label class="mb-1">CM Training date</label>
-
           <div class="row">
             <div class="col">
+              <label class="mb-1">Countermeasure Training date</label>
               <input type="text" class="form-control" disabled
                 :value="formatTheDate(findingDetail?.cm_training_date)" />
             </div>
             <div class="col">
+              <label class="mb-1">Edit Countermeasure Training date</label>
               <input type="date" class="form-control" v-model="findingDetail.cm_training_date" />
+              <small v-if="findingDetail.cm_training_date" class="text-success">*Abaikan jika tidak ingin
+                diubah</small>
+              <small v-else class="text-danger">*Silahkan masukan tanggal</small>
             </div>
           </div>
         </div>
         <div class="mb-2">
-          <label class="mb-1">CM Judge</label>
+          <label class="mb-1">Countermeasure Judge</label>
           <select class="form-select" v-model="findingDetail.cm_judg">
-            <option value="true">Sudah</option>
-            <option value="false">Belum</option>
+            <option value="true">Selesai</option>
+            <option value="false">On Progress</option>
           </select>
+          <small class="text-danger">*Wajib di isi</small>
         </div>
         <div class="mb-5">
-          <label class="mb-1">CM Sign LH Red</label>
+          <label class="mb-1">Countermeasure Sign LH Red</label>
           <br />
           <div v-if="findingDetail?.cm_sign_lh_red" style="border: 1px solid #eaeaea; width: 100%; height: 100px">
             <input type="image" v-if="updatedLHRedSign" :src="updatedLHRedSign" style="width: 100%; height: 100%" />
@@ -513,7 +538,7 @@
         </div>
 
         <div class="mb-2 my-3">
-          <label class="mb-1">CM Sign LH White</label>
+          <label class="mb-1">Countermeasure Sign LH White</label>
           <br />
           <div v-if="findingDetail?.cm_sign_lh_white" style="border: 1px solid #eaeaea; width: 100%; height: 100px">
             <input type="image" v-if="updatedLHWhiteSign" :src="updatedLHWhiteSign" style="width: 100%; height: 100%" />
@@ -562,7 +587,7 @@
         </div>
 
         <div class="mb-2 my-5">
-          <label class="mb-1">CM Sign SH/AM/MGR</label>
+          <label class="mb-1">Countermeasure Sign SH/AM/MGR</label>
           <br />
           <div v-if="findingDetail?.cm_sign_sh" style="border: 1px solid #eaeaea; width: 100%; height: 100px">
             <input type="image" v-if="updatedSHSign" :src="updatedSHSign" style="width: 100%; height: 100%" />
@@ -634,22 +659,22 @@
           </div>
         </div>
         <div class="mb-2">
-          <label class="mb-1">CM Comments</label>
+          <label class="mb-1">Countermeasure Comments</label>
           <input type="text" class="form-control" v-model="findingDetail.cm_comments" />
         </div>
       </CModalBody>
       <CModalFooter>
         <CButton color="info" class="text-white" @click="() => {
-              updateFindingList()
-            }
-              ">
+          updateFindingList()
+        }
+          ">
           Update data
         </CButton>
         <CButton color="secondary" class="text-white" @click="() => {
-              selectedFindingIndex = null
-              editTemuanModal = false
-            }
-              ">
+          selectedFindingIndex = null
+          editTemuanModal = false
+        }
+          ">
           Close
         </CButton>
       </CModalFooter>
@@ -663,7 +688,7 @@
       </CModalHeader>
       <CModalBody>
         <div class="mb-5">
-          <label class="mb-1">CM Sign LH Red</label>
+          <label class="mb-1">Countermeasure Sign LH Red</label>
           <br />
           <div v-if="findingDetail?.cm_sign_lh_red" style="border: 1px solid #eaeaea; width: 100%; height: 100px">
             <input type="image" v-if="updatedLHRedSign" :src="updatedLHRedSign" style="width: 100%; height: 100%" />
@@ -718,7 +743,7 @@
         </div>
 
         <div class="mb-2 my-3">
-          <label class="mb-1">CM Sign LH White</label>
+          <label class="mb-1">Countermeasure Sign LH White</label>
           <br />
           <div v-if="findingDetail?.cm_sign_lh_white" style="border: 1px solid #eaeaea; width: 100%; height: 100px">
             <input type="image" v-if="updatedLHWhiteSign" :src="updatedLHWhiteSign" style="width: 100%; height: 100%" />
@@ -772,7 +797,7 @@
         </div>
 
         <div class="mb-2 my-5">
-          <label class="mb-1">CM Sign SH/AM/MGR</label>
+          <label class="mb-1">Countermeasure Sign SH/AM/MGR</label>
           <br />
           <div v-if="findingDetail?.cm_sign_sh" style="border: 1px solid #eaeaea; width: 100%; height: 100px">
             <input type="image" v-if="updatedSHSign" :src="updatedSHSign" style="width: 100%; height: 100%" />
@@ -827,11 +852,11 @@
       </CModalBody>
       <CModalFooter>
         <CButton color="secondary" class="text-white" @click="() => {
-              selectedFindingIndex = null
-              addSignModal = false
-              getFindingsFunc()
-            }
-              ">
+          selectedFindingIndex = null
+          addSignModal = false
+          getFindingsFunc()
+        }
+          ">
           Close
         </CButton>
       </CModalFooter>
@@ -848,9 +873,9 @@
       </CModalBody>
       <CModalFooter>
         <CButton color="secondary" class="text-white" @click="() => {
-              findingImageModal = false
-            }
-              ">
+          findingImageModal = false
+        }
+          ">
           Close
         </CButton>
       </CModalFooter>
@@ -898,7 +923,7 @@ export default {
       isUploadKaizenFile: false,
       isUploadSignLoading: false,
       currentPage: 1,
-      currentPageLimit: 5,
+      currentPageLimit: 10,
       num: 48,
       thisYear: '',
       selectedFilterStartDate: '',

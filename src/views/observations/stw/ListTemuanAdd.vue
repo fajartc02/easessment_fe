@@ -1,4 +1,3 @@
- 
 <template>
   <div>
     <div class="card mb-3">
@@ -9,7 +8,7 @@
         <div>
           <div class="mb-2">
             <label class="mb-1">Source Category (pake ID category)</label>
-            <input type="text" class="form-control" />
+            <input type="text" class="form-control" disabled />
           </div>
           <div class="mb-2">
             <label class="mb-1">Tanggal temuan</label>
@@ -32,67 +31,45 @@
             <input type="text" class="form-control" />
           </div>
           <div class="mb-2">
-            <label class="mb-1"
-              >Stop 6
-              <span class="badge rounded-pill bg-primary text-white"
-                >Safety</span
-              ></label
-            >
+            <label class="mb-1">Stop 6
+              <span class="badge rounded-pill bg-primary text-white">Safety</span></label>
             <input type="text" class="form-control" />
           </div>
           <div class="mb-2">
-            <label class="mb-1"
-              >Rank WRAS
-              <span class="badge rounded-pill bg-primary text-white"
-                >Safety</span
-              >
+            <label class="mb-1">Rank WRAS
+              <span class="badge rounded-pill bg-primary text-white">Safety</span>
             </label>
             <input type="text" class="form-control" />
           </div>
           <div class="row mb-2">
             <div class="col">
-              <label class="mb-1"
-                >SOP/EIS
-                <span class="badge rounded-pill bg-primary text-white"
-                  >Method</span
-                >
+              <label class="mb-1">SOP/EIS
+                <span class="badge rounded-pill bg-primary text-white">Method</span>
               </label>
               <input type="text" class="form-control" />
             </div>
             <div class="col">
-              <label class="mb-1"
-                >TSKK
-                <span class="badge rounded-pill bg-primary text-white"
-                  >Man</span
-                >
+              <label class="mb-1">TSKK
+                <span class="badge rounded-pill bg-primary text-white">Man</span>
               </label>
               <input type="text" class="form-control" />
             </div>
             <div class="col">
-              <label class="mb-1"
-                >TSK
-                <span class="badge rounded-pill bg-primary text-white"
-                  >Man</span
-                >
+              <label class="mb-1">TSK
+                <span class="badge rounded-pill bg-primary text-white">Man</span>
               </label>
               <input type="text" class="form-control" />
             </div>
           </div>
           <div class="mb-2">
-            <label class="mb-1"
-              >PCI/ECI
-              <span class="badge rounded-pill bg-primary text-white"
-                >Material</span
-              >
+            <label class="mb-1">PCI/ECI
+              <span class="badge rounded-pill bg-primary text-white">Material</span>
             </label>
             <input type="text" class="form-control" />
           </div>
           <div class="mb-2">
-            <label class="mb-1"
-              >MT/KZ/ENG
-              <span class="badge rounded-pill bg-primary text-white"
-                >Machine</span
-              >
+            <label class="mb-1">MT/KZ/ENG
+              <span class="badge rounded-pill bg-primary text-white">Machine</span>
             </label>
             <input type="text" class="form-control" />
           </div>
@@ -166,8 +143,8 @@
     </div>
   </div>
 </template>
-      
-      <script>
+
+<script>
 export default {
   name: 'List Temuan Add',
   data() {
@@ -176,6 +153,6 @@ export default {
   components: {},
 }
 </script>
-      
-  
-  <style src="vue-multiselect/dist/vue-multiselect.css"></style>
+
+
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>

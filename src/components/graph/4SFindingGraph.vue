@@ -303,7 +303,7 @@ export default {
       await ApiService.query('operational/4s/overall', objQuery)
         .then((res) => {
           let mapDataOverall = res.data.data.map(item => {
-            return item.data[0]
+            return Math.round(item.data[0])
           })
           this.overallData = mapDataOverall
           this.overallGraphData = res.data.data

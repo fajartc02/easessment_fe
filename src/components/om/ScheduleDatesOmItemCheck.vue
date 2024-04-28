@@ -6,24 +6,28 @@
           :key="mainSchedule">
           <thead>
             <tr>
-              <th colspan="40" class="text-center">
+              <th id="fixCol-header" colspan="40" class="text-center">
                 OM Schedule Activities ({{ mainSchedule.line_nm }} - {{ mainSchedule.group_nm }})
               </th>
             </tr>
             <tr>
-              <th id="fixCol-1" rowspan="2">No</th>
-              <th id="fixCol-2" rowspan="2">Machine</th>
-              <th id="fixCol-3" rowspan="2">Item</th>
-              <th id="fixCol-4" rowspan="2">Location</th>
-              <th id="fixCol-5" rowspan="2">Methode</th>
+              <th :id="isLoadingSub || mainSchedule.sub_schedules?.length == 0 ? '' : 'fixCol-1'" rowspan="2">No</th>
+              <th :id="isLoadingSub || mainSchedule.sub_schedules?.length == 0 ? '' : 'fixCol-2'" rowspan="2">Machine
+              </th>
+              <th :id="isLoadingSub || mainSchedule.sub_schedules?.length == 0 ? '' : 'fixCol-3'" rowspan="2">Item</th>
+              <th :id="isLoadingSub || mainSchedule.sub_schedules?.length == 0 ? '' : 'fixCol-4'" rowspan="2">Location
+              </th>
+              <th :id="isLoadingSub || mainSchedule.sub_schedules?.length == 0 ? '' : 'fixCol-5'" rowspan="2">Methode
+              </th>
               <th rowspan="2">Duration</th>
               <th rowspan="2">PIC</th>
               <th rowspan="2">Standart</th>
-              <th rowspan="2">Periode</th>
+              <th :id="isLoadingSub || mainSchedule.sub_schedules?.length == 0 ? '' : 'fixCol-6'" rowspan="2">Periode
+              </th>
               <th :colspan="getDateThisMonth" class="text-center">{{ getMonthStr }}</th>
             </tr>
             <tr>
-              <td v-for="n in getDateThisMonth" :key="n">{{ n }}</td>
+              <th v-for="n in getDateThisMonth" :key="n" class="text-center">{{ n }}</th>
             </tr>
           </thead>
           <tbody>
@@ -56,7 +60,7 @@
                   </div>
                 </td>
                 <td> {{ data.standart_nm }}</td>
-                <td> {{ data.freq_nm }}</td>
+                <td id="fixCol-6"> {{ data.freq_nm }}</td>
                 <td v-for="(children, childrenIndex) in data?.children" :key="`sch-${childrenIndex}`"
                   :style="`${children.is_holiday ? 'background-color: #AEAEAE' : ''}`">
                   <CDropdown variant="btn-group" v-if="children.status && children.status != ''">
@@ -168,8 +172,7 @@ export default {
       'getIsLoadingSubSchedule'
     ]),
     getDateThisMonth() {
-      if (this.yearMonth)
-      {
+      if (this.yearMonth) {
         const year = this.yearMonth.split('-')[0]
         const month = +this.yearMonth.split('-')[1] + 1
         return new Date(year, month + 1, 0).getDate()
@@ -179,8 +182,7 @@ export default {
     },
     getMonthStr() {
       const monthStr = ['January', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
-      if (this.yearMonth)
-      {
+      if (this.yearMonth) {
         return monthStr[+this.yearMonth.split('-')[1] - 1]
       }
 
@@ -200,21 +202,17 @@ export default {
         confirmButtonText: 'Sure',
         denyButtonText: `No`,
       }).then(async (result) => {
-        if (result.isConfirmed)
-        {
+        if (result.isConfirmed) {
           ApiService.setHeader()
           const deleteData = await ApiService.delete(`operational/om/sub-schedule/delete/${subScheduleID}`)
 
-          if (deleteData)
-          {
+          if (deleteData) {
             Swal.fire('Data deleted!', '', 'success')
             this.$emit('refreshMainSchedule', true)
-          } else
-          {
+          } else {
             Swal.fire('Error', '', 'warning')
           }
-        } else if (result.isDenied)
-        {
+        } else if (result.isDenied) {
           Swal.fire('Canceled', '', 'info')
         }
       })
@@ -228,14 +226,12 @@ export default {
     },
     openEditPicModal(children) {
       let res = {}
-      if (children.children)
-      {
+      if (children.children) {
         res = {
           om_sub_schedule_id: children.om_sub_schedule_id,
         }
       }
-      else
-      {
+      else {
         res = children
       }
       this.$store.dispatch(GET_OM_SUB_SCHEDULES_CHILDREN_SELECTED, res)
@@ -301,7 +297,7 @@ export default {
 
 .tableFixHead {
   overflow: auto;
-  height: 100%;
+  height: 100vh;
 }
 
 .tableFixHead th {
@@ -316,7 +312,6 @@ export default {
   width: 38px;
   top: 0px;
   left: 0px;
-  z-index: 3;
   background-color: white;
 }
 
@@ -324,7 +319,6 @@ export default {
   position: sticky;
   top: 0px;
   left: 37px;
-  z-index: 3;
   background-color: white;
 }
 
@@ -333,7 +327,6 @@ export default {
   min-width: 121px;
   top: 0px;
   left: 125px;
-  z-index: 3;
   background-color: white;
 }
 
@@ -341,7 +334,6 @@ export default {
   position: sticky;
   top: 0px;
   left: 270px;
-  z-index: 3;
   background-color: white;
 }
 
@@ -349,7 +341,6 @@ export default {
   position: sticky;
   top: 0px;
   left: 370px;
-  z-index: 3;
   background-color: white;
 }
 
@@ -357,7 +348,6 @@ export default {
   position: sticky;
   top: 0px;
   left: 450px;
-  z-index: 3;
   background-color: white;
 }
 
@@ -365,7 +355,11 @@ export default {
   position: sticky;
   top: 0px;
   left: -200px;
-  z-index: 3;
   background-color: white;
+}
+
+#fixCol-header {
+  position: sticky;
+  left: -200px;
 }
 </style>

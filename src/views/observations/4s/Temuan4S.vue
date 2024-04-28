@@ -113,7 +113,7 @@
               </tr>
               <tr>
                 <th>Waktu 4S (mnt)</th>
-                <th>Yokoten (mnt)</th>
+                <th>Yokoten</th>
                 <th v-for="optChange in changeOpts" :key="optChange">
                   {{ optChange.system_value }}
                 </th>

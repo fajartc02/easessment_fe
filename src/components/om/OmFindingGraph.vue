@@ -231,8 +231,7 @@ export default {
       console.log(event)
       console.log(chartContext)
       console.log(config)
-      if (config.seriesIndex != -1)
-      {
+      if (config.seriesIndex != -1) {
         let cm_judg = false
 
 
@@ -246,21 +245,17 @@ export default {
 
     },
     async getGroup() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_GROUP)
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getLines() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_LINES)
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -268,11 +263,9 @@ export default {
     async addFilter() {
       await this.getGraph()
       await this.getOverallGraph()
-      if (this.selectedLine == '-1')
-      {
+      if (this.selectedLine == '-1') {
         this.$emit('emit-cond', 'default')
-      } else if (this.selectedLine !== '-1')
-      {
+      } else if (this.selectedLine !== '-1') {
         this.$emit('emit-cond', 'detail')
       }
     },
@@ -289,8 +282,7 @@ export default {
       this.$store
         .dispatch(GET_OM_GRAPH, objQuery)
         .then((res) => {
-          if (res)
-          {
+          if (res) {
             this.$emit('emit-isLoading', false)
           }
         })
@@ -311,7 +303,7 @@ export default {
       await ApiService.query('operational/om/overall', objQuery)
         .then((res) => {
           let mapDataOverall = res.data.data.map(item => {
-            return item.data[0]
+            return Math.round(item.data[0])
           })
           this.overallData = mapDataOverall
           this.overallGraphData = res.data.data
@@ -322,12 +314,10 @@ export default {
     },
   },
   async mounted() {
-    if (localStorage.getItem('line_id'))
-    {
+    if (localStorage.getItem('line_id')) {
       this.$emit('emit-lineID', localStorage.getItem('line_id'))
       this.$emit('emit-line', localStorage.getItem('line_id'))
-    } else
-    {
+    } else {
       this.$emit('emit-lineID', -1)
       this.$emit('emit-line', -1)
     }

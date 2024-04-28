@@ -35,13 +35,14 @@
           <div class="row">
             <template v-if="dataSTW.length > 0 && !isLoading">
               <div v-for="(item) in dataSTW" :key="item.observation_id" class="col-12 col-md-4 col-lg-4 mt-1">
-                <div class="card p-2 py-4" style="border-left: 5px solid cyan;min-height: 100px;">
+                <div class="card p-2 py-4"
+                  :style="`border-left: 5px solid ${item.color_status ? item.color_status : 'cyan'};min-height: 100px;`">
                   <div class="d-flex flex-row justify-content-between align-items-center">
                     <div class="d-flex flex-column">
-                      Line: {{ item.line_snm }} |
-                      Pos: {{ item.pos_nm }} |
-                      Member: {{ item.member_nm }} |
-                      Group: {{ item.group_nm }}
+                      {{ item.line_snm }} |
+                      {{ item.pos_nm }} |
+                      {{ item.member_nm }} |
+                      {{ item.group_nm }}
                     </div>
                     <div class="d-flex flex-column">
                       <template v-if="!item.actual_check_dt">
@@ -80,8 +81,11 @@
                 <div class="card p-2" style="border-left: 5px solid cyan;">
                   <div class="d-flex flex-row justify-content-between align-items-center">
                     <div class="d-flex flex-column">
-                      Line: {{ item.line_nm }} |
-                      Area: {{ item.area_nm }}
+                      {{ item.line_nm }} |
+                      {{ item.area_nm }} |
+                      {{ item.group_nm }} |
+                      <template v-if="item.pic_nm">{{ item.pic_nm }}</template>
+                      <template v-else><i class="text-danger">Pic belum di tentukan</i></template>
                     </div>
                     <div class="d-flex flex-column">
                       <!-- /4s/schedule-check/b7e6f2b1-ab08-4090-a1d6-7294fb79b6bd/63e99f7d-9ebe-411d-a9e2-b8f866382fc9 -->
@@ -115,9 +119,12 @@
                 <div class="card p-2" style="border-left: 5px solid cyan;">
                   <div class="d-flex flex-row justify-content-between align-items-center">
                     <div class="d-flex flex-column">
-                      Line: {{ item.line_nm }} |
-                      M/C: {{ item.machine_nm }} |
-                      Itemcheck: {{ item.item_check_nm }}
+                      {{ item.line_nm }} |
+                      {{ item.machine_nm }} |
+                      {{ item.item_check_nm }} |
+                      {{ item.group_nm }} |
+                      <template v-if="item.pic_nm">{{ item.pic_nm }}</template>
+                      <template v-else><i class="text-danger">Pic belum di tentukan</i></template>
                     </div>
                     <div class="d-flex flex-column">
                       <button class="btn btn-sm btn-primary"

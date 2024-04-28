@@ -67,7 +67,7 @@ export default {
   },
   data() {
     return {
-      selectedLimit: 5,
+      selectedLimit: 10,
       limitOpts: [
         {
           label: 5,

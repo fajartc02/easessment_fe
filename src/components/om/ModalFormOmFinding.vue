@@ -1,7 +1,7 @@
 <template>
   <CModal backdrop="static" :visible="visible" @close="closeModal()" size="xl">
     <CModalHeader>
-      <CModalTitle>Add OM Finding</CModalTitle>
+      <CModalTitle>{{ title }}</CModalTitle>
     </CModalHeader>
     <CModalBody>
       <div class="row px-3 pt-4">
@@ -71,7 +71,7 @@
             </VueMultiselect>
           </CInputGroup>
           <CInputGroup class="mb-3">
-            <CInputGroupText>Actual CM Date</CInputGroupText>
+            <CInputGroupText>Actual Countermeasure Date</CInputGroupText>
             <input type="date" class="form-control" v-model="form.actual_cm_date">
           </CInputGroup>
           <CInputGroup class="mb-3">
@@ -416,6 +416,9 @@ export default {
   },
   computed: {
     ...mapGetters(['getUsersOpts']),
+    title() {
+      return this.loadedFinding?.finding_id ? "Edit OM Finding" : "Add OM Finding"
+    }
   },
   watch: {
     loadedFinding: {
@@ -450,6 +453,10 @@ export default {
             text: this.loadedFinding?.finding_pic_nm,
           }
         }
+        else
+        {
+          this.selectedFindingPic = null
+        }
 
         if (this.loadedFinding?.actual_pic_id)
         {
@@ -457,6 +464,10 @@ export default {
             id: this.loadedFinding?.actual_pic_id,
             text: this.loadedFinding?.actual_pic_nm,
           }
+        }
+        else
+        {
+          this.selectedActualPic = null
         }
       }
     }

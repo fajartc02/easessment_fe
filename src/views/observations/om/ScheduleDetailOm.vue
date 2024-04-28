@@ -112,7 +112,7 @@
             <td class="text-center">
               <button class="btn btn-info btn-sm text-white" @click="updateSchedule()">
                 {{ isAddCheckLoading ?
-                'Saving...' : 'Save' }}
+                  'Saving...' : 'Save' }}
               </button>
             </td>
             <td class="text-center">
@@ -140,8 +140,7 @@
         <CSpinner aria-hidden="true" />
       </div>
     </div>
-    <ModalFormOmFinding :visible="isVisibleFindingModal"
-      :loadedFinding="getOmSubSchedulesDetail?.finding ?? getOmSubSchedulesDetail"
+    <ModalFormOmFinding :visible="isVisibleFindingModal" :loadedFinding="loadedFinding"
       @modalFormOmFindingListener="onModalFormOmFindingListener($event)" />
   </div>
 </template>
@@ -287,6 +286,15 @@ export default {
       'getOmSubSchedulesDetail',
       'getJudgments'
     ]),
+    loadedFinding() {
+      // should set actual_pic_id = null cause duplicate object
+      const result = this.getOmSubSchedulesDetail?.finding ?? {
+        ...this.getOmSubSchedulesDetail,
+        actual_pic_id: null
+      }
+
+      return result
+    }
   },
   watch: {
     getOmSubSchedulesDetail: {

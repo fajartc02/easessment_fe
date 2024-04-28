@@ -58,9 +58,9 @@ export default {
   watch: {
     signCheckerData: {
       handler() {
-        console.log('====================================');
+        /* console.log('====================================');
         console.log('signcheckerdata', this.signCheckerData);
-        console.log('====================================');
+        console.log('===================================='); */
       }
     }
   },
