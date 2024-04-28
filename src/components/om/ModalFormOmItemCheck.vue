@@ -1,7 +1,7 @@
 <template>
   <CModal backdrop="static" :visible="visible" @close="cancel()">
     <CModalHeader>
-      <CModalTitle>Add OM Item Check Kanban</CModalTitle>
+      <CModalTitle>{{ loadedData ? 'Edit' : 'Add' }} OM Item Check Kanban</CModalTitle>
     </CModalHeader>
     <CModalBody>
       <CInputGroup class="mb-3">
@@ -112,8 +112,7 @@ export default {
   watch: {
     getGroupMachineDetail: {
       handler() {
-        this.form.line_id = this.getGroupMachineDetail.line_id
-        this.form.machine_id = this.getGroupMachineDetail.machine_id
+        
       }
     },
     loadedData: {
@@ -121,16 +120,6 @@ export default {
         if (this.loadedData)
         {
           this.form = this.loadedData
-
-          if (!this.form.line_id)
-          {
-            this.form.line_id = this.getGroupMachineDetail.line_id
-
-          }
-          if (!this.form.machine_id)
-          {
-            this.form.machine_id = this.getGroupMachineDetail.machine_id
-          }
 
           const existMethod = this.optMethods.find((item) => item.text == this.loadedData.method_nm)
           if (!existMethod)

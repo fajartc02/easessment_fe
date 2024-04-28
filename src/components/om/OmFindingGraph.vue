@@ -143,6 +143,7 @@ export default {
             show: false,
           },
         },
+        colors: ['#b91c1c', '#ebe8e8'],
         legend: {
           show: false,
         },

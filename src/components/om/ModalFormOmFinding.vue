@@ -261,6 +261,7 @@ export default {
       form: defaultForm,
       selectedFindingPic: null,
       selectedActualPic: null,
+      isLoadingSave: false,
       optPriorities: [],
       optTags: [],
       optProgress: [],
