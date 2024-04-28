@@ -74,7 +74,7 @@
                 placeholder="Masukan Area">
             </div>
           </div>
-          <div class="row">
+          <!-- <div class="row">
             <div class="col">
               <label>Images Ilustration</label><small class="text-danger">(max 4 gambar)</small>
               <input class="form-control" type="file" name="kanban_imgs[]" @change="handleFileInputChange" multiple
@@ -91,7 +91,7 @@
                 </tr>
               </table>
             </div>
-          </div>
+          </div> -->
         </CModalBody>
         <CModalFooter>
           <button class="btn btn-sm btn-primary" @click="storeNewKanban">
@@ -236,7 +236,7 @@ export default {
       deep: true
     },
     ['filter.line_id']: function () {
-      // this.changesLine() 
+      // this.changesLine()
     },
     newKanban: {
       handler() {
