@@ -32,7 +32,7 @@
               <input type="date" class="form-control" v-model="detailActualDate">
               <CInputGroupText>
                 <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()"> {{
-                  isUpdateCheckLoading ? 'updating..' : 'update' }} </button>
+    isUpdateCheckLoading ? 'updating..' : 'update' }} </button>
               </CInputGroupText>
             </CInputGroup>
           </div>
@@ -57,7 +57,7 @@
               <Select2 class="form-control" :options="getUsersOpts" v-model="detailActualPIC" />
               <CInputGroupText>
                 <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()">{{
-                  isUpdateCheckLoading ? 'updating..' : 'update' }}</button>
+    isUpdateCheckLoading ? 'updating..' : 'update' }}</button>
               </CInputGroupText>
             </CInputGroup>
           </div>
@@ -111,7 +111,7 @@
               <button class="btn btn-info btn-sm text-white"
                 @click="saveScheduleCheck(item.judgment_id, item.actual_time, item.item_check_kanban_id)">
                 {{ isAddCheckLoading ?
-                'Saving...' : 'Save' }}
+    'Saving...' : 'Save' }}
               </button>
             </td>
             <td>
@@ -380,8 +380,7 @@ export default {
       'getFreqs',
     ]),
     Users() {
-      if (this.getUsersOpts)
-      {
+      if (this.getUsersOpts) {
         let container = this.getUsersOpts.map(user => {
           return {
             id: user.id,
@@ -389,8 +388,7 @@ export default {
           }
         })
         return container;
-      } else
-      {
+      } else {
         return [];
       }
     },
@@ -411,8 +409,7 @@ export default {
         sub_schedule_id: this.$route.params.subScheduleID
       }
       await this.$store.dispatch(GET_SCHEDULES_CHECK, objQuery).then((res) => {
-        if (res)
-        {
+        if (res) {
           this.gettingKanbanID = res.kanban_id
           this.itemCheks = res.item_check_kanbans
           this.isLoading = false
@@ -430,30 +427,26 @@ export default {
         "checked_date": moment().toISOString().split('T')[0]
       }
       const judgments = await ApiService.post(`operational/4s/schedule-item-check-kanban/add`, data)
-      if (judgments.data.message == 'Success to add 4s schedule item check kanban')
-      {
+      if (judgments.data.message == 'Success to add 4s schedule item check kanban') {
         toast.success('Success add data', {
           autoClose: 700
         })
         this.isAddCheckLoading = false
         this.selectedScheduleItemCheckKanbanID = judgments.data.data.schedule_item_check_kanban_id
-      } else
-      {
+      } else {
         alert('Failed add data')
       }
     },
     openAddFindingModal(scheduleItemCheckKanbanID, findings, actionType) {
       this.findingActionType = actionType
-      if (scheduleItemCheckKanbanID !== null)
-      {
+      if (scheduleItemCheckKanbanID !== null) {
         this.selectedScheduleItemCheckKanbanID = scheduleItemCheckKanbanID
       }
       this.addFindingModal = true
     },
     openEditFindingModal(scheduleItemCheckKanbanID, findings, actionType) {
       this.selectedFindingID = findings[0].finding_id
-      if (scheduleItemCheckKanbanID !== null)
-      {
+      if (scheduleItemCheckKanbanID !== null) {
         this.selectedScheduleItemCheckKanbanID = scheduleItemCheckKanbanID
       }
       this.findingActionType = actionType
@@ -482,17 +475,16 @@ export default {
       this.actualPicName = data.actual_pic_nm
 
       this.addFindingModal = true
-      if (data.time_cm)
-      {
+      if (data.time_cm) {
         this.enabledReduceTime = true
-      } else
-      {
+      } else {
         this.enabledReduceTime = false
       }
     },
     async addFinding() {
       ApiService.setHeader()
       const findingData = {
+        "sub_schedule_id": this.$route.params.subScheduleID,
         "schedule_item_check_kanban_id": this.selectedScheduleItemCheckKanbanID,
         // "line_id": this.selectedLineID.line_id,
         "line_id": this.getSubSchedulesCheck?.line_id,
@@ -514,18 +506,14 @@ export default {
         "evaluation_nm": this.evaluationName
       }
 
-      console.log(findingData)
-
       const add = await ApiService.post(`operational/4s/finding/add`, findingData)
-      if (add.data.message == 'Success to add 4s finding')
-      {
+      if (add.data.message == 'Success to add 4s finding') {
         toast.success('Success add data', {
           autoClose: 700
         })
         this.addFindingModal = false
         await this.getScheduleCheck()
-      } else
-      {
+      } else {
         toast.error('Failed', {
           autoClose: 700
         })
@@ -555,15 +543,13 @@ export default {
       }
 
       const update = await ApiService.put(`operational/4s/finding/edit/${this.selectedFindingID}`, findingData)
-      if (update.data.message == 'Success to edit 4s finding')
-      {
+      if (update.data.message == 'Success to edit 4s finding') {
         toast.success('Success edit data', {
           autoClose: 700
         })
         this.addFindingModal = false
         await this.getScheduleCheck()
-      } else
-      {
+      } else {
         toast.error('Failed', {
           autoClose: 700
         })
@@ -577,8 +563,7 @@ export default {
         actual_pic_id: this.detailActualPIC
       }
       const updateData = await ApiService.put(`operational/4s/sub-schedule/edit/${this.$route.params.subScheduleID}`, data)
-      if (updateData.data.message == 'Success to edit 4s schedule plan')
-      {
+      if (updateData.data.message == 'Success to edit 4s schedule plan') {
         this.detailActualDate = null
         this.detailActualPIC = null
         this.getScheduleCheck()
@@ -591,29 +576,23 @@ export default {
       this.judgments = judgments.data.data
     },
     async getLines() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_LINES)
-        if (this.getLinesOpts)
-        {
+        if (this.getLinesOpts) {
           this.mapLinesData()
         }
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getUsers() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_USERS)
-        if (this.getUsersOpts)
-        {
+        if (this.getUsersOpts) {
           this.mapUsersData()
         }
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -636,31 +615,25 @@ export default {
     },
 
     async getZone() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_ZONES)
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getKanban() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_KANBANS)
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getFreq() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_FREQS)
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -669,13 +642,11 @@ export default {
       let objQuery = {
         system_type: '4S_OPT_CHANGE'
       }
-      try
-      {
+      try {
         this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
           this.optChangeData = res
         })
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -684,13 +655,11 @@ export default {
       let objQuery = {
         system_type: '4S_OPT_DEPT'
       }
-      try
-      {
+      try {
         this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
           this.optDeptData = res
         })
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -699,13 +668,11 @@ export default {
       let objQuery = {
         system_type: '4S_EVALUATION'
       }
-      try
-      {
+      try {
         this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
           this.optEvaluation = res
         })
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
