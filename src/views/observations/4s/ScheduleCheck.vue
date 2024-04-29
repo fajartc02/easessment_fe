@@ -28,7 +28,7 @@
             <CInputGroup class="mb-3">
               <CInputGroupText>Act Date</CInputGroupText>
               <CFormInput v-if="getSubSchedulesCheck?.actual_time"
-                :value="getSubSchedulesCheck?.actual_time.substring(0, 10)" disabled />
+                :value="getSubSchedulesCheck?.actual_time?.substring(0, 10)" disabled />
               <input type="date" class="form-control" v-model="detailActualDate">
               <CInputGroupText>
                 <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()"> {{
@@ -205,8 +205,8 @@
             </div>
             <div class="mb-2">
               <label class="mb-1">Actual PIC</label>
-              <VueMultiselect v-model="actualPIC" :options="picData" :custom-label="customPicOptions"
-                class="vue-multi-select">
+              <VueMultiselect v-model="actualPIC" :disabled="findingActionType == 'update'" :options="picData"
+                :custom-label="customPicOptions" class="vue-multi-select">
               </VueMultiselect>
             </div>
           </div>
@@ -221,7 +221,8 @@
           <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Actual Countermeasure Date</label>
-              <input type="date" class="form-control" v-model="actualCMDate" />
+              <input type="date" class="form-control" v-model="actualCMDate"
+                :disabled="findingActionType == 'update'" />
             </div>
           </div>
         </div>
@@ -266,7 +267,7 @@
             </div>
             <div class="mb-2">
               <label class="mb-1">Status Countermeasure</label>
-              <select v-model="cmJudg" class="form-select">
+              <select v-model="cmJudg" class="form-select" :disabled="findingActionType == 'update'">
                 <option value="null" selected>Select Status Countermeasure</option>
                 <option value="true">Sudah</option>
                 <option value="false">Belum</option>
@@ -278,7 +279,7 @@
           <div class="col-md-12">
             <div class="mb-2">
               <label class="mb-1">Evaluation</label>
-              <select class="form-select" v-model="evaluationName">
+              <select class="form-select" v-model="evaluationName" :disabled="findingActionType == 'update'">
                 <option value="null" selected>Select Evaluation</option>
                 <option v-for="optEval in optEvaluation" :key="optEval" :value="optEval.system_value">
                   {{ optEval.system_value }}
@@ -450,7 +451,7 @@ export default {
         this.selectedScheduleItemCheckKanbanID = scheduleItemCheckKanbanID
       }
       this.findingActionType = actionType
-      const data = findings[0]
+      const data = findings[0] 
 
       this.selectedLineID = { line_name: data.line_nm, line_id: data.line_id }
       this.selectedFreqID = data.freq_id
@@ -467,7 +468,7 @@ export default {
       this.optDepartment = data.opt_depts
       this.cmJudg = data.cm_judg
       this.actualPIC = { pic_name: data.actual_pic_nm, pic_id: data.actual_pic_id }
-      this.actualCMDate = data.actual_cm_date.substring(0, 10)
+      this.actualCMDate = data?.actual_cm_date?.substring(0, 10)
       this.evaluationName = data.evaluation_nm
 
       this.lineName = data.line_nm
@@ -487,10 +488,10 @@ export default {
         "sub_schedule_id": this.$route.params.subScheduleID,
         "schedule_item_check_kanban_id": this.selectedScheduleItemCheckKanbanID,
         // "line_id": this.selectedLineID.line_id,
-        "line_id": this.getSubSchedulesCheck?.line_id,
-        "freq_id": this.selectedFreqID,
-        "zone_id": this.selectedZoneID,
-        "kanban_id": this.selectedKanbanID,
+        // "line_id": this.getSubSchedulesCheck?.line_id,
+        // "freq_id": this.selectedFreqID,
+        // "zone_id": this.selectedZoneID,
+        // "kanban_id": this.selectedKanbanID,
         "finding_pic_id": this.selectedPIC.pic_id,
         "finding_date": this.findingDate,
         "finding_desc": this.findingDesc,
@@ -522,11 +523,12 @@ export default {
     async updateFinding() {
       ApiService.setHeader()
       const findingData = {
+        "sub_schedule_id": this.$route.params.subScheduleID,
         "schedule_item_check_kanban_id": this.selectedScheduleItemCheckKanbanID,
-        "line_id": this.selectedLineID.line_id,
-        "freq_id": this.selectedFreqID,
-        "zone_id": this.selectedZoneID,
-        "kanban_id": this.selectedKanbanID,
+        // "line_id": this.selectedLineID.line_id,
+        // "freq_id": this.selectedFreqID,
+        // "zone_id": this.selectedZoneID,
+        // "kanban_id": this.selectedKanbanID,
         "finding_pic_id": this.selectedPIC.pic_id,
         "finding_date": this.findingDate,
         "finding_desc": this.findingDesc,

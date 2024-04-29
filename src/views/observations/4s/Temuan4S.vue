@@ -358,6 +358,15 @@
               <label class="mb-1">Evaluation Name</label>
               <input type="text" class="form-control" v-model="evaluationName" />
             </div>
+            <div class="mb-2">
+              <label class="mb-1">Evaluation</label>
+              <select class="form-select" v-model="evaluationName">
+                <option value="null" selected>Select Evaluation</option>
+                <option v-for="optEval in optEvaluation" :key="optEval" :value="optEval.system_value">
+                  {{ optEval.system_value }}
+                </option>
+              </select>
+            </div>
           </div>
         </div>
       </CModalBody>
@@ -381,6 +390,7 @@ import { GET_ZONES } from '@/store/modules/zones.module'
 import { GET_KANBANS } from '@/store/modules/kanban.module'
 import { GET_FREQS } from '@/store/modules/freq.module'
 import { GET_USERS } from '@/store/modules/user.module'
+import { GET_SYSTEMS } from '@/store/modules/system.module'
 
 import { mapGetters } from 'vuex'
 import ApiService from '@/store/api.service'
@@ -486,6 +496,8 @@ export default {
       currentPage: 0,
       totalPage: 0,
       currentPageLimit: 5,
+      selectedSubScheduleID: null,
+      optEvaluation: null,
     }
   },
   computed: {
@@ -518,6 +530,9 @@ export default {
       this.getFindings()
     }
   },
+  updated() {
+    this.mapUsersData()
+  },
   methods: {
     customLabel(value) {
       return `${value.text}`
@@ -543,8 +558,6 @@ export default {
       this.getFindings()
     },
     getImage(eval_nm) {
-      // const labels = ['Order Part', 'Countermeasure', 'Monitor/Follow', 'Finish']
-      // console.log(labels.findIndex[eval_nm]);
       return `./tanoko/${this.evaluationOpts.findIndex(x => x.system_value == eval_nm) + '.png'}`
     },
     async getSystem() {
@@ -602,6 +615,7 @@ export default {
       this.actualPIC = { pic_name: data.actual_pic_nm, pic_id: data.actual_pic_id }
       this.actualCMDate = data.actual_cm_date
       this.evaluationName = data.evaluation_nm
+      this.selectedSubScheduleID = data.sub_schedule_id
 
       this.editFindingModal = true
     },
@@ -610,11 +624,12 @@ export default {
       ApiService.setHeader()
       this.isUpdateFindingLoading = true
       const findingData = {
+        "sub_schedule_id": this.selectedSubScheduleID,
         "schedule_item_check_kanban_id": this.scheduleItemCheckKanbanID,
-        "line_id": this.selectedLineID.id,
-        "freq_id": this.selectedFreqID,
-        "zone_id": this.selectedZoneID,
-        "kanban_id": this.selectedKanbanID,
+        // "line_id": this.selectedLineID.id,
+        // "freq_id": this.selectedFreqID,
+        // "zone_id": this.selectedZoneID,
+        // "kanban_id": this.selectedKanbanID,
         "finding_pic_id": this.selectedPIC.pic_id,
         "finding_date": this.findingDate,
         "finding_desc": this.findingDesc,
@@ -683,6 +698,7 @@ export default {
     async getUsers() {
       try {
         await this.$store.dispatch(GET_USERS)
+        this.mapUsersData()
       } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
@@ -690,6 +706,11 @@ export default {
     },
     customPicOptions({ pic_name }) {
       return `${pic_name}`
+    },
+    mapUsersData() {
+      this.getUsersOpts?.map((item) => {
+        this.picData.push({ pic_id: item.id, pic_name: item.text })
+      })
     },
     async getLines() {
       try {
@@ -726,6 +747,19 @@ export default {
     async getFreq() {
       try {
         this.$store.dispatch(GET_FREQS)
+      } catch (error) {
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
+      }
+    },
+    async getEvaluation() {
+      let objQuery = {
+        system_type: '4S_EVALUATION'
+      }
+      try {
+        this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
+          this.optEvaluation = res
+        })
       } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
@@ -777,6 +811,7 @@ export default {
     await this.getFreq()
     await this.getUsers()
     await this.getFindings()
+    await this.getEvaluation()
     this.isLoading = false
   },
 }
