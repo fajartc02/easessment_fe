@@ -192,7 +192,7 @@ export default {
     async getMachines() {
       try
       {
-        this.$store.dispatch(GET_MACHINES, { line_id: this.selectedLineID })
+        this.$store.dispatch(GET_MACHINES, { line_id: this.filter.line_id })
       } catch (error)
       {
         console.log(error)
@@ -232,7 +232,6 @@ export default {
     await this.getLines()
     this.getGroup()
     this.getFreq()
-    this.getMachines()
 
     const year = moment().format('YYYY')
     this.filter = {
@@ -249,9 +248,7 @@ export default {
       }
     }
 
-    console.log('====================================');
-    console.log(this.filter);
-    console.log('====================================');
+    this.getMachines()
   },
 }
 </script>

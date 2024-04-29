@@ -333,7 +333,6 @@ export default {
     await this.getLines()
     this.getGroup()
     this.getFreq()
-    this.getMachines()
 
     const date = moment().format('YYYY-MM-DD').split('-')
     this.selectedMonth = `${date[0]}-${date[1]}`
@@ -345,6 +344,7 @@ export default {
     this.filter.yearMonth = this.selectedMonth
     this.filter.line_id = this.selectedLineID
 
+    this.getMachines()
     this.getMainSchedules()
       .then(() => {
         this.isCompleteFirstLoadMainSchedule = true
