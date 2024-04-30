@@ -17,7 +17,7 @@
     "serve": "vue-cli-service serve",
     "test:e2e": "vue-cli-service test:e2e",
     "test:unit": "vue-cli-service test:unit",
-    "build-deploy": "yarn && yarn build && cp ./dist/index.html ./dist/404.html"
+    "build-deploy": "git pull && yarn && yarn build && cp ./dist/index.html ./dist/404.html"
   },
   "dependencies": {
     "@coreui/chartjs": "^3.0.0",
