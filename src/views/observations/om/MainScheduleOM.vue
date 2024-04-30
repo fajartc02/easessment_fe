@@ -1,65 +1,67 @@
 <template>
   <div>
-    <div class="card mb-5">
-      <div class="card-header">
-        <div class="row d-flex align-items-center">
-          <div class="col">
-            <label>Select month</label>
-            <input type="month" class="form-control" v-model="selectedMonth" />
-          </div>
-          <div class="col">
-            <label>Line</label>
-            <select class="form-select" v-model="selectedLineID">
-              <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
-                {{ line.text }}
-              </option>
-            </select>
-          </div>
-          <div class="col">
-            <label>Machine</label>
-            <!-- <select v-if="getMachinesOpts.length > 1" class="form-select" v-model="selectedMachineID"
+    <div class="mb-5">
+      <div class="card mb-3">
+        <div class="card-header">
+          <div class="row d-flex align-items-center">
+            <div class="col">
+              <label>Select month</label>
+              <input type="month" class="form-control" v-model="selectedMonth" />
+            </div>
+            <div class="col">
+              <label>Line</label>
+              <select class="form-select" v-model="selectedLineID">
+                <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
+                  {{ line.text }}
+                </option>
+              </select>
+            </div>
+            <div class="col">
+              <label>Machine</label>
+              <!-- <select v-if="getMachinesOpts.length > 1" class="form-select" v-model="selectedMachineID"
               :disabled="!selectedLineID">
               <option v-for="machine in getMachinesOpts" :key="machine.id" :value="machine">
                 {{ machine.text }}
               </option>
             </select> -->
-            <Select2 v-if="getMachinesOpts.length > 1" class="form-control" v-model="selectedMachineID"
-              :options="getMachinesOpts" :disabled="getMachinesOpts.length == 1" />
-            <input v-else type="text" class="form-control" value="tidak ada mesin" disabled>
-          </div>
-          <div class="col">
-            <label>Freq</label>
-            <select class="form-select" v-model="selectedFreqID">
-              <option v-for="freq in getFreqsOpts" :key="freq.id" :value="freq.id">
-                {{ freq.text }}
-              </option>
-            </select>
-          </div>
-          <div class="col-sm-1">
-            <button class="mt-4 btn btn-info text-white" @click="resetFilter()">
-              Reset
-            </button>
+              <Select2 v-if="getMachinesOpts.length > 1" class="form-control" v-model="selectedMachineID"
+                :options="getMachinesOpts" :disabled="getMachinesOpts.length == 1" />
+              <input v-else type="text" class="form-control" value="tidak ada mesin" disabled>
+            </div>
+            <div class="col">
+              <label>Freq</label>
+              <select class="form-select" v-model="selectedFreqID">
+                <option v-for="freq in getFreqsOpts" :key="freq.id" :value="freq.id">
+                  {{ freq.text }}
+                </option>
+              </select>
+            </div>
+            <div class="col-sm-1">
+              <button class="mt-4 btn btn-info text-white" @click="resetFilter()">
+                Reset
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="card-header">
-        <div class="row">
-          <div class="col">
-            <div class="d-flex align-items-center">
+        <div class="card-header">
+          <div class="row">
+            <div class="col">
               <div class="d-flex align-items-center">
-                <div class="bullet" style="width: 20px; height: 20px"></div>
-                <span class="mx-2">Planning</span>
-              </div>
-              <div class="d-flex align-items-center">
-                <div class="bullet-filled" style="width: 20px; height: 20px"></div>
-                <span class="mx-2">Sudah Di Check</span>
-              </div>
-              <div class="d-flex align-items-center">
-                <div class="bullet-cancel d-flex justify-content-center align-items-center"
-                  style="width: 20px; height: 20px">
-                  <CIcon icon="cil-x" class="text-danger" />
+                <div class="d-flex align-items-center">
+                  <div class="bullet" style="width: 20px; height: 20px"></div>
+                  <span class="mx-2">Planning</span>
                 </div>
-                <span class="mx-2">Ada Temuan Abnormally</span>
+                <div class="d-flex align-items-center">
+                  <div class="bullet-filled" style="width: 20px; height: 20px"></div>
+                  <span class="mx-2">Sudah Di Check</span>
+                </div>
+                <div class="d-flex align-items-center">
+                  <div class="bullet-cancel d-flex justify-content-center align-items-center"
+                    style="width: 20px; height: 20px">
+                    <CIcon icon="cil-x" class="text-danger" />
+                  </div>
+                  <span class="mx-2">Ada Temuan Abnormally</span>
+                </div>
               </div>
             </div>
           </div>
@@ -67,8 +69,10 @@
       </div>
       <ScheduleDatesOmItemCheck :yearMonth="selectedMonth" @refreshMainSchedule="onRefreshMainSchedule()"
         @showEditDateModal="isVisibleEditDateModal = true" @showEditPicModal="isVisibleEditPicModal = true"
-        @showSignModal="onShowSignModal($event)" />
-      <div class="card-footer">
+        @showSignModal="onShowSignModal($event)" @limitSubSchedule="limitSubSchedule = $event"
+        @pageSubSchedule="currentPageSubSchedule = $event" />
+        <hr/>
+      <div class="card-footer mt-5">
         <div class="d-flex justify-content-between">
           <div>
             <div class="input-group mb-3">
@@ -104,7 +108,7 @@ import { GET_FREQS } from '@/store/modules/freq.module'
 import { GET_MACHINES } from '@/store/modules/machine.module'
 import {
   GET_OM_MAIN_SCHEDULES,
-  GET_OM_SUB_SCHEDULES_FILTER
+  GET_OM_SUB_SCHEDULES
 } from '@/store/modules/omSchedule.module'
 import { mapGetters } from 'vuex'
 import { toast } from 'vue3-toastify'
@@ -148,6 +152,8 @@ export default {
       isVisibleEditDateModal: false,
       isVisibleEditPicModal: false,
       isCompleteFirstLoadMainSchedule: false,
+      limitSubSchedule: 10,
+      currentPageSubSchedule: 1,
     }
   },
   computed: {
@@ -158,12 +164,13 @@ export default {
       'getFreqsOpts',
       'getPagination',
       'getOmMainSchedules',
-      'getOmSubSchedules',
     ]),
     subScheduleFilter() {
       return {
         freq_id: this.selectedFreqID,
-        machine: this.selectedMachineID,
+        machine_id: this.selectedMachineID,
+        limit: this.limitSubSchedule,
+        current_page: this.currentPageSubSchedule
       }
     },
   },
@@ -177,7 +184,8 @@ export default {
         line_id: this.selectedLineID
       }
       this.getMachines();
-      if (this.isCompleteFirstLoadMainSchedule) {
+      if (this.isCompleteFirstLoadMainSchedule)
+      {
         this.getMainSchedules()
       }
     },
@@ -198,7 +206,8 @@ export default {
         ...this.filter,
         yearMonth: this.selectedMonth
       }
-      if (this.isCompleteFirstLoadMainSchedule) {
+      if (this.isCompleteFirstLoadMainSchedule)
+      {
         this.getMainSchedules()
       }
     },
@@ -213,17 +222,12 @@ export default {
       },
       deep: true
     },
-    subScheduleFilter(newVal, oldVal) {
-      if (
-        (newVal.freq_id != null && newVal.freq_id != oldVal.freq_id)
-        || (newVal.machine != null && newVal.machine.id != oldVal.machine.id)
-      ) {
-        this.$store.dispatch(GET_OM_SUB_SCHEDULES_FILTER, newVal)
+    subScheduleFilter:{
+      deep: true,
+      handler() {
+        this.getSubSchedules()
       }
-      else {
-        this.$store.dispatch(GET_OM_SUB_SCHEDULES_FILTER, false)
-      }
-    },
+    }
   },
   methods: {
     resetFilter() {
@@ -234,9 +238,11 @@ export default {
       this.filter = defaultFilter
     },
     async getLines() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_LINES)
-      } catch (error) {
+      } catch (error)
+      {
         console.log(error)
         if (error?.response?.status == 401) this.$router.push('/login')
         toast.error(error.response.data.message, {
@@ -245,9 +251,11 @@ export default {
       }
     },
     async getGroup() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_GROUP)
-      } catch (error) {
+      } catch (error)
+      {
         console.log(error)
         if (error?.response?.status == 401) this.$router.push('/login')
         toast.error(error.response.data.message, {
@@ -256,9 +264,11 @@ export default {
       }
     },
     async getFreq() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_FREQS)
-      } catch (error) {
+      } catch (error)
+      {
         console.log(error)
         if (error?.response?.status == 401) this.$router.push('/login')
         toast.error(error.response.data.message, {
@@ -267,9 +277,11 @@ export default {
       }
     },
     async getMachines() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_MACHINES, { line_id: this.filter.line_id })
-      } catch (error) {
+      } catch (error)
+      {
         console.log(error)
         if (error?.response?.status == 401) this.$router.push('/login')
         toast.error(error.response.data.message, {
@@ -278,17 +290,34 @@ export default {
       }
     },
     async getMainSchedules() {
-      try {
+      try
+      {
         let objQuery = {
           month_year_num: this.filter.yearMonth,
           line_id: this.filter.line_id,
           current_page: this.filter.current_page,
           limit: this.filter.limit,
-          ...this.subScheduleFilter
         }
+
         await this.$store.dispatch(GET_OM_MAIN_SCHEDULES, objQuery)
+        this.getSubSchedules()
       }
-      catch (error) {
+      catch (error)
+      {
+        console.log(error)
+        if (error?.response?.status == 401) this.$router.push('/login')
+        toast.error(error?.response?.data?.message ?? error, {
+          autoClose: 10000,
+        })
+      }
+    },
+    async getSubSchedules() {
+      try
+      {
+        await this.$store.dispatch(GET_OM_SUB_SCHEDULES, this.subScheduleFilter)
+      }
+      catch (error)
+      {
         console.log(error)
         if (error?.response?.status == 401) this.$router.push('/login')
         toast.error(error?.response?.data?.message ?? error, {
@@ -298,20 +327,23 @@ export default {
     },
     async onModalEditDateListener(event) {
       this.isVisibleEditDateModal = false
-      if (event.refresh) {
+      if (event.refresh)
+      {
         this.getMainSchedules()
       }
     },
     onModalEditPicListener(event) {
       this.isVisibleEditPicModal = false
-      if (event.refresh) {
+      if (event.refresh)
+      {
         this.getMainSchedules()
       }
     },
     onModalSignListener(event) {
       this.isVisibleSignModal = false
       this.selectedSignChecker = null
-      if (event.refresh) {
+      if (event.refresh)
+      {
         this.getMainSchedules()
       }
     },
@@ -337,7 +369,8 @@ export default {
     const date = moment().format('YYYY-MM-DD').split('-')
     this.selectedMonth = `${date[0]}-${date[1]}`
 
-    if (localStorage.getItem('line_id')) {
+    if (localStorage.getItem('line_id'))
+    {
       this.selectedLineID = localStorage.getItem('line_id')
     }
 

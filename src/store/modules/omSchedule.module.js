@@ -1,4 +1,7 @@
+/* eslint-disable no-empty */
+/* eslint-disable no-unused-vars */
 import ApiService from "@/store/api.service";
+
 export const GET_OM_MAIN_SCHEDULES = "getOmMainSchedules";
 export const GET_OM_SUB_SCHEDULES = "getOmSubSchedules";
 export const GET_OM_SUB_SCHEDULES_FILTER = "getOmSubSchedulesChildrenFilter";
@@ -18,6 +21,10 @@ const SET_IS_LOADING_SUB_SCHEDULE = "setIsLoadingSubSchedule";
 export const SET_LIMIT = "setLimit"
 export const SET_CURRENT_PAGE = "setPage"
 export const SET_TOTAL_DATA = "setTotalData"
+
+const SET_LIMIT_SUB_SCHEDULE = "setLimitSubSchedule"
+const SET_CURRENT_PAGE_SUB_SCHEDULE = "setPageSubSchedule"
+const SET_TOTAL_DATA_SUB_SCHEDULE = "setTotalDataSubSchedule"
 
 const filterSubSchedules = (
   childSubSchedules,
@@ -51,9 +58,14 @@ const state = {
   omSelectedChildren: null,
   isLoadingMainSchedule: null,
   isLoadingSubSchedule: null,
+
   limit: 10,
   total_data: 0,
-  current_page: 1
+  current_page: 1,
+
+  limitSubSchedule: 10,
+  totalDataSubSchedule: 0,
+  currentPageSubSchedule: 1,
 };
 
 const getters = {
@@ -74,11 +86,20 @@ const getters = {
   },
   getIsLoadingSubSchedule(state) {
     return state.isLoadingSubSchedule
+  },
+  getLimitSubSchedule(state) {
+    return state.limitSubSchedule
+  },
+  getTotalDataSubSchedule(state) {
+    return state.totalDataSubSchedule
+  },
+  getCurrentPageSubSchedule(state) {
+    return state.currentPageSubSchedule
   }
 };
 
 const actions = {
-  async [GET_OM_MAIN_SCHEDULES]({ dispatch, commit }, query) {
+  async [GET_OM_MAIN_SCHEDULES]({ commit }, query) {
     commit(SET_IS_LOADING_MAIN_SCHEDULE, true)
     ApiService.setHeader()
     const mainScheduleRequest = await ApiService.query("operational/om/main-schedule", query)
@@ -89,54 +110,14 @@ const actions = {
     {
       const list = mainScheduleResponse.data.list.map((item) => {
         item.sub_schedules = []
-        item.clearSubSchedules = []
         item.glSigns = []
+        item.limit = 10
+        item.current_page = 1
+        item.total_data = 0
         return item
       })
 
       commit(SET_OM_MAIN_SCHEDULES, list)
-
-      if (list.length > 0)
-      {
-        for (let i = 0; i < list.length; i++)
-        {
-          commit(SET_IS_LOADING_SUB_SCHEDULE, {
-            om_main_schedule_id: list[i].om_main_schedule_id,
-            loading: true
-          })
-
-          const subScheduleRequest = await ApiService.query(`operational/om/sub-schedule`, {
-            om_main_schedule_id: list[i].om_main_schedule_id
-          })
-
-          const subScheduleResponse = subScheduleRequest.data
-          if (subScheduleResponse)
-          {
-            list[i].sub_schedules = subScheduleResponse.data.schedule
-            list[i].clearSubSchedules = subScheduleResponse.data.schedule
-            list[i].glSigns = subScheduleResponse.data.sign_checker_gl
-          }
-
-          commit(SET_IS_LOADING_SUB_SCHEDULE, {
-            om_main_schedule_id: list[i].om_main_schedule_id,
-            loading: false
-          })
-        }
-      }
-
-      commit(SET_OM_MAIN_SCHEDULES, list)
-
-      if (
-        (query.freq_id || query.machine)
-        && (query.freq_id != null || query.machine?.id != null)
-        && (query.freq_id != '-1' || query.machine?.id != '-1')
-      )
-      {
-        dispatch(GET_OM_SUB_SCHEDULES_FILTER, {
-          freq_id: query.freq_id,
-          machine: query.machine
-        })
-      }
 
       // THIS COMMIT FROM pagination.module.js
       if (mainScheduleResponse.data.limit) commit(SET_LIMIT, mainScheduleResponse.data.limit)
@@ -144,23 +125,68 @@ const actions = {
       if (mainScheduleResponse.data.total_data) commit(SET_TOTAL_DATA, mainScheduleResponse.data.total_data)
     }
   },
-  [GET_OM_SUB_SCHEDULES]({ commit }, query) {
+  async [GET_OM_SUB_SCHEDULES]({ commit, state }, query) {
     ApiService.setHeader()
-    return new Promise((resolve, reject) => {
-      ApiService.query("operational/om/sub-schedule", query)
-        .then(async (result) => {
-          const response = result.data
-          if (response)
-          {
-            commit(SET_OM_SUB_SCHEDULES, response.data)
-            resolve(response.data)
-          }
-          // throw result;
-        }).catch((err) => {
-          reject(err)
-        });
 
-    });
+    const cloneMainSchedule = [...state.omMainSchedules]
+
+    for (let i = 0; i < cloneMainSchedule.length; i++)
+    {
+      commit(SET_IS_LOADING_SUB_SCHEDULE, {
+        om_main_schedule_id: cloneMainSchedule[i].om_main_schedule_id,
+        loading: true,
+      })
+
+      let limitSubSchedule = 10
+      let currentPageSubSchedule = 1
+      
+      if (typeof query.limit === 'object' && query.limit.om_main_schedule_id == cloneMainSchedule[i].om_main_schedule_id)
+      {
+        limitSubSchedule = query.limit.limit
+        delete query.limit
+      }
+      if (typeof query.current_page === 'object' && query.current_page.om_main_schedule_id == cloneMainSchedule[i].om_main_schedule_id)
+      {
+        currentPageSubSchedule = query.current_page.page
+        delete query.current_page
+      }
+
+      let params = {
+        om_main_schedule_id: cloneMainSchedule[i].om_main_schedule_id,
+        limit: limitSubSchedule,
+        current_page: currentPageSubSchedule,
+      }
+
+      if (query)
+      {
+        params = {
+          ...params,
+          ...query
+        }
+      }
+
+      const subScheduleRequest = await ApiService.query("operational/om/sub-schedule", params)
+      const subScheduleResponse = subScheduleRequest.data
+      if (subScheduleResponse)
+      {
+        cloneMainSchedule[i].sub_schedules = subScheduleResponse.data.schedule.list
+        cloneMainSchedule[i].limit = subScheduleResponse.data.schedule.limit
+        cloneMainSchedule[i].current_page = subScheduleResponse.data.schedule.current_page
+        cloneMainSchedule[i].total_data = subScheduleResponse.data.schedule.total_data
+        cloneMainSchedule[i].glSigns = subScheduleResponse.data.sign_checker_gl
+
+        if (subScheduleResponse.data.limit) commit(SET_LIMIT_SUB_SCHEDULE, subScheduleResponse.data.schedule.limit)
+        if (subScheduleResponse.data.current_page) commit(SET_CURRENT_PAGE_SUB_SCHEDULE, subScheduleResponse.data.schedule.current_page)
+        if (subScheduleResponse.data.total_data) commit(SET_TOTAL_DATA_SUB_SCHEDULE, subScheduleResponse.data.schedule.total_data)
+      }
+
+      commit(SET_IS_LOADING_SUB_SCHEDULE, {
+        om_main_schedule_id: cloneMainSchedule[i].om_main_schedule_id,
+        loading: false,
+      })
+
+      commit(SET_OM_MAIN_SCHEDULES, cloneMainSchedule)
+    }
   },
   [GET_OM_SUB_SCHEDULES_DETAIL]({ commit }, sub_schedule_id) {
     ApiService.setHeader()
@@ -227,6 +253,15 @@ const mutations = {
   [SET_IS_LOADING_SUB_SCHEDULE](state, isLoading) {
     state.isLoadingSubSchedule = isLoading;
   },
+  [SET_LIMIT_SUB_SCHEDULE](state, limitSubSchedule) {
+    state.limitSubSchedule = limitSubSchedule;
+  },
+  [SET_CURRENT_PAGE_SUB_SCHEDULE](statee, currentPageSubSchedule) {
+    state.currentPageSubSchedule = currentPageSubSchedule;
+  },
+  [SET_TOTAL_DATA_SUB_SCHEDULE](state, totalDataSubSchedule) {
+    state.totalDataSubSchedule = totalDataSubSchedule;
+  }
 };
 
 export default {
