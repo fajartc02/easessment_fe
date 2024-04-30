@@ -358,6 +358,15 @@
               <label class="mb-1">Evaluation Name</label>
               <input type="text" class="form-control" v-model="evaluationName" />
             </div>
+            <div class="mb-2">
+              <label class="mb-1">Evaluation</label>
+              <select class="form-select" v-model="evaluationName">
+                <option value="null" selected>Select Evaluation</option>
+                <option v-for="optEval in optEvaluation" :key="optEval" :value="optEval.system_value">
+                  {{ optEval.system_value }}
+                </option>
+              </select>
+            </div>
           </div>
         </div>
       </CModalBody>
@@ -381,6 +390,7 @@ import { GET_ZONES } from '@/store/modules/zones.module'
 import { GET_KANBANS } from '@/store/modules/kanban.module'
 import { GET_FREQS } from '@/store/modules/freq.module'
 import { GET_USERS } from '@/store/modules/user.module'
+import { GET_SYSTEMS } from '@/store/modules/system.module'
 
 import { mapGetters } from 'vuex'
 import ApiService from '@/store/api.service'
@@ -411,10 +421,10 @@ export default {
       selectedFilterEndDate: '',
       selectedMonth: null,
       selectedLineIDFilter: null,
-      selectedGroupIDFilter: -1,
+      selectedGroupIDFilter: "-1",
       selectedZoneIDFilter: "-1",
       selectedKanbanIDFilter: "-1",
-      selectedFreqIDFilter: -1,
+      selectedFreqIDFilter: "-1",
       idxMonth: [
         '01',
         '02',
@@ -486,10 +496,9 @@ export default {
       currentPage: 0,
       totalPage: 0,
       currentPageLimit: 5,
+      selectedSubScheduleID: null,
+      optEvaluation: null,
     }
-  },
-  updated() {
-    console.log(this.getZoneOpts)
   },
   computed: {
     ...mapGetters([
@@ -510,8 +519,7 @@ export default {
   },
   watch: {
     selectedMonth: function () {
-      if (this.selectedMonth)
-      {
+      if (this.selectedMonth) {
         this.generateDate()
         let idx = this.idxMonth.indexOf(this.selectedMonth.split('-')[1])
         this.yearMonth = `${this.monthStr[idx]} ${this.selectedMonth.split('-')[0]
@@ -522,25 +530,25 @@ export default {
       this.getFindings()
     }
   },
+  updated() {
+    this.mapUsersData()
+  },
   methods: {
     customLabel(value) {
       return `${value.text}`
     },
     onPageChange(page, type) {
-      if (type == 'prev')
-      {
+      if (type == 'prev') {
         this.currentPage = this.currentPage - 1
         this.getFindingsFunc()
       }
 
-      if (type == 'next')
-      {
+      if (type == 'next') {
         this.currentPage = this.currentPage + 1
         this.getFindingsFunc()
       }
 
-      if (type == 'fromnumber')
-      {
+      if (type == 'fromnumber') {
         this.currentPage = page
         this.getFindingsFunc()
       }
@@ -550,24 +558,18 @@ export default {
       this.getFindings()
     },
     getImage(eval_nm) {
-      console.log(eval_nm);
-      // const labels = ['Order Part', 'Countermeasure', 'Monitor/Follow', 'Finish']
-      // console.log(labels.findIndex[eval_nm]);
       return `./tanoko/${this.evaluationOpts.findIndex(x => x.system_value == eval_nm) + '.png'}`
     },
     async getSystem() {
-      try
-      {
+      try {
         ApiService.setHeader()
         const changeOpts = await ApiService.get(`master/systems/get/4S_OPT_CHANGE`)
         const depts = await ApiService.get('master/systems/get/4S_OPT_DEPT')
         let evaluation = await ApiService.get('master/systems/get/4S_EVALUATION')
-        // console.log(changeOpts);
         this.changeOpts = changeOpts.data.data
         this.deptOpts = depts.data.data
         this.evaluationOpts = evaluation.data.data
-      } catch (error)
-      {
+      } catch (error) {
         toast.error(error.response.data.message, {
           autoClose: 1000,
         })
@@ -582,6 +584,7 @@ export default {
         kanban_id: this.selectedKanbanIDFilter,
         zone_id: this.zoneGetID,
         freq_id: this.selectedFreqIDFilter,
+        group_id: this.selectedGroupIDFilter,
         start_date: this.selectedFilterStartDate,
         end_date: this.selectedFilterEndDate,
       }
@@ -612,6 +615,7 @@ export default {
       this.actualPIC = { pic_name: data.actual_pic_nm, pic_id: data.actual_pic_id }
       this.actualCMDate = data.actual_cm_date
       this.evaluationName = data.evaluation_nm
+      this.selectedSubScheduleID = data.sub_schedule_id
 
       this.editFindingModal = true
     },
@@ -620,11 +624,12 @@ export default {
       ApiService.setHeader()
       this.isUpdateFindingLoading = true
       const findingData = {
+        "sub_schedule_id": this.selectedSubScheduleID,
         "schedule_item_check_kanban_id": this.scheduleItemCheckKanbanID,
-        "line_id": this.selectedLineID.id,
-        "freq_id": this.selectedFreqID,
-        "zone_id": this.selectedZoneID,
-        "kanban_id": this.selectedKanbanID,
+        // "line_id": this.selectedLineID.id,
+        // "freq_id": this.selectedFreqID,
+        // "zone_id": this.selectedZoneID,
+        // "kanban_id": this.selectedKanbanID,
         "finding_pic_id": this.selectedPIC.pic_id,
         "finding_date": this.findingDate,
         "finding_desc": this.findingDesc,
@@ -641,14 +646,12 @@ export default {
       }
 
       const add = await ApiService.put(`operational/4s/finding/edit/${this.selectedFindingID}`, findingData)
-      if (add.data.message == 'Success to edit 4s finding')
-      {
+      if (add.data.message == 'Success to edit 4s finding') {
         alert('Success update data')
         this.editFindingModal = false
         this.isUpdateFindingLoading = false
         await this.getFindings()
-      } else
-      {
+      } else {
         alert('Failed update data')
         this.isUpdateFindingLoading = false
         this.editFindingModal = false
@@ -663,21 +666,17 @@ export default {
         confirmButtonText: 'Sure',
         denyButtonText: `No`,
       }).then((result) => {
-        if (result.isConfirmed)
-        {
+        if (result.isConfirmed) {
           ApiService.setHeader()
           const deleteData = ApiService.delete(`operational/4s/finding/delete/${findingID}`)
 
-          if (deleteData)
-          {
+          if (deleteData) {
             Swal.fire('Data deleted!', '', 'success')
             this.getFindings()
-          } else
-          {
+          } else {
             Swal.fire('Error', '', 'warning')
           }
-        } else if (result.isDenied)
-        {
+        } else if (result.isDenied) {
           Swal.fire('Canceled', '', 'info')
         }
       })
@@ -688,20 +687,19 @@ export default {
       await this.getFindings()
     },
     resetFilter() {
-      (this.selectedLineIDFilter = -1),
-        (this.selectedFreqIDFilter = -1),
-        (this.selectedGroupIDFilter = -1),
+      (this.selectedLineIDFilter = " -1"),
+        (this.selectedFreqIDFilter = "-1"),
+        (this.selectedGroupIDFilter = "-1"),
         this.selectedZoneIDFilter = "-1"
       this.selectedKanbanIDFilter = "-1",
         this.getFindings()
     },
 
     async getUsers() {
-      try
-      {
+      try {
         await this.$store.dispatch(GET_USERS)
-      } catch (error)
-      {
+        this.mapUsersData()
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -709,52 +707,60 @@ export default {
     customPicOptions({ pic_name }) {
       return `${pic_name}`
     },
+    mapUsersData() {
+      this.getUsersOpts?.map((item) => {
+        this.picData.push({ pic_id: item.id, pic_name: item.text })
+      })
+    },
     async getLines() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_LINES)
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getGroup() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_GROUP)
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getZone() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_ZONES, { line_id: this.selectedLineIDFilter })
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getKanban() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_KANBANS)
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getFreq() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_FREQS)
-      } catch (error)
-      {
+      } catch (error) {
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
+      }
+    },
+    async getEvaluation() {
+      let objQuery = {
+        system_type: '4S_EVALUATION'
+      }
+      try {
+        this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
+          this.optEvaluation = res
+        })
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -766,8 +772,7 @@ export default {
       var lastDay = new Date(year, month, 0)
       let container = []
       this.containerDate = []
-      for (let i = 1; i <= lastDay.getDate(); i++)
-      {
+      for (let i = 1; i <= lastDay.getDate(); i++) {
         let setDt = new Date(selectedMonth).setDate(i)
         let newDate = new Date(setDt)
         container.push(newDate.getDate())
@@ -796,9 +801,8 @@ export default {
     this.selectedMonth = `${year}-${month}`
     this.selectedFilterStartDate = `${year}-01-01`
     this.selectedFilterEndDate = `${year}-12-30`
-    
-    if (localStorage.getItem('line_id'))
-    {
+
+    if (localStorage.getItem('line_id')) {
       this.selectedLineIDFilter = localStorage.getItem('line_id')
     }
     await this.getGroup()
@@ -807,6 +811,7 @@ export default {
     await this.getFreq()
     await this.getUsers()
     await this.getFindings()
+    await this.getEvaluation()
     this.isLoading = false
   },
 }

@@ -80,7 +80,7 @@
           </div>
         </div>
         <div class="tableFixHead" v-else>
-          <table class="table table-hover" style="width: 100%;" v-for="mainSchedule in newSubScheduleData"
+          <table class="table table-hover" style="width: 100%;" v-for="mainSchedule in orderedSubScheduleData "
             :key="mainSchedule.id">
             <thead class="bg-dark text-light">
               <tr>
@@ -126,8 +126,8 @@
                   <td> {{ data.freq_nm }}</td>
 
                   <td v-for="(children, childrenIndex) in data?.children" :key="childrenIndex" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
-                    } ${children.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''
-                    } `">
+              } ${children.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''
+              } `">
 
                     <CDropdown variant="btn-group"
                       v-if="children.status && children.status != '' && children.status != 'NIGHT_SHIFT'">
@@ -192,19 +192,19 @@
               <tr v-if="newSubScheduleData && !isLoading">
                 <td colspan="7" class="text-center">Sign TL 1 </td>
                 <td v-for="children in mainSchedule[0].children" :key="children" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
-                  } ${children.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''
-                  } `">
+              } ${children.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''
+              } `">
 
                   <div class="d-flex align-items-center justify-content-center w-full">
                     <button @click="
-                      openSignModal(children.tl1_sign_checker_id, 'sign_tl_1')
-                      " v-if="!children.is_holiday && !children.sign_tl_1"
+              openSignModal(children.tl1_sign_checker_id, 'sign_tl_1')
+              " v-if="!children.is_holiday && !children.sign_tl_1"
                       class="check-wrapper-null d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-x" class="text-danger" size="sm" />
                     </button>
                     <button @click="
-                      openSignModal(children.tl1_sign_checker_id, 'sign_tl_1')
-                      " v-else-if="!children.is_holiday && children.sign_tl_1"
+              openSignModal(children.tl1_sign_checker_id, 'sign_tl_1')
+              " v-else-if="!children.is_holiday && children.sign_tl_1"
                       class="check-wrapper d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-check" class="text-black" size="sm" />
                     </button>
@@ -217,19 +217,19 @@
               <tr v-if="newSubScheduleData && !isLoading">
                 <td colspan="7" class="text-center">Sign TL 2</td>
                 <td v-for="children in mainSchedule[0].children" :key="children" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
-                  } ${children.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''
-                  }`">
+              } ${children.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''
+              }`">
 
                   <div class="d-flex align-items-center justify-content-center w-full">
                     <button @click="
-                      openSignModal(children.tl2_sign_checker_id, 'sign_tl_2')
-                      " v-if="!children.is_holiday && !children.sign_tl_2"
+              openSignModal(children.tl2_sign_checker_id, 'sign_tl_2')
+              " v-if="!children.is_holiday && !children.sign_tl_2"
                       class="check-wrapper-null d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-x" class="text-danger" size="sm" />
                     </button>
                     <button @click="
-                      openSignModal(children.tl2_sign_checker_id, 'sign_tl_2')
-                      " v-else-if="!children.is_holiday && children.sign_tl_2"
+              openSignModal(children.tl2_sign_checker_id, 'sign_tl_2')
+              " v-else-if="!children.is_holiday && children.sign_tl_2"
                       class="check-wrapper d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-check" class="text-black" size="md" />
                     </button>
@@ -242,17 +242,17 @@
               <tr v-if="signGLData && !isLoading">
                 <td colspan="7" class="text-center">Sign GL</td>
                 <td v-for="children in signGLData" :key="children" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
-                  } `" :colspan="children.col_span">
+              } `" :colspan="children.col_span">
                   <div class="d-flex align-items-center justify-content-center w-full">
                     <button @click="
-                      openSignModal(children.sign_checker_id, 'sign_gl')
-                      " v-if="!children.is_holiday && !children.sign"
+              openSignModal(children.sign_checker_id, 'sign_gl')
+              " v-if="!children.is_holiday && !children.sign"
                       class="check-wrapper-null d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-x" class="text-danger" size="md" />
                     </button>
                     <button @click="
-                      openSignModal(children.sign_checker_id, 'sign_gl')
-                      " v-else-if="!children.is_holiday && children.sign"
+              openSignModal(children.sign_checker_id, 'sign_gl')
+              " v-else-if="!children.is_holiday && children.sign"
                       class="check-wrapper d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-check" class="text-black" size="md" />
                     </button>
@@ -264,17 +264,17 @@
               <tr v-if="signSHData && !isLoading">
                 <td colspan="7" class="text-center">Sign SH</td>
                 <td class="" v-for="children in signSHData" :key="children" :style="`${children.is_holiday ? 'background-color: #f9fafb' : ''
-                  }`" :colspan="children.col_span">
+              }`" :colspan="children.col_span">
                   <div class="d-flex align-items-center justify-content-center w-full">
                     <button @click="
-                      openSignModal(children.sign_checker_id, 'sign_sh')
-                      " v-if="!children.is_holiday && !children.sign"
+              openSignModal(children.sign_checker_id, 'sign_sh')
+              " v-if="!children.is_holiday && !children.sign"
                       class="check-wrapper-null d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-x" class="text-danger" size="md" />
                     </button>
                     <button @click="
-                      openSignModal(children.sign_checker_id, 'sign_sh')
-                      " v-else-if="!children.is_holiday && children.sign"
+              openSignModal(children.sign_checker_id, 'sign_sh')
+              " v-else-if="!children.is_holiday && children.sign"
                       class="check-wrapper d-flex align-items-center justify-content-center">
                       <CIcon icon="cil-check" class="text-black" size="md" />
                     </button>
@@ -529,12 +529,29 @@ export default {
     getMonthStr() {
       const monthStr = ['January', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
       return monthStr[+this.selectedMonth.split('-')[1] - 1]
+    },
+    orderedSubScheduleData() {
+      let subSchedule = this.newSubScheduleData;
+
+      let sortedData = subSchedule.sort((a, b) => {
+        console.log('a', a)
+        console.log('b', b)
+        let fa = a[0]?.group_nm.toLowerCase(), fb = b[0]?.group_nm.toLowerCase();
+        if (fa < fb) {
+          return -1
+        }
+        if (fa > fb) {
+          return 1
+        }
+        return 0
+      })
+
+      return sortedData
     }
   },
   watch: {
     selectedMonth: function () {
-      if (this.selectedMonth)
-      {
+      if (this.selectedMonth) {
         this.generateDate()
         let idx = this.idxMonth.indexOf(this.selectedMonth.split('-')[1])
         this.yearMonth = `${this.monthStr[idx]} ${this.selectedMonth.split('-')[0]
@@ -555,24 +572,22 @@ export default {
     async getSchedules() {
       this.newSubScheduleData = []
       this.subScheduleData = []
+      this.mainScheduleData = []
       this.isLoading = true
       let objQuery = {
         month_year_num: this.selectedMonth,
         line_id: this.selectedLineID,
       }
       await this.$store.dispatch(GET_SCHEDULES, objQuery).then((res) => {
-        if (res)
-        {
+        if (res) {
           const data = res.list
           this.mainScheduleData = data
-          if (data?.length > 0)
-          {
+          if (data?.length > 0) {
             data?.map((item) => {
               this.mainSubScheduleID.push(item.main_schedule_id)
               this.getSubSchedules(item.main_schedule_id)
             })
-          } else
-          {
+          } else {
             this.isMainScheduleEmpty = true
             this.isLoading = false
           }
@@ -592,9 +607,18 @@ export default {
         month_year_num: this.selectedMonth,
       }
       await this.$store.dispatch(GET_SUB_SCHEDULES, objQuery).then((res) => {
-        if (res)
-        {
-          this.subScheduleData.push(res.schedule)
+        if (res) {
+          let redTemp = '';
+          let whiteTemp = '';
+          let temp = res.schedule
+          // console.log(temp[0]?.group_nm)
+          temp.sort(function (a, b) {
+            redTemp = a.group_nm
+            whiteTemp = b.group_nm
+            return redTemp.localeCompare(whiteTemp);
+          })
+
+          console.log(temp)
           this.newSubScheduleData.push(res.schedule)
           this.signGLData = res.sign_checker_gl
           this.signSHData = res.sign_checker_sh
@@ -645,8 +669,7 @@ export default {
         `/operational/4s/sub-schedule/edit/${this.selectedSubScheduleID}`,
         data,
       )
-      if (change.data.message == 'Success to edit 4s schedule plan')
-      {
+      if (change.data.message == 'Success to edit 4s schedule plan') {
         this.isChangeDateLoading = false
         this.changeDateModal = false
         await this.getSchedules()
@@ -662,8 +685,7 @@ export default {
         confirmButtonText: 'Sure',
         denyButtonText: `No`,
       }).then((result) => {
-        if (result.isConfirmed)
-        {
+        if (result.isConfirmed) {
           ApiService.setHeader()
           const deleteData = ApiService.delete(`operational/4s/sub-schedule/delete/${subScheduleID}`)
 
@@ -678,8 +700,7 @@ export default {
               autoClose: 700
             })
           }
-        } else if (result.isDenied)
-        {
+        } else if (result.isDenied) {
           Swal.fire('Canceled', '', 'info')
         }
       })
@@ -699,15 +720,12 @@ export default {
     },
 
     async getUsers() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_USERS)
-        if (this.getUsersOpts)
-        {
+        if (this.getUsersOpts) {
           this.mapUsersData()
         }
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -721,21 +739,17 @@ export default {
       return `${pic_name}`
     },
     async getLines() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_LINES)
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getGroup() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_GROUP)
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -757,11 +771,9 @@ export default {
       }
     },
     async getFreq() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_FREQS)
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -773,8 +785,7 @@ export default {
       var lastDay = new Date(year, month, 0)
       let container = []
       this.containerDate = []
-      for (let i = 1; i <= lastDay.getDate(); i++)
-      {
+      for (let i = 1; i <= lastDay.getDate(); i++) {
         let setDt = new Date(selectedMonth).setDate(i)
         let newDate = new Date(setDt)
         container.push(newDate.getDate())
@@ -807,8 +818,7 @@ export default {
     saveSignature(from) {
       var signFile
 
-      switch (from)
-      {
+      switch (from) {
         case 'sign_tl_1':
           signFile = this.$refs[from].save()
           this.selectedSignature = signFile
@@ -816,8 +826,7 @@ export default {
         default:
           break
       }
-      switch (from)
-      {
+      switch (from) {
         case 'sign_tl_2':
           signFile = this.$refs[from].save()
           this.selectedSignature = signFile
@@ -825,8 +834,7 @@ export default {
         default:
           break
       }
-      switch (from)
-      {
+      switch (from) {
         case 'sign_gl':
           signFile = this.$refs[from].save()
           this.selectedSignature = signFile
@@ -834,8 +842,7 @@ export default {
         default:
           break
       }
-      switch (from)
-      {
+      switch (from) {
         case 'sign_sh':
           signFile = this.$refs[from].save()
           this.selectedSignature = signFile
@@ -856,8 +863,7 @@ export default {
         `/operational/4s/sub-schedule/sign/${this.selectedSignCheckerID}`,
         { sign: this.selectedSignature },
       )
-      if (upload.data.message == 'success to sign 4s schedule')
-      {
+      if (upload.data.message == 'success to sign 4s schedule') {
         this.isUploadSignLoading = false
         toast.success('Sign saved', {
           autoClose: 700
@@ -872,8 +878,7 @@ export default {
         `/operational/4s/sub-schedule/sign/${this.selectedSignCheckerID}`
       )
 
-      if (getData.data.message == 'Success to get 4s sign checker')
-      {
+      if (getData.data.message == 'Success to get 4s sign checker') {
         this.selectedSign = getData.data.data.sign
         this.isUploadSignLoading = false
       }
@@ -881,8 +886,7 @@ export default {
 
     // edit data
     openEditModal(subScheduleID, picID, picName) {
-      if (picName)
-      {
+      if (picName) {
         this.selectedPICName = picName
       }
       this.editDataModal = true
@@ -895,8 +899,7 @@ export default {
   },
 
   async mounted() {
-    if (localStorage.getItem('line_id'))
-    {
+    if (localStorage.getItem('line_id')) {
       this.selectedLineID = localStorage.getItem('line_id')
     }
     this.newSubScheduleData = []
