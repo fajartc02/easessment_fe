@@ -103,6 +103,10 @@
               <th>No</th>
               <th>Itemcheck</th>
               <th>Standard Time</th>
+              <th>
+                Method
+              </th>
+              <th>Control Point</th>
               <th>Ilustrations</th>
               <th colspan="2">Actions</th>
             </tr>
@@ -115,6 +119,8 @@
                   <td>{{ itemcheck.no }}</td>
                   <td>{{ itemcheck.item_check_nm }}</td>
                   <td>{{ +itemcheck.standart_time }}</td>
+                  <td>{{ itemcheck.method }}</td>
+                  <td>{{ itemcheck.control_point }}</td>
                   <td>
                     <div class="row" v-if="itemcheck.ilustration_imgs">
                       <div v-for="itemcheckImg in itemcheck.ilustration_imgs" :key="itemcheckImg.path" class="col-4">
@@ -127,8 +133,8 @@
                   </td>
                   <td>
                     <button class="btn btn-sm btn-warning" @click="() => {
-    itemcheck.is_edit = true
-  }">Edit</button>
+                      itemcheck.is_edit = true
+                    }">Edit</button>
                   </td>
                 </template>
                 <template v-else>
@@ -136,7 +142,15 @@
                   <td>
                     <input type="text" class="form-control" v-model="itemcheck.item_check_nm">
                   </td>
-                  <td>{{ +itemcheck.standart_time }}</td>
+                  <td>
+                    <input type="number" class="form-control" v-model="itemcheck.standart_time">
+                  </td>
+                  <td>
+                    <input type="text" class="form-control" v-model="itemcheck.method">
+                  </td>
+                  <td>
+                    <input type="text" class="form-control" v-model="itemcheck.control_point">
+                  </td>
                   <td>
                     <input class="form-control" type="file" name="ilustration_imgs[]" @change="handleFileInputChange"
                       multiple accept="image/*">
@@ -154,9 +168,9 @@
                   </td>
                   <td>
                     <button class="btn btn-sm btn-success" @click="() => {
-    itemcheck.is_edit = false
-    ActionUpdateItemCheck(itemcheck)
-  }">Save</button>
+                      itemcheck.is_edit = false
+                      ActionUpdateItemCheck(itemcheck)
+                    }">Save</button>
                   </td>
                 </template>
                 <td>
@@ -179,6 +193,13 @@
               <td>
                 <input class="form-control" type="number" placeholder="Masukan Waktu"
                   v-model="newItemcheck.standart_time">
+              </td>
+              <td>
+                <input class="form-control" type="text" placeholder="Masukan Waktu" v-model="newItemcheck.method">
+              </td>
+              <td>
+                <input class="form-control" type="text" placeholder="Masukan Waktu"
+                  v-model="newItemcheck.control_point">
               </td>
               <td>
                 <input class="form-control" type="file" name="ilustration_imgs[]" @change="handleFileInputChange"
@@ -249,6 +270,8 @@ export default {
         kanban_id: null,
         item_check_nm: null,
         standart_time: null,
+        method: null,
+        control_point: null,
         dest: "ITEM_CHECKS_KANBAN",
         ilustration_imgs: []
       },
@@ -335,6 +358,8 @@ export default {
         kanban_id: null,
         item_check_nm: null,
         standart_time: null,
+        method: null,
+        control_point: null,
         ilustration_imgs: []
       }
     },
@@ -363,7 +388,9 @@ export default {
           item_check_nm: null,
           standart_time: null,
           dest: null,
-          ilustration_imgs: []
+          ilustration_imgs: [],
+          method: null,
+          control_point: null
         }
       } catch (error) {
         console.log(error)
@@ -386,6 +413,8 @@ export default {
           kanban_id: this.getKanbanDetail.kanban_id,
           item_check_nm: itemcheck.item_check_nm,
           standart_time: itemcheck.standart_time,
+          method: itemcheck.method,
+          control_point: itemcheck.control_point,
           dest: "ITEM_CHECKS_KANBAN",
           previous_img_paths: itemcheck.ilustration_imgs ? JSON.stringify(itemcheck.ilustration_imgs) : null, // for handled image
           ilustration_imgs: [],

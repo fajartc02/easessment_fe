@@ -46,6 +46,8 @@
               <tr>
                 <th>No</th>
                 <th>Itemcheck</th>
+                <th>Method</th>
+                <th>Control Point</th>
                 <th>Standard Time</th>
                 <th>Ilustrations</th>
               </tr>
@@ -55,6 +57,8 @@
                 <tr v-for="itemcheck in getItemchecks" :key="itemcheck.item_check_kanban_id">
                   <td>{{ itemcheck.no }}</td>
                   <td>{{ itemcheck.item_check_nm }}</td>
+                  <td>{{ itemcheck.method }}</td>
+                  <td>{{ itemcheck.control_point }}</td>
                   <td>{{ +itemcheck.standart_time }}</td>
                   <td>
                     <div class="row" v-if="itemcheck.ilustration_imgs">
@@ -69,7 +73,7 @@
                 </tr>
               </template>
               <template v-else>
-                <NoDataTable :colspan="4" />
+                <NoDataTable :colspan="6" />
               </template>
             </tbody>
           </table>

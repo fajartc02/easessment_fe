@@ -32,7 +32,7 @@
               <input type="date" class="form-control" v-model="detailActualDate">
               <CInputGroupText>
                 <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()"> {{
-    isUpdateCheckLoading ? 'updating..' : 'update' }} </button>
+                  isUpdateCheckLoading ? 'updating..' : 'update' }} </button>
               </CInputGroupText>
             </CInputGroup>
           </div>
@@ -57,7 +57,7 @@
               <Select2 class="form-control" :options="getUsersOpts" v-model="detailActualPIC" />
               <CInputGroupText>
                 <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()">{{
-    isUpdateCheckLoading ? 'updating..' : 'update' }}</button>
+                  isUpdateCheckLoading ? 'updating..' : 'update' }}</button>
               </CInputGroupText>
             </CInputGroup>
           </div>
@@ -86,8 +86,11 @@
           <tr>
             <th>No</th>
             <th>Item Check</th>
+            <th>Method</th>
+            <th>Control Point</th>
             <th>Judgement</th>
-            <th>Time</th>
+            <th>Standard Time</th>
+            <th>Actual Time</th>
             <th>Actions</th>
             <th>Finding</th>
           </tr>
@@ -95,7 +98,9 @@
         <tbody>
           <tr v-for="(item, index) in itemCheks" :key="item">
             <td>{{ index + 1 }}</td>
-            <td> {{ item.item_check_nm }} </td>
+            <td>{{ item.item_check_nm }}</td>
+            <td>{{ item.method }}</td>
+            <td>{{ item.control_point }}</td>
             <td>
               <CFormSelect v-model="item.judgment_id">
                 <option>Select Judgment</option>
@@ -105,13 +110,16 @@
               </CFormSelect>
             </td>
             <td>
-              <CFormInput v-model="item.actual_time" />
+              {{ item.standart_time }}
+            </td>
+            <td>
+              <CFormInput v-model="item.actual_time" type="number" />
             </td>
             <td>
               <button class="btn btn-info btn-sm text-white"
                 @click="saveScheduleCheck(item.judgment_id, item.actual_time, item.item_check_kanban_id)">
                 {{ isAddCheckLoading ?
-    'Saving...' : 'Save' }}
+                  'Saving...' : 'Save' }}
               </button>
             </td>
             <td>
@@ -202,9 +210,10 @@
                 <input type="text" class="form-control" v-model="timeCM" :disabled="!enabledReduceTime"
                   @keypress="$event.key.match(/^[\d]$/) ? '' : $event.preventDefault()" />
               </div>
+              <small class="text-info">* Ceklis & isi waktu pengurangn jika ada</small>
             </div>
             <div class="mb-2">
-              <label class="mb-1">Actual PIC</label>
+              <label class="mb-1">PIC Countermeasure</label>
               <VueMultiselect v-model="actualPIC" :disabled="findingActionType == 'update'" :options="picData"
                 :custom-label="customPicOptions" class="vue-multi-select">
               </VueMultiselect>
@@ -247,12 +256,10 @@
             </div>
             <div class="mb-2">
               <label class="mb-1">Department Terkait</label>
-              <select class="form-select" v-model="optDepartment">
-                <option value="null" selected>Select Department Terkait</option>
-                <option v-for="optDept in optDeptData" :key="optDept" :value="optDept.system_value">
-                  {{ optDept.system_value }}
-                </option>
-              </select>
+              <!-- <VueMultiselect v-model="optDepartment" :options="getSystemsOptDept" :multiple="true" label="name" /> -->
+              <treeselect class="w-50" v-model="optDepartment" :multiple="true" :options="getSystemsOptDept" />
+              <!-- <VueMultiselect v-model="optDepartment" :options="optDeptData" :searchable="false"
+                :close-on-select="false" :allow-empty="false" label="name" placeholder="Select one" track-by="name" /> -->
             </div>
           </div>
           <div class="col-md-6">
@@ -321,11 +328,14 @@ import { toast } from 'vue3-toastify'
 import KanbanItemCheck from '@/components/kanban4s/KanbanItemCheck.vue'
 import ModalForm4sFinding from '@/components/4s/ModalForm4sFinding.vue'
 
+import 'vue3-treeselect/dist/vue3-treeselect.css'
+import Treeselect from 'vue3-treeselect'
+
 export default {
   name: "Schedule Check",
   components: {
     // eslint-disable-next-line vue/no-unused-components
-    VueMultiselect, Loading, KanbanItemCheck, ModalForm4sFinding
+    VueMultiselect, Loading, KanbanItemCheck, ModalForm4sFinding, Treeselect
   },
   data() {
     return {
@@ -379,6 +389,7 @@ export default {
       'getZones',
       'getKanbans',
       'getFreqs',
+      'getSystemsOptDept'
     ]),
     Users() {
       if (this.getUsersOpts) {
@@ -451,7 +462,7 @@ export default {
         this.selectedScheduleItemCheckKanbanID = scheduleItemCheckKanbanID
       }
       this.findingActionType = actionType
-      const data = findings[0] 
+      const data = findings[0]
 
       this.selectedLineID = { line_name: data.line_nm, line_id: data.line_id }
       this.selectedFreqID = data.freq_id
@@ -465,7 +476,7 @@ export default {
       this.timeCM = data.time_cm
       this.timeYokoten = data.time_yokoten
       this.optChanges = data.opt_changes
-      this.optDepartment = data.opt_depts
+      this.optDepartment = data.opt_depts.split(';')
       this.cmJudg = data.cm_judg
       this.actualPIC = { pic_name: data.actual_pic_nm, pic_id: data.actual_pic_id }
       this.actualCMDate = data?.actual_cm_date?.substring(0, 10)
@@ -500,7 +511,7 @@ export default {
         "time_cm": +this.timeCM,
         "time_yokoten": this.timeYokoten,
         "opt_changes": this.optChanges,
-        "opt_depts": this.optDepartment,
+        "opt_depts": this.optDepartment.length > 0 ? this.optDepartment.join(';') : null,
         "cm_judg": this.cmJudg,
         "actual_pic_id": this.actualPIC.pic_id,
         "actual_cm_date": this.actualCMDate,
@@ -537,7 +548,7 @@ export default {
         "time_cm": +this.timeCM,
         "time_yokoten": this.timeYokoten,
         "opt_changes": this.optChanges,
-        "opt_depts": this.optDepartment,
+        "opt_depts": this.optDepartment.length > 0 ? this.optDepartment.join(';') : null,
         "cm_judg": this.cmJudg,
         "actual_pic_id": this.actualPIC.pic_id,
         "actual_cm_date": this.actualCMDate,

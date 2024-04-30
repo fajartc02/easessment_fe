@@ -113,12 +113,13 @@
           </div>
           <div class="mb-2">
             <label class="mb-1">Department Terkait</label>
-            <select class="form-select" v-model="optDepartment">
+            <!-- <select class="form-select" v-model="optDepartment">
               <option value="null" selected>Select Department Terkait</option>
               <option v-for="optDept in optDeptData" :key="optDept" :value="optDept.system_value">
                 {{ optDept.system_value }}
               </option>
-            </select>
+            </select> -->
+            <Select2 v-model="optDepartment" class="form-control" :options="optDeptData" multiple />
           </div>
         </div>
         <div class="col-md-6">
@@ -192,8 +193,7 @@ export default {
   },
   methods: {
     closeModal(refresh) {
-      if (!this.isLoadingSave)
-      {
+      if (!this.isLoadingSave) {
         this.$emit('modalForm4sFindingListener', {
           visible: false,
           refresh: refresh
@@ -227,15 +227,13 @@ export default {
       console.log(findingData)
 
       const add = await ApiService.post(`operational/4s/finding/add`, findingData)
-      if (add.data.message == 'Success to add 4s finding')
-      {
+      if (add.data.message == 'Success to add 4s finding') {
         toast.success('Success add data', {
           autoClose: 700
         })
         this.addFindingModal = false
         await this.getScheduleCheck()
-      } else
-      {
+      } else {
         toast.error('Failed', {
           autoClose: 700
         })
@@ -265,15 +263,13 @@ export default {
       }
 
       const update = await ApiService.put(`operational/4s/finding/edit/${this.selectedFindingID}`, findingData)
-      if (update.data.message == 'Success to edit 4s finding')
-      {
+      if (update.data.message == 'Success to edit 4s finding') {
         toast.success('Success edit data', {
           autoClose: 700
         })
         this.addFindingModal = false
         await this.getScheduleCheck()
-      } else
-      {
+      } else {
         toast.error('Failed', {
           autoClose: 700
         })

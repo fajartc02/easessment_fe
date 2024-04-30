@@ -206,9 +206,9 @@
                   <CIcon v-if="optChange.system_value.includes(finding.opt_changes.split('; ')[i])" icon="cil-check"
                     size="sm" />
                 </td>
-                <td class="text-center" v-for="(dept, i) in deptOpts" :key="dept">
-                  <CIcon v-if="dept.system_value.includes(finding.opt_depts.split('; ')[i])" icon="cil-check"
-                    size="sm" />
+                <td class="text-center" v-for="(dept) in deptOpts" :key="dept">
+                  <CIcon v-if="finding.opt_depts.split(';').findIndex(x => x == dept.system_value) != -1"
+                    icon="cil-check" size="sm" />
                 </td>
                 <td v-for="item in totalDate" :key="item.idx" style="min-width: 30px">
                   <div v-if="item == finding.week_plan - 1"
