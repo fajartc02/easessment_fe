@@ -53,7 +53,7 @@
             <CModalHeader>
               <CModalTitle v-if="observation.job_type_nm">{{
                 tskLabel
-                }}</CModalTitle>
+              }}</CModalTitle>
             </CModalHeader>
             <CModalBody>
               <vue-pdf-embed v-if="tskFile" :source="tskFile" />
@@ -223,7 +223,7 @@
             </div>
 
             <!-- modal -->
-            <CModal scrollable alignment="center" :visible="addFindingsModal" size="xl">
+            <CModal scrollable alignment="center" :visible="addFindingsModal" size="xl" backdrop="static">
               <CModalHeader>
                 <CModalTitle>Add temuan</CModalTitle>
               </CModalHeader>
@@ -501,8 +501,7 @@ export default {
   },
   watch: {
     observationData: function () {
-      if (this.observationData)
-      {
+      if (this.observationData) {
         this.observation = this.observationData[0]
         let resCheckData = this.observationData[1]
         if (resCheckData?.length > 0) this.isCheck = true
@@ -528,8 +527,7 @@ export default {
     },
     ['categories']: {
       handler: function (oldValue, newValue) {
-        if (newValue[0]?.stw_ct5 && newValue[0]?.stw_ct5 !== 0)
-        {
+        if (newValue[0]?.stw_ct5 && newValue[0]?.stw_ct5 !== 0) {
           this.calculateJudgement(newValue[0])
         }
       },
@@ -556,11 +554,9 @@ export default {
         confirmButtonText: 'Ya',
         denyButtonText: `Tidak`,
       }).then((result) => {
-        if (result.isConfirmed)
-        {
+        if (result.isConfirmed) {
           return true
-        } else if (result.isDenied)
-        {
+        } else if (result.isDenied) {
           return false
         }
       })
@@ -568,8 +564,7 @@ export default {
     async deleteFinding(catID) {
       let is_delete = await this.swalConfDel()
 
-      if (is_delete)
-      {
+      if (is_delete) {
         let filterFinding = this.findings.filter(
           (finding) => finding.category_id != catID,
         )
@@ -579,11 +574,9 @@ export default {
       }
     },
     checkLabelTypeJob(jobType) {
-      if (jobType == 'Type 3')
-      {
+      if (jobType == 'Type 3') {
         ; (this.tskLabel = 'Gentani'), (this.tskkLabel = 'Yamazumi')
-      } else
-      {
+      } else {
         ; (this.tskLabel = 'TSK'), (this.tskkLabel = 'TSKK')
       }
     },
@@ -654,8 +647,7 @@ export default {
       let before_path = null
       this.isUploadLoading = true
 
-      if (finding.finding_img)
-      {
+      if (finding.finding_img) {
         before_path = finding.finding_img
       }
 
@@ -678,8 +670,7 @@ export default {
         },
       )
 
-      if (uploadImage.data.data)
-      {
+      if (uploadImage.data.data) {
         toast.success('Finding image uploaded', {
           autoClose: 1000
         })
@@ -724,11 +715,9 @@ export default {
       this.judgementAverage = totalAvg
       let is_nan = Number.isNaN(totalPrecentage)
       this.judgementPrecentage = is_nan ? 0 : totalPrecentage.toFixed()
-      if (totalPrecentage.toFixed() >= this.TRESHOLD_STW_NG)
-      {
+      if (totalPrecentage.toFixed() >= this.TRESHOLD_STW_NG) {
         this.judgementID = NG_ID
-      } else
-      {
+      } else {
         this.judgementID = OK_ID
       }
     },
@@ -747,8 +736,7 @@ export default {
 
         let result = this.resultCheck[i]
 
-        if (this.resultCheck?.length > 0)
-        {
+        if (this.resultCheck?.length > 0) {
           itm.judgment_id = result.judgment_id
           itm.factor_id = result.factor_id
           itm.stw_ct1 = result.stw_ct1
@@ -770,11 +758,9 @@ export default {
       this.calculateJudgement(mapCategory[0])
     },
     async postCheckObs() {
-      try
-      {
+      try {
         this.resultCheck = []
-        for (let i = 0; i < this.categories.length; i++)
-        {
+        for (let i = 0; i < this.categories.length; i++) {
           const element = this.categories[i]
           element.category_id = element.id
           let newObj = {
@@ -789,11 +775,9 @@ export default {
           this.resultCheck.push(newObj)
         }
 
-        if (this.resultCheck[0].judgment_id === null || this.resultCheck[1].judgment_id === null || this.resultCheck[2].judgment_id === null || this.resultCheck[3].judgment_id === null || this.resultCheck[4].judgment_id === null)
-        {
+        if (this.resultCheck[0].judgment_id === null || this.resultCheck[1].judgment_id === null || this.resultCheck[2].judgment_id === null || this.resultCheck[3].judgment_id === null || this.resultCheck[4].judgment_id === null) {
           alert('Pilih semua judgement')
-        } else
-        {
+        } else {
           let formInput = {
             observation_id: this.$route.params.id,
             group_id: this.observation?.group_id,
@@ -814,8 +798,7 @@ export default {
               }, 1000)
             })
         }
-      } catch (error)
-      {
+      } catch (error) {
         console.log(error)
         Swal.fire('Pengecekan gagal di submit', '', 'error')
       }
@@ -823,15 +806,12 @@ export default {
 
     // user functions
     async getUsers() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_USERS)
-        if (this.getUsersOpts)
-        {
+        if (this.getUsersOpts) {
           this.mapUsersData()
         }
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }

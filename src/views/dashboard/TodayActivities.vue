@@ -65,7 +65,8 @@
                     {{ item.line_snm }} |
                     {{ item.pos_nm }} |
                     {{ item.member_nm }} |
-                    {{ item.group_nm }}
+                    <b v-if="item.group_nm == 'RED'" class="text-danger">{{ item.group_nm }}</b>
+                    <b v-else class="text-light bg-dark" style="max-width: 70px;">{{ item.group_nm }}</b>
                   </div>
                   <div class="d-flex flex-column">
                     <template v-if="!item.actual_check_dt">
