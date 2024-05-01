@@ -32,7 +32,7 @@
               <input type="date" class="form-control" v-model="detailActualDate">
               <CInputGroupText>
                 <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()"> {{
-                  isUpdateCheckLoading ? 'updating..' : 'update' }} </button>
+    isUpdateCheckLoading ? 'updating..' : 'update' }} </button>
               </CInputGroupText>
             </CInputGroup>
           </div>
@@ -57,7 +57,7 @@
               <Select2 class="form-control" :options="getUsersOpts" v-model="detailActualPIC" />
               <CInputGroupText>
                 <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()">{{
-                  isUpdateCheckLoading ? 'updating..' : 'update' }}</button>
+    isUpdateCheckLoading ? 'updating..' : 'update' }}</button>
               </CInputGroupText>
             </CInputGroup>
           </div>
@@ -119,7 +119,7 @@
               <button class="btn btn-info btn-sm text-white"
                 @click="saveScheduleCheck(item.judgment_id, item.actual_time, item.item_check_kanban_id)">
                 {{ isAddCheckLoading ?
-                  'Saving...' : 'Save' }}
+    'Saving...' : 'Save' }}
               </button>
             </td>
             <td>
