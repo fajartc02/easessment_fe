@@ -844,10 +844,14 @@ export default {
           const deleteData = ApiService.delete(`operational/4s/finding/delete/${findingID}`)
 
           if (deleteData) {
-            Swal.fire('Data deleted!', '', 'success')
+            toast.success('Success to delete data', {
+              autoClose: 700
+            })
             this.getFindings()
           } else {
-            Swal.fire('Error', '', 'warning')
+            toast.error('Failed edit data', {
+              autoClose: 700
+            })
           }
         } else if (result.isDenied) {
           Swal.fire('Canceled', '', 'info')
