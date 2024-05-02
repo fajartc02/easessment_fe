@@ -253,36 +253,36 @@
     <CModal backdrop="static" size="xl" :visible="editFindingModal" @close="() => { editFindingModal = false }"
       aria-labelledby="StaticBackdropExampleLabel">
       <CModalHeader>
-        <CModalTitle id="StaticBackdropExampleLabel">Add finding</CModalTitle>
+        <CModalTitle id="StaticBackdropExampleLabel">Update finding</CModalTitle>
       </CModalHeader>
-      <CModalBody>
+      <!-- <CModalBody>
         <div class="row">
           <div class="col">
             <div class="mb-2">
               <label class="mb-1">Line</label>
-              <VueMultiselect v-model="selectedLineID" :options="getLinesOpts" optionLabel="text" optionValue="id"
-                :customLabel="customLabel">
+              <VueMultiselect disabled v-model="selectedLineID" :options="getLinesOpts" optionLabel="text"
+                optionValue="id" :customLabel="customLabel">
               </VueMultiselect>
             </div>
             <div class="mb-2">
               <label class="mb-1">Freq</label>
-              <select class="form-select" v-model="selectedFreqID">
+              <select class="form-select" v-model="selectedFreqID" disabled>
                 <option v-for="freq in getFreqsOpts" :key="freq.id" :value="freq.id">
                   {{ freq.text }}
                 </option>
               </select>
             </div>
             <div class="mb-2">
-              <label class="mb-1">Zone</label>
+              <label class="mb-1">Zone {{ selectedZoneName }}</label>
               <select class="form-select" v-model="selectedZoneID">
-                <option v-for="zone in getZoneOpts" :key="zone.id" :value="zone.id">
+                <option v-for="zone in getZoneOpts" :key="zone.zone_id" :value="zone.zone_id">
                   {{ zone.text }}
                 </option>
               </select>
             </div>
             <div class="mb-2">
               <label class="mb-1">Kanban</label>
-              <select class="form-select" v-model="selectedKanbanID">
+              <select class="form-select" v-model="selectedKanbanID" disabled>
                 <option v-for="kanban in getKanbansOpts" :key="kanban.id" :value="kanban.id">
                   {{ kanban.text }}
                 </option>
@@ -369,6 +369,155 @@
             </div>
           </div>
         </div>
+      </CModalBody> -->
+
+      <CModalBody>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-2">
+              <label class="mb-1">Line</label>
+              <VueMultiselect disabled v-model="selectedLineID" :options="getLinesOpts" optionLabel="text"
+                optionValue="id" :customLabel="customLabel">
+              </VueMultiselect>
+            </div>
+            <div class="mb-2">
+              <label class="mb-1">Zone </label>
+              <input type="text" class="form-control" :value="selectedZoneName" disabled>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-2">
+              <label class="mb-1">Freq</label>
+              <select class="form-select" v-model="selectedFreqID" disabled>
+                <option v-for="freq in getFreqsOpts" :key="freq.id" :value="freq.id">
+                  {{ freq.text }}
+                </option>
+              </select>
+            </div>
+            <div class="mb-2">
+              <label class="mb-1">Kanban</label>
+              <select class="form-select" v-model="selectedKanbanID" disabled>
+                <option v-for="kanban in getKanbansOpts" :key="kanban.id" :value="kanban.id">
+                  {{ kanban.text }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="mb-2">
+              <label class="mb-1">Finding Desc</label>
+              <input type="text" class="form-control" v-model="findingDesc" placeholder="Write Finding Desc" />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-2">
+              <label class="mb-1">Finding Date</label>
+              <input type="date" class="form-control" v-model="findingDate" placeholder="Select Finding Date" />
+            </div>
+            <div class="mb-2">
+              <label class="mb-1">Finding PIC</label>
+              <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions"
+                class="vue-multi-select">
+              </VueMultiselect>
+            </div>
+
+          </div>
+          <div class="col-md-6">
+            <div class="mb-2">
+              <label class="mb-1">Reduce Time Countermeasure (Menit)</label>
+              <div class="d-flex align-items-center">
+                <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" v-model="enabledReduceTime"
+                  class="me-2" style="height: 20px; width: 20px;">
+                <input type="text" class="form-control" v-model="timeCM" :disabled="!enabledReduceTime"
+                  @keypress="$event.key.match(/^[\d]$/) ? '' : $event.preventDefault()" />
+              </div>
+              <small class="text-info">* Ceklis & isi waktu pengurangn jika ada</small>
+            </div>
+            <div class="mb-2">
+              <label class="mb-1">PIC Countermeasure</label>
+              <VueMultiselect v-model="actualPIC" :disabled="findingActionType == 'update'" :options="picData"
+                :custom-label="customPicOptions" class="vue-multi-select">
+              </VueMultiselect>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-2">
+              <label class="mb-1">Plan Countermeasure Date</label>
+              <input type="date" class="form-control" v-model="planCMDate" />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-2">
+              <label class="mb-1">Actual Countermeasure Date</label>
+              <input type="date" class="form-control" v-model="actualCMDate"
+                :disabled="findingActionType == 'update'" />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="mb-2">
+              <label class="mb-1">Plan Countermeasure Desc</label>
+              <input type="text" class="form-control" v-model="planCMDesc"
+                placeholder="Write Plan Countermeasure Desc" />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-2">
+              <label class="mb-1">Yokoten</label>
+              <select v-model="timeYokoten" class="form-select">
+                <option value="null" selected>Select Yokoten</option>
+                <option value="true">Sudah</option>
+                <option value="false" selected>Belum</option>
+              </select>
+            </div>
+            <div class="mb-2">
+              <label class="mb-1">Department Terkait</label>
+              <treeselect class="w-50" v-if="getSystemsOptDept" v-model="optDepartment" :multiple="true"
+                :options="getSystemsOptDept" />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="mb-2">
+              <label class="mb-1">Perubahan Standart</label>
+              <select class="form-select" v-model="optChanges">
+                <option value="null" selected>Select Standart</option>
+                <option v-for="optChange in optChangeData" :key="optChange" :value="optChange.system_value">
+                  {{ optChange.system_value }}
+                </option>
+              </select>
+            </div>
+            <div class="mb-2">
+              <label class="mb-1">Status Countermeasure</label>
+              <select v-model="cmJudg" class="form-select" :disabled="findingActionType == 'update'">
+                <option value="null" selected>Select Status Countermeasure</option>
+                <option value="true">Sudah</option>
+                <option value="false">Belum</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="mb-2">
+              <label class="mb-1">Evaluation</label>
+              <select class="form-select" v-model="evaluationName" :disabled="findingActionType == 'update'">
+                <option value="null" selected>Select Evaluation</option>
+                <option v-for="optEval in optEvaluation" :key="optEval" :value="optEval.system_value">
+                  {{ optEval.system_value }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
       </CModalBody>
       <CModalFooter>
         <CButton color="secondary" @click="() => { editFindingModal = false }">
@@ -378,6 +527,7 @@
           finding data` }} </CButton>
       </CModalFooter>
     </CModal>
+    <!-- <ModalForm4sFinding :visiblee="modalFormFinding" :loadedFinding="" /> -->
   </div>
 </template>
 
@@ -400,13 +550,28 @@ import { GET_4S_FINDINGS } from '@/store/modules/finding.module'
 import Swal from 'sweetalert2'
 import { toast } from 'vue3-toastify'
 import Pagination from '@/components/Pagination.vue'
+import 'vue3-treeselect/dist/vue3-treeselect.css'
+import Treeselect from 'vue3-treeselect'
+import ModalForm4sFinding from '@/components/4s/ModalForm4sFinding.vue'
 
 
 export default {
   name: 'Temuan4S',
-  components: { Loading, VueMultiselect, Pagination },
+  // eslint-disable-next-line vue/no-unused-components
+  components: { Loading, VueMultiselect, Pagination, Treeselect, ModalForm4sFinding },
   data() {
     return {
+      options: [{
+        id: 'a',
+        label: 'a',
+      }, {
+        id: 'b',
+        label: 'b',
+      }, {
+        id: 'c',
+        label: 'c',
+      }],
+      value: null,
       changeOpts: [],
       deptOpts: [],
       evaluationOpts: [],
@@ -476,6 +641,7 @@ export default {
       selectedFreqID: null,
       selectedKanbanID: null,
       selectedZoneID: null,
+      selectedZoneName: null,
       selectedPIC: null,
       findingDate: null,
       findingDesc: null,
@@ -498,6 +664,7 @@ export default {
       currentPageLimit: 5,
       selectedSubScheduleID: null,
       optEvaluation: null,
+      optDeptData: null
     }
   },
   computed: {
@@ -508,7 +675,8 @@ export default {
       'getKanbansOpts',
       'getFreqsOpts',
       'getUsersOpts',
-      'get4sFindings'
+      'get4sFindings',
+      'getSystemsOptDept'
     ]),
     zoneGetID() {
       return this.selectedZoneIDFilter.id
@@ -532,6 +700,7 @@ export default {
   },
   updated() {
     this.mapUsersData()
+    console.log('zones', this.getZoneOpts)
   },
   methods: {
     customLabel(value) {
@@ -595,12 +764,15 @@ export default {
       })
     },
     openEditFindingModal(finding) {
+      console.log(finding)
+
       const data = finding
       this.selectedFindingID = finding.finding_id
       this.scheduleItemCheckKanbanID = data.schedule_item_check_kanban_id
       this.selectedLineID = { text: data.line_nm, id: data.line_id }
       this.selectedFreqID = data.freq_id
       this.selectedZoneID = data.zone_id
+      this.selectedZoneName = data.zone_nm
       this.selectedKanbanID = data.kanban_id
       this.selectedPIC = { pic_name: data.finding_pic_nm, pic_id: data.finding_pic_id }
       this.findingDate = data.finding_date
@@ -610,7 +782,8 @@ export default {
       this.timeCM = data.time_cm
       this.timeYokoten = data.time_yokoten
       this.optChanges = data.opt_changes
-      this.optDepartment = data.opt_depts
+      // this.optDepartment = data.opt_depts
+      this.optDepartment = data.opt_depts.split(';')
       this.cmJudg = data.cm_judg
       this.actualPIC = { pic_name: data.actual_pic_nm, pic_id: data.actual_pic_id }
       this.actualCMDate = data.actual_cm_date
@@ -626,10 +799,6 @@ export default {
       const findingData = {
         "sub_schedule_id": this.selectedSubScheduleID,
         "schedule_item_check_kanban_id": this.scheduleItemCheckKanbanID,
-        // "line_id": this.selectedLineID.id,
-        // "freq_id": this.selectedFreqID,
-        // "zone_id": this.selectedZoneID,
-        // "kanban_id": this.selectedKanbanID,
         "finding_pic_id": this.selectedPIC.pic_id,
         "finding_date": this.findingDate,
         "finding_desc": this.findingDesc,
@@ -638,7 +807,7 @@ export default {
         "time_cm": +this.timeCM,
         "time_yokoten": this.timeYokoten,
         "opt_changes": this.optChanges,
-        "opt_depts": this.optDepartment,
+        "opt_depts": this.optDepartment.length > 0 ? this.optDepartment.join(';') : null,
         "cm_judg": this.cmJudg,
         "actual_pic_id": this.actualPIC.pic_id,
         "actual_cm_date": this.actualCMDate,
@@ -647,12 +816,16 @@ export default {
 
       const add = await ApiService.put(`operational/4s/finding/edit/${this.selectedFindingID}`, findingData)
       if (add.data.message == 'Success to edit 4s finding') {
-        alert('Success update data')
+        toast.success('Success edit data', {
+          autoClose: 700
+        })
         this.editFindingModal = false
         this.isUpdateFindingLoading = false
         await this.getFindings()
       } else {
-        alert('Failed update data')
+        toast.error('Failed to edit data', {
+          autoClose: 700
+        })
         this.isUpdateFindingLoading = false
         this.editFindingModal = false
       }
@@ -671,10 +844,14 @@ export default {
           const deleteData = ApiService.delete(`operational/4s/finding/delete/${findingID}`)
 
           if (deleteData) {
-            Swal.fire('Data deleted!', '', 'success')
+            toast.success('Success to delete data', {
+              autoClose: 700
+            })
             this.getFindings()
           } else {
-            Swal.fire('Error', '', 'warning')
+            toast.error('Failed edit data', {
+              autoClose: 700
+            })
           }
         } else if (result.isDenied) {
           Swal.fire('Canceled', '', 'info')
@@ -765,6 +942,34 @@ export default {
         console.log(error)
       }
     },
+    async getOptChangeSystem() {
+      let objQuery = {
+        system_type: '4S_OPT_CHANGE'
+      }
+      try {
+        this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
+          this.optChangeData = res
+        })
+      } catch (error) {
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
+      }
+    },
+
+    async getOptDeptSystem() {
+      let objQuery = {
+        system_type: '4S_OPT_DEPT'
+      }
+      try {
+        this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
+
+          this.optDeptData = res
+        })
+      } catch (error) {
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
+      }
+    },
     generateDate() {
       let year = new Date(this.selectedMonth).getFullYear()
       let month = new Date(this.selectedMonth).getMonth() + 1
@@ -794,8 +999,6 @@ export default {
 
   async mounted() {
     this.isLoading = true
-    await this.getSystem()
-    await this.getLines()
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
@@ -805,6 +1008,9 @@ export default {
     if (localStorage.getItem('line_id')) {
       this.selectedLineIDFilter = localStorage.getItem('line_id')
     }
+    await this.getSystem()
+    await this.getLines()
+    await this.getOptDeptSystem()
     await this.getGroup()
     await this.getZone()
     await this.getKanban()
@@ -812,11 +1018,13 @@ export default {
     await this.getUsers()
     await this.getFindings()
     await this.getEvaluation()
+    await this.getOptChangeSystem()
     this.isLoading = false
   },
 }
 </script>
 
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>
 <style scoped>
 .status-wrapper {
   width: 30px;
@@ -981,7 +1189,11 @@ export default {
   background-color: white;
 }
 
+.vue-multi-select {
+  width: auto !important;
+  flex: 1 1 auto !important;
+}
+
 
 /* highlight on hover */
 </style>
-<style src="vue-multiselect/dist/vue-multiselect.css"></style>
