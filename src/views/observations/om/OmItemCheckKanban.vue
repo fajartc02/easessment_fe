@@ -17,11 +17,9 @@
         </div>
         <div class="col">
           <label>Machine</label>
-          <select class="form-select" v-model="filter.machine_id">
-            <option v-for="(machine, index) in getMachinesOpts" :key="index" :value="machine.id">
-              {{ machine.text }}
-            </option>
-          </select>
+          <Select2 v-if="getMachinesOpts.length > 1" class="form-control" v-model="filter.machine_id"
+            :options="getMachinesOpts" :disabled="getMachinesOpts.length == 1" />
+          <input v-else type="text" class="form-control" value="tidak ada mesin" disabled>
         </div>
       </div>
     </div>
@@ -125,7 +123,7 @@ export default {
     async getMachines() {
       try
       {
-        this.$store.dispatch(GET_MACHINES, { line_id: this.filter.line_id })
+        this.$store.dispatch(GET_MACHINES, { line_id: this.filter.line_id, category_type: 'TPM' })
       } catch (error)
       {
         if (error.response.status == 401) this.$router.push('/login')

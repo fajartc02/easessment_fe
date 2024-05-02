@@ -192,7 +192,7 @@ export default {
     async getMachines() {
       try
       {
-        this.$store.dispatch(GET_MACHINES, { line_id: this.filter.line_id })
+        this.$store.dispatch(GET_MACHINES, { line_id: this.filter.line_id, category_type: 'TPM' })
       } catch (error)
       {
         console.log(error)
