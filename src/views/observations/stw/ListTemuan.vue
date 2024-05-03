@@ -149,7 +149,7 @@
                 <td id="fixCol-6" class="px-2">
                   <template v-if="finding.finding_desc.length > 30 && !finding.is_open">
                     {{ finding.finding_desc.slice(0, 30) }}
-                    <span class="text-info" @click="() => {
+                    <span class="text-info" style="cursor: pointer;" @click="() => {
                       finding.finding_desc = finding.finding_desc
                       finding.is_open = true
                     }">...</span>
