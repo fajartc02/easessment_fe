@@ -107,14 +107,14 @@
                 <tr v-for="(data, scheduleIndex) in mainSchedule" :key="scheduleIndex">
                   <td id="fixCol-1" style="background-color: white;">{{ scheduleIndex + 1 }}</td>
                   <td id="fixCol-2" style="min-width: 100px;background-color: white;">
-                    {{ data.zone_nm }}</td>
-                  <td id="fixCol-3" style="min-width: 120px;background-color: white;">{{ data.kanban_no }}</td>
-                  <td id="fixCol-4" style="min-width: 200px;background-color: white;">{{ data.area_nm }}</td>
-                  <td style="min-width: 50px">{{ data.standart_time }}</td>
+                    {{ data?.zone_nm }}</td>
+                  <td id="fixCol-3" style="min-width: 120px;background-color: white;">{{ data?.kanban_no }}</td>
+                  <td id="fixCol-4" style="min-width: 200px;background-color: white;">{{ data?.area_nm }}</td>
+                  <td style="min-width: 50px">{{ data?.standart_time }}</td>
                   <td style="min-width: 100px">
-                    <div style="cursor: pointer;" v-if="data.pic_nm"
+                    <div style="cursor: pointer;" v-if="data?.pic_nm"
                       @click="openEditModal(data.sub_schedule_id, data.pic_id, data.pic_nm)">
-                      <p class="cursor-pointer"> {{ data.pic_nm }}</p>
+                      <p class="cursor-pointer"> {{ data?.pic_nm }}</p>
                     </div>
                     <div v-else>
                       <button class="btn btn-info btn-sm mx-2 text-white"
@@ -123,9 +123,9 @@
                       </button>
                     </div>
                   </td>
-                  <td> {{ data.freq_nm }}</td>
+                  <td> {{ data?.freq_nm }}</td>
 
-                  <td v-for="(children, childrenIndex) in data?.children" :key="childrenIndex" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
+                  <td v-for="(children) in data?.children" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
                     } ${children?.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''
                     };z-index: 10`">
 
@@ -575,15 +575,16 @@ export default {
         month_year_num: this.selectedMonth,
         line_id: this.selectedLineID,
       }
-      await this.$store.dispatch(GET_SCHEDULES, objQuery).then((res) => {
+      await this.$store.dispatch(GET_SCHEDULES, objQuery).then(async (res) => {
         if (res) {
           const data = res.list
           this.mainScheduleData = data
           if (data?.length > 0) {
-            data?.map((item) => {
-              this.mainSubScheduleID.push(item.main_schedule_id)
-              this.getSubSchedules(item.main_schedule_id)
-            })
+            for (let i = 0; i < data.length; i++) {
+              this.mainSubScheduleID.push(data[i].main_schedule_id)
+              await this.getSubSchedules(data[i].main_schedule_id)
+            }
+
           } else {
             this.isMainScheduleEmpty = true
             this.isLoading = false
@@ -592,8 +593,8 @@ export default {
       })
     },
     async getSubSchedules(mainScheduleID) {
-      this.newSubScheduleData = []
-      this.subScheduleData = []
+      //this.newSubScheduleData = []
+      //this.subScheduleData = []
       this.isLoading = true
       let objQuery = {
         main_schedule_id: mainScheduleID,
@@ -616,6 +617,7 @@ export default {
           })
 
           console.log(temp)
+          //this.newSubScheduleData = res.schedule
           this.newSubScheduleData.push(res.schedule)
           this.signGLData = res.sign_checker_gl
           this.signSHData = res.sign_checker_sh
@@ -904,11 +906,11 @@ export default {
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
     await this.getLines()
-    await this.getGroup()
-    await this.getZone()
-    await this.getKanban()
-    await this.getFreq()
-    await this.getUsers()
+    this.getGroup()
+    this.getZone()
+    this.getKanban()
+    this.getFreq()
+    this.getUsers()
     await this.getSchedules()
   },
 
