@@ -4,10 +4,12 @@ import ApiService from "../api.service";
 
 export const GET_OBSERVATION_SCHEDULE_LIST = "getObservationScheduleList";
 export const GET_OBSERVATION_SCHEDULE = "getObservationSchedule";
-export const GET_OBSERVATION_SCHEDULE_RED_SHIFT= "getObservationScheduleRedShift";
+export const GET_OBSERVATION_SCHEDULE_RED_SHIFT = "getObservationScheduleRedShift";
 export const POST_OBSERVATION_SCHEDULE = "postObservationSchedule";
 export const GET_OBSERVATION_SUMMARY = "getObservationSummary";
 export const GET_OBSERVATION_DETAIL = "getObservationDetail";
+
+export const SAVE_OBSERVATION = "saveObservation";
 
 export const POST_OBSERVATION_CHECK = "postObservationCheck";
 export const DELETE_OBSERVATION_LIST = "deleteObservationList";
@@ -56,6 +58,20 @@ const actions = {
 
         });
     },
+    [SAVE_OBSERVATION]({ commit } = null, data) {
+        ApiService.setHeader()
+        return new Promise((resolve, reject) => {
+            ApiService.post('operational/observation/single-check-obs', data)
+                .then((result) => {
+                    console.log(result);
+                    console.log(commit);
+                    resolve(true)
+                }).catch((err) => {
+                    reject(err)
+                });
+
+        });
+    },
     [GET_OBSERVATION_SCHEDULE_LIST]({ commit }, query) {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
@@ -71,7 +87,7 @@ const actions = {
                 });
 
         });
-    }, 
+    },
     [GET_OBSERVATION_SCHEDULE]({ commit }, query) {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {

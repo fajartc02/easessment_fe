@@ -54,7 +54,7 @@
             <CModalHeader>
               <CModalTitle v-if="observation.job_type_nm">{{
                 tskLabel
-              }}</CModalTitle>
+                }}</CModalTitle>
             </CModalHeader>
             <CModalBody>
               <vue-pdf-embed v-if="tskFile" :source="tskFile" />
@@ -100,23 +100,34 @@
     </div>
     <div class="card-body overflow-auto">
       <CInputGroup class="mb-3">
-        <CInputGroupText>Actual Date</CInputGroupText>
+        <CInputGroupText style="width: 120px;">Actual Date</CInputGroupText>
         <input :disabled="isCheck" class="form-control" type="date" v-model="form.actual_check_dt" />
+        <CInputGroupText class="p-0">
+          <CButton color="success" @click="saveCheckObser(form.actual_check_dt, 'actual_check_dt')"
+            style="font-weight:900;">
+            Save</CButton>
+        </CInputGroupText>
+
       </CInputGroup>
       <CInputGroup class="mb-3">
-        <CInputGroupText>Shift</CInputGroupText>
+        <CInputGroupText style="width: 120px;">Shift</CInputGroupText>
         <CFormSelect :disabled="isCheck" v-model="form.group_id">
           <option>Select Shift</option>
           <option v-for="judg in groups" :key="judg.id" :value="judg.id">
             {{ judg.group_nm }}
           </option>
         </CFormSelect>
+        <CInputGroupText class="p-0">
+          <CButton color="success" @click="saveCheckObser(form.group_id, 'group_id')" style="font-weight:900;">
+            Save</CButton>
+        </CInputGroupText>
       </CInputGroup>
       <table class="table table-responsive" style="border: 1px solid black">
         <tr>
           <th class="text-center">No</th>
           <th class="p-2">Cateogry</th>
           <th class="p-2">Judgment</th>
+          <th class="text-center">Action Check</th>
           <th class="text-center">Factor</th>
           <th class="text-center">Findings</th>
         </tr>
@@ -165,6 +176,11 @@
                 {{ judg.text }}
               </option>
             </CFormSelect>
+          </td>
+          <!-- UPDATE SAVE CHECK -->
+          <td class="text-center">
+            <button v-if="true" class="btn btn-outline-success" @click="saveCheckCategory(item)">Save Check</button>
+            <button v-else class="btn btn-outline-secondary" disabled>Sudah Di Check</button>
           </td>
           <td>
             <div v-if="((item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' ||
@@ -360,7 +376,8 @@
                 </div>
                 <div v-else>
                   <CButton color="primary" class="text-white"
-                    @click="updateFindingData(item.id, item.factor_id, finding)">Update finding data</CButton>
+                    @click="updateFindingData(item.id, item.factor_id, finding)">Update
+                    finding data</CButton>
                 </div>
                 <CButton color="secondary" class="text-white mx-2" @click="closeFindingModal()">
                   Cancel
@@ -385,14 +402,22 @@
         </div>
       </div>
 
-      <div class="mb-2" v-if="!observation?.comment_sh">
-        <label class="mb-1">Comment SH </label>
+      <CInputGroup class="mb-3" v-if="!observation?.comment_sh">
+        <CInputGroupText style="width: 200px;">Comment SH </CInputGroupText>
         <input type="text" class="form-control" v-model="comment_sh" />
-      </div>
-      <div class="mb-2" v-if="!observation?.comment_ammgr">
-        <label class="mb-1">Comment AM / MGR </label>
+        <CInputGroupText class="p-0">
+          <CButton color="success" @click="saveCheckObser(comment_sh, 'comment_sh')" style="font-weight:900;">
+            Save</CButton>
+        </CInputGroupText>
+      </CInputGroup>
+      <CInputGroup class="mb-3" v-if="!observation?.comment_ammgr">
+        <CInputGroupText style="width: 200px;">Comment AM / Mgr </CInputGroupText>
         <input type="text" class="form-control" v-model="comment_ammgr" />
-      </div>
+        <CInputGroupText class="p-0">
+          <CButton color="success" @click="saveCheckObser(comment_ammgr, 'comment_ammgr')" style="font-weight:900;">
+            Save</CButton>
+        </CInputGroupText>
+      </CInputGroup>
 
       <button class="btn btn-primary mr-1" :disabled="isCheck" @click="postCheckObs()">
         Submit
@@ -425,7 +450,7 @@
 </template>
 
 <script>
-import { GET_OBSERVATION_DETAIL } from '@/store/modules/observation.module'
+import { GET_OBSERVATION_DETAIL, SAVE_OBSERVATION } from '@/store/modules/observation.module'
 import { POST_OBSERVATION_CHECK } from '@/store/modules/observation.module'
 import { GET_USERS } from '@/store/modules/user.module'
 import { mapGetters } from 'vuex'
@@ -545,6 +570,29 @@ export default {
     Loading,
   },
   methods: {
+    saveCheckCategory(item) {
+      console.log(item);
+      // let checkedData = {
+
+      // }
+    },
+    async saveCheckObser(value, key) {
+      try {
+        console.log(value, key);
+        let data = {
+          observation_id: this.$route.params.id,
+          [`${key}`]: value
+        }
+        await this.$store.dispatch(SAVE_OBSERVATION, data)
+        toast.success('Success to save data', {
+          autoClose: 1000
+        })
+        await this.getDetail()
+      } catch (error) {
+        console.log(error);
+        toast.error(JSON.stringify(error))
+      }
+    },
     closeFindingModal() {
       this.addFindingsModal = false
       this.getDetail()
@@ -852,6 +900,7 @@ table,
 th,
 td {
   border: 1px solid !important;
+  padding: 5px 10px;
 }
 </style>
 
