@@ -3,210 +3,221 @@
     <CModalHeader>
       <CModalTitle>{{ title }}</CModalTitle>
     </CModalHeader>
-    <CModalBody>
-      <div class="row pt-4">
-        <div class="col-md-6">
-          <CInputGroup class="mb-3">
-            <CInputGroupText>Line</CInputGroupText>
-            <CFormInput :value="loadedFinding?.line_nm" disabled />
-          </CInputGroup>
-          <CInputGroup class="mb-3">
-            <CInputGroupText>Periodic</CInputGroupText>
-            <CFormInput :value="loadedFinding?.freq_nm" disabled />
-          </CInputGroup>
-          <CInputGroup class="mb-3">
-            <CInputGroupText>Location</CInputGroupText>
-            <CFormInput :value="loadedFinding?.location_nm" disabled />
-          </CInputGroup>
-          <CInputGroup class="mb-3">
-            <CInputGroupText>Methode</CInputGroupText>
-            <CFormInput :value="loadedFinding?.method_nm" disabled />
-          </CInputGroup>
-        </div>
-        <div class="col-md-6">
-          <CInputGroup class="mb-3">
-            <CInputGroupText>Group</CInputGroupText>
-            <CFormInput :value="loadedFinding?.group_nm" disabled />
-          </CInputGroup>
-          <CInputGroup class="mb-3">
-            <CInputGroupText>Machine</CInputGroupText>
-            <CFormInput :value="loadedFinding?.machine_nm" disabled />
-          </CInputGroup>
-          <CInputGroup class="mb-3">
-            <CInputGroupText>Item Check</CInputGroupText>
-            <CFormInput :value="loadedFinding?.item_check_nm" disabled />
-          </CInputGroup>
-          <CInputGroup class="mb-3">
-            <CInputGroupText>Standart</CInputGroupText>
-            <CFormInput :value="loadedFinding?.standart_nm" disabled />
-          </CInputGroup>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <CInputGroup class="mb-3">
-            <CInputGroupText>Finding Date</CInputGroupText>
-            <input type="date" class="form-control" v-model="form.finding_date" :disabled="isEdit">
-          </CInputGroup>
-        </div>
-        <div class="col-md-6">
-          <CInputGroup class="mb-3">
-            <CInputGroupText>Finding PIC</CInputGroupText>
-            <VueMultiselect v-model="selectedFindingPic" :options="getUsersOpts" :custom-label="customPicOptions"
-              class="vue-multi-select" :disabled="isEdit">
-            </VueMultiselect>
-          </CInputGroup>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <CInputGroup class="mb-3">
-            <CInputGroupText>Finding Desc</CInputGroupText>
-            <CFormInput v-model="form.finding_desc" :disabled="isEdit" />
-          </CInputGroup>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <CInputGroup class="mb-3">
-            <CInputGroupText>Source TAG</CInputGroupText>
-            <CFormSelect v-model="form.source_tag" :disabled="isEdit">
-              <option value="null">Select Source TAG</option>
-              <option v-for="opt in optTags" :key="opt.id" :value="opt.text">{{ opt.text }}
-              </option>
-            </CFormSelect>
-          </CInputGroup>
-        </div>
-        <div class="col-md-6">
-          <CInputGroup class="mb-3">
-            <CInputGroupText>Priority</CInputGroupText>
-            <CFormSelect v-model="form.priority_num" :disabled="isEdit">
-              <option value="null">Select Priority</option>
-              <option v-for="opt in optPriorities" :key="opt.id" :value="opt.id">{{ opt.text }}
-              </option>
-            </CFormSelect>
-          </CInputGroup>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <CInputGroup class="mb-3">
-            <CInputGroupText>Plan Countermeasure Date</CInputGroupText>
-            <input type="date" class="form-control" v-model="form.plan_cm_date" :disabled="isEdit">
-          </CInputGroup>
-        </div>
-        <div class="col-md-6">
-          <CInputGroup class="mb-3">
-            <CInputGroupText>Departement</CInputGroupText>
-            <CFormSelect v-model="form.dept" :disabled="isEdit">
-              <option value="null">Select Departement</option>
-              <option v-for="opt in optDepts" :key="opt.id" :value="opt.text">{{ opt.text }}
-              </option>
-            </CFormSelect>
-          </CInputGroup>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <CInputGroup class="mb-3">
-            <CInputGroupText>Plan Countermeasure Desc</CInputGroupText>
-            <CFormInput v-model="form.plan_cm_desc" :disabled="isEdit" />
-          </CInputGroup>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <CInputGroup class="mb-3">
-            <CInputGroupText>Actual PIC</CInputGroupText>
-            <VueMultiselect v-model="selectedActualPic" :options="getUsersOpts" :custom-label="customPicOptions"
-              class="vue-multi-select" :disabled="!isEdit">
-            </VueMultiselect>
-          </CInputGroup>
-          <CInputGroup class="mb-3">
-            <CInputGroupText>Progress</CInputGroupText>
-            <CFormSelect v-model="form.progress_num" :disabled="!isEdit">
-              <option value="null">Select Progress</option>
-              <option v-for="opt in optProgress" :key="opt.id" :value="opt.id">{{ opt.text }}
-              </option>
-            </CFormSelect>
-          </CInputGroup>
-        </div>
-        <div class="col-md-6">
-          <CInputGroup class="mb-3">
-            <CInputGroupText>Actual Countermeasure Date</CInputGroupText>
-            <input type="date" class="form-control" v-model="form.actual_cm_date" :disabled="!isEdit">
-          </CInputGroup>
-          <CInputGroup class="mb-3">
-            <CInputGroupText>Countermeasure Judg</CInputGroupText>
-            <CFormSelect v-model="form.cm_judg" :disabled="!isEdit">
-              <option value="null">Select Countermeasure Judg</option>
-              <option value="true">Done</option>
-              <option value="false">Not Yet</option>
-            </CFormSelect>
-          </CInputGroup>
-        </div>
-      </div>
-      <div class="row mt-2">
-        <div class="col-md-12">
-          <div class="d-flex mb-1">
-            <h5 class="me-3">Finding LH Sign</h5>
-            <CButton v-if="!isEdit" color="info" class="btn-sm text-white me-2"
-              @click="clearSignature('finding_sign_lh')">
-              Clear
-            </CButton>
+    <CForm @submit="submit" novalidate :validated="formValidated">
+      <CModalBody>
+        <div class="row pt-4">
+          <div class="col-md-6">
+            <CInputGroup class="mb-3">
+              <CInputGroupText>Line</CInputGroupText>
+              <CFormInput :value="loadedFinding?.line_nm" disabled />
+            </CInputGroup>
+            <CInputGroup class="mb-3">
+              <CInputGroupText>Periodic</CInputGroupText>
+              <CFormInput :value="loadedFinding?.freq_nm" disabled />
+            </CInputGroup>
+            <CInputGroup class="mb-3">
+              <CInputGroupText>Location</CInputGroupText>
+              <CFormInput :value="loadedFinding?.location_nm" disabled />
+            </CInputGroup>
+            <CInputGroup class="mb-3">
+              <CInputGroupText>Methode</CInputGroupText>
+              <CFormInput :value="loadedFinding?.method_nm" disabled />
+            </CInputGroup>
           </div>
-          <Watermark :options="wmSign('Finding LH Sign')">
-            <div style="width: 100%; height: 100px; border: 1px solid #eaeaea">
-              <CustomSignature ref="finding_sign_lh" :w="'100%'" :h="'100px'"
-                :defaultUrl="loadedFinding?.finding_sign_lh" :disabled="isEdit">
-              </CustomSignature>
-            </div>
-          </Watermark>
-        </div>
-      </div>
-      <div class="row mt-3">
-        <div class="col-md-12">
-          <div class="d-flex mb-1">
-            <h5 class="me-3">Countermeasure LH Sign</h5>
-            <CButton v-if="isEdit" color="info" class="btn-sm text-white me-2" @click="clearSignature('cm_sign_lh')">
-              Clear
-            </CButton>
+          <div class="col-md-6">
+            <CInputGroup class="mb-3">
+              <CInputGroupText>Group</CInputGroupText>
+              <CFormInput :value="loadedFinding?.group_nm" disabled />
+            </CInputGroup>
+            <CInputGroup class="mb-3">
+              <CInputGroupText>Machine</CInputGroupText>
+              <CFormInput :value="loadedFinding?.machine_nm" disabled />
+            </CInputGroup>
+            <CInputGroup class="mb-3">
+              <CInputGroupText>Item Check</CInputGroupText>
+              <CFormInput :value="loadedFinding?.item_check_nm" disabled />
+            </CInputGroup>
+            <CInputGroup class="mb-3">
+              <CInputGroupText>Standart</CInputGroupText>
+              <CFormInput :value="loadedFinding?.standart_nm" disabled />
+            </CInputGroup>
           </div>
-          <Watermark :options="wmSign('Countermeasure LH Sign')">
-            <div style="width: 100%; height: 100px; border: 1px solid #eaeaea">
-              <CustomSignature ref="cm_sign_lh" :w="'100%'" :h="'100px'" :defaultUrl="loadedFinding?.cm_sign_lh"
-                :disabled="!isEdit">
-              </CustomSignature>
-            </div>
-          </Watermark>
         </div>
-      </div>
-      <div class="row mt-3">
-        <div class="col-md-12">
-          <div class="d-flex mb-1">
-            <h5 class="me-3">Countermeasure SH Sign</h5>
-            <CButton v-if="isEdit" color="info" class="btn-sm text-white me-2" @click="clearSignature('cm_sign_sh')">
-              Clear
-            </CButton>
+        <div class="row">
+          <div class="col-md-6">
+            <CInputGroup class="mb-3">
+              <CInputGroupText>Finding Date</CInputGroupText>
+              <input type="date" class="form-control" v-model="form.finding_date" :disabled="isEdit" required>
+            </CInputGroup>
           </div>
-          <Watermark :options="wmSign('Countermeasure SH Sign')">
-            <div style="width: 100%; height: 100px; border: 1px solid #eaeaea">
-              <CustomSignature ref="cm_sign_sh" :w="'100%'" :h="'100px'" :defaultUrl="loadedFinding?.cm_sign_sh"
-                :disabled="!isEdit">
-              </CustomSignature>
-            </div>
-          </Watermark>
+          <div class="col-md-6">
+            <CInputGroup class="mb-3" :class="{ 'invalid': showErrorFindingPic }">
+              <CInputGroupText>Finding PIC</CInputGroupText>
+              <VueMultiselect v-model="selectedFindingPic" :options="getUsersOpts" :custom-label="customPicOptions"
+                class="vue-multi-select" :disabled="isEdit" @close="closeFindingPic">
+              </VueMultiselect>
+            </CInputGroup>
+          </div>
         </div>
-      </div>
-    </CModalBody>
-    <CModalFooter>
-      <CButton color="secondary" class="text-white" @click="closeModal()">
-        Close
-      </CButton>
-      <CButton color="info" class="text-white" @click="submit()">
-        {{ isLoadingSave ? 'Saving..' : 'Save' }}
-      </CButton>
-    </CModalFooter>
+        <div class="row">
+          <div class="col-md-12">
+            <CInputGroup class="mb-3">
+              <CInputGroupText>Finding Desc</CInputGroupText>
+              <CFormInput v-model="form.finding_desc" :disabled="isEdit" required />
+            </CInputGroup>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <CInputGroup class="mb-3">
+              <CInputGroupText>Source TAG</CInputGroupText>
+              <CFormSelect v-model="form.source_tag" :disabled="isEdit" required>
+                <option selected="" disabled="" value="">Select Source TAG</option>
+                <option v-for="opt in optTags" :key="opt.id" :value="opt.text">{{ opt.text }}
+                </option>
+              </CFormSelect>
+            </CInputGroup>
+          </div>
+          <div class="col-md-6">
+            <CInputGroup class="mb-3">
+              <CInputGroupText>Priority</CInputGroupText>
+              <CFormSelect v-model="form.priority_num" :disabled="isEdit" required>
+                <option selected="" disabled="" value="">Select Priority</option>
+                <option v-for="opt in optPriorities" :key="opt.id" :value="opt.id">{{ opt.text }}
+                </option>
+              </CFormSelect>
+            </CInputGroup>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <CInputGroup class="mb-3">
+              <CInputGroupText>Plan Countermeasure Date</CInputGroupText>
+              <input type="date" class="form-control" v-model="form.plan_cm_date" :disabled="isEdit" required>
+            </CInputGroup>
+          </div>
+          <div class="col-md-6">
+            <CInputGroup class="mb-3">
+              <CInputGroupText>Departement</CInputGroupText>
+              <CFormSelect v-model="form.dept" :disabled="isEdit" required>
+                <option selected="" disabled="" value="">Select Departement</option>
+                <option v-for="opt in optDepts" :key="opt.id" :value="opt.text">{{ opt.text }}
+                </option>
+              </CFormSelect>
+            </CInputGroup>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <CInputGroup class="mb-3">
+              <CInputGroupText>Plan Countermeasure Desc</CInputGroupText>
+              <CFormInput v-model="form.plan_cm_desc" :disabled="isEdit" required />
+            </CInputGroup>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <CInputGroup class="mb-3" :class="{ 'invalid': showErrorActualPic }">
+              <CInputGroupText>Actual PIC</CInputGroupText>
+              <VueMultiselect v-model="selectedActualPic" :options="getUsersOpts" :custom-label="customPicOptions"
+                class="vue-multi-select" :disabled="!isEdit" @close="closeActualPic">
+              </VueMultiselect>
+            </CInputGroup>
+            <CInputGroup class="mb-3">
+              <CInputGroupText>Progress</CInputGroupText>
+              <CFormSelect v-model="form.progress_num" :disabled="!isEdit">
+                <option value="null">Select Progress</option>
+                <option v-for="opt in optProgress" :key="opt.id" :value="opt.id">{{ opt.text }}
+                </option>
+              </CFormSelect>
+            </CInputGroup>
+          </div>
+          <div class="col-md-6">
+            <CInputGroup class="mb-3">
+              <CInputGroupText>Actual Countermeasure Date</CInputGroupText>
+              <input type="date" class="form-control" v-model="form.actual_cm_date" :disabled="!isEdit">
+            </CInputGroup>
+            <CInputGroup class="mb-3">
+              <CInputGroupText>Countermeasure Judg</CInputGroupText>
+              <CFormSelect v-model="form.cm_judg" :disabled="!isEdit">
+                <option value="null">Select Countermeasure Judg</option>
+                <option value="true">Done</option>
+                <option value="false">Not Yet</option>
+              </CFormSelect>
+            </CInputGroup>
+          </div>
+        </div>
+        <div v-if="!isEdit" class="row mt-3">
+          <div class="col-md-12">
+            <h5 class="me-3">Finding Image</h5>
+            <input ref="finding_image" type="file" class="form-control" />
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col-md-12">
+            <div class="d-flex mb-1">
+              <h5 class="me-3">Finding LH Sign</h5>
+              <CButton v-if="!isEdit" color="info" class="btn-sm text-white me-2"
+                @click="clearSignature('finding_sign_lh')">
+                Clear
+              </CButton>
+            </div>
+            <Watermark :options="wmSign('Finding LH Sign')">
+              <div style="width: 100%; height: 100px; border: 1px solid #eaeaea">
+                <CustomSignature ref="finding_sign_lh" :w="'100%'" :h="'100px'"
+                  :defaultUrl="loadedFinding?.finding_sign_lh" :disabled="isEdit">
+                </CustomSignature>
+              </div>
+            </Watermark>
+            <span v-if="showErrorSignFindingLh" class="text-danger mt-1">Sign Finding LH Harus di Isi</span>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <div class="d-flex mb-1">
+              <h5 class="me-3">Countermeasure LH Sign</h5>
+              <CButton v-if="isEdit" color="info" class="btn-sm text-white me-2" @click="clearSignature('cm_sign_lh')">
+                Clear
+              </CButton>
+            </div>
+            <Watermark :options="wmSign('Countermeasure LH Sign')">
+              <div :style="`width: 100%; height: 100px; border: 1px solid #eaeaea;`">
+                <CustomSignature ref="cm_sign_lh" :w="'100%'" :h="'100px'" :defaultUrl="loadedFinding?.cm_sign_lh"
+                  :disabled="!isEdit">
+                </CustomSignature>
+              </div>
+            </Watermark>
+            <!-- <span v-if="showErrorSignCmLh" class="text-danger mt-1">Sign Countermeasure LH Harus di Isi</span> -->
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <div class="d-flex mb-1">
+              <h5 class="me-3">Countermeasure SH Sign</h5>
+              <CButton v-if="isEdit" color="info" class="btn-sm text-white me-2" @click="clearSignature('cm_sign_sh')">
+                Clear
+              </CButton>
+            </div>
+            <Watermark :options="wmSign('Countermeasure SH Sign')">
+              <div style="width: 100%; height: 100px; border: 1px solid #eaeaea">
+                <CustomSignature ref="cm_sign_sh" :w="'100%'" :h="'100px'" :defaultUrl="loadedFinding?.cm_sign_sh"
+                  :disabled="!isEdit">
+                </CustomSignature>
+              </div>
+            </Watermark>
+            <!-- <span v-if="showErrorSignCmSh" class="text-danger mt-1">Sign Countermeasure SH Harus di Isi</span> -->
+          </div>
+        </div>
+      </CModalBody>
+      <CModalFooter>
+        <CButton color="secondary" class="text-white" @click="closeModal()">
+          Close
+        </CButton>
+        <CButton type="submit" color="info" class="text-white">
+          {{ isLoadingSave ? 'Saving..' : 'Save' }}
+        </CButton>
+      </CModalFooter>
+    </CForm>
   </CModal>
 </template>
 <script>
@@ -255,16 +266,21 @@ export default {
   },
   components: {
     VueMultiselect,
-    //vueSignature
     CustomSignature,
     Watermark
   },
   data() {
     return {
       form: defaultForm,
+      formValidated: null,
       selectedFindingPic: null,
       selectedActualPic: null,
       isLoadingSave: false,
+      showErrorSignFindingLh: false,
+      showErrorSignCmLh: false,
+      showErrorSignCmSh: false,
+      showErrorActualPic: false,
+      showErrorFindingPic: false,
       optPriorities: [],
       optTags: [],
       optProgress: [],
@@ -318,9 +334,7 @@ export default {
     customPicOptions({ text }) {
       return `${text}`
     },
-    async submit() {
-      this.isLoadingSave = true
-
+    async submit(event) {
       const priority = this.filterId(this.optPriorities, this.form.priority_num)
       const progress = this.filterId(this.optProgress, this.form.progress_num)
 
@@ -337,15 +351,54 @@ export default {
         cm_sign_sh: this.$refs.cm_sign_sh.isEmpty() ? null : this.$refs.cm_sign_sh.save(),
       }
 
-      //console.log('form', this.form)
 
-      if (this.loadedFinding?.finding_id)
+      console.log('form', this.form)
+
+      const saveFn = async (callback) => {
+        if (event.currentTarget.checkValidity() === false){
+          event.preventDefault()
+          event.stopPropagation()
+        }
+        else
+        {
+          this.isLoadingSave = true
+          await callback()
+          this.isLoadingSave = false
+          this.closeModal(true)
+        }
+
+        this.formValidated = true
+      }
+
+      if (this.isEdit)
       {
-        await this.updateFinding()
+        // non core-ui validating
+        this.showErrorActualPic = !this.selectedActualPic || this.selectedActualPic.id == '-1'
+        if (this.showErrorActualPic)
+        {
+          this.formValidated = true
+          return
+        }
+
+        await saveFn(() => this.updateFinding())
       }
       else
       {
-        await this.saveFinding()
+        // non core-ui validating
+        this.showErrorSignFindingLh = this.$refs.finding_sign_lh.isEmpty()
+        this.showErrorFindingPic = !this.selectedFindingPic || this.selectedFindingPic?.id == '-1'
+
+        console.log('non core-ui validating', [this.showErrorSignFindingLh, this.showErrorFindingPic]);
+        if (
+          this.showErrorSignFindingLh
+          || this.showErrorFindingPic
+        )
+        {
+          this.formValidated = true
+          return
+        }
+
+        await saveFn(() => this.saveFinding())
       }
     },
     async updateFinding() {
@@ -360,9 +413,6 @@ export default {
         toast.success('Success to update finding', {
           autoClose: 10000,
         })
-
-        this.isLoadingSave = false
-        this.closeModal(true)
       }
       catch (error)
       {
@@ -379,17 +429,38 @@ export default {
         // eslint-disable-next-line no-unused-vars
         const { finding_id, ...request } = this.form
         ApiService.setHeader()
-        await ApiService.post(
+        const addResponse = await ApiService.post(
           `/operational/om/finding/add`,
           request,
         )
 
-        toast.success('Success to save finding', {
-          autoClose: 10000,
-        })
+        if (addResponse && addResponse.status === 200)
+        {
+          // eslint-disable-next-line no-unused-vars
+          const { om_finding_id } = addResponse.data.data
+          if (!om_finding_id)
+          {
+            throw "Finding id not provide can't add finding image"
+          }
 
-        this.isLoadingSave = false
-        this.closeModal(true)
+          if (this.$refs.finding_image)
+          {
+            const formData = new FormData()
+            formData.append('om_finding_id', om_finding_id)
+            formData.append('dest', 'findingOm')
+            formData.append('attachment', this.$refs.finding_image.files[0])
+
+            await ApiService.post(`/operational/om/finding/upload-image`, formData)
+          }
+
+          toast.success('Success to save finding', {
+            autoClose: 10000,
+          })
+        }
+        else
+        {
+          throw "Failed to add finding"
+        }
       }
       catch (error)
       {
@@ -416,7 +487,13 @@ export default {
           refresh: refresh
         })
       }
-    }
+    },
+    closeFindingPic(){
+      this.showErrorFindingPic = !this.selectedFindingPic || this.selectedFindingPic?.id == '-1'
+    },
+    closeActualPic() {
+      this.showErrorActualPic = !this.selectedActualPic || this.selectedActualPic?.id == '-1'
+    },
   },
   computed: {
     ...mapGetters(['getUsersOpts']),
@@ -430,7 +507,7 @@ export default {
   watch: {
     loadedFinding: {
       handler() {
-        //console.log('loadedFinding', this.loadedFinding);
+        console.log('loadedFinding', this.loadedFinding);
         this.form = {
           finding_id: this.loadedFinding?.finding_id,
           line_id: this.loadedFinding?.line_id,
@@ -504,5 +581,9 @@ export default {
 .multiselect--disabled>.multiselect__tags>.multiselect__single,
 .multiselect--disabled>.multiselect__select {
   background: #D8DBE0 !important;
+}
+
+.invalid .multiselect__tags {
+  border-color: #f04124 !important
 }
 </style>

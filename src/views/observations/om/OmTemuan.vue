@@ -50,7 +50,11 @@
           </div>
         </div>
       </div>
-      <TableOmFinding @showFormModalOmFinding="onShowFormModalOmFinding()" @refreshDeleted="onRefreshDeleted($event)" />
+      <TableOmFinding @showFormModalOmFinding="onShowFormModalOmFinding()" @refreshDeleted="onRefreshDeleted($event)"
+        @showModalFindingImage="(event) => {
+  isVisibleFindingImage = true
+  selectedFindingImage = event
+        }" />
       <div class="card-footer">
         <div class="d-flex justify-content-between">
           <div>
@@ -70,9 +74,10 @@
           </div>
         </div>
       </div>
-      <ModalFormOmFinding :visible="isVisibleFindingModal" :loadedFinding="getOmFindingDetail"
-        @modalFormOmFindingListener="onModalFormOmFindingListener($event)" />
     </div>
+    <ModalFormOmFinding :visible="isVisibleFindingModal" :loadedFinding="getOmFindingDetail"
+      @modalFormOmFindingListener="onModalFormOmFindingListener($event)" />
+    <ModalImage :img="selectedFindingImage" :visible="isVisibleFindingImage" @close="isVisibleFindingImage = false" />
   </div>
 </template>
 
@@ -87,7 +92,8 @@ import { mapGetters } from 'vuex'
 import moment from 'moment'
 import TableOmFinding from '@/components/om/TableOmFinding.vue'
 import ModalFormOmFinding from '@/components/om/ModalFormOmFinding.vue'
-import CustPagination from '@/components/pagination/CustPagination.vue';
+import CustPagination from '@/components/pagination/CustPagination.vue'
+import ModalImage from "@/components/ModalImage.vue";
 
 const defaultFilter = {
   start_date: '',
@@ -106,13 +112,16 @@ export default {
   components: {
     TableOmFinding,
     ModalFormOmFinding,
-    CustPagination
+    CustPagination,
+    ModalImage
   },
   data() {
     return {
       isLoading: false,
       filter: defaultFilter,
       isVisibleFindingModal: false,
+      isVisibleFindingImage: false,
+      selectedFindingImage: null,
     }
   },
   computed: {

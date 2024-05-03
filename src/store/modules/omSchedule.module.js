@@ -139,7 +139,7 @@ const actions = {
 
       let limitSubSchedule = 10
       let currentPageSubSchedule = 1
-      
+
       if (typeof query.limit === 'object' && query.limit.om_main_schedule_id == cloneMainSchedule[i].om_main_schedule_id)
       {
         limitSubSchedule = query.limit.limit

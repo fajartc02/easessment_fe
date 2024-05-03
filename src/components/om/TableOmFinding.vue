@@ -208,6 +208,13 @@
                   </td>
                   <td>
                     <div class="d-flex">
+                      <button v-if="finding.finding_img" class="btn btn-info btn-sm text-white w-full my-1 mx-1"
+                        @click="showModalFindingImage(finding)">
+                        Finding image
+                      </button>
+                      <button v-else class="btn btn-secondary btn-sm" disabled>
+                        No Image
+                      </button>
                       <button class="btn btn-info btn-sm text-white mx-2"
                         @click="showModalFormFinding(finding)">Edit</button>
                       <button class="btn btn-warning btn-sm text-white"
@@ -305,9 +312,12 @@ export default {
       })
 
     },
-    async showModalFormFinding(finding) {
+    showModalFormFinding(finding) {
       this.$store.dispatch(GET_OM_FINDING_DETAIL, finding)
       this.$emit('showFormModalOmFinding', true)
+    },
+    showModalFindingImage(finding) {
+      this.$emit('showModalFindingImage', finding.finding_img)
     }
   },
   computed: {
