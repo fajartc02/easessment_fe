@@ -1103,14 +1103,15 @@ export default {
   top: 0px;
   left: 37px;
   z-index: 3;
+  min-width: 100px;
   background-color: white;
 }
 
 #fixCol-head-3 {
   position: sticky;
-  min-width: 121px;
+  min-width: 131px;
   top: 0px;
-  left: 105px;
+  left: 125px;
   z-index: 3;
   background-color: white;
 }
@@ -1118,7 +1119,8 @@ export default {
 #fixCol-head-4 {
   position: sticky;
   top: 0px;
-  left: 220px;
+  left: 250px;
+  min-width: 100px;
   z-index: 3;
   background-color: white;
 }
@@ -1126,7 +1128,8 @@ export default {
 #fixCol-head-5 {
   position: sticky;
   top: 0px;
-  left: 270px;
+  left: 350px;
+  min-width: 100px;
   z-index: 3;
   background-color: white;
 }
@@ -1134,7 +1137,8 @@ export default {
 #fixCol-head-6 {
   position: sticky;
   top: 0px;
-  left: 340px;
+  left: 450px;
+  min-width: 100px;
   z-index: 3;
   background-color: white;
 }
@@ -1152,15 +1156,16 @@ export default {
   position: sticky;
   top: 0px;
   left: 37px;
+  min-width: 100px;
   z-index: 3;
   background-color: white;
 }
 
 #fixCol-3 {
   position: sticky;
-  min-width: 121px;
+  min-width: 131px;
   top: 0px;
-  left: 105px;
+  left: 125px;
   z-index: 3;
   background-color: white;
 }
@@ -1168,7 +1173,8 @@ export default {
 #fixCol-4 {
   position: sticky;
   top: 0px;
-  left: 220px;
+  left: 250px;
+  min-width: 100px;
   z-index: 3;
   background-color: white;
 }
@@ -1176,7 +1182,8 @@ export default {
 #fixCol-5 {
   position: sticky;
   top: 0px;
-  left: 270px;
+  left: 350px;
+  min-width: 100px;
   z-index: 3;
   background-color: white;
 }
@@ -1184,7 +1191,8 @@ export default {
 #fixCol-6 {
   position: sticky;
   top: 0px;
-  left: 340px;
+  left: 450px;
+  min-width: 100px;
   z-index: 3;
   background-color: white;
 }

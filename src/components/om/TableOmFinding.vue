@@ -263,8 +263,7 @@ export default {
       return `./tanoko/${progressNum - 1}.png`
     },
     async getOptSystems(type, id = null, textHandler = null) {
-      try
-      {
+      try {
         const response = await this.$store.dispatch(GET_SYSTEMS, {
           system_type: type
         })
@@ -276,8 +275,7 @@ export default {
           }
         })
       }
-      catch (error)
-      {
+      catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
         return []
@@ -291,21 +289,17 @@ export default {
         confirmButtonText: 'Sure',
         denyButtonText: `No`,
       }).then((result) => {
-        if (result.isConfirmed)
-        {
+        if (result.isConfirmed) {
           ApiService.setHeader()
           const deleteData = ApiService.delete(`operational/om/finding/delete/${findingID}`)
 
-          if (deleteData)
-          {
+          if (deleteData) {
             Swal.fire('Data deleted!', '', 'success')
             this.$emit('refreshDeleted', true)
-          } else
-          {
+          } else {
             Swal.fire('Error', '', 'warning')
           }
-        } else if (result.isDenied)
-        {
+        } else if (result.isDenied) {
           Swal.fire('Canceled', '', 'info')
         }
       })
@@ -387,17 +381,18 @@ export default {
 #fixCol-2 {
   position: sticky;
   top: 0px;
-  left: 30px;
+  min-width: 100px;
+  width: 100px;
+  left: 38px;
   z-index: 999;
   background-color: white;
-  min-width: 80px;
 }
 
 #fixCol-3 {
   position: sticky;
   min-width: 121px;
   top: 0px;
-  left: 100px;
+  left: 138px;
   z-index: 999;
   background-color: white;
 }
@@ -405,17 +400,17 @@ export default {
 #fixCol-4 {
   position: sticky;
   top: 0px;
-  left: 200px;
+  left: 260px;
   z-index: 999;
-  min-width: 85px;
+  min-width: 100px;
   background-color: white;
 }
 
 #fixCol-5 {
-  min-width: 200px;
+  min-width: 250px;
   position: sticky;
   top: 0px;
-  left: 270px;
+  left: 360px;
   z-index: 999;
   background-color: white;
 }
@@ -423,7 +418,8 @@ export default {
 #fixCol-6 {
   position: sticky;
   top: 0px;
-  left: 450px;
+  left: 610px;
+  min-width: 150px;
   z-index: 999;
   background-color: white;
 }
