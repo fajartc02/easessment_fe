@@ -65,19 +65,9 @@
           </div>
         </div>
       </div>
-
-      <div v-if="isLoading" class="card-body p-0 overflow-x-auto" style="width: 100%; height: 500px">
-        <div class="vl-parent p-0" style="width: 100%; height: 100%">
-          <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false" :on-cancel="onCancel" />
-        </div>
-      </div>
-
-
       <div class="card-body p-0 overflow-x-auto">
-        <div v-if="newSubScheduleData[0]?.length == 0 || isMainScheduleEmpty" class="p-2">
-          <div class="alert alert-danger" role="alert">
-            Data not found!
-          </div>
+        <div v-if="isLoadingMainSchedule" class="text-center p-5">
+          <CSpinner aria-hidden="true" />
         </div>
         <div class="tableFixHead" v-else>
           <template v-for="mainSchedule in mainScheduleData" :key="mainSchedule.id">
@@ -107,11 +97,14 @@
                 </tr>
               </thead>
               <tbody>
-                <td v-if="mainSchedule.sub_schedules.length == 0" :colspan="getDateThisMonth + 9"
+                <td v-if="mainSchedule.sub_schedules.length == 0 && !isLoading" :colspan="getDateThisMonth + 9"
                   class="text-center p-3">
                   No Data Available
                 </td>
-                <template v-else-if="!isLoading">
+                <td v-else-if="isLoading" :colspan="getDateThisMonth + 9" class="p-5 text-center">
+                  <CSpinner aria-hidden="true" />
+                </td>
+                <template v-else>
                   <tr v-for="(data, scheduleIndex) in mainSchedule.sub_schedules" :key="scheduleIndex">
                     <td id="fixCol-1" style="background-color: white;">{{ scheduleIndex + 1 }}</td>
                     <td id="fixCol-2" style="min-width: 100px;background-color: white;">
@@ -452,6 +445,7 @@ import { toast } from 'vue3-toastify'
 
 export default {
   name: 'Main Schedule',
+  // eslint-disable-next-line vue/no-unused-components
   components: { Loading, vueSignature, VueMultiselect },
   data() {
     return {
@@ -517,7 +511,8 @@ export default {
       updateDate: null,
       selectedBeforeDate: null,
       newSubScheduleData: [],
-      mainSubScheduleID: []
+      mainSubScheduleID: [],
+      isLoadingMainSchedule: false,
     }
   },
   computed: {
@@ -581,12 +576,13 @@ export default {
       this.newSubScheduleData = []
       this.subScheduleData = []
       this.mainScheduleData = []
-      this.isLoading = true
+      this.isLoadingMainSchedule = true
       let objQuery = {
         month_year_num: this.selectedMonth,
         line_id: this.selectedLineID,
       }
       await this.$store.dispatch(GET_SCHEDULES, objQuery).then(async (res) => {
+        this.isLoadingMainSchedule = false
         if (res)
         {
           const data = res.list
@@ -606,10 +602,10 @@ export default {
             {
               await this.getSubSchedules(this.mainScheduleData[i].main_schedule_id, i)
             }
-          } else
+          }
+          else
           {
             this.isMainScheduleEmpty = true
-            this.isLoading = false
           }
         }
       })
