@@ -102,13 +102,13 @@ export default {
   watch: {
     selectedLine: async function () {
       await this.getPos({ line_id: this.selectedLine })
-      await this.getUser({ line_id: this.selectedLine })
+      await this.getUser()
     },
     ['form.pos_id']: function () {
       if (this.form.pos_id) this.getJob({ pos_id: this.form.pos_id })
     },
     ['form.group_id']: function () {
-      if (this.form.group_id && this.selectedLine != '-1') this.getUser({ group_id: this.form.group_id, line_id: this.selectedLine })
+      if (this.form.group_id && this.selectedLine != '-1') this.getUser()
     },
     observationSchedule: async function () {
       if (this.observationSchedule.length > 0) {
@@ -146,7 +146,7 @@ export default {
   },
   methods: {
     async getGroup() {
-      await this.$store.dispatch(GET_GROUP)
+      await this.$store.dispatch(GET_GROUP, { is_active: true })
     },
     async getPos(query = null) {
       if (query) {
@@ -172,7 +172,7 @@ export default {
     },
     async getUser(query = null) {
       if (query) {
-        await this.$store.dispatch(GET_USERS, { group_id: query.group_id })
+        await this.$store.dispatch(GET_USERS)
         return
       }
       await this.$store.dispatch(GET_USERS)

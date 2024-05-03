@@ -24,7 +24,7 @@ import {
     cibCcApplePay,
     cibCcAmex
 } from '@coreui/icons'
-import { cifUs, cifBr, cifIn, cifFr, cifEs, cifPl } from '@coreui/icons'
+import { cifUs, cifBr, cifIn, cifFr, cifEs, cifPl, cilCommentBubble } from '@coreui/icons'
 import {
     cilArrowBottom,
     cilArrowRight,
@@ -159,6 +159,7 @@ export const iconsSet = Object.assign({}, {
     cifFr,
     cifEs,
     cifPl,
+    cilCommentBubble
 }, {
     cibFacebook,
     cibTwitter,

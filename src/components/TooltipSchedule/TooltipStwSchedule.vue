@@ -1,34 +1,39 @@
 <template>
   <CTooltip placement="top" :style="customTooltipStyle">
     <template #content>
-      <div class='card'>
-        <div class='card-header text-dark'>Detail data</div>
-        <div class='card-body text-dark'>
-          SOP No: {{ child.job_no }} Member: {{ child.member_nm }}
-        </div>
-      </div>
+      <table class="table table-striped border-light text-light">
+        <tr>
+          <th>SOP No</th>
+          <td>{{ child.job_no }}</td>
+        </tr>
+        <tr>
+          <th>Member</th>
+          <td>{{ child.member_nm }}</td>
+        </tr>
+      </table>
     </template>
     <template #toggler="{ id, on }">
-      <CButton :aria-describedby="id" v-on="on" v-if="child" class="mt-1" :color="`${child.job_type_nm == 'Type 1' ||
-        child.job_type_nm == 'Type 2'
+      <!-- {{ child.is_wajik }} - finding:{{ child.is_finding }} -->
+      <CButton :aria-describedby="id" v-on="on" v-if="child" class="mt-1" :color="`${(child.job_type_nm == 'Type 1' ||
+        child.job_type_nm == 'Type 2') && !child.is_wajik
         ? 'dark rounded-circle'
         : 'dark rounded'
         }`" html="true" variant="outline" :style="`
       position: relative;
       ${child.is_finding ? 'background-color: #fef2f2;' : ''}
-      ${child.is_wajik ? 'transform: rotate(45deg)' : ''}`" @click="$emit('detail-schedule', child)">
-        <button v-if="observation.comment_sh !== null" disabled :style="`
+      ${child.is_wajik ? 'transform: rotate(45deg);' : ''}`" @click="$emit('detail-schedule', child)">
+        <!-- <button v-if="observation.comment_sh !== null" disabled > -->
+        <CIcon v-if="observation.comment_sh !== null" class="mx-2" icon="cil-comment-bubble" size="lg" :style="`
           position: absolute;
-          margin-left: 20px;
-          background-color: #e0f2fe;
+          top: -10px;
+          left: 20px;
+          background-color: yellow;
           border: none;
-          border: 1px solid #7dd3fc;
           color: #0369a1;
           border-radius: 6px;
           ${child.is_wajik ? 'transform: rotate(-45deg);left: 10;top:-20px' : ''}
-        `">
-          1
-        </button>
+        `" />
+        <!-- </button> -->
         <span v-if="child.is_finding">
           <CIcon icon="cil-bell" class="text-warning" size="sm"
             :style="child.is_wajik ? 'transform: rotate(-45deg)' : ''" />

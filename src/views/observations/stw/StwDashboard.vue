@@ -97,7 +97,10 @@
                   <td id="fixCol-1">{{ i + 1 }}</td>
                   <td id="fixCol-2">{{ observation.line_snm }}</td>
                   <td id="fixCol-3">{{ observation.pos_nm }}</td>
-                  <td id="fixCol-4">{{ observation.checkers[0] }}</td>
+                  <td id="fixCol-4">
+                    <CBadge v-for="observer in observation.checkers" :key="observer" color="secondary">{{ observer }}
+                    </CBadge>
+                  </td>
                   <td id="fixCol-5">{{ observation.group_nm }}</td>
                   <td v-for="item in containerDate" :key="item.idx" style="min-width: 63px">
                     <template v-for="child in observation.children" :key="child.observation_id">
@@ -157,7 +160,11 @@
                   <td id="fixCol-1">{{ i + 1 }}</td>
                   <td id="fixCol-2">{{ observationRedShift.line_snm }}</td>
                   <td id="fixCol-3">{{ observationRedShift.pos_nm }}</td>
-                  <td id="fixCol-4">{{ observationRedShift.checkers[0] }}</td>
+                  <td id="fixCol-4">
+                    <CBadge v-for="observer in observationRedShift.checkers" :key="observer" color="secondary">{{
+                      observer }}
+                    </CBadge>
+                  </td>
                   <td id="fixCol-5">{{ observationRedShift.group_nm }}</td>
                   <td v-for="item in containerDate" :key="item.idx" style="min-width: 63px">
                     <template v-for="child in observationRedShift.children" :key="child.observation_id">
@@ -205,7 +212,7 @@ export default {
   data() {
     return {
       customTooltipStyle: {
-        '--cui-tooltip-bg': 'var(--cui-primary)',
+        width: '100%',
       },
       isLoading: false,
       isRedShiftLoading: false,

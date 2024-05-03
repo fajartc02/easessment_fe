@@ -56,7 +56,31 @@
           <td class="text-center">{{ i + 1 }}</td>
           <td>{{ item.category_nm }}</td>
           <td>
-            <CFormSelect :disabled="isCheck" v-model="item.judgment_id">
+            <div v-if="item.category_nm == 'Standarize Work'">
+              <div class="d-flex">
+                <input type="number" :disabled="isCheck" v-model="item.stw_ct1" class="form-control text-center"
+                  style="width: 70px" placeholder="CT1" />
+                <input type="number" :disabled="isCheck" v-model="item.stw_ct2" class="form-control text-center mx-2"
+                  style="width: 70px" placeholder="CT2" />
+                <input type="number" :disabled="isCheck" v-model="item.stw_ct3" class="form-control text-center"
+                  style="width: 70px" placeholder="CT3" />
+                <input type="number" :disabled="isCheck" v-model="item.stw_ct4" class="form-control text-center mx-2"
+                  style="width: 70px" placeholder="CT4" />
+                <input type="number" :disabled="isCheck" v-model="item.stw_ct5" class="form-control text-center"
+                  style="width: 70px; margin-right: 10px" placeholder="CT5" />
+                <div class="mx-1 d-flex flex-column"></div>
+                <div v-if="item.stw_ct5" class="row my-auto align-items-center">
+                  <div class="col-lg-6">
+                    <span class="badge bg-primary p-2">Rata-Rata: {{ item.avg.toFixed(1) }}</span>
+                  </div>
+                  <div class="col-lg-6">
+                    <span class="badge bg-success mt-1 p-2">Persentasi: {{ Math.round(item.perc) }} %</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <CFormSelect :disabled="isCheck" v-model="item.judgment_id" v-if="item.category_nm != 'Standarize Work'">
               <option>Select Judgment</option>
               <option v-for="judg in judgments" :key="judg.id" :value="judg.id">
                 {{ judg.text }}
@@ -215,6 +239,13 @@ export default {
           let result = this.resultCheck[i]
           itm.judgment_id = result.judgment_id
           itm.factor_id = result.factor_id
+          itm.stw_ct1 = result.stw_ct1
+          itm.stw_ct2 = result.stw_ct2
+          itm.stw_ct3 = result.stw_ct3
+          itm.stw_ct4 = result.stw_ct4
+          itm.stw_ct5 = result.stw_ct5
+          itm.avg = result.avg
+          itm.perc = result.perc
           result.findings = await Promise.all(result.findings.map(async finding => {
             finding.finding_pict = await this.getBase64ImageFromUrl(finding.finding_img)
             return finding

@@ -134,7 +134,16 @@
                 `">
                 <th id="fixCol-1">{{ findingIndex + 1 }}</th>
                 <td id="fixCol-2" class="px-2">{{ finding.line_nm }}</td>
-                <td id="fixCol-3" class="px-2">{{ finding.source_category }}</td>
+                <td id="fixCol-3" class="px-2">
+                  <button class="btn btn-info" v-if="finding.observation_id" @click="() => {
+                    $router.push(`/observation/${finding.observation_id}`)
+                  }">
+                    Observation
+                  </button>
+                  <template v-else>
+                    {{ finding.source_category }}
+                  </template>
+                </td>
                 <td id="fixCol-4" class="px-2">{{ formatTheDate(finding.finding_date) }}</td>
                 <td id="fixCol-5" class="px-2">{{ finding.finding_location }}</td>
                 <td id="fixCol-6" class="px-2">
@@ -243,11 +252,14 @@
                 </td>
                 <td class="px-1">
                   <div class="px-2 d-flex">
-                    <button @click="() => {
+                    <button v-if="finding.finding_img" @click="() => {
                       openFindingImage(finding.finding_img)
                     }
                       " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
                       Finding image
+                    </button>
+                    <button v-else class="btn btn-secondary btn-sm" disabled>
+                      No Image
                     </button>
                     <button @click="() => {
                       getDetailTemuan(findingIndex)

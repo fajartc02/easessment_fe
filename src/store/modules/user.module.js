@@ -48,7 +48,7 @@ const getters = {
                 return {
                     id: user.text,
                     name: user.text,
-                    label: `${user.text}`
+                    label: `${user.noreg}-${user.text}`
                 }
             })
             return mapUsers

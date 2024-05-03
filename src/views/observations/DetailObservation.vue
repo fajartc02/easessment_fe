@@ -1,4 +1,5 @@
 <template>
+  <Loading :active="isLoading" :can-cancel="true" :is-full-page="false" />
   <div class="card">
     <div class="card-body" v-if="observation">
       <CInputGroup class="mb-3">
@@ -434,7 +435,7 @@ import ApiService from '@/store/api.service'
 import moment from 'moment'
 import Swal from 'sweetalert2'
 import VueMultiselect from 'vue-multiselect'
-
+import Loading from 'vue-loading-overlay'
 export default {
   name: 'DetailSchedule',
   data() {
@@ -497,6 +498,7 @@ export default {
       },
       selectedFindingImage: null,
       TRESHOLD_STW_NG: 3,
+      isLoading: false
     }
   },
   watch: {
@@ -540,6 +542,7 @@ export default {
   components: {
     VuePdfEmbed,
     VueMultiselect,
+    Loading,
   },
   methods: {
     closeFindingModal() {
@@ -586,7 +589,13 @@ export default {
       )
     },
     async getDetail() {
-      await this.$store.dispatch(GET_OBSERVATION_DETAIL, this.$route.params.id)
+      try {
+        this.isLoading = true
+        await this.$store.dispatch(GET_OBSERVATION_DETAIL, this.$route.params.id)
+        this.isLoading = false
+      } catch (error) {
+        toast.error(JSON.stringify(error))
+      }
     },
     async getJudgments() {
       ApiService.setHeader()
