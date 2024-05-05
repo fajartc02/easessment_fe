@@ -47,11 +47,11 @@
               </tr>
               <template v-else>
                 <tr v-for="(data) in mainSchedule.sub_schedules" :key="data">
-                  <td id="fixCol-1">{{ data.no }}</td>
-                  <td id="fixCol-2" style="min-width: 100px">{{ data.machine_nm }}</td>
-                  <td id="fixCol-3" style="min-width: 160px">{{ data.item_check_nm }}</td>
-                  <td id="fixCol-4" style="min-width: 120px">{{ data.location_nm }}</td>
-                  <td id="fixCol-5" style="min-width: 120px">{{ data.method_nm }}</td>
+                  <td id="fixCol-body-1">{{ data.no }}</td>
+                  <td id="fixCol-body-2" style="min-width: 100px">{{ data.machine_nm }}</td>
+                  <td id="fixCol-body-3" style="min-width: 160px">{{ data.item_check_nm }}</td>
+                  <td id="fixCol-body-4" style="min-width: 120px">{{ data.location_nm }}</td>
+                  <td id="fixCol-body-5" style="min-width: 120px">{{ data.method_nm }}</td>
                   <td style="min-width: 50px">{{ data.standart_time }}</td>
                   <td style="min-width: 100px">
                     <div style="cursor: pointer;" v-if="data.pic_nm">
@@ -64,7 +64,7 @@
                     </div>
                   </td>
                   <td> {{ data.standart_nm }}</td>
-                  <td id="fixCol-6"> {{ data.freq_nm }}</td>
+                  <td id="fixCol-body-6"> {{ data.freq_nm }}</td>
                   <td v-for="(children, childrenIndex) in data?.children" :key="`sch-${childrenIndex}`"
                     :style="`${children.is_holiday ? 'background-color: #AEAEAE' : ''}`">
                     <CDropdown variant="btn-group" v-if="children.status && children.status != ''">
@@ -363,7 +363,7 @@ export default {
 .tableFixHead th {
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 30;
   background-color: white;
 }
 
@@ -372,6 +372,7 @@ export default {
   width: 38px;
   top: 0px;
   left: 0px;
+  z-index: 40;
   background-color: white;
 }
 
@@ -379,6 +380,7 @@ export default {
   position: sticky;
   top: 0px;
   left: 37px;
+  z-index: 40;
   background-color: white;
 }
 
@@ -387,6 +389,7 @@ export default {
   min-width: 121px;
   top: 0px;
   left: 125px;
+  z-index: 40;
   background-color: white;
 }
 
@@ -394,6 +397,7 @@ export default {
   position: sticky;
   top: 0px;
   left: 270px;
+  z-index: 40;
   background-color: white;
 }
 
@@ -401,6 +405,7 @@ export default {
   position: sticky;
   top: 0px;
   left: 370px;
+  z-index: 40;
   background-color: white;
 }
 
@@ -408,6 +413,7 @@ export default {
   position: sticky;
   top: 0px;
   left: 450px;
+  z-index: 40;
   background-color: white;
 }
 
@@ -421,5 +427,55 @@ export default {
 #fixCol-header {
   position: sticky;
   left: -200px;
+}
+
+#fixCol-body-1 {
+  position: sticky;
+  width: 38px;
+  top: 0px;
+  left: 0px;
+  z-index: 10;
+  background-color: white;
+}
+
+#fixCol-body-2 {
+  position: sticky;
+  top: 0px;
+  left: 37px;
+  z-index: 10;
+  background-color: white;
+}
+
+#fixCol-body-3 {
+  position: sticky;
+  min-width: 121px;
+  top: 0px;
+  left: 125px;
+  z-index: 10;
+  background-color: white;
+}
+
+#fixCol-body-4 {
+  position: sticky;
+  top: 0px;
+  left: 270px;
+  z-index: 10;
+  background-color: white;
+}
+
+#fixCol-body-5 {
+  position: sticky;
+  top: 0px;
+  left: 370px;
+  z-index: 10;
+  background-color: white;
+}
+
+#fixCol-body-6 {
+  position: sticky;
+  top: 0px;
+  left: 450px;
+  z-index: 10;
+  background-color: white;
 }
 </style>

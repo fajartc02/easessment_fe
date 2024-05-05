@@ -106,11 +106,11 @@
                 </td>
                 <template v-else>
                   <tr v-for="(data, scheduleIndex) in mainSchedule.sub_schedules" :key="scheduleIndex">
-                    <td id="fixCol-1" style="background-color: white;">{{ scheduleIndex + 1 }}</td>
-                    <td id="fixCol-2" style="min-width: 100px;background-color: white;">
+                    <td id="fixCol-body-1" style="background-color: white;">{{ scheduleIndex + 1 }}</td>
+                    <td id="fixCol-body-2" style="min-width: 100px;background-color: white;">
                       {{ data?.zone_nm }}</td>
-                    <td id="fixCol-3" style="min-width: 120px;background-color: white;">{{ data?.kanban_no }}</td>
-                    <td id="fixCol-4" style="min-width: 200px;background-color: white;">{{ data?.area_nm }}</td>
+                    <td id="fixCol-body-3" style="min-width: 120px;background-color: white;">{{ data?.kanban_no }}</td>
+                    <td id="fixCol-body-4" style="min-width: 200px;background-color: white;">{{ data?.area_nm }}</td>
                     <td style="min-width: 50px">{{ data?.standart_time }}</td>
                     <td style="min-width: 100px">
                       <div style="cursor: pointer;" v-if="data?.pic_nm"
@@ -983,7 +983,7 @@ export default {
   position: sticky;
   top: 0;
   background-color: white;
-  z-index: 10;
+  z-index: 30;
 }
 
 .status-wrapper {
@@ -1037,14 +1037,14 @@ export default {
   width: 38px;
   top: 0px;
   left: 0px;
-  /* z-index: 1; */
+  z-index: 40;
 }
 
 #fixCol-2 {
   position: sticky;
   top: 0px;
   left: 37px;
-  /* z-index: 3; */
+  z-index: 40;
 }
 
 #fixCol-3 {
@@ -1052,14 +1052,44 @@ export default {
   min-width: 121px;
   top: 0px;
   left: 125px;
-  /* z-index: 3; */
+  z-index: 40;
 }
 
 #fixCol-4 {
   position: sticky;
   top: 0px;
   left: 220px;
-  /* z-index: 3; */
+  z-index: 40;
+}
+
+#fixCol-body-1 {
+  position: sticky;
+  width: 38px;
+  top: 0px;
+  left: 0px;
+  z-index: 10;
+}
+
+#fixCol-body-2 {
+  position: sticky;
+  top: 0px;
+  left: 37px;
+  z-index: 10;
+}
+
+#fixCol-body-3 {
+  position: sticky;
+  min-width: 121px;
+  top: 0px;
+  left: 125px;
+  z-index: 10;
+}
+
+#fixCol-body-4 {
+  position: sticky;
+  top: 0px;
+  left: 220px;
+  z-index: 10;
 }
 </style>
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
