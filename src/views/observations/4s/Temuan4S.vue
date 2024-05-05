@@ -203,16 +203,18 @@
                   <CIcon v-if="finding.time_yokoten" icon="cil-check" size="sm" />
                 </td>
                 <td class="text-center" v-for="(optChange) in changeOpts" :key="optChange">
-                  <CIcon v-if="finding.opt_changes != null && finding.opt_changes?.split(';').findIndex(x => x == optChange.system_value) != -1" icon="cil-check"
-                    size="sm" />
+                  <CIcon
+                    v-if="finding.opt_changes != null && finding.opt_changes?.split(';').findIndex(x => x == optChange.system_value) != -1"
+                    icon="cil-check" size="sm" />
                 </td>
                 <td class="text-center" v-for="(dept) in deptOpts" :key="dept">
-                  <CIcon v-if="finding.opt_depts != null && finding.opt_depts?.split(';').findIndex(x => x == dept.system_value) != -1"
+                  <CIcon
+                    v-if="finding.opt_depts != null && finding.opt_depts?.split(';').findIndex(x => x == dept.system_value) != -1"
                     icon="cil-check" size="sm" />
                 </td>
                 <td v-for="item in totalDate" :key="item.idx" style="min-width: 30px">
                   <div v-if="item == finding.week_plan - 1"
-                    style="width: 20px; height: 20px; border: 2px dotted #64748b; background-color: #bbf7d0">
+                    :style="`width: 20px; height: 20px; border: 2px dotted #64748b; background-color: ${finding.status_check == 'CLOSED' ? '#bbf7d0' : finding.status_check == 'DELAY' ? '#fee2e2' : '#f3f4f6'}`">
                   </div>
 
                   <div v-if="item == finding.week_actual - 1" class="mt-2"
@@ -220,19 +222,19 @@
                   </div>
                 </td>
                 <td class="text-center">
-                  <img v-if="finding.evaluation_nm" :src="getImage(finding.evaluation_nm)" :alt="getImage(finding.evaluation_nm)" width="50"
-                    height="50">
-                    <span v-else class="text-muted"> No Evaluation</span>
+                  <img v-if="finding.evaluation_nm" :src="getImage(finding.evaluation_nm)"
+                    :alt="getImage(finding.evaluation_nm)" width="50" height="50">
+                  <span v-else class="text-muted"> No Evaluation</span>
                 </td>
                 <td>
                   <div class="d-flex">
-                     <button v-if="finding.finding_img" class="btn btn-info btn-sm text-white w-full my-1 mx-1"
-                        @click="showModalFindingImage(finding)">
-                        Finding image
-                      </button>
-                      <button v-else class="btn btn-secondary btn-sm" disabled>
-                        No Image
-                      </button>
+                    <button v-if="finding.finding_img" class="btn btn-info btn-sm text-white w-full my-1 mx-1"
+                      @click="showModalFindingImage(finding)">
+                      Finding image
+                    </button>
+                    <button v-else class="btn btn-secondary btn-sm" disabled>
+                      No Image
+                    </button>
                     <button class="btn btn-info btn-sm text-white mx-2"
                       @click="openEditFindingModal(finding, findingIndex)">Edit</button>
                     <button class="btn btn-warning btn-sm text-white"
@@ -421,10 +423,11 @@
           <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Finding Date</label>
-              <input type="date" class="form-control" v-model="findingDate" placeholder="Select Finding Date" disabled />
+              <input type="date" class="form-control" v-model="findingDate" placeholder="Select Finding Date"
+                disabled />
             </div>
             <div class="mb-2">
-              <label class="mb-1" >Finding PIC</label>
+              <label class="mb-1">Finding PIC</label>
               <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions"
                 class="vue-multi-select" :disabled="true">
               </VueMultiselect>
@@ -435,9 +438,13 @@
             <div class="mb-2">
               <label class="mb-1">Reduce Time Countermeasure (Menit)</label>
               <div class="d-flex align-items-center">
+                <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" v-model="enabledReduceTime"
+                  class="me-2" style="height: 20px; width: 20px;">
                 <input type="text" class="form-control" v-model="timeCM" :disabled="!enabledReduceTime"
                   @keypress="$event.key.match(/^[\d]$/) ? '' : $event.preventDefault()" />
               </div>
+              <small v-if="!enabledReduceTime" class="text-info">* Ceklis & isi waktu pengurangan jika ada</small>
+              <small v-else class="text-success">* Abaikan jika tidak ingin di ubah</small>
             </div>
             <div class="mb-2">
               <label class="mb-1">PIC Countermeasure</label>
@@ -467,42 +474,26 @@
             <div class="mb-2">
               <label class="mb-1">Plan Countermeasure Desc</label>
               <input type="text" class="form-control" v-model="planCMDesc"
-                placeholder="Write Plan Countermeasure Desc" disabled />
+                placeholder="Write Plan Countermeasure Desc" />
             </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="mb-2">
-              <label class="mb-1">Yokoten</label>
-              <select v-model="timeYokoten" class="form-select">
-                <option value="null" selected>Select Yokoten</option>
-                <option value="true">Sudah</option>
-                <option value="false" selected>Belum</option>
-              </select>
-            </div>
+          <div class="col-md-12 col-12">
             <div class="mb-2">
               <label class="mb-1">Department Terkait</label>
               <treeselect class="" v-if="getSystemsOptDept" v-model="optDepartment" :multiple="true"
                 :options="getSystemsOptDept" />
             </div>
           </div>
-          <div class="col-md-6">
+        </div>
+        <div class="row">
+          <div class="col-md-12 col-12">
             <div class="mb-2">
-              <label class="mb-1">Perubahan Standart</label>
+              <label class="mb-1">Perubahan Standard</label>
               <select class="form-select" v-model="optChanges">
                 <option value="null" selected>Select Standart</option>
                 <option v-for="optChange in optChangeData" :key="optChange" :value="optChange.system_value">
                   {{ optChange.system_value }}
                 </option>
-              </select>
-            </div>
-            <div class="mb-2">
-              <label class="mb-1">Status Countermeasure</label>
-              <select v-model="cmJudg" class="form-select" :disabled="findingActionType == 'update'">
-                <option value="null" selected>Select Status Countermeasure</option>
-                <option value="true">Sudah</option>
-                <option value="false">Belum</option>
               </select>
             </div>
           </div>
@@ -516,6 +507,36 @@
                 <option v-for="optEval in optEvaluation" :key="optEval" :value="optEval.system_value">
                   {{ optEval.system_value }}
                 </option>
+              </select>
+              <table class="table">
+                <tr>
+                  <th><img src="@/../public/tanoko/0.png" width="50" height="50"></th>
+                  <th>Order Part</th>
+                  <th><img src="@/../public/tanoko/1.png" width="50" height="50"></th>
+                  <th>Countermeasure</th>
+                  <th><img src="@/../public/tanoko/2.png" width="50" height="50"></th>
+                  <th>Monitor / Follow</th>
+                  <th><img src="@/../public/tanoko/3.png" width="50" height="50"></th>
+                  <th>Finish</th>
+                </tr>
+              </table>
+            </div>
+            <div class="mb-2">
+              <label class="mb-1">Status Countermeasure</label>
+              <select v-model="cmJudg" class="form-select" :disabled="findingActionType == 'update'">
+                <option value="true">Sudah</option>
+                <option value="false">Belum</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-12">
+            <div class="mb-2">
+              <label class="mb-1">Yokoten</label>
+              <select v-model="timeYokoten" class="form-select">
+                <option value="true">Sudah</option>
+                <option value="false" selected>Belum</option>
               </select>
             </div>
           </div>
@@ -565,6 +586,7 @@ export default {
   components: { Loading, VueMultiselect, Pagination, Treeselect, ModalForm4sFinding, ModalImage },
   data() {
     return {
+      enabledReduceTime: false,
       options: [{
         id: 'a',
         label: 'a',
@@ -795,11 +817,15 @@ export default {
       // this.optDepartment = data.opt_depts
       this.optDepartment = data.opt_depts != null ? data.opt_depts.split(';') : null
       this.cmJudg = data.cm_judg
-      this.actualPIC = data.actual_pic_id != null ?  { pic_name: data.actual_pic_nm, pic_id: data.actual_pic_id } : null
+      this.actualPIC = data.actual_pic_id != null ? { pic_name: data.actual_pic_nm, pic_id: data.actual_pic_id } : null
       this.actualCMDate = data.actual_cm_date != null ? data.actual_cm_date.split(' ')[0] : null // formating form yyy-mm-dd HH:mm:ss
       this.evaluationName = data.evaluation_nm
       this.selectedSubScheduleID = data.sub_schedule_id
-
+      if (data.time_cm) {
+        this.enabledReduceTime = true
+      } else {
+        this.enabledReduceTime = false
+      }
       this.editFindingModal = true
     },
 
@@ -1005,8 +1031,8 @@ export default {
       return `${text}`
     },
     showModalFindingImage(finding) {
-     this.selectedFindingImage = finding.finding_img
-     this.isVisibleFindingImage = true
+      this.selectedFindingImage = finding.finding_img
+      this.isVisibleFindingImage = true
     }
   },
 
@@ -1038,7 +1064,7 @@ export default {
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
-<style >
+<style>
 .status-wrapper {
   width: 30px;
   height: 30px;
