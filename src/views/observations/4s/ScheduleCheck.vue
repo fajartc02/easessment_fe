@@ -92,7 +92,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) in itemCheks" :key="item">
+          <tr v-for="(item, index) in itemCheks" :key="item" class="align-middle">
             <td>{{ index + 1 }}</td>
             <td>{{ item.item_check_nm }}</td>
             <td>{{ item.method }}</td>
@@ -116,9 +116,9 @@
               <button class="btn btn-success btn-sm text-white"
                 @click="saveScheduleCheck(item.judgment_id, item.actual_time, item.item_check_kanban_id)">
                 {{
-                  isAddCheckLoading?.isLoading && isAddCheckLoading?.id == item.item_check_kanban_id
-                    ? 'Saving...'
-                    : 'Save'
+                isAddCheckLoading?.isLoading && isAddCheckLoading?.id == item.item_check_kanban_id
+                ? 'Saving...'
+                : 'Save'
                 }}
               </button>
             </td>
@@ -537,7 +537,7 @@ export default {
       this.selectedZoneID = data?.zone_id
       this.selectedKanbanID = data?.kanban_id
 
-      this.selectedPIC = { pic_name: data?.finding_pic_nm, pic_id: data?.finding_pic_id }
+      this.selectedPIC = data?.finding_pic_id != null ? { pic_name: data?.finding_pic_nm, pic_id: data?.finding_pic_id } : null
       this.findingDate = data?.finding_date
       this.findingDesc = data?.finding_desc
       this.planCMDate = data?.plan_cm_date
