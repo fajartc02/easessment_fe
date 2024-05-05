@@ -352,7 +352,7 @@ export default {
       }
 
 
-      console.log('form', this.form)
+      //console.log('form', this.form)
 
       const saveFn = async (callback) => {
         if (event.currentTarget.checkValidity() === false){
@@ -387,8 +387,6 @@ export default {
         // non core-ui validating
         this.showErrorSignFindingLh = this.$refs.finding_sign_lh.isEmpty()
         this.showErrorFindingPic = !this.selectedFindingPic || this.selectedFindingPic?.id == '-1'
-
-        console.log('non core-ui validating', [this.showErrorSignFindingLh, this.showErrorFindingPic]);
         if (
           this.showErrorSignFindingLh
           || this.showErrorFindingPic

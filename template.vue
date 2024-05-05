@@ -15,7 +15,7 @@ export default {
   data() {
 
   },
-  methods: {
+  mounted() {
 
   },
   computed: {
@@ -24,7 +24,7 @@ export default {
   watch: {
 
   },
-  mounted() {
+  methods: {
 
   }
 }

@@ -202,12 +202,12 @@
                 <td class="text-center">
                   <CIcon v-if="finding.time_yokoten" icon="cil-check" size="sm" />
                 </td>
-                <td class="text-center" v-for="(optChange, i) in changeOpts" :key="optChange">
-                  <CIcon v-if="optChange.system_value.includes(finding.opt_changes.split('; ')[i])" icon="cil-check"
+                <td class="text-center" v-for="(optChange) in changeOpts" :key="optChange">
+                  <CIcon v-if="finding.opt_changes != null && finding.opt_changes?.split(';').findIndex(x => x == optChange.system_value) != -1" icon="cil-check"
                     size="sm" />
                 </td>
                 <td class="text-center" v-for="(dept) in deptOpts" :key="dept">
-                  <CIcon v-if="finding.opt_depts.split(';').findIndex(x => x == dept.system_value) != -1"
+                  <CIcon v-if="finding.opt_depts != null && finding.opt_depts?.split(';').findIndex(x => x == dept.system_value) != -1"
                     icon="cil-check" size="sm" />
                 </td>
                 <td v-for="item in totalDate" :key="item.idx" style="min-width: 30px">
@@ -220,11 +220,19 @@
                   </div>
                 </td>
                 <td class="text-center">
-                  <img :src="getImage(finding.evaluation_nm)" :alt="getImage(finding.evaluation_nm)" width="50"
+                  <img v-if="finding.evaluation_nm" :src="getImage(finding.evaluation_nm)" :alt="getImage(finding.evaluation_nm)" width="50"
                     height="50">
+                    <span v-else class="text-muted"> No Evaluation</span>
                 </td>
                 <td>
                   <div class="d-flex">
+                     <button v-if="finding.finding_img" class="btn btn-info btn-sm text-white w-full my-1 mx-1"
+                        @click="showModalFindingImage(finding)">
+                        Finding image
+                      </button>
+                      <button v-else class="btn btn-secondary btn-sm" disabled>
+                        No Image
+                      </button>
                     <button class="btn btn-info btn-sm text-white mx-2"
                       @click="openEditFindingModal(finding, findingIndex)">Edit</button>
                     <button class="btn btn-warning btn-sm text-white"
@@ -376,9 +384,10 @@
           <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Line</label>
-              <VueMultiselect disabled v-model="selectedLineID" :options="getLinesOpts" optionLabel="text"
+              <!-- <VueMultiselect disabled v-model="selectedLineID" :options="getLinesOpts" optionLabel="text"
                 optionValue="id" :customLabel="customLabel">
-              </VueMultiselect>
+              </VueMultiselect> -->
+              <input type="text" class="form-control" :value="selectedLineNm" disabled>
             </div>
             <div class="mb-2">
               <label class="mb-1">Zone </label>
@@ -396,11 +405,7 @@
             </div>
             <div class="mb-2">
               <label class="mb-1">Kanban</label>
-              <select class="form-select" v-model="selectedKanbanID" disabled>
-                <option v-for="kanban in getKanbansOpts" :key="kanban.id" :value="kanban.id">
-                  {{ kanban.text }}
-                </option>
-              </select>
+              <input type="text" class="form-control" :value="selectedKanbanNo" disabled>
             </div>
           </div>
         </div>
@@ -408,7 +413,7 @@
           <div class="col-md-12">
             <div class="mb-2">
               <label class="mb-1">Finding Desc</label>
-              <input type="text" class="form-control" v-model="findingDesc" placeholder="Write Finding Desc" />
+              <input type="text" class="form-control" v-model="findingDesc" placeholder="Write Finding Desc" disabled />
             </div>
           </div>
         </div>
@@ -416,12 +421,12 @@
           <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Finding Date</label>
-              <input type="date" class="form-control" v-model="findingDate" placeholder="Select Finding Date" />
+              <input type="date" class="form-control" v-model="findingDate" placeholder="Select Finding Date" disabled />
             </div>
             <div class="mb-2">
-              <label class="mb-1">Finding PIC</label>
+              <label class="mb-1" >Finding PIC</label>
               <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions"
-                class="vue-multi-select">
+                class="vue-multi-select" :disabled="true">
               </VueMultiselect>
             </div>
 
@@ -430,12 +435,9 @@
             <div class="mb-2">
               <label class="mb-1">Reduce Time Countermeasure (Menit)</label>
               <div class="d-flex align-items-center">
-                <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" v-model="enabledReduceTime"
-                  class="me-2" style="height: 20px; width: 20px;">
                 <input type="text" class="form-control" v-model="timeCM" :disabled="!enabledReduceTime"
                   @keypress="$event.key.match(/^[\d]$/) ? '' : $event.preventDefault()" />
               </div>
-              <small class="text-info">* Ceklis & isi waktu pengurangn jika ada</small>
             </div>
             <div class="mb-2">
               <label class="mb-1">PIC Countermeasure</label>
@@ -449,7 +451,7 @@
           <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Plan Countermeasure Date</label>
-              <input type="date" class="form-control" v-model="planCMDate" />
+              <input type="date" class="form-control" v-model="planCMDate" disabled />
             </div>
           </div>
           <div class="col-md-6">
@@ -465,7 +467,7 @@
             <div class="mb-2">
               <label class="mb-1">Plan Countermeasure Desc</label>
               <input type="text" class="form-control" v-model="planCMDesc"
-                placeholder="Write Plan Countermeasure Desc" />
+                placeholder="Write Plan Countermeasure Desc" disabled />
             </div>
           </div>
         </div>
@@ -481,7 +483,7 @@
             </div>
             <div class="mb-2">
               <label class="mb-1">Department Terkait</label>
-              <treeselect class="w-50" v-if="getSystemsOptDept" v-model="optDepartment" :multiple="true"
+              <treeselect class="" v-if="getSystemsOptDept" v-model="optDepartment" :multiple="true"
                 :options="getSystemsOptDept" />
             </div>
           </div>
@@ -528,6 +530,7 @@
       </CModalFooter>
     </CModal>
     <!-- <ModalForm4sFinding :visiblee="modalFormFinding" :loadedFinding="" /> -->
+    <ModalImage :img="selectedFindingImage" :visible="isVisibleFindingImage" @close="isVisibleFindingImage = false" />
   </div>
 </template>
 
@@ -553,12 +556,13 @@ import Pagination from '@/components/Pagination.vue'
 import 'vue3-treeselect/dist/vue3-treeselect.css'
 import Treeselect from 'vue3-treeselect'
 import ModalForm4sFinding from '@/components/4s/ModalForm4sFinding.vue'
+import ModalImage from "@/components/ModalImage.vue";
 
 
 export default {
   name: 'Temuan4S',
   // eslint-disable-next-line vue/no-unused-components
-  components: { Loading, VueMultiselect, Pagination, Treeselect, ModalForm4sFinding },
+  components: { Loading, VueMultiselect, Pagination, Treeselect, ModalForm4sFinding, ModalImage },
   data() {
     return {
       options: [{
@@ -638,8 +642,10 @@ export default {
       findingList: [],
       scheduleItemCheckKanbanID: null,
       selectedLineID: null,
+      selectedLineNm: null,
       selectedFreqID: null,
       selectedKanbanID: null,
+      selectedKanbanNo: null,
       selectedZoneID: null,
       selectedZoneName: null,
       selectedPIC: null,
@@ -664,7 +670,9 @@ export default {
       currentPageLimit: 5,
       selectedSubScheduleID: null,
       optEvaluation: null,
-      optDeptData: null
+      optDeptData: null,
+      selectedFindingImage: null,
+      isVisibleFindingImage: false
     }
   },
   computed: {
@@ -770,11 +778,13 @@ export default {
       this.selectedFindingID = finding.finding_id
       this.scheduleItemCheckKanbanID = data.schedule_item_check_kanban_id
       this.selectedLineID = { text: data.line_nm, id: data.line_id }
+      this.selectedLineNm = data.line_nm
       this.selectedFreqID = data.freq_id
       this.selectedZoneID = data.zone_id
       this.selectedZoneName = data.zone_nm
       this.selectedKanbanID = data.kanban_id
-      this.selectedPIC = { pic_name: data.finding_pic_nm, pic_id: data.finding_pic_id }
+      this.selectedKanbanNo = data.kanban_no
+      this.selectedPIC = data.finding_pic_id != null ? { pic_name: data.finding_pic_nm, pic_id: data.finding_pic_id } : null
       this.findingDate = data.finding_date
       this.findingDesc = data.finding_desc
       this.planCMDate = data.plan_cm_date
@@ -783,10 +793,10 @@ export default {
       this.timeYokoten = data.time_yokoten
       this.optChanges = data.opt_changes
       // this.optDepartment = data.opt_depts
-      this.optDepartment = data.opt_depts.split(';')
+      this.optDepartment = data.opt_depts != null ? data.opt_depts.split(';') : null
       this.cmJudg = data.cm_judg
-      this.actualPIC = { pic_name: data.actual_pic_nm, pic_id: data.actual_pic_id }
-      this.actualCMDate = data.actual_cm_date
+      this.actualPIC = data.actual_pic_id != null ?  { pic_name: data.actual_pic_nm, pic_id: data.actual_pic_id } : null
+      this.actualCMDate = data.actual_cm_date != null ? data.actual_cm_date.split(' ')[0] : null // formating form yyy-mm-dd HH:mm:ss
       this.evaluationName = data.evaluation_nm
       this.selectedSubScheduleID = data.sub_schedule_id
 
@@ -807,9 +817,9 @@ export default {
         "time_cm": +this.timeCM,
         "time_yokoten": this.timeYokoten,
         "opt_changes": this.optChanges,
-        "opt_depts": this.optDepartment.length > 0 ? this.optDepartment.join(';') : null,
+        "opt_depts": this.optDepartment?.length > 0 ? this.optDepartment.join(';') : null,
         "cm_judg": this.cmJudg,
-        "actual_pic_id": this.actualPIC.pic_id,
+        "actual_pic_id": this.actualPIC != null ? this.actualPIC.pic_id : null,
         "actual_cm_date": this.actualCMDate,
         "evaluation_nm": this.evaluationName
       }
@@ -994,7 +1004,10 @@ export default {
     customKanbanFilterOptions({ text }) {
       return `${text}`
     },
-
+    showModalFindingImage(finding) {
+     this.selectedFindingImage = finding.finding_img
+     this.isVisibleFindingImage = true
+    }
   },
 
   async mounted() {
@@ -1025,7 +1038,7 @@ export default {
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
-<style scoped>
+<style >
 .status-wrapper {
   width: 30px;
   height: 30px;
@@ -1204,4 +1217,10 @@ export default {
 
 
 /* highlight on hover */
+
+.multiselect--disabled>.multiselect__tags,
+.multiselect--disabled>.multiselect__tags>.multiselect__single,
+.multiselect--disabled>.multiselect__select {
+  background: #D8DBE0 !important;
+}
 </style>
