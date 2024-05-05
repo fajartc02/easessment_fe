@@ -40,7 +40,33 @@
     <div class="card-header overflow-auto">
       <div class="row">
         <div class="col-9 my-auto">
-          <b>Data Observasi</b>
+          <div class="d-flex align-items-center">
+            <b class="mr-3">Data Observasi</b>
+            <button v-if="resultCheck.length == categories.length" class="btn btn-secondary mx-3"
+              :disabled="resultCheck.length != 5" @click="viewReport()">
+              View Report
+            </button>
+            <CButton v-if="resultCheck.length == categories.length" color="info" @click="() => { xlDemo = true }">Lihat
+              Video</CButton>
+            <CModal size="xl" :visible="xlDemo" @close="() => { xlDemo = false }">
+              <CModalHeader>
+                <CModalTitle>Video Observasi SW</CModalTitle>
+              </CModalHeader>
+              <CModalBody>
+                <div class="row">
+                  <div class="col border-all">
+                    <h6>Before & After</h6>
+                    <video muted style="width: 100%;height: 100%;" autoplay controls>
+                      <source src="../../assets/video1.mp4" type="video/mp4">
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                </div>
+
+              </CModalBody>
+            </CModal>
+          </div>
+
         </div>
         <div class="d-flex col-3 text-right justify-content-around">
           <CButton variant="ghost" color="info" @click="() => {
@@ -54,12 +80,11 @@
             <CModalHeader>
               <CModalTitle v-if="observation.job_type_nm">{{
                 tskLabel
-                }}</CModalTitle>
+              }}</CModalTitle>
             </CModalHeader>
             <CModalBody>
               <vue-pdf-embed v-if="tskFile" :source="tskFile" />
               <h2 v-else>TIDAK ADA {{ tskLabel }}</h2>
-              <!-- <img style="width: 100%;" src="@/assets/{{}}.png"/> -->
             </CModalBody>
           </CModal>
           <CButton variant="ghost" color="info" @click="() => {
@@ -76,7 +101,6 @@
             <CModalBody>
               <vue-pdf-embed v-if="tskkFile" :source="tskkFile" />
               <h2 v-else>TIDAK ADA {{ tskkLabel }}</h2>
-              <!-- <img style="width: 100%;" src="@/assets/{{}}.png"/> -->
             </CModalBody>
           </CModal>
           <CButton variant="ghost" color="info" @click="() => {
@@ -128,8 +152,10 @@
           <th class="p-2">Cateogry</th>
           <th class="p-2">Judgment</th>
           <th class="text-center">Action Check</th>
-          <th class="text-center">Factor</th>
+          <!-- <th v-if="item.findings.length > 0" class="p-2">Factor</th> -->
+          <!-- <th class="text-center">Factor</th> -->
           <th class="text-center">Findings</th>
+          <th class="text-center">Image</th>
         </tr>
         <tr v-for="(item, i) in categories" :key="i">
           <td class="text-center">{{ i + 1 }}</td>
@@ -139,16 +165,16 @@
               item.category_nm == 'Standarize Work'
             ">
               <div class="d-flex">
-                <input type="number" :disabled="isCheck" v-model="item.stw_ct1" class="form-control text-center"
-                  style="width: 70px" placeholder="CT1" />
-                <input type="number" :disabled="isCheck" v-model="item.stw_ct2" class="form-control text-center mx-2"
-                  style="width: 70px" placeholder="CT2" />
-                <input type="number" :disabled="isCheck" v-model="item.stw_ct3" class="form-control text-center"
-                  style="width: 70px" placeholder="CT3" />
-                <input type="number" :disabled="isCheck" v-model="item.stw_ct4" class="form-control text-center mx-2"
-                  style="width: 70px" placeholder="CT4" />
-                <input type="number" :disabled="isCheck" v-model="item.stw_ct5" class="form-control text-center"
-                  style="width: 70px; margin-right: 10px" placeholder="CT5" />
+                <input type="number" :disabled="item.is_already_check" v-model="item.stw_ct1"
+                  class="form-control text-center" style="width: 70px" placeholder="CT1" />
+                <input type="number" :disabled="item.is_already_check" v-model="item.stw_ct2"
+                  class="form-control text-center mx-2" style="width: 70px" placeholder="CT2" />
+                <input type="number" :disabled="item.is_already_check" v-model="item.stw_ct3"
+                  class="form-control text-center" style="width: 70px" placeholder="CT3" />
+                <input type="number" :disabled="item.is_already_check" v-model="item.stw_ct4"
+                  class="form-control text-center mx-2" style="width: 70px" placeholder="CT4" />
+                <input type="number" :disabled="item.is_already_check" v-model="item.stw_ct5"
+                  class="form-control text-center" style="width: 70px; margin-right: 10px" placeholder="CT5" />
                 <div class="mx-1 d-flex flex-column"></div>
                 <div v-if="item.stw_ct5" class="row my-auto">
                   <div class="col-lg-6">
@@ -167,82 +193,50 @@
                     <span class="badge bg-success mt-1 w-100">Persentasi: {{ judgementPrecentage }} %</span>
                   </div>
                 </div>
-
               </div>
             </div>
-            <CFormSelect v-else :disabled="isCheck" v-model="item.judgment_id">
-              <option>Select Judgment</option>
+            <CFormSelect v-else :disabled="item.is_already_check" v-model="item.judgment_id">
+              <option value="false">Select Judgment</option>
               <option v-for="judg in judgments" :key="judg.id" :value="judg.id">
                 {{ judg.text }}
               </option>
             </CFormSelect>
           </td>
-          <!-- UPDATE SAVE CHECK -->
+          <!-- Start::UPDATE SAVE CHECK -->
           <td class="text-center">
-            <button v-if="true" class="btn btn-outline-success" @click="saveCheckCategory(item)">Save Check</button>
+            <!-- judgments.find((judg) => judg.id == item.judgment_id)?.is_abnormal" -->
+            <button
+              v-if="!item.is_already_check && (i == 0 ? judgementID : item.judgment_id) && item.judgment_id != 'false'"
+              class=" btn btn-outline-success" @click="saveCheckCategory(item)" :disabled="item.is_already_check">Save
+              Check</button>
+            <button v-else-if="!item.judgment_id && !item.is_already_check || item.judgment_id == 'false'"
+              class="btn btn-outline-info" disabled>Silahkan
+              isi</button>
             <button v-else class="btn btn-outline-secondary" disabled>Sudah Di Check</button>
           </td>
-          <td>
-            <div v-if="((item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' ||
-              item.judgment_id == 'dcb12fa6-0d1e-4d29-ab3d-7576c863ed2e') &&
-              item.judgment_id) ||
-              (judgementID == '2e247c66-3e9c-44b6-951a-0a26791ad37d' &&
-                i == 0)
-            ">
-              <div v-if="item.findings.length > 0">
-                {{ item.findings[0].factor_nm }}
-              </div>
-              <div v-else>
-                <CFormSelect :disabled="isCheck" v-model="item.factor_id">
-                  <option>Select Factor</option>
-                  <option v-for="factor in factors" :key="factor.text" :value="factor.id">
-                    {{ factor.text }}
-                  </option>
-                </CFormSelect>
-              </div>
-
-            </div>
-          </td>
-          <td v-if="((item.judgment_id == '2e247c66-3e9c-44b6-951a-0a26791ad37d' ||
-            item.judgment_id == 'dcb12fa6-0d1e-4d29-ab3d-7576c863ed2e') &&
-            item.judgment_id) ||
-            (judgementID == '2e247c66-3e9c-44b6-951a-0a26791ad37d' && i == 0)
-          ">
-
+          <!-- End::UPDATE SAVE CHECK -->
+          <td
+            v-if="item.is_already_check && judgments.find((judg) => judg.id == item.judgment_id)?.is_abnormal || (i == 0 && judgments.find((judg) => judg.id == judgementID)?.is_abnormal && item.is_already_check)">
             <div v-if="item.findings.length == 0">
-              <div v-if="findings.filter((find) => {
-                return find.category_id == item.id
-              }).length > 0
-              ">
-                <button :disabled="isCheck" class="btn btn-info" @click="() => {
-                  addFindingsModal = true
-                  mapUsersData()
-                  editFinding(item.id)
-                }
-                  ">
-                  Edit finding
-                </button>
-                <button :disabled="isCheck" class="btn btn-warning" @click="deleteFinding(item.id)">
-                  Delete finding
-                </button>
-              </div>
-              <button v-else :disabled="isCheck" class="btn btn-info" @click="() => {
-                addFindingsModal = true
+              <button class="btn btn-info" @click="() => {
+                item.is_active_modal = true
                 finding.finding_location = observation.pos_nm
+                finding.category_id = item.id
+                finding.obs_result_id = item.obs_result_id
                 mapUsersData()
               }
                 ">
                 Add findings
               </button>
             </div>
-            <div v-else>
-              {{ item.findings[0].finding_desc }}
+            <div class="text-center" v-else>
+              {{ item.findings[0]?.finding_desc }}
             </div>
 
             <!-- modal -->
-            <CModal scrollable alignment="center" :visible="addFindingsModal" size="xl" backdrop="static">
+            <CModal scrollable alignment="center" :visible="item.is_active_modal" size="xl" backdrop="static">
               <CModalHeader>
-                <CModalTitle>Add temuan</CModalTitle>
+                <CModalTitle>Add temuan ({{ item.category_nm }})</CModalTitle>
               </CModalHeader>
               <CModalBody>
                 <div>
@@ -260,6 +254,15 @@
                       <div class="mb-2">
                         <label class="mb-1">Finding description</label>
                         <textarea cols="30" rows="5" class="form-control" v-model="finding.finding_desc"></textarea>
+                      </div>
+                      <div class="mb-2">
+                        <label class="mb-1">Finding Factor</label>
+                        <CFormSelect v-model="finding.factor_id">
+                          <option>Select Factor</option>
+                          <option v-for="factor in factors" :key="factor.text" :value="factor.id">
+                            {{ factor.text }}
+                          </option>
+                        </CFormSelect>
                       </div>
                       <div class="mb-2">
                         <div>
@@ -312,7 +315,7 @@
                       </div>
                       <div class="mb-2">
                         <label class="mb-1">Countermeasure Factor</label>
-                        <CFormSelect :disabled="isCheck" v-model="finding.cm_result_factor_id">
+                        <CFormSelect v-model="finding.cm_result_factor_id">
                           <option>Select Factor</option>
                           <option v-for="factor in factors" :key="factor.text" :value="factor.id">
                             {{ factor.text }}
@@ -371,7 +374,7 @@
                   return fin.category_id == item.id
                 }).length == 0
                 ">
-                  <CButton color="primary" class="text-white" @click="addFindingData(item.id, item.factor_id, finding)">
+                  <CButton color="primary" class="text-white" @click="addSingleFinding(finding, item)">
                     Save finding data</CButton>
                 </div>
                 <div v-else>
@@ -379,13 +382,30 @@
                     @click="updateFindingData(item.id, item.factor_id, finding)">Update
                     finding data</CButton>
                 </div>
-                <CButton color="secondary" class="text-white mx-2" @click="closeFindingModal()">
+                <CButton color="secondary" class="text-white mx-2" @click="closeFindingModal(item)">
                   Cancel
                 </CButton>
               </CModalFooter>
             </CModal>
           </td>
-          <td v-else></td>
+          <td class="text-center" v-else>
+            <i class="text-danger">No Finding</i>
+          </td>
+          <td class="text-center">
+            <div v-if="item.findings[0]?.finding_img">
+              <img :src="item.findings[0].finding_img" alt="image" height="100" width="200"
+                @click="() => { item.is_active_image = true }">
+              <CModal size="xl" :visible="item.is_active_image" @close="() => { item.is_active_image = false }">
+                <CModalBody>
+                  <img class="w-100" :src="item.findings[0].finding_img" alt="image"
+                    @click="() => { item.is_active_image = true }">
+                </CModalBody>
+              </CModal>
+            </div>
+            <i class="text-danger" v-else>
+              No Image
+            </i>
+          </td>
         </tr>
       </table>
 
@@ -419,30 +439,9 @@
         </CInputGroupText>
       </CInputGroup>
 
-      <button class="btn btn-primary mr-1" :disabled="isCheck" @click="postCheckObs()">
+      <!-- <button class="btn btn-primary mr-1" :disabled="isCheck" @click="postCheckObs()">
         Submit
-      </button>
-      <button class="btn btn-secondary mx-2" :disabled="!isCheck" @click="viewReport()">
-        View Report
-      </button>
-      <CButton color="info" @click="() => { xlDemo = true }">Lihat Video</CButton>
-      <CModal size="xl" :visible="xlDemo" @close="() => { xlDemo = false }">
-        <CModalHeader>
-          <CModalTitle>Video Observasi SW</CModalTitle>
-        </CModalHeader>
-        <CModalBody>
-          <div class="row">
-            <div class="col border-all">
-              <h6>Before & After</h6>
-              <video muted style="width: 100%;height: 100%;" autoplay controls>
-                <source src="../../assets/video1.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-              </video>
-            </div>
-          </div>
-
-        </CModalBody>
-      </CModal>
+      </button> -->
     </div>
   </div>
 
@@ -450,7 +449,7 @@
 </template>
 
 <script>
-import { GET_OBSERVATION_DETAIL, SAVE_OBSERVATION } from '@/store/modules/observation.module'
+import { GET_OBSERVATION_DETAIL, SAVE_OBSERVATION, SAVE_OBSERVATION_CATEGORY } from '@/store/modules/observation.module'
 import { POST_OBSERVATION_CHECK } from '@/store/modules/observation.module'
 import { GET_USERS } from '@/store/modules/user.module'
 import { mapGetters } from 'vuex'
@@ -461,6 +460,7 @@ import moment from 'moment'
 import Swal from 'sweetalert2'
 import VueMultiselect from 'vue-multiselect'
 import Loading from 'vue-loading-overlay'
+import { ADD_NEW_FINDING } from '@/store/modules/finding.module'
 export default {
   name: 'DetailSchedule',
   data() {
@@ -503,9 +503,13 @@ export default {
         stw_ct5: 50,
       },
       finding: {
+        obs_result_id: null,
+        line_id: null,
+        category_id: null,
         finding_date: moment().format('YYYY-MM-DD'),
         finding_location: '',
         finding_desc: '',
+        factor_id: null,
         cm_desc: '',
         cm_priority: 0,
         cm_str_plan_date: '',
@@ -570,15 +574,50 @@ export default {
     Loading,
   },
   methods: {
-    saveCheckCategory(item) {
-      console.log(item);
-      // let checkedData = {
-
-      // }
+    async addSingleFinding(findingData, item) {
+      try {
+        this.isLoading = true
+        await this.$store.dispatch(ADD_NEW_FINDING, findingData)
+        await this.getDetail()
+        await this.getCategories()
+        this.isLoading = false
+        toast.success('Success to add data', {
+          autoClose: 1000
+        })
+        item.is_active_modal = false
+      } catch (error) {
+        console.log(error);
+        toast.error(error)
+      }
+    },
+    async saveCheckCategory(item) {
+      try {
+        this.isLoading = true
+        let checkedData = {
+          observation_id: this.$route.params.id,
+          category_id: item.id,
+          judgment_id: item.stw_ct5 ? this.judgementID : item.judgment_id,
+          stw_ct1: item.stw_ct1,
+          stw_ct2: item.stw_ct2,
+          stw_ct3: item.stw_ct3,
+          stw_ct4: item.stw_ct4,
+          stw_ct5: item.stw_ct5
+        }
+        await this.$store.dispatch(SAVE_OBSERVATION_CATEGORY, checkedData)
+        this.isLoading = false
+        await this.getDetail()
+        await this.getCategories()
+        toast.success('Success to save data', {
+          autoClose: 1000
+        })
+      } catch (error) {
+        this.isLoading = false
+        console.log(error);
+        toast.error(JSON.stringify(error))
+      }
     },
     async saveCheckObser(value, key) {
       try {
-        console.log(value, key);
         let data = {
           observation_id: this.$route.params.id,
           [`${key}`]: value
@@ -590,11 +629,12 @@ export default {
         await this.getDetail()
       } catch (error) {
         console.log(error);
-        toast.error(JSON.stringify(error))
+        toast.error(error)
       }
     },
-    closeFindingModal() {
-      this.addFindingsModal = false
+    closeFindingModal(item) {
+      this.resetData()
+      item.is_active_modal = false
       this.getDetail()
     },
     swalConfDel() {
@@ -661,9 +701,13 @@ export default {
       this.groups = groups.data.data
     },
     resetData() {
+      this.finding.obs_result_id = null
+      this.finding.line_id = this.observation?.line_id
+      this.finding.category_id = null
       this.finding.finding_date = moment().format('YYYY-MM-DD')
       this.finding.finding_location = ''
       this.finding.finding_desc = ''
+      this.finding.factor_id = null
       this.finding.cm_desc = ''
       this.finding.cm_priority = null
       this.finding.cm_str_plan_date = ''
@@ -781,7 +825,7 @@ export default {
     async getCategories() {
       ApiService.setHeader()
       const categories = await ApiService.get(`master/categories`)
-      const mapCategory = categories.data.data.map((itm, i) => {
+      const mapCategory = categories.data.data.map((itm) => {
         itm.judgment_id = null
         itm.factor_id = null
         itm.stw_ct1 = null
@@ -789,11 +833,15 @@ export default {
         itm.stw_ct3 = null
         itm.stw_ct4 = null
         itm.stw_ct5 = null
+        itm.is_already_check = false
         itm.findings = []
-
-        let result = this.resultCheck[i]
-
-        if (this.resultCheck?.length > 0) {
+        itm.is_active_modal = false
+        itm.is_active_image = false
+        itm.obs_result_id = null
+        let result = this.resultCheck.find(result => result.category_id == itm.id)
+        if (result) {
+          itm.is_already_check = true
+          itm.obs_result_id = result.obs_result_id
           itm.judgment_id = result.judgment_id
           itm.factor_id = result.factor_id
           itm.stw_ct1 = result.stw_ct1
@@ -888,8 +936,8 @@ export default {
     await this.getUsers()
     // await this.getFactors()
     // await this.judgments()
-
     this.finding.finding_location = await this.observation?.pos_nm
+    this.finding.line_id = await this.observation?.line_id
   },
 }
 </script>

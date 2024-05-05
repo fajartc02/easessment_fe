@@ -10,6 +10,7 @@ export const GET_OBSERVATION_SUMMARY = "getObservationSummary";
 export const GET_OBSERVATION_DETAIL = "getObservationDetail";
 
 export const SAVE_OBSERVATION = "saveObservation";
+export const SAVE_OBSERVATION_CATEGORY = "saveObservationCategory";
 
 export const POST_OBSERVATION_CHECK = "postObservationCheck";
 export const DELETE_OBSERVATION_LIST = "deleteObservationList";
@@ -62,6 +63,20 @@ const actions = {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
             ApiService.post('operational/observation/single-check-obs', data)
+                .then((result) => {
+                    console.log(result);
+                    console.log(commit);
+                    resolve(true)
+                }).catch((err) => {
+                    reject(err)
+                });
+
+        });
+    },
+    [SAVE_OBSERVATION_CATEGORY]({ commit } = null, data) {
+        ApiService.setHeader()
+        return new Promise((resolve, reject) => {
+            ApiService.post('operational/observation/single-check-category', data)
                 .then((result) => {
                     console.log(result);
                     console.log(commit);
