@@ -45,7 +45,7 @@
                 <td>
                   <div class="card" style="width: 20px;height: 20px;background-color: red;"></div>
                 </td>
-                <td>: Done</td>
+                <td>: Delay</td>
               </tr>
             </table>
           </div>
