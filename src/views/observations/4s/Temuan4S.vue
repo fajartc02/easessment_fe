@@ -921,6 +921,7 @@ export default {
       return `${pic_name}`
     },
     mapUsersData() {
+      this.picData = []
       this.getUsersOpts?.map((item) => {
         this.picData.push({ pic_id: item.id, pic_name: item.text })
       })

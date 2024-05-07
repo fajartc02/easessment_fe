@@ -719,11 +719,13 @@ export default {
       }
     },
     mapLinesData() {
+      this.lineData = []
       this.getLinesOpts?.map((item) => {
         this.lineData.push({ line_id: item.id, line_name: item.text })
       })
     },
     mapUsersData() {
+      this.picData = []
       this.getUsersOpts?.map((item) => {
         this.picData.push({ pic_id: item.id, pic_name: item.text })
       })
