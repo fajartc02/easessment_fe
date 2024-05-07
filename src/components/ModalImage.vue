@@ -1,7 +1,7 @@
 <template>
   <CModal backdrop="static" alignment="center" :visible="visible" @close="close" size="lg" scrollable>
     <CModalHeader>
-      <CModalTitle>Finding Image Detail</CModalTitle>
+      <CModalTitle>{{ title }}</CModalTitle>
     </CModalHeader>
     <CModalBody>
       <img :src="img" width="100%" alt="Finding Image" />
@@ -25,6 +25,10 @@ export default {
       type: String,
       required: true
     },
+    title: {
+      type: String,
+      default: 'Finding Image Detail'
+    }
   },
   methods: {
     close() {

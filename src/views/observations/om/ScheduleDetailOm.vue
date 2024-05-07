@@ -89,9 +89,11 @@
             <th>No</th>
             <th>Item Check</th>
             <th>Judgement</th>
-            <th>Time</th>
+            <th>Standard Time</th>
+            <th>Actual Time</th>
             <th>Actions</th>
             <th>Finding</th>
+            <th>Image</th>
           </tr>
         </thead>
         <tbody>
@@ -106,29 +108,41 @@
                 </option>
               </CFormSelect>
             </td>
+            <td class="text-center">
+              {{ getOmSubSchedulesDetail?.standart_time }}
+            </td>
             <td>
               <CFormInput v-model="actualDuration"
                 @keypress="$event.key.match(/^[\d]$/) ? '' : $event.preventDefault()" />
             </td>
             <td class="text-center">
-              <button class="btn btn-info btn-sm text-white" @click="updateSchedule()">
+              <button v-if="actualDuration && judgment_id" class="btn btn-success btn-sm text-white"
+                @click="updateSchedule()">
                 {{ isAddCheckLoading ?
                 'Saving...' : 'Save' }}
+              </button>
+              <button v-else class="btn btn-info btn-sm text-white" disabled>
+                Isi Dahulu
               </button>
             </td>
             <td class="text-center">
               <template v-if="isCanAddFinding">
-                <button class=" btn btn-info btn-sm text-white" @click="openFindingModal()">
+                <button
+                  v-if="getOmSubSchedulesDetail?.finding?.finding_desc == null || getOmSubSchedulesDetail?.finding?.finding_desc == undefined"
+                  class=" btn btn-info btn-sm text-white" @click="openFindingModal()">
                   {{ getOmSubSchedulesDetail?.finding ? 'Update finding' : 'Add finding' }}
                 </button>
+                <span v-else>{{ getOmSubSchedulesDetail.finding.finding_desc }}</span>
               </template>
               <template v-else>
                 <span class="text-muted">No Action</span>
               </template>
-              <!-- <button v-if="getOmSubSchedulesDetail?.findings.length > 0" class=" btn btn-info btn-sm text-white"
-                @click="openFindingModal()">
-                Detail finding
-              </button> -->
+            </td>
+            <td>
+              <img v-if="getOmSubSchedulesDetail?.finding?.finding_img"
+                :src="getOmSubSchedulesDetail?.finding?.finding_img" alt="image finding" width="200" height="100"
+                @click="isVisibleFindingImage = true">
+              <span v-else class="text-muted">No image</span>
             </td>
           </tr>
         </tbody>
@@ -143,6 +157,8 @@
     </div>
     <ModalFormOmFinding :visible="isVisibleFindingModal" :loadedFinding="loadedFinding"
       @modalFormOmFindingListener="onModalFormOmFindingListener($event)" />
+    <ModalImage :visible="isVisibleFindingImage" :img="getOmSubSchedulesDetail?.finding?.finding_img"
+      @close="isVisibleFindingImage = false" />
   </div>
 </template>
 <script>
@@ -153,11 +169,13 @@ import { GET_OM_SUB_SCHEDULES_DETAIL } from '@/store/modules/omSchedule.module'
 import { GET_USERS } from '@/store/modules/user.module'
 import { GET_JUDGMENT } from '@/store/modules/judgment.module'
 import ModalFormOmFinding from '@/components/om/ModalFormOmFinding.vue'
+import ModalImage from '@/components/ModalImage.vue'
 
 export default {
   name: "ScheduleDetailOm",
   components: {
-    ModalFormOmFinding
+    ModalFormOmFinding,
+    ModalImage
   },
   data() {
     return {
@@ -169,7 +187,8 @@ export default {
       actualDuration: null,
       judgment_id: null,
       isVisibleFindingModal: false,
-      isCanAddFinding: false
+      isCanAddFinding: false,
+      isVisibleFindingImage: false,
     }
   },
   methods: {

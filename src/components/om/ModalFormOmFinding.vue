@@ -355,7 +355,8 @@ export default {
       //console.log('form', this.form)
 
       const saveFn = async (callback) => {
-        if (event.currentTarget.checkValidity() === false){
+        if (event.currentTarget.checkValidity() === false)
+        {
           event.preventDefault()
           event.stopPropagation()
         }
@@ -486,7 +487,7 @@ export default {
         })
       }
     },
-    closeFindingPic(){
+    closeFindingPic() {
       this.showErrorFindingPic = !this.selectedFindingPic || this.selectedFindingPic?.id == '-1'
     },
     closeActualPic() {
@@ -503,55 +504,53 @@ export default {
     },
   },
   watch: {
-    loadedFinding: {
-      handler() {
-        console.log('loadedFinding', this.loadedFinding);
-        this.form = {
-          finding_id: this.loadedFinding?.finding_id,
-          line_id: this.loadedFinding?.line_id,
-          group_id: this.loadedFinding?.group_id,
-          machine_id: this.loadedFinding?.machine_id,
-          freq_id: this.loadedFinding?.freq_id,
-          om_item_check_kanban_id: this.loadedFinding?.om_item_check_kanban_id,
-          om_sub_schedule_id: this.loadedFinding?.om_sub_schedule_id,
-          finding_pic_id: this.loadedFinding?.finding_pic_id,
-          actual_pic_id: this.loadedFinding?.actual_pic_id,
-          source_tag: this.loadedFinding?.source_tag,
-          finding_date: this.loadedFinding?.finding_date,
-          finding_desc: this.loadedFinding?.finding_desc,
-          plan_cm_date: this.loadedFinding?.plan_cm_date,
-          actual_cm_date: this.loadedFinding?.actual_cm_date,
-          cm_judg: this.loadedFinding?.cm_judg ?? false,
-          plan_cm_desc: this.loadedFinding?.plan_cm_desc,
-          dept: this.loadedFinding?.dept,
-          priority_num: this.loadedFinding?.priority_num,
-          progress_num: this.loadedFinding?.progress_num,
-        }
 
-        if (this.loadedFinding?.finding_pic_id)
-        {
-          this.selectedFindingPic = {
-            id: this.loadedFinding?.finding_pic_id,
-            text: this.loadedFinding?.finding_pic_nm,
-          }
-        }
-        else
-        {
-          this.selectedFindingPic = null
-        }
+  },
+  updated() {
+    this.form = {
+      finding_id: this.loadedFinding?.finding_id,
+      line_id: this.loadedFinding?.line_id,
+      group_id: this.loadedFinding?.group_id,
+      machine_id: this.loadedFinding?.machine_id,
+      freq_id: this.loadedFinding?.freq_id,
+      om_item_check_kanban_id: this.loadedFinding?.om_item_check_kanban_id,
+      om_sub_schedule_id: this.loadedFinding?.om_sub_schedule_id,
+      finding_pic_id: this.loadedFinding?.finding_pic_id,
+      actual_pic_id: this.loadedFinding?.actual_pic_id,
+      source_tag: this.loadedFinding?.source_tag,
+      finding_date: this.loadedFinding?.finding_date,
+      finding_desc: this.loadedFinding?.finding_desc,
+      plan_cm_date: this.loadedFinding?.plan_cm_date,
+      actual_cm_date: this.loadedFinding?.actual_cm_date,
+      cm_judg: this.loadedFinding?.cm_judg ?? false,
+      plan_cm_desc: this.loadedFinding?.plan_cm_desc,
+      dept: this.loadedFinding?.dept,
+      priority_num: this.loadedFinding?.priority_num,
+      progress_num: this.loadedFinding?.progress_num,
+    }
 
-        if (this.loadedFinding?.actual_pic_id)
-        {
-          this.selectedActualPic = {
-            id: this.loadedFinding?.actual_pic_id,
-            text: this.loadedFinding?.actual_pic_nm,
-          }
-        }
-        else
-        {
-          this.selectedActualPic = null
-        }
+    if (this.loadedFinding?.finding_pic_id)
+    {
+      this.selectedFindingPic = {
+        id: this.loadedFinding?.finding_pic_id,
+        text: this.loadedFinding?.finding_pic_nm,
       }
+    }
+    else
+    {
+      this.selectedFindingPic = null
+    }
+
+    if (this.loadedFinding?.actual_pic_id)
+    {
+      this.selectedActualPic = {
+        id: this.loadedFinding?.actual_pic_id,
+        text: this.loadedFinding?.actual_pic_nm,
+      }
+    }
+    else
+    {
+      this.selectedActualPic = null
     }
   },
   mounted() {
