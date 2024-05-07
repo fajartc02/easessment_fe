@@ -86,7 +86,7 @@ import {
     cilWarning,
     cilTrash,
     cilPlus,
-    cilX
+    cilX,
 } from '@coreui/icons'
 
 export const iconsSet = Object.assign({}, {

@@ -978,7 +978,68 @@ export default {
       totalPage: 0,
     }
   },
-
+  watch: {
+    selectedLine: {
+      immediate: true,
+      handler() {
+        this.$router.push({
+          path: '/stw/list-temuan',
+          query: {
+            line_id: this.selectedLine, source_category: this.selectedFilterSourceCat, cm_judg: this.selectedFilterJudge,
+            start_date: this.selectedFilterStartDate, end_date: this.selectedFilterEndDate
+          }
+        });
+      }
+    },
+    selectedFilterSourceCat: {
+      immediate: true,
+      handler() {
+        this.$router.push({
+          path: '/stw/list-temuan',
+          query: {
+            line_id: this.selectedLine, source_category: this.selectedFilterSourceCat, cm_judg: this.selectedFilterJudge,
+            start_date: this.selectedFilterStartDate, end_date: this.selectedFilterEndDate
+          }
+        });
+      }
+    },
+    selectedFilterJudge: {
+      immediate: true,
+      handler() {
+        this.$router.push({
+          path: '/stw/list-temuan',
+          query: {
+            line_id: this.selectedLine, source_category: this.selectedFilterSourceCat, cm_judg: this.selectedFilterJudge,
+            start_date: this.selectedFilterStartDate, end_date: this.selectedFilterEndDate
+          }
+        });
+      }
+    },
+    selectedFilterStartDate: {
+      immediate: true,
+      handler() {
+        this.$router.push({
+          path: '/stw/list-temuan',
+          query: {
+            line_id: this.selectedLine, source_category: this.selectedFilterSourceCat, cm_judg: this.selectedFilterJudge,
+            start_date: this.selectedFilterStartDate, end_date: this.selectedFilterEndDate
+          }
+        })
+      }
+    },
+    selectedFilterEndDate: {
+      immediate: true,
+      handler() {
+        this.$router.push({
+          path: '/stw/list-temuan',
+          query: {
+            line_id: this.selectedLine, source_category: this.selectedFilterSourceCat, cm_judg: this.selectedFilterJudge,
+            start_date: this.selectedFilterStartDate, end_date: this.selectedFilterEndDate
+          }
+        })
+      }
+    }
+  },
   computed: {
     ...mapGetters(['getUsersOpts', 'getFindings', 'getLinesOpts']),
   },
@@ -1392,6 +1453,10 @@ export default {
         ? this.$route.query.line_id
         : '-1'
     }
+    this.selectedFilterStartDate = this.$route.query.start_date
+    this.selectedFileterEndDate = this.$route.query.end_date
+
+
 
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
