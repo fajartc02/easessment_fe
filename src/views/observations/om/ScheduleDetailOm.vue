@@ -119,7 +119,7 @@
               <button v-if="actualDuration && judgment_id" class="btn btn-success btn-sm text-white"
                 @click="updateSchedule()">
                 {{ isAddCheckLoading ?
-                'Saving...' : 'Save' }}
+                  'Saving...' : 'Save' }}
               </button>
               <button v-else class="btn btn-info btn-sm text-white" disabled>
                 Isi Dahulu
@@ -170,6 +170,7 @@ import { GET_USERS } from '@/store/modules/user.module'
 import { GET_JUDGMENT } from '@/store/modules/judgment.module'
 import ModalFormOmFinding from '@/components/om/ModalFormOmFinding.vue'
 import ModalImage from '@/components/ModalImage.vue'
+import moment from 'moment'
 
 export default {
   name: "ScheduleDetailOm",
@@ -193,14 +194,12 @@ export default {
   },
   methods: {
     async getSubScheduleDetail() {
-      try
-      {
+      try {
         this.isLoadingGetDetail = true
         await this.$store.dispatch(GET_OM_SUB_SCHEDULES_DETAIL, this.$route.params.subScheduleID)
         this.isLoadingGetDetail = false
       }
-      catch (error)
-      {
+      catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
         toast.error(error.response.data.message, {
@@ -209,24 +208,19 @@ export default {
       }
     },
     async getUsers() {
-      try
-      {
+      try {
         await this.$store.dispatch(GET_USERS)
-      } catch (error)
-      {
+      } catch (error) {
         console.log(error)
         if (error?.response?.status == 401) this.$router.push('/login')
       }
     },
     async updateSchedule(isActualDate) {
-      try
-      {
-        if (isActualDate)
-        {
+      try {
+        if (isActualDate) {
           this.isUpdateActualDate = true
         }
-        else
-        {
+        else {
           this.isUpdateActualPic = true
         }
 
@@ -243,13 +237,11 @@ export default {
           data,
         )
 
-        if (isActualDate)
-        {
+        if (isActualDate) {
           this.actualDate = null
           this.isUpdateActualDate = false
         }
-        else
-        {
+        else {
           this.actualPic = null
           this.isUpdateActualPic = false
         }
@@ -260,8 +252,7 @@ export default {
 
         this.getSubScheduleDetail()
       }
-      catch (error)
-      {
+      catch (error) {
         console.log('error updateSchedule()', error)
         if (error.response.status == 401) this.$router.push('/login')
         toast.error(error.response.data.message, {
@@ -270,11 +261,9 @@ export default {
       }
     },
     async getJudgment() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_JUDGMENT)
-      } catch (error)
-      {
+      } catch (error) {
         console.log(error)
         if (error?.response?.status == 401) this.$router.push('/login')
         toast.error(error.response.data.message, {
@@ -287,8 +276,7 @@ export default {
     },
     onModalFormOmFindingListener(event) {
       this.isVisibleFindingModal = false
-      if (event.refresh)
-      {
+      if (event.refresh) {
         this.getSubScheduleDetail()
       }
     },
@@ -319,6 +307,11 @@ export default {
   watch: {
     getOmSubSchedulesDetail: {
       handler() {
+        console.log('HERE');
+        console.log(this.getOmSubSchedulesDetail);
+        // actualPic
+        this.actualDate = this.getOmSubSchedulesDetail.actual_date ? moment(this.getOmSubSchedulesDetail.actual_date).format('YYYY-MM-DD') : moment(this.getOmSubSchedulesDetail.plan_time).format('YYYY-MM-DD')
+        this.actualPic = this.getOmSubSchedulesDetail.actual_pic_id ? this.getOmSubSchedulesDetail.actual_pic_id : this.getOmSubSchedulesDetail.pic_id
         this.isCanAddFinding = this.getOmSubSchedulesDetail.is_abnormal
         this.judgment_id = this.getOmSubSchedulesDetail.judgment_id
         this.actualDuration = this.getOmSubSchedulesDetail.actual_duration

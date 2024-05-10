@@ -116,9 +116,9 @@
               <button class="btn btn-success btn-sm text-white"
                 @click="saveScheduleCheck(item.judgment_id, item.actual_time, item.item_check_kanban_id)">
                 {{
-                isAddCheckLoading?.isLoading && isAddCheckLoading?.id == item.item_check_kanban_id
-                ? 'Saving...'
-                : 'Save'
+                  isAddCheckLoading?.isLoading && isAddCheckLoading?.id == item.item_check_kanban_id
+                    ? 'Saving...'
+                    : 'Save'
                 }}
               </button>
             </td>
@@ -472,6 +472,9 @@ export default {
       }
       await this.$store.dispatch(GET_SCHEDULES_CHECK, objQuery).then((res) => {
         if (res) {
+
+          this.detailActualPIC = res.actual_pic_id ? res.actual_pic_id : res.pic_id
+          this.detailActualDate = res.actual_time ? res.actual_time : res.plan_time
           this.gettingKanbanID = res.kanban_id
           this.itemCheks = res.item_check_kanbans
           this.isLoading = false
