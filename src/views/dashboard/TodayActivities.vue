@@ -29,10 +29,10 @@
       </div>
       <card-status-schedules :achievementsSTW="getCountTotalSTW" :achievements4S="getCountTotal4S"
         :achievementsOM="getCountTotalOM" />
-      <div class="card-header align-start overflow-auto">
+      <div class="card-header align-start overflow-auto mt-3">
         <div class="row">
           <div class="col">
-            <table>
+            <table style="border: none!important;">
               <tr>
                 <td>
                   <div class="card" style="width: 20px;height: 20px;background-color: cyan;"></div>

@@ -425,14 +425,11 @@ export default {
     const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
 
-    // this.selectedMonth = `${year}-${month}`
     this.$emit('emit-selectedMonth', `${year}-${month}`)
     this.$emit('emit-filterStartDate', `${year}-01-01`)
     this.$emit('emit-filterEndDate', `${year}-12-31`)
     await this.getGroup()
     await this.addFilter()
-    // await this.getGraph()
-    // await this.getOverallGraph()
   },
   components: { Loading },
 }

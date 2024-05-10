@@ -7,12 +7,12 @@ const routes = [{
         path: '/',
         name: 'Home',
         component: DefaultLayout,
-        redirect: '/',
+        redirect: '/dashboard',
         children: [{
-                path: '/',
+                path: '/dashboard',
                 name: 'Dashboard',
                 component: () =>
-                    import ('@/views/dashboard/Dashboard.vue'),
+                    import ('@/views/dashboard/MainDashboard.vue'),
             }, {
                 path: '/today-activities',
                 name: 'TodayActivities',
@@ -23,12 +23,13 @@ const routes = [{
                 name: 'CalendarPlanning',
                 component: () =>
                     import ('@/views/CalendarPlanning/CalendarPlanning.vue'),
-            }, {
-                path: '/',
-                name: 'Dashboard',
-                component: () =>
-                    import ('@/views/dashboard/MainDashboard.vue'),
             },
+            // {
+            //     path: '/',
+            //     name: 'Dashboard',
+            //     component: () =>
+            //         import ('@/views/dashboard/MainDashboard.vue'),
+            // },
             {
                 path: '/history/observation',
                 name: 'HistoryObservation',

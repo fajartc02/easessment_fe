@@ -80,7 +80,7 @@ import OmFindingGraph from '@/components/graph/OmFindingGraph.vue'
 
 
 export default {
-  name: 'Main Dashboard',
+  name: 'MainDashboard',
   data() {
     return {
       selectedMonth: null,
@@ -116,8 +116,6 @@ export default {
       }
     },
     async addFilter() {
-      // await this.getGraph()
-      // await this.getOverallGraph()
       if (this.selectedLine == '-1') {
         this.cond = 'default'
       } else if (this.selectedLine !== '-1') {
