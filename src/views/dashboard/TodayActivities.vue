@@ -16,19 +16,60 @@
           <template v-if="isMobile">
             <div v-for="(item, i) in dailyOpts" :key="i" class="flex-col">
               <button :class="`btn btn-sm ${item.is_active ? 'btn-primary' : 'btn-outline-primary'} rounded-circle`"
-                type="button" @click="getTodayActivities(i)">{{ item.label }}</button>
+                type="button" @click="getTodayActivities(i)">{{ item.label }} <br> {{ item.date_label.split('-')[0]
+                }}</button>
             </div>
           </template>
           <template v-else>
             <div v-for="(item, i) in dailyDesktopOpts" :key="i" class="flex-col">
               <button :class="`btn btn-sm ${item.is_active ? 'btn-primary' : 'btn-outline-primary'} rounded-circle`"
-                type="button" @click="getTodayActivities(i)">{{ item.label }}</button>
+                type="button" @click="getTodayActivities(i)">{{ item.label }} <br>{{ item.date_label }}</button>
             </div>
           </template>
         </div>
       </div>
-      <card-status-schedules :achievementsSTW="getCountTotalSTW" :achievements4S="getCountTotal4S"
-        :achievementsOM="getCountTotalOM" />
+      <!-- SUMMARY -->
+      <div class="card">
+        <div class="row">
+          <div class="col-12 col-md-4 col-lg-4 card">
+            <div class="card-body">
+              <h5><u>STW</u></h5>
+              <div class="row">
+                <div class="col-12 col-md-4 colcol-12 col-md-4 col-lg-4 card p-2" v-for="(item, i) in countSTW"
+                  :key="i">
+                  <h6>{{ Object.keys(item)[0].toUpperCase() }}</h6>
+                  {{ Object.values(item)[0] }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-4 col-lg-4 card">
+            <div class="card-body">
+              <h5><u>4S</u></h5>
+              <div class="row">
+                <div class="col-12 col-md-4 col-lg-4 card p-2" v-for="(item, i) in countSTW" :key="i">
+                  <h6>{{ Object.keys(item)[0].toUpperCase() }}</h6>
+                  {{ Object.values(item)[0] }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-4 col-lg-4 card">
+            <div class="card-body">
+              <h5><u>OM</u></h5>
+              <div class="row">
+                <div class="col-12 col-md-4 col-lg-4 card p-2" v-for="(item, i) in countSTW" :key="i">
+                  <h6>{{ Object.keys(item)[0].toUpperCase() }}</h6>
+                  {{ Object.values(item)[0] }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- <card-status-schedules :achievementsSTW="getCountTotalSTW" :achievements4S="getCountTotal4S"
+        :achievementsOM="getCountTotalOM" /> -->
       <div class="card-header align-start overflow-auto mt-3">
         <div class="row">
           <div class="col">
@@ -176,7 +217,7 @@ import { toast } from 'vue3-toastify';
 import ApiService from '@/store/api.service';
 import { mapGetters } from 'vuex';
 import { GET_LINES } from '@/store/modules/line.module';
-import CardStatusSchedules from '@/components/card/CardStatusSchedules.vue';
+// import CardStatusSchedules from '@/components/card/CardStatusSchedules.vue';
 
 export default {
   name: "TodayActivity",
@@ -187,74 +228,88 @@ export default {
         {
           label: 'S',
           is_active: false,
-          date: null
+          date: null,
+          date_label: null
         },
         {
           label: 'S',
           is_active: false,
-          date: null
+          date: null,
+          date_label: null
         },
         {
           label: 'R',
           is_active: false,
-          date: null
+          date: null,
+          date_label: null
         },
         {
           label: 'K',
           is_active: false,
-          date: null
+          date: null,
+          date_label: null
         },
         {
           label: 'J',
           is_active: false,
-          date: null
+          date: null,
+          date_label: null
         },
         {
           label: 'S',
           is_active: false,
-          date: null
+          date: null,
+          date_label: null
         },
         {
           label: 'M',
           is_active: false,
-          date: null
+          date: null,
+          date_label: null
         }
       ],
       dailyDesktopOpts: [
         {
           label: 'Senin',
           is_active: false,
-          date: null
+          date: null,
+          date_label: null
         },
         {
           label: 'Selasa',
           is_active: false,
-          date: null
+          date: null,
+          date_label: null
         },
         {
           label: 'Rabu',
           is_active: false,
-          date: null
+          date: null,
+          date_label: null
         },
         {
           label: 'Kamis',
           is_active: false,
-          date: null
+          date: null,
+          date_label: null
         },
         {
           label: 'Jumat',
           is_active: false,
-          date: null
+          date: null,
+          date_label: null
         },
         {
           label: 'Sabtu',
           is_active: false,
-          date: null
+          date: null,
+          date_label: null
         },
         {
           label: 'Minggu',
           is_active: false,
-          date: null
+          date: null,
+          date_label: null
         }
       ],
       containerDateOfThisWeek: [],
@@ -266,7 +321,18 @@ export default {
       isMobile: false,
       dataSTW: [],
       data4S: [],
-      dataOM: []
+      dataOM: [],
+      countSTW: [
+        {
+          delay: 0
+        },
+        {
+          progress: 0
+        },
+        {
+          done: 0
+        }
+      ]
     }
   },
   computed: {
@@ -304,6 +370,7 @@ export default {
         this.getSTWData()
         this.get4SData()
         this.getOMData()
+        this.totalSTW()
       },
       deep: true
     }
@@ -336,6 +403,8 @@ export default {
         var date = thisDay.add(1, 'days').format('YYYY-MM-DD');
         this.dailyOpts[i].date = date
         this.dailyDesktopOpts[i].date = date
+        this.dailyOpts[i].date_label = moment(date).format('DD-MM')
+        this.dailyDesktopOpts[i].date_label = moment(date).format('DD-MM')
         if (today == date) {
           this.dailyOpts[i].is_active = true
           this.dailyDesktopOpts[i].is_active = true
@@ -398,6 +467,14 @@ export default {
         this.isLoading = false
         toast.error(error.response.data.message)
       }
+    },
+    async totalSTW() {
+      try {
+        let { data } = await ApiService.query(`/operational/observation/schedule/count`, { line_id: this.filter.line_id, month: moment(this.filter.date).format('M'), year: moment(this.filter.date).format('YYYY') })
+        this.countSTW = data.data
+      } catch (error) {
+        toast.error(error.response.data.message)
+      }
     }
   },
   async mounted() {
@@ -408,13 +485,14 @@ export default {
     await this.getSTWData()
     await this.get4SData()
     await this.getOMData()
+    await this.totalSTW()
   },
   beforeUnmount() {
     window.removeEventListener('resize', this.onResize);
   },
   components: {
     NoDataContent,
-    CardStatusSchedules
+    // CardStatusSchedules
   }
 }
 </script>
