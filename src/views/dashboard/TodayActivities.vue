@@ -10,6 +10,47 @@
         </select>
       </div>
     </div>
+
+    <!-- SUMMARY -->
+    <div class="row mx-2 my-3">
+      <h5 class="p-0">This Month Summary</h5>
+      <div class="col-12 col-md-4 col-lg-4 card">
+        <div class="card-body">
+          <h5><u>STW</u></h5>
+          <div class="row">
+            <div class="col-12 col-md-4 colcol-12 col-md-4 col-lg-4 card p-2" v-for="(item, i) in countSTW" :key="i">
+              <h6>{{ Object.keys(item)[0].toUpperCase() }}</h6>
+              {{ Object.values(item)[0] }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-4 col-lg-4 card">
+        <div class="card-body">
+          <h5><u>4S</u></h5>
+          <div class="row">
+            <div class="col-12 col-md-4 col-lg-4 card p-2" v-for="(item, i) in countSTW" :key="i">
+              <h6>{{ Object.keys(item)[0].toUpperCase() }}</h6>
+              {{ Object.values(item)[0] }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-4 col-lg-4 card">
+        <div class="card-body">
+          <h5><u>OM</u></h5>
+          <div class="row">
+            <div class="col-12 col-md-4 col-lg-4 card p-2" v-for="(item, i) in countSTW" :key="i">
+              <h6>{{ Object.keys(item)[0].toUpperCase() }}</h6>
+              {{ Object.values(item)[0] }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <card-status-schedules :achievementsSTW="getCountTotalSTW" :achievements4S="getCountTotal4S"
+        :achievementsOM="getCountTotalOM" /> -->
     <div class="card p-3">
       <div class="card-header">
         <div class="d-flex flex-row justify-content-between align-items-center">
@@ -28,48 +69,6 @@
           </template>
         </div>
       </div>
-      <!-- SUMMARY -->
-      <div class="card">
-        <div class="row">
-          <div class="col-12 col-md-4 col-lg-4 card">
-            <div class="card-body">
-              <h5><u>STW</u></h5>
-              <div class="row">
-                <div class="col-12 col-md-4 colcol-12 col-md-4 col-lg-4 card p-2" v-for="(item, i) in countSTW"
-                  :key="i">
-                  <h6>{{ Object.keys(item)[0].toUpperCase() }}</h6>
-                  {{ Object.values(item)[0] }}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-12 col-md-4 col-lg-4 card">
-            <div class="card-body">
-              <h5><u>4S</u></h5>
-              <div class="row">
-                <div class="col-12 col-md-4 col-lg-4 card p-2" v-for="(item, i) in countSTW" :key="i">
-                  <h6>{{ Object.keys(item)[0].toUpperCase() }}</h6>
-                  {{ Object.values(item)[0] }}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-12 col-md-4 col-lg-4 card">
-            <div class="card-body">
-              <h5><u>OM</u></h5>
-              <div class="row">
-                <div class="col-12 col-md-4 col-lg-4 card p-2" v-for="(item, i) in countSTW" :key="i">
-                  <h6>{{ Object.keys(item)[0].toUpperCase() }}</h6>
-                  {{ Object.values(item)[0] }}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- <card-status-schedules :achievementsSTW="getCountTotalSTW" :achievements4S="getCountTotal4S"
-        :achievementsOM="getCountTotalOM" /> -->
       <div class="card-header align-start overflow-auto mt-3">
         <div class="row">
           <div class="col">
