@@ -389,6 +389,8 @@ export default {
         this.get4SData()
         this.getOMData()
         this.totalSTW()
+        this.total4S()
+        this.totalOM()
       },
       deep: true
     }
