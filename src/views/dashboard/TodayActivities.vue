@@ -375,11 +375,9 @@ export default {
   watch: {
     windowWidth() {
       console.log(this.windowWidth);
-      if (this.windowWidth < 500)
-      {
+      if (this.windowWidth < 500) {
         this.isMobile = true
-      } else
-      {
+      } else {
         this.isMobile = false
       }
     },
@@ -398,42 +396,34 @@ export default {
   methods: {
     getColorStatus(planDate, actualDate) {
       let isDelay = moment(planDate).diff(moment(), 'days') < 0
-      if (!actualDate && isDelay)
-      {
+      if (!actualDate && isDelay) {
         return '#FF0000'
-      } else if (!isDelay && actualDate)
-      {
+      } else if (!isDelay && actualDate) {
         return '#01FF4F'
-      } else
-      {
+      } else {
         return '#01FFFF'
       }
     },
     async ActionGetLines() {
-      try
-      {
+      try {
         await this.$store.dispatch(GET_LINES);
-      } catch (error)
-      {
+      } catch (error) {
         toast.error(error.response.data.message)
       }
     },
     generateDateOfThisWeek() {
       let thisDay = moment().startOf('week');
-      if (moment().isoWeekday() == 7)
-      {
+      if (moment().isoWeekday() == 7) {
         thisDay = moment().startOf('week').subtract(1, 'weeks');
       }
       let today = moment().format('YYYY-MM-DD');
-      for (let i = 0; i < 7; i++)
-      {
+      for (let i = 0; i < 7; i++) {
         var date = thisDay.add(1, 'days').format('YYYY-MM-DD');
         this.dailyOpts[i].date = date
         this.dailyDesktopOpts[i].date = date
         this.dailyOpts[i].date_label = moment(date).format('DD-MM')
         this.dailyDesktopOpts[i].date_label = moment(date).format('DD-MM')
-        if (today == date)
-        {
+        if (today == date) {
           this.dailyOpts[i].is_active = true
           this.dailyDesktopOpts[i].is_active = true
           this.filter.date = date
@@ -442,13 +432,11 @@ export default {
     },
     getTodayActivities(idxSelected) {
       const mapDay = this.dailyOpts.map((item, i) => {
-        if (idxSelected == i)
-        {
+        if (idxSelected == i) {
           this.dailyDesktopOpts[i].is_active = true
           item.is_active = true
           this.filter.date = item.date
-        } else
-        {
+        } else {
           this.dailyDesktopOpts[i].is_active = false
           item.is_active = false
         }
@@ -460,79 +448,67 @@ export default {
       this.windowWidth = window.innerWidth;
     },
     async getSTWData() {
-      try
-      {
+      try {
         this.isLoading = true
         ApiService.setHeader()
         let { data } = await ApiService.query(`/operational/observation/schedule/today`, this.filter)
 
         this.dataSTW = data.data ?? []
         this.isLoading = false
-      } catch (error)
-      {
+      } catch (error) {
         this.isLoading = false
         toast.error(error.response.data.message)
       }
     },
     async get4SData() {
-      try
-      {
+      try {
         this.isLoading = true
         let { data } = await ApiService.query(`/operational/4s/sub-schedule/today`, this.filter)
         // /operational/4s/sub-schedule/today?date=2024-04-23
         console.log(data);
         this.data4S = data.data ?? []
         this.isLoading = false
-      } catch (error)
-      {
+      } catch (error) {
         this.isLoading = false
         toast.error(error.response.data.message)
       }
     },
     async getOMData() {
-      try
-      {
+      try {
         this.isLoading = true
         let { data } = await ApiService.query(`/operational/om/sub-schedule/today`, this.filter)
         // /operational/4s/sub-schedule/today?date=2024-04-23
         console.log(data);
         this.dataOM = data.data ?? []
         this.isLoading = false
-      } catch (error)
-      {
+      } catch (error) {
         this.isLoading = false
         toast.error(error.response.data.message)
       }
     },
     async totalSTW() {
-      try
-      {
+      try {
         let { data } = await ApiService.query(`/operational/observation/schedule/count`, { line_id: this.filter.line_id, month: moment(this.filter.date).format('M'), year: moment(this.filter.date).format('YYYY') })
         this.countSTW = data.data
-      } catch (error)
-      {
+      } catch (error) {
         toast.error(error.response.data.message)
       }
       this.loadingCountSTW = false
     },
     async total4S() {
-      try
-      {
+      try {
         let { data } = await ApiService.query(`/operational/4s/sub-schedule/count`, { line_id: this.filter.line_id, month: moment(this.filter.date).format('M'), year: moment(this.filter.date).format('YYYY') })
         this.count4S = data.data
-      } catch (error)
-      {
+      } catch (error) {
         toast.error(error.response.data.message)
       }
       this.loadingCount4S = false
     },
     async totalOM() {
-      try
-      {
+      try {
         let { data } = await ApiService.query(`/operational/om/sub-schedule/count`, { line_id: this.filter.line_id, month: moment(this.filter.date).format('M'), year: moment(this.filter.date).format('YYYY') })
         this.countOM = data.data
-      } catch (error)
-      {
+      } catch (error) {
         toast.error(error.response.data.message)
       }
       this.loadingCountOM = false
