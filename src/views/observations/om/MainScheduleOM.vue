@@ -183,6 +183,7 @@ export default {
         ...this.filter,
         line_id: this.selectedLineID
       }
+
       this.getMachines();
       if (this.isCompleteFirstLoadMainSchedule)
       {
@@ -298,7 +299,7 @@ export default {
           current_page: this.filter.current_page,
           limit: this.filter.limit,
         }
-
+        //console.log('filter getMainSchedules', objQuery);
         await this.$store.dispatch(GET_OM_MAIN_SCHEDULES, objQuery)
         this.getSubSchedules()
       }

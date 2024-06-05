@@ -100,13 +100,14 @@ const getters = {
 
 const actions = {
   async [GET_OM_MAIN_SCHEDULES]({ commit }, query) {
+    //console.log('filter GET_OM_MAIN_SCHEDULES', query);
     commit(SET_IS_LOADING_MAIN_SCHEDULE, true)
     ApiService.setHeader()
     const mainScheduleRequest = await ApiService.query("operational/om/main-schedule", query)
     commit(SET_IS_LOADING_MAIN_SCHEDULE, false)
 
     const mainScheduleResponse = mainScheduleRequest.data
-    if (mainScheduleResponse)
+    if (mainScheduleResponse && mainScheduleResponse.data.list)
     {
       const list = mainScheduleResponse.data.list.map((item) => {
         item.sub_schedules = []
@@ -123,6 +124,10 @@ const actions = {
       if (mainScheduleResponse.data.limit) commit(SET_LIMIT, mainScheduleResponse.data.limit)
       if (mainScheduleResponse.data.current_page) commit(SET_CURRENT_PAGE, mainScheduleResponse.data.current_page)
       if (mainScheduleResponse.data.total_data) commit(SET_TOTAL_DATA, mainScheduleResponse.data.total_data)
+    }
+    else
+    {
+      commit(SET_OM_MAIN_SCHEDULES, [])
     }
   },
   async [GET_OM_SUB_SCHEDULES]({ commit, state }, query) {

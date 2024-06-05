@@ -586,15 +586,17 @@ export default {
         if (res)
         {
           const data = res.list
-          this.mainScheduleData = data.map((item) => {
-            item.sub_schedules = []
-            item.tl1Signs = []
-            item.tl2Signs = []
-            item.glSigns = []
-            item.shSigns = []
+          if(data && data.length > 0){
+            this.mainScheduleData = data.map((item) => {
+              item.sub_schedules = []
+              item.tl1Signs = []
+              item.tl2Signs = []
+              item.glSigns = []
+              item.shSigns = []
 
-            return item
-          })
+              return item
+            })
+          }
 
           if (this.mainScheduleData.length > 0)
           {
