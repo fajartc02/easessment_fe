@@ -213,8 +213,8 @@ export default {
       if (this.yearMonth)
       {
         const year = this.yearMonth.split('-')[0]
-        const month = +this.yearMonth.split('-')[1] + 1
-        return new Date(year, month + 1, 0).getDate()
+        const month = +this.yearMonth.split('-')[1]
+        return new Date(year, month, 0).getDate()
       }
 
       return moment().format('DD')

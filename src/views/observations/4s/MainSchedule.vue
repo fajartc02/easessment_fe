@@ -526,8 +526,9 @@ export default {
     ]),
     getDateThisMonth() {
       const year = this.selectedMonth.split('-')[0]
-      const month = +this.selectedMonth.split('-')[1] + 1
-      return new Date(year, month + 1, 0).getDate();
+      const month = +this.selectedMonth.split('-')[1]
+      const r = new Date(year, month, 0).getDate();
+      return r
     },
     getMonthStr() {
       const monthStr = ['January', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
