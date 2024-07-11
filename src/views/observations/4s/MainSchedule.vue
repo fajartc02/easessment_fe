@@ -127,7 +127,7 @@
                     <td> {{ data?.freq_nm }}</td>
 
                     <td v-for="(children) in data?.children" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
-                      } ${children?.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''
+                      } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
                       };z-index: 10`">
 
                       <CDropdown variant="btn-group"
@@ -192,7 +192,7 @@
                   <tr>
                     <td colspan="7" class="text-center">Sign TL 1 </td>
                     <td v-for="children in mainSchedule?.sub_schedules[0]?.children" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
-                      } ${children?.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''
+                      } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
                       } `">
 
                       <div class="d-flex align-items-center justify-content-center w-full">
@@ -217,7 +217,7 @@
                   <tr>
                     <td colspan="7" class="text-center">Sign TL 2</td>
                     <td v-for="children in mainSchedule?.sub_schedules[0]?.children" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
-                      } ${children?.status == 'NIGHT_SHIFT' ? 'background-color: #fffbeb' : ''
+                      } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
                       }`">
 
                       <div class="d-flex align-items-center justify-content-center w-full">
@@ -513,6 +513,7 @@ export default {
       newSubScheduleData: [],
       mainSubScheduleID: [],
       isLoadingMainSchedule: false,
+      isAssyLine: false,
     }
   },
   computed: {
@@ -550,7 +551,7 @@ export default {
       })
 
       return sortedData
-    }
+    },
   },
   watch: {
     selectedMonth: function () {
@@ -564,6 +565,7 @@ export default {
     },
     selectedLineID: function () {
       this.getZone()
+      this.onChangeLine()
     },
     selectedZoneID: function () {
       this.getKanban()
@@ -587,7 +589,8 @@ export default {
         if (res)
         {
           const data = res.list
-          if(data && data.length > 0){
+          if (data && data.length > 0)
+          {
             this.mainScheduleData = data.map((item) => {
               item.sub_schedules = []
               item.tl1Signs = []
@@ -953,6 +956,22 @@ export default {
     customLabel(value) {
       return `${value.text}`
     },
+    onChangeLine() {
+      const filtered = (this.getLinesOpts ?? []).filter((item) => item.id == this.selectedLineID)
+
+      if (
+        this.selectedLineID
+        && filtered.length > 0
+        && filtered[0].text.toLowerCase().includes('line')
+      )
+      {
+        this.isAssyLine = true
+      }
+      else
+      {
+        this.isAssyLine = false
+      }
+    }
   },
 
   async mounted() {
