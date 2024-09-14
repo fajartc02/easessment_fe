@@ -164,18 +164,47 @@
             <div v-if="item.job_type_nm !== 'Type 3' &&
               item.category_nm == 'Standarize Work'
             ">
-              <div class="d-flex">
-                <input type="number" :disabled="item.is_already_check" v-model="item.stw_ct1"
-                  class="form-control text-center" style="width: 70px" placeholder="CT1" />
-                <input type="number" :disabled="item.is_already_check" v-model="item.stw_ct2"
-                  class="form-control text-center mx-2" style="width: 70px" placeholder="CT2" />
-                <input type="number" :disabled="item.is_already_check" v-model="item.stw_ct3"
-                  class="form-control text-center" style="width: 70px" placeholder="CT3" />
-                <input type="number" :disabled="item.is_already_check" v-model="item.stw_ct4"
-                  class="form-control text-center mx-2" style="width: 70px" placeholder="CT4" />
-                <input type="number" :disabled="item.is_already_check" v-model="item.stw_ct5"
-                  class="form-control text-center" style="width: 70px; margin-right: 10px" placeholder="CT5" />
-                <div class="mx-1 d-flex flex-column"></div>
+              <div class="d-flex justify-content-between">
+                <div>
+                  <input type="number" :disabled="item.is_already_check" v-model="item.stw_ct1"
+                    class="form-control text-center" style="width: 70px" placeholder="CT1" />
+                  <button v-if="!intervalAutoCount" class="btn btn-sm btn-primary w-100"
+                    @click="toggleTimer(item, true, 'stw_ct1')">Start</button>
+                  <button v-if="keyActiveTimer === 'stw_ct1'" class="btn btn-sm btn-danger w-100"
+                    @click="toggleTimer(item, false)">Stop</button>
+                </div>
+                <div>
+                  <input type="number" :disabled="item.is_already_check" v-model="item.stw_ct2"
+                    class="form-control text-center" style="width: 70px" placeholder="CT2" />
+                  <button v-if="!intervalAutoCount" class="btn btn-sm btn-primary w-100"
+                    @click="toggleTimer(item, true, 'stw_ct2')">Start</button>
+                  <button v-if="keyActiveTimer === 'stw_ct2'" class="btn btn-sm btn-danger w-100"
+                    @click="toggleTimer(item, false)">Stop</button>
+                </div>
+                <div>
+                  <input type="number" :disabled="item.is_already_check" v-model="item.stw_ct3"
+                    class="form-control text-center" style="width: 70px" placeholder="CT3" />
+                  <button v-if="!intervalAutoCount" class="btn btn-sm btn-primary w-100"
+                    @click="toggleTimer(item, true, 'stw_ct3')">Start</button>
+                  <button v-if="keyActiveTimer === 'stw_ct3'" class="btn btn-sm btn-danger w-100"
+                    @click="toggleTimer(item, false)">Stop</button>
+                </div>
+                <div>
+                  <input type="number" :disabled="item.is_already_check" v-model="item.stw_ct4"
+                    class="form-control text-center" style="width: 70px" placeholder="CT4" />
+                  <button v-if="!intervalAutoCount" class="btn btn-sm btn-primary w-100"
+                    @click="toggleTimer(item, true, 'stw_ct4')">Start</button>
+                  <button v-if="keyActiveTimer === 'stw_ct4'" class="btn btn-sm btn-danger w-100"
+                    @click="toggleTimer(item, false)">Stop</button>
+                </div>
+                <div>
+                  <input type="number" :disabled="item.is_already_check" v-model="item.stw_ct5"
+                    class="form-control text-center" style="width: 70px" placeholder="CT5" />
+                  <button v-if="!intervalAutoCount" class="btn btn-sm btn-primary w-100"
+                    @click="toggleTimer(item, true, 'stw_ct5')">Start</button>
+                  <button v-if="keyActiveTimer === 'stw_ct5'" class="btn btn-sm btn-danger w-100"
+                    @click="toggleTimer(item, false)">Stop</button>
+                </div>
                 <div v-if="item.stw_ct5" class="row my-auto">
                   <div class="col-lg-6">
                     <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(1) }}</span>
@@ -527,7 +556,9 @@ export default {
       },
       selectedFindingImage: null,
       TRESHOLD_STW_NG: 3,
-      isLoading: false
+      isLoading: false,
+      intervalAutoCount: null,
+      keyActiveTimer: null
     }
   },
   watch: {
@@ -574,6 +605,18 @@ export default {
     Loading,
   },
   methods: {
+    async toggleTimer(object, statusTimer, key) {
+      if (statusTimer) {
+        this.keyActiveTimer = key
+        this.intervalAutoCount = setInterval(() => {
+          object[key] = Number(object[key] || 0) + 1;
+        }, 1000)
+      } else {
+        this.keyActiveTimer = null
+        clearInterval(this.intervalAutoCount)
+        this.intervalAutoCount = null
+      }
+    },
     async addSingleFinding(findingData, item) {
       try {
         this.isLoading = true
