@@ -80,7 +80,7 @@
             <CModalHeader>
               <CModalTitle v-if="observation.job_type_nm">{{
                 tskLabel
-              }}</CModalTitle>
+                }}</CModalTitle>
             </CModalHeader>
             <CModalBody>
               <vue-pdf-embed v-if="tskFile" :source="tskFile" />
@@ -152,8 +152,7 @@
           <th class="p-2">Cateogry</th>
           <th class="p-2">Judgment</th>
           <th class="text-center">Action Check</th>
-          <!-- <th v-if="item.findings.length > 0" class="p-2">Factor</th> -->
-          <!-- <th class="text-center">Factor</th> -->
+          <!-- <th class="text-center">Video</th> -->
           <th class="text-center">Findings</th>
           <th class="text-center">Image</th>
         </tr>
@@ -205,21 +204,29 @@
                   <button v-if="keyActiveTimer === 'stw_ct5'" class="btn btn-sm btn-danger w-100"
                     @click="toggleTimer(item, false)">Stop</button>
                 </div>
-                <div v-if="item.stw_ct5" class="row my-auto">
-                  <div class="col-lg-6">
-                    <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(1) }}</span>
+                <div v-if="item.stw_ct5">
+                  <div class="row">
+                    <div class="col-12">
+                      <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(1) }}</span>
+                    </div>
                   </div>
-                  <div class="col-lg-6">
-                    <span class="badge bg-success mt-1 w-100">Persentasi: {{ judgementPrecentage }} %</span>
+                  <div class="row">
+                    <div class="col-12">
+                      <span class="badge bg-success mt-1 w-100">Persentasi: {{ judgementPrecentage }} %</span>
+                    </div>
                   </div>
                 </div>
 
-                <div v-else class="row my-auto">
-                  <div class="col-lg-6">
-                    <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(1) }}</span>
+                <div v-else>
+                  <div class="row">
+                    <div class="col-12">
+                      <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(1) }}</span>
+                    </div>
                   </div>
-                  <div class="col-lg-6">
-                    <span class="badge bg-success mt-1 w-100">Persentasi: {{ judgementPrecentage }} %</span>
+                  <div class="row">
+                    <div class="col-12">
+                      <span class="badge bg-success mt-1 w-100">Persentasi: {{ judgementPrecentage }} %</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -244,6 +251,30 @@
             <button v-else class="btn btn-outline-secondary" disabled>Sudah Di Check</button>
           </td>
           <!-- End::UPDATE SAVE CHECK -->
+          <!-- Start::VIDEO -->
+          <!-- <td class="text-center">
+            <CModal alignment="center" :visible="item?.modalVideoShow" backdrop="static">
+              <CModalHeader>
+                <CModalTitle>Add Video ({{ item.category_nm }})</CModalTitle>
+              </CModalHeader>
+              <CModalBody>
+
+              </CModalBody>
+              <CModalFooter>
+                <div>
+                  <CButton color="primary" class="text-white" @click="submitVideo(finding, item)">
+                    Submit</CButton>
+                </div>
+                <CButton color="secondary" class="text-white mx-2" @click="modalShowVideo = false">
+                  Cancel
+                </CButton>
+              </CModalFooter>
+            </CModal>
+            <button class="btn btn-sm btn-primary text-primary" @click="item.modalVideoShow = true">
+              <CIcon icon="cil-video" />
+            </button>
+          </td> -->
+          <!-- End::VIDEO -->
           <td
             v-if="item.is_already_check && judgments.find((judg) => judg.id == item.judgment_id)?.is_abnormal || (i == 0 && judgments.find((judg) => judg.id == judgementID)?.is_abnormal && item.is_already_check)">
             <div v-if="item.findings.length == 0">
@@ -422,7 +453,7 @@
           </td>
           <td class="text-center">
             <div v-if="item.findings[0]?.finding_img">
-              <img :src="item.findings[0].finding_img" alt="image" height="100" width="200"
+              <img :src="item.findings[0]?.finding_img" alt="image" height="100" width="200"
                 @click="() => { item.is_active_image = true }">
               <CModal size="xl" :visible="item.is_active_image" @close="() => { item.is_active_image = false }">
                 <CModalBody>
@@ -437,6 +468,8 @@
           </td>
         </tr>
       </table>
+
+      <ObservationVideo :observationVideo="observation?.video" @on-video-change="videoChange" />
 
       <div v-if="observation?.comment_sh">
         <div class="mb-2">
@@ -468,13 +501,9 @@
         </CInputGroupText>
       </CInputGroup>
 
-      <!-- <button class="btn btn-primary mr-1" :disabled="isCheck" @click="postCheckObs()">
-        Submit
-      </button> -->
     </div>
   </div>
 
-  <!-- modals -->
 </template>
 
 <script>
@@ -490,10 +519,12 @@ import Swal from 'sweetalert2'
 import VueMultiselect from 'vue-multiselect'
 import Loading from 'vue-loading-overlay'
 import { ADD_NEW_FINDING } from '@/store/modules/finding.module'
+import ObservationVideo from '@/components/ObservationVideo/ObservationVideo.vue'
 export default {
-  name: 'DetailSchedule',
+  name: 'DetailObservation',
   data() {
     return {
+      modalShowVideo: false,
       xlDemo: false,
       observation: null,
       isUploadLoading: false,
@@ -603,8 +634,12 @@ export default {
     VuePdfEmbed,
     VueMultiselect,
     Loading,
+    ObservationVideo,
   },
   methods: {
+    videoChange() {
+      this.getDetail()
+    },
     async toggleTimer(object, statusTimer, key) {
       if (statusTimer) {
         this.keyActiveTimer = key
