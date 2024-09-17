@@ -74,6 +74,7 @@ import {
     cilStar,
     cilTask,
     cilUser,
+    cilVideo,
     cilUserFemale,
     cilUserFollow,
     cilXCircle,
@@ -100,6 +101,7 @@ export const iconsSet = Object.assign({}, {
     cilTrash,
     cilPlus,
     cilX,
+    cilVideo,
 
     cilArrowBottom,
     cilArrowRight,
