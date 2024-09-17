@@ -200,13 +200,13 @@
                       <div class="d-flex align-items-center justify-content-center w-full">
                         <button @click="
                           openSignModal(children?.tl1_sign_checker_id, 'sign_tl_1')
-                          " v-if="!children?.is_holiday && !children?.sign_tl_1"
+                          " v-if="children?.tl1_sign_checker_id && !children?.has_tl1_sign"
                                 class="check-wrapper-null d-flex align-items-center justify-content-center">
                           <CIcon icon="cil-x" class="text-danger" size="sm" />
                         </button>
                         <button @click="
                           openSignModal(children?.tl1_sign_checker_id, 'sign_tl_1')
-                          " v-else-if="!children?.is_holiday && children?.has_tl2_sign"
+                          " v-else-if="children?.has_tl1_sign"
                                 class="check-wrapper d-flex align-items-center justify-content-center">
                           <CIcon icon="cil-check" class="text-black" size="sm" />
                         </button>
@@ -225,13 +225,13 @@
                       <div class="d-flex align-items-center justify-content-center w-full">
                         <button @click="
                           openSignModal(children?.tl2_sign_checker_id, 'sign_tl_2')
-                          " v-if="!children?.is_holiday && !children?.sign_tl_2"
+                          " v-if="children?.tl2_sign_checker_id && !children?.has_tl2_sign"
                                 class="check-wrapper-null d-flex align-items-center justify-content-center">
                           <CIcon icon="cil-x" class="text-danger" size="sm" />
                         </button>
                         <button @click="
                           openSignModal(children?.tl2_sign_checker_id, 'sign_tl_2')
-                          " v-else-if="!children?.is_holiday && children?.sign_tl_2"
+                          " v-else-if="children?.has_tl2_sign"
                                 class="check-wrapper d-flex align-items-center justify-content-center">
                           <CIcon icon="cil-check" class="text-black" size="md" />
                         </button>
