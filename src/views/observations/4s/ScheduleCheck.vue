@@ -416,6 +416,7 @@ export default {
       isFromFindingValidate: false,
       showErrorFindingPic: false,
       showErrorActualPic: false,
+      planDateSubSchedule: null,
     }
   },
   computed: {
@@ -478,6 +479,7 @@ export default {
           this.gettingKanbanID = res.kanban_id
           this.itemCheks = res.item_check_kanbans
           this.isLoading = false
+          this.planDateSubSchedule = res.plan_time;
         }
       })
     },
@@ -493,7 +495,9 @@ export default {
         "main_schedule_id": this.$route.params.mainScheduleID,
         "item_check_kanban_id": itemCheckKanbanID,
         "actual_time": actualTime,
-        "checked_date": moment().toISOString().split('T')[0]
+        //"checked_date": moment().toISOString().split('T')[0],
+        "checked_date": this.planDateSubSchedule,
+        "sub_schedule_id": this.$route.params.subScheduleID,
       }
       const judgments = await ApiService.post(`operational/4s/schedule-item-check-kanban/add`, data)
       if (judgments.data.message == 'Success to add 4s schedule item check kanban') {
