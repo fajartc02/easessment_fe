@@ -1,5 +1,6 @@
 <template>
   <div class="card">
+    <custom-full-loading :show="isLoading"></custom-full-loading>
     <div class="card-header">
       Add Schedule Observation
     </div>
@@ -38,7 +39,7 @@
         <input :disabled="selectedLine == -1 && !form.group_id" class="form-control" type="text"
           v-model="form.member_nm">
       </CInputGroup>
-      <CInputGroup class="mb-3">
+      <CInputGroup v-if="getUsersTreeselect && !isLoading" class="mb-3">
         <CInputGroupText>Petugas</CInputGroupText>
         <!-- <Select2 v-model="checkers" class="form-control" :options="getUsersOptsWithoutAll" :multiple="true"
           :disabled="selectedLine == -1" /> -->
@@ -65,7 +66,7 @@
 </template>
 
 <script>
-import { POST_OBSERVATION_SCHEDULE, GET_OBSERVATION_SCHEDULE_LIST } from '@/store/modules/observation.module'
+import { POST_OBSERVATION_SCHEDULE, GET_OBSERVATION_SCHEDULE_LIST, EDIT_OBSERVATION_SCHEDULE } from '@/store/modules/observation.module'
 import { GET_JOB } from '@/store/modules/job.module'
 import { GET_USERS } from '@/store/modules/user.module'
 import { GET_LINES } from '@/store/modules/line.module'
@@ -74,11 +75,14 @@ import { GET_GROUP } from '@/store/modules/group.module'
 import { mapGetters } from 'vuex'
 
 // import formatDate from '@/functions/formatDate'
-import 'vue3-treeselect/dist/vue3-treeselect.css'
-import Treeselect from 'vue3-treeselect'
+// import 'vue3-treeselect/dist/vue3-treeselect.css'
+// import Treeselect from 'vue3-treeselect'
+import Treeselect from '@cholakovdev/vue3-treeselect'
+import '@cholakovdev/vue3-treeselect/dist/vue3-treeselect.css'
 import moment from 'moment'
 
 import Swal from 'sweetalert2'
+import CustomFullLoading from '@/components/CustomFullLoading.vue'
 
 export default {
   name: 'ScheduleObservationForm',
@@ -93,16 +97,18 @@ export default {
         plan_check_dt: moment(new Date()).format('YYYY-MM-DD')
       },
       checkers: [],
-      isUpdate: false
+      isUpdate: false,
+      isLoading: false
     }
   },
   components: {
-    Treeselect
+    Treeselect,
+    CustomFullLoading
   },
   watch: {
     selectedLine: async function () {
       await this.getPos({ line_id: this.selectedLine })
-      await this.getUser()
+      // await this.getUser()
     },
     ['form.pos_id']: function () {
       if (this.form.pos_id) this.getJob({ pos_id: this.form.pos_id })
@@ -113,19 +119,24 @@ export default {
     observationSchedule: async function () {
       if (this.observationSchedule.length > 0) {
         let observation = this.observationSchedule[0]
-        this.form.pos_id = observation.pos_id
-        this.form.job_id = observation.job_id
-        this.form.group_id = observation.group_id
-        this.selectedLine = observation.line_id
-        this.form.member_nm = observation.member_nm
+        this.form.pos_id = observation?.pos_id
+        this.form.job_id = observation?.job_id
+        this.form.group_id = observation?.group_id
+        this.selectedLine = observation?.line_id
+        this.form.member_nm = observation?.member_nm
+        this.form.plan_check_dt = observation?.plan_check_dt
       }
     },
     getUsersTreeselect: async function () {
       let observation = this.observationSchedule[0]
       if (observation?.checkers.length > 0) {
-        this.checkers = await observation.checkers.map(checker => {
-          checker.label = checker.checker_nm
-          return checker.checker_nm
+        // this.checkers = [" ANDIKA NUR ULHAMI "]
+        this.$nextTick(async () => {
+          this.checkers =
+            await observation.checkers.map(checker => {
+              checker.label = checker.checker_nm
+              return checker.checker_nm
+            })
         })
       }
 
@@ -142,7 +153,7 @@ export default {
       'getUsersOptsWithoutAll',
       'getGroupsOptsWithoutAll',
       'getUsersTreeselect',
-      'observationSchedule'])
+      'observationSchedule']),
   },
   methods: {
     async getGroup() {
@@ -205,12 +216,49 @@ export default {
       }
 
     },
+    async updateJob() {
+      try {
+        this.isLoading = true
+        let notAllow = []
+        for (const key in this.form) {
+          if (!this.form[key]) {
+            notAllow.push(key)
+          }
+        }
+        if (notAllow.length > 0) {
+          Swal.fire('Lengkapi data terlebih dahulu', '', 'info')
+          return;
+        }
+
+        let mapCheckers = this.checkers.map(checker => {
+          return {
+            checker_nm: checker
+          }
+        })
+        this.form.checkers = mapCheckers
+        const payload = {
+          id: this.$route.query.id,
+          payload: this.form
+        }
+        await this.$store.dispatch(EDIT_OBSERVATION_SCHEDULE, payload)
+        Swal.fire('Success to edit schedule', '', 'success')
+        setTimeout(() => {
+          this.$router.push('/schedule/observation')
+        }, 1000)
+        this.isLoading = false
+      } catch (error) {
+        this.isLoading = false
+        console.log(error);
+        Swal.fire('Gagal edit schedule', '', 'error')
+      }
+    },
     cancel() {
       this.$router.push('/schedule/observation')
     },
 
   },
   async mounted() {
+    this.isLoading = true
     if (this.$route.query.id) {
       this.isUpdate = true
       await this.getLines()
@@ -218,9 +266,13 @@ export default {
       await this.getPos()
       await this.getJob()
       await this.$store.dispatch(GET_OBSERVATION_SCHEDULE_LIST, { id: this.$route.query.id })
+      await this.getUser()
+      this.isLoading = false
+      return
     }
     await this.getLines()
     await this.getGroup()
+    this.isLoading = false
   }
 }
 </script>

@@ -8,6 +8,7 @@ export const GET_OBSERVATION_SCHEDULE_RED_SHIFT = "getObservationScheduleRedShif
 export const POST_OBSERVATION_SCHEDULE = "postObservationSchedule";
 export const GET_OBSERVATION_SUMMARY = "getObservationSummary";
 export const GET_OBSERVATION_DETAIL = "getObservationDetail";
+export const EDIT_OBSERVATION_SCHEDULE = "editObservationSchedule"
 
 export const SAVE_OBSERVATION = "saveObservation";
 export const SAVE_OBSERVATION_CATEGORY = "saveObservationCategory";
@@ -175,6 +176,19 @@ const actions = {
                         console.log(commit);
                         resolve(observationsData.data)
                     }
+                }).catch((err) => {
+                    reject(err)
+                });
+        })
+    },
+    [EDIT_OBSERVATION_SCHEDULE]({ commit }, { id, payload }) {
+        ApiService.setHeader()
+        return new Promise((resolve, reject) => {
+            ApiService.put(`operational/observation/schedule/edit/${id}`, payload)
+                .then((result) => {
+                    console.log(commit);
+                    resolve(true)
+                    console.log(result);
                 }).catch((err) => {
                     reject(err)
                 });

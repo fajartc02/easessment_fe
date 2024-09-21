@@ -20,6 +20,7 @@
     "build-deploy": "git pull && yarn && yarn build && cp ./dist/index.html ./dist/404.html"
   },
   "dependencies": {
+    "@cholakovdev/vue3-treeselect": "^0.2.0",
     "@coreui/chartjs": "^3.0.0",
     "@coreui/coreui": "^4.2.3",
     "@coreui/icons": "^2.1.0",
