@@ -160,7 +160,7 @@
           <td class="text-center">{{ i + 1 }}</td>
           <td class="p-2">{{ item.category_nm }}</td>
           <td>
-            <div v-if="item.job_type_nm !== 'Type 3' &&
+            <div v-if="observation.job_type_nm !== 'Type 3' &&
               item.category_nm == 'Standarize Work'
             ">
               <div class="d-flex justify-content-between">
@@ -227,6 +227,28 @@
                     <div class="col-12">
                       <span class="badge bg-success mt-1 w-100">Persentasi: {{ judgementPrecentage }} %</span>
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-else-if="item.category_nm == 'Standarize Work' && observation.job_type_nm === 'Type 3'">
+              <div>
+                <input type="number" :disabled="item.is_already_check" v-model="item.stw_ct1"
+                  class="form-control text-center" placeholder="CT1" />
+                <button v-if="!intervalAutoCount" class="btn btn-sm btn-primary w-100"
+                  @click="toggleTimer(item, true, 'stw_ct1')">Start</button>
+                <button v-if="keyActiveTimer === 'stw_ct1'" class="btn btn-sm btn-danger w-100"
+                  @click="toggleTimer(item, false)">Stop</button>
+              </div>
+              <div v-if="item.stw_ct1">
+                <div class="row">
+                  <div class="col-12">
+                    <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(1) }}</span>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12">
+                    <span class="badge bg-success mt-1 w-100">Persentasi: {{ judgementPrecentage }} %</span>
                   </div>
                 </div>
               </div>
@@ -621,7 +643,18 @@ export default {
     ['categories']: {
       handler: function (oldValue, newValue) {
         if (newValue[0]?.stw_ct5 && newValue[0]?.stw_ct5 !== 0) {
-          this.calculateJudgement(newValue[0])
+          let isType3 = false;
+          if (this.observation?.job_type_nm === 'Type 3') {
+            isType3 = true
+          }
+          this.calculateJudgement(newValue[0], isType3)
+        }
+        if (this.observation?.job_type_nm === 'Type 3' && newValue[0]?.stw_ct1 && newValue[0]?.stw_ct1 !== 0) {
+          let isType3 = false;
+          if (this.observation?.job_type_nm === 'Type 3') {
+            isType3 = true
+          }
+          this.calculateJudgement(newValue[0], isType3)
         }
       },
       deep: true,
@@ -674,7 +707,7 @@ export default {
         let checkedData = {
           observation_id: this.$route.params.id,
           category_id: item.id,
-          judgment_id: item.stw_ct5 ? this.judgementID : item.judgment_id,
+          judgment_id: item.stw_ct5 || this.observation?.job_type_nm === 'Type 3' ? this.judgementID : item.judgment_id,
           stw_ct1: item.stw_ct1,
           stw_ct2: item.stw_ct2,
           stw_ct3: item.stw_ct3,
@@ -858,7 +891,40 @@ export default {
         this.finding.finding_img = uploadImage.data.data
       }
     },
-    calculateJudgement(newValue) {
+    calculateJudgement(newValue, isType3 = false) {
+      console.log('isType3', isType3);
+
+      if (isType3) {
+        const OK_ID = 'c4f5ff30-1b95-4ad8-8af8-e3e9d90bd942'
+        const NG_ID = '2e247c66-3e9c-44b6-951a-0a26791ad37d'
+
+        const result = newValue
+
+        let total =
+          result.stw_ct1
+        let totalAvg = total / 1
+
+        let totalPrecentage =
+          ((Math.max(
+            result.stw_ct1,
+          ) -
+            Math.min(
+              result.stw_ct1,
+            )) /
+            2 /
+            totalAvg) *
+          100
+        this.judgementAverage = totalAvg
+        console.log('totalPrecentage', totalPrecentage);
+
+        let is_nan = Number.isNaN(totalPrecentage)
+        this.judgementPrecentage = is_nan ? 0 : totalPrecentage.toFixed()
+        if (totalPrecentage.toFixed() >= 10) {
+          this.judgementID = NG_ID
+        }
+        this.judgementID = OK_ID
+        return
+      }
       const OK_ID = 'c4f5ff30-1b95-4ad8-8af8-e3e9d90bd942'
       const NG_ID = '2e247c66-3e9c-44b6-951a-0a26791ad37d'
       console.log(newValue)
@@ -937,8 +1003,11 @@ export default {
       await this.getJudgments()
       await this.getFactors()
       await this.getGroups()
-
-      this.calculateJudgement(mapCategory[0])
+      let isType3 = false;
+      if (this.observation?.job_type_nm === 'Type 3') {
+        isType3 = true
+      }
+      this.calculateJudgement(mapCategory[0], isType3)
     },
     async postCheckObs() {
       try {
