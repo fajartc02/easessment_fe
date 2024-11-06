@@ -153,7 +153,7 @@
                   </td>
                   <td>
                     <input class="form-control" type="file" name="ilustration_imgs[]" @change="handleFileInputChange"
-                      multiple accept="image/*">
+                      multiple>
                     <table v-if="itemcheck.ilustration_imgs">
                       <tr v-for="(image, index) in itemcheck.ilustration_imgs" :key="index">
                         <td>
@@ -203,7 +203,7 @@
               </td>
               <td>
                 <input class="form-control" type="file" name="ilustration_imgs[]" @change="handleFileInputChange"
-                  multiple accept="image/*">
+                  multiple>
 
                 <table v-if="selectedImages.length > 0">
                   <tr v-for="(image, index) in selectedImages" :key="index">

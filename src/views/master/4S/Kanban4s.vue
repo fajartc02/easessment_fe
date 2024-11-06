@@ -78,7 +78,7 @@
             <div class="col">
               <label>Images Ilustration</label><small class="text-danger">(max 4 gambar)</small>
               <input class="form-control" type="file" name="kanban_imgs[]" @change="handleFileInputChange" multiple
-                accept="image/*">
+                >
 
               <table v-if="selectedImages.length > 0">
                 <tr v-for="(image, index) in selectedImages" :key="index">
