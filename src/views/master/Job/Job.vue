@@ -45,6 +45,7 @@
           <th>Type Pekerjaan</th>
           <th>Job No</th>
           <th>Job Desc</th>
+          <th>Cycle Time (Std)</th>
           <th>SOP</th>
           <th>Pembuat</th>
           <th>Tanggal Di buat</th>
@@ -58,7 +59,8 @@
             <td>{{ job.pos_nm }}</td>
             <td>{{ job.job_type_nm }}</td>
             <td>{{ job.job_no }}</td>
-            <td>{{ job.job_nm }}</td>
+            <td class="px-2" style="text-align: left">{{ job.job_nm }}</td>
+            <td>{{ job?.cycle_time || 0 }}</td>
             <td v-if="job.attachment">
               <CIcon icon="cil-check-circle" class="text-success" size="xxl" />
             </td>
