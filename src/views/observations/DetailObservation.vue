@@ -80,7 +80,7 @@
             <CModalHeader>
               <CModalTitle v-if="observation.job_type_nm">{{
                 tskLabel
-                }}</CModalTitle>
+              }}</CModalTitle>
             </CModalHeader>
             <CModalBody>
               <vue-pdf-embed v-if="tskFile" :source="tskFile" />
@@ -511,7 +511,7 @@
             </div>
             <div class="chat-input mt-2">
               <input type="text" v-model="messageInput" class="form-control" placeholder="Type a message..." />
-              <button class="btn btn-primary" @click="sendMessage">Send</button>
+              <button class="btn btn-primary" @click="sendMessage">Send </button>
             </div>
           </div>
         </div>
