@@ -15,6 +15,9 @@
               <th>
                 {{ getKanbanDetail.freq_nm }}
               </th>
+              <th rowspan="2">
+                SOP
+              </th>
             </tr>
             <tr>
               <th>
@@ -37,6 +40,9 @@
               <td>{{ getKanbanDetail.area_nm }}</td>
               <td>{{ totalItemCheckTime }}</td>
               <td>{{ getKanbanDetail.zone_nm }}</td>
+              <td>{{ getKanbanDetail?.sop || 'changes this to Visual SOP' }}
+                <!-- handling file upload SOP -->
+              </td>
             </tr>
           </tbody>
         </table>
@@ -54,11 +60,13 @@
                 PRODUCTION
               </th>
               <th>
+                Periodic
                 <CFormSelect v-model="getKanbanDetail.freq_id">
                   <option v-for="freq in getFreqsOptsWithoutAll" :key="freq.id" :value="freq.id">{{ freq.text }}
                   </option>
                 </CFormSelect>
               </th>
+              <th rowspan="2">SOP</th>
             </tr>
             <tr>
               <th>
@@ -87,6 +95,9 @@
                   <option v-for="zone in getZoneOptsWithoutAll" :key="zone.id" :value="zone.id">{{ zone.text }}
                   </option>
                 </CFormSelect>
+              </td>
+              <td>
+                <input type="file" class="form-control">
               </td>
             </tr>
           </tbody>
@@ -227,7 +238,7 @@
             </tr>
             <!-- End: ADD ITEMCHECK -->
             <tr>
-              <td colspan="6"><button class="btn btn-sm btn-primary mx-auto"
+              <td colspan="8"><button class="btn btn-sm btn-primary mx-auto"
                   @click="() => { isAddItemCheck = true }">Add
                   Item
                   Check</button>

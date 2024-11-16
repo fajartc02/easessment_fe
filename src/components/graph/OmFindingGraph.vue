@@ -6,8 +6,8 @@
       </div>
       <div class="card-header align-end overflow-auto">
         <div class="row">
-          <div class="col-10"></div>
-          <div class="col">
+          <div class="col-6"></div>
+          <div class="col justify-content-end d-flex">
             <table>
               <tr>
                 <td>
