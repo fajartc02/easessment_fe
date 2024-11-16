@@ -69,13 +69,12 @@
         <div v-if="isLoadingMainSchedule" class="text-center p-5">
           <CSpinner aria-hidden="true" />
         </div>
-        <div v-else class="card p-0 mb-3">
+        <div v-else class="card p-0 mb-3" ref="content">
           <template v-for="(mainSchedule, index) in mainScheduleData" :key="mainSchedule.id">
-            <!--
-              just add this if you want to hide empty sub schedule of main schedule
-              v-if="mainSchedule.sub_schedules.length > 0"
-            -->
-            <div class="card-body p-0 tableFixHead">
+            <div class="card">
+              <button class="btn btn-primary" @click="exportToPDF(index)">Export PDF</button>
+            </div>
+            <div class="card-body p-0 tableFixHead" :ref="'content_' + index">
               <table class="table table-hover" style="width: 100%;">
                 <thead class="bg-dark text-light">
                   <tr>
@@ -467,6 +466,7 @@ import VueMultiselect from "vue-multiselect";
 import Swal from "sweetalert2";
 import { toast } from "vue3-toastify";
 import CustPagination from "@/components/pagination/CustPagination.vue";
+import html2pdf from 'html2pdf.js'
 
 
 export default {
@@ -597,6 +597,51 @@ export default {
     }
   },
   methods: {
+    exportToPDF(index) {
+      // Gunakan ref dinamis berdasarkan indeks
+      const tableToExport = this.$refs[`content_${index}`][0];
+
+      if (!tableToExport) {
+        toast.error("Tabel yang ingin diekspor tidak ditemukan!", { autoClose: 700 });
+        return;
+      }
+
+      // Pastikan nama file sesuai shift
+      const shift = this.mainScheduleData[index]?.group_nm || "Default";
+      const nameFile = `4S_Schedule_${shift.replace(/\s+/g, '_')}`;
+
+      // Konfigurasi ekspor
+      const options = {
+        margin: [5, 5, 5, 5],
+        filename: `${nameFile}.pdf`,
+        image: { type: "jpeg", quality: 1 },
+        html2canvas: {
+          scale: 3,
+          useCORS: true,
+        },
+        jsPDF: {
+          unit: "pt",
+          format: [2500, 1500],
+          orientation: "landscape",
+        },
+      };
+
+      // Eksekusi ekspor
+      html2pdf()
+        .set(options)
+        .from(tableToExport)
+        .toPdf()
+        .save()
+        .then(() => {
+          toast.success(`PDF berhasil diekspor untuk shift ${shift}!`, { autoClose: 700 });
+        })
+        .catch((error) => {
+          console.error("Error saat ekspor PDF:", error);
+          toast.error("Gagal mengekspor PDF", { autoClose: 700 });
+        });
+    }
+    ,
+
     addScheduleCheck(mainScheduleID, subScheduleID) {
       this.$router.push(`/4s/schedule-check/${mainScheduleID}/${subScheduleID}`);
     },
