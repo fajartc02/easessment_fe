@@ -8,98 +8,100 @@
         <!-- Start:TABLE VIEW KANBAN -->
         <table v-if="!isEditKanban" class="table table-bordered">
           <thead class="text-light bg-dark">
-            <tr>
-              <th colspan="3">
-                4S Kanban {{ getKanbanDetail.line_nm }} PRODUCTION
-              </th>
-              <th>
-                {{ getKanbanDetail.freq_nm }}
-              </th>
-              <th rowspan="2">
-                SOP
-              </th>
-            </tr>
-            <tr>
-              <th>
-                No Kanban
-              </th>
-              <th>
-                Area Check
-              </th>
-              <th>
-                Waktu 4S (min)
-              </th>
-              <th>
-                Zone
-              </th>
-            </tr>
+          <tr>
+            <th colspan="3">
+              4S Kanban {{ getKanbanDetail.line_nm }} PRODUCTION
+            </th>
+            <th>
+              {{ getKanbanDetail.freq_nm }}
+            </th>
+            <th rowspan="2">
+              SOP
+            </th>
+          </tr>
+          <tr>
+            <th>
+              No Kanban
+            </th>
+            <th>
+              Area Check
+            </th>
+            <th>
+              Waktu 4S (min)
+            </th>
+            <th>
+              Zone
+            </th>
+          </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>{{ getKanbanDetail.kanban_no }}</td>
-              <td>{{ getKanbanDetail.area_nm }}</td>
-              <td>{{ totalItemCheckTime }}</td>
-              <td>{{ getKanbanDetail.zone_nm }}</td>
-              <td>{{ getKanbanDetail?.sop || 'changes this to Visual SOP' }}
-                <!-- handling file upload SOP -->
-              </td>
-            </tr>
+          <tr>
+            <td>{{ getKanbanDetail.kanban_no }}</td>
+            <td>{{ getKanbanDetail.area_nm }}</td>
+            <td>{{ totalItemCheckTime }}</td>
+            <td>{{ getKanbanDetail.zone_nm }}</td>
+            <td>
+              <img v-if="getKanbanDetail?.sop_file" :src="getKanbanDetail?.sop_file" width="100"  alt="Sop"/>
+              <span v-else>"changes this to Visual SOP"</span>
+              <!-- handling file upload SOP -->
+            </td>
+          </tr>
           </tbody>
         </table>
         <!-- End:TABLE VIEW KANBAN -->
         <!-- Start:TABLE EDIT KANBAN -->
         <table v-else class="table table-bordered">
           <thead class="text-light bg-dark">
-            <tr>
-              <th colspan="3">
-                4S Kanban
-                <CFormSelect v-model="getKanbanDetail.line_id">
-                  <option v-for="line in getLinesOptsWithoutAll" :key="line.id" :value="line.id">{{ line.text }}
-                  </option>
-                </CFormSelect>
-                PRODUCTION
-              </th>
-              <th>
-                Periodic
-                <CFormSelect v-model="getKanbanDetail.freq_id">
-                  <option v-for="freq in getFreqsOptsWithoutAll" :key="freq.id" :value="freq.id">{{ freq.text }}
-                  </option>
-                </CFormSelect>
-              </th>
-              <th rowspan="2">SOP</th>
-            </tr>
-            <tr>
-              <th>
-                No Kanban
-              </th>
-              <th>
-                Area Check
-              </th>
-              <th>
-                Waktu 4S (min)
-              </th>
-              <th>
-                Zone
-              </th>
-            </tr>
+          <tr>
+            <th colspan="3">
+              4S Kanban
+              <CFormSelect v-model="getKanbanDetail.line_id">
+                <option v-for="line in getLinesOptsWithoutAll" :key="line.id" :value="line.id">{{ line.text }}
+                </option>
+              </CFormSelect>
+              PRODUCTION
+            </th>
+            <th>
+              Periodic
+              <CFormSelect v-model="getKanbanDetail.freq_id">
+                <option v-for="freq in getFreqsOptsWithoutAll" :key="freq.id" :value="freq.id">{{ freq.text }}
+                </option>
+              </CFormSelect>
+            </th>
+            <th rowspan="2">SOP</th>
+          </tr>
+          <tr>
+            <th>
+              No Kanban
+            </th>
+            <th>
+              Area Check
+            </th>
+            <th>
+              Waktu 4S (min)
+            </th>
+            <th>
+              Zone
+            </th>
+          </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>
-                <input type="text" class="form-control" v-model="getKanbanDetail.kanban_no">
-              </td>
-              <td><input type="text" class="form-control" v-model="getKanbanDetail.area_nm"></td>
-              <td>{{ totalItemCheckTime }}</td>
-              <td>
-                <CFormSelect v-model="getKanbanDetail.zone_id">
-                  <option v-for="zone in getZoneOptsWithoutAll" :key="zone.id" :value="zone.id">{{ zone.text }}
-                  </option>
-                </CFormSelect>
-              </td>
-              <td>
-                <input type="file" class="form-control">
-              </td>
-            </tr>
+          <tr>
+            <td>
+              <input type="text" class="form-control" v-model="getKanbanDetail.kanban_no">
+            </td>
+            <td><input type="text" class="form-control" v-model="getKanbanDetail.area_nm"></td>
+            <td>{{ totalItemCheckTime }}</td>
+            <td>
+              <CFormSelect v-model="getKanbanDetail.zone_id">
+                <option v-for="zone in getZoneOptsWithoutAll" :key="zone.id" :value="zone.id">{{ zone.text }}
+                </option>
+              </CFormSelect>
+            </td>
+            <td>
+              <input ref="kanban_sop" type="file" class="form-control" @change="onChangeSopFile($event)">
+            </td>
+          </tr>
           </tbody>
         </table>
         <!-- End:TABLE EDIT KANBAN -->
@@ -110,140 +112,146 @@
       <div class="col">
         <table class="table table-bordered">
           <thead class="text-light bg-dark">
-            <tr>
-              <th>No</th>
-              <th>Itemcheck</th>
-              <th>Standard Time</th>
-              <th>
-                Method
-              </th>
-              <th>Control Point</th>
-              <th>Ilustrations</th>
-              <th colspan="2">Actions</th>
-            </tr>
+          <tr>
+            <th>No</th>
+            <th>Itemcheck</th>
+            <th>Standard Time</th>
+            <th>
+              Method
+            </th>
+            <th>Control Point</th>
+            <th>Ilustrations</th>
+            <th colspan="2">Actions</th>
+          </tr>
           </thead>
           <tbody>
-            <!-- Start: EDIT ITEMCHECK -->
-            <template v-if="getItemchecksWithEditableStatus">
-              <tr v-for="(itemcheck) in getItemchecksWithEditableStatus" :key="itemcheck.item_check_kanban_id">
-                <template v-if="!itemcheck.is_edit">
-                  <td>{{ itemcheck.no }}</td>
-                  <td>{{ itemcheck.item_check_nm }}</td>
-                  <td>{{ +itemcheck.standart_time }}</td>
-                  <td>{{ itemcheck.method }}</td>
-                  <td>{{ itemcheck.control_point }}</td>
-                  <td>
-                    <div class="row" v-if="itemcheck.ilustration_imgs">
-                      <div v-for="itemcheckImg in itemcheck.ilustration_imgs" :key="itemcheckImg.path" class="col-4">
-                        <img :src="itemcheckImg.img" width="90">
-                      </div>
+          <!-- Start: EDIT ITEMCHECK -->
+          <template v-if="getItemchecksWithEditableStatus">
+            <tr v-for="(itemcheck) in getItemchecksWithEditableStatus" :key="itemcheck.item_check_kanban_id">
+              <template v-if="!itemcheck.is_edit">
+                <td>{{ itemcheck.no }}</td>
+                <td>{{ itemcheck.item_check_nm }}</td>
+                <td>{{ +itemcheck.standart_time }}</td>
+                <td>{{ itemcheck.method }}</td>
+                <td>{{ itemcheck.control_point }}</td>
+                <td>
+                  <div class="row" v-if="itemcheck.ilustration_imgs">
+                    <div v-for="itemcheckImg in itemcheck.ilustration_imgs" :key="itemcheckImg.path" class="col-4">
+                      <img :src="itemcheckImg.img" width="90">
                     </div>
-                    <template v-else>
-                      <p class="text-danger">No Ilustrations</p>
-                    </template>
-                  </td>
-                  <td>
-                    <button class="btn btn-sm btn-warning" @click="() => {
+                  </div>
+                  <template v-else>
+                    <p class="text-danger">No Ilustrations</p>
+                  </template>
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-warning" @click="() => {
                       itemcheck.is_edit = true
-                    }">Edit</button>
-                  </td>
-                </template>
-                <template v-else>
-                  <td>{{ itemcheck.no }}</td>
-                  <td>
-                    <input type="text" class="form-control" v-model="itemcheck.item_check_nm">
-                  </td>
-                  <td>
-                    <input type="number" class="form-control" v-model="itemcheck.standart_time">
-                  </td>
-                  <td>
-                    <input type="text" class="form-control" v-model="itemcheck.method">
-                  </td>
-                  <td>
-                    <input type="text" class="form-control" v-model="itemcheck.control_point">
-                  </td>
-                  <td>
-                    <input class="form-control" type="file" name="ilustration_imgs[]" @change="handleFileInputChange"
-                      multiple>
-                    <table v-if="itemcheck.ilustration_imgs">
-                      <tr v-for="(image, index) in itemcheck.ilustration_imgs" :key="index">
-                        <td>
-                          <img v-if="!image.is_deleted" :src="image.img" alt="Selected Image" width="100">
-                        </td>
-                        <td>
-                          <button v-if="!image.is_deleted" class="btn btn-sm btn-sm btn-danger"
-                            @click="removeImage(index, itemcheck)">Remove</button>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                  <td>
-                    <button class="btn btn-sm btn-success" @click="() => {
+                    }">Edit
+                  </button>
+                </td>
+              </template>
+              <template v-else>
+                <td>{{ itemcheck.no }}</td>
+                <td>
+                  <input type="text" class="form-control" v-model="itemcheck.item_check_nm">
+                </td>
+                <td>
+                  <input type="number" class="form-control" v-model="itemcheck.standart_time">
+                </td>
+                <td>
+                  <input type="text" class="form-control" v-model="itemcheck.method">
+                </td>
+                <td>
+                  <input type="text" class="form-control" v-model="itemcheck.control_point">
+                </td>
+                <td>
+                  <input class="form-control" type="file" name="ilustration_imgs[]" @change="handleFileInputChange"
+                         multiple>
+                  <table v-if="itemcheck.ilustration_imgs">
+                    <tr v-for="(image, index) in itemcheck.ilustration_imgs" :key="index">
+                      <td>
+                        <img v-if="!image.is_deleted" :src="image.img" alt="Selected Image" width="100">
+                      </td>
+                      <td>
+                        <button v-if="!image.is_deleted" class="btn btn-sm btn-sm btn-danger"
+                                @click="removeImage(index, itemcheck)">Remove
+                        </button>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-success" @click="() => {
                       itemcheck.is_edit = false
                       ActionUpdateItemCheck(itemcheck)
-                    }">Save</button>
-                  </td>
-                </template>
-                <td>
-                  <button class="btn btn-sm btn-danger"
-                    @click="ActionDeleteItemCheck(itemcheck.item_check_kanban_id)">Delete</button>
+                    }">Save
+                  </button>
                 </td>
-              </tr>
-            </template>
-            <!-- End: EDIT ITEMCHECK -->
-            <template v-else>
-              <NoDataTable :colspan="4" v-if="!isAddItemCheck" />
-            </template>
-            <!-- Start: ADD ITEMCHECK -->
-            <tr v-if="isAddItemCheck">
-              <td></td>
+              </template>
               <td>
-                <input class="form-control" type="text" placeholder="Masukan itemcheck"
-                  v-model="newItemcheck.item_check_nm">
-              </td>
-              <td>
-                <input class="form-control" type="number" placeholder="Masukan Waktu"
-                  v-model="newItemcheck.standart_time">
-              </td>
-              <td>
-                <input class="form-control" type="text" placeholder="Masukan Waktu" v-model="newItemcheck.method">
-              </td>
-              <td>
-                <input class="form-control" type="text" placeholder="Masukan Waktu"
-                  v-model="newItemcheck.control_point">
-              </td>
-              <td>
-                <input class="form-control" type="file" name="ilustration_imgs[]" @change="handleFileInputChange"
-                  multiple>
-
-                <table v-if="selectedImages.length > 0">
-                  <tr v-for="(image, index) in selectedImages" :key="index">
-                    <td>
-                      <img :src="image.url" alt="Selected Image" width="100">
-                    </td>
-                    <td>
-                      <button class="btn btn-sm btn-sm btn-danger" @click="removeImage(index)">Remove</button>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-              <td>
-                <button class="btn btn-sm btn-success" @click="ActionAddItemCheck">Save</button>
-              </td>
-              <td>
-                <button class="btn btn-sm btn-warning" @click="cancelAddItemcheck">
-                  Cancel
+                <button class="btn btn-sm btn-danger"
+                        @click="ActionDeleteItemCheck(itemcheck.item_check_kanban_id)">Delete
                 </button>
               </td>
             </tr>
-            <!-- End: ADD ITEMCHECK -->
-            <tr>
-              <td colspan="8"><button class="btn btn-sm btn-primary mx-auto"
-                  @click="() => { isAddItemCheck = true }">Add
-                  Item
-                  Check</button>
-              </td>
-            </tr>
+          </template>
+          <!-- End: EDIT ITEMCHECK -->
+          <template v-else>
+            <NoDataTable :colspan="4" v-if="!isAddItemCheck" />
+          </template>
+          <!-- Start: ADD ITEMCHECK -->
+          <tr v-if="isAddItemCheck">
+            <td></td>
+            <td>
+              <input class="form-control" type="text" placeholder="Masukan itemcheck"
+                     v-model="newItemcheck.item_check_nm">
+            </td>
+            <td>
+              <input class="form-control" type="number" placeholder="Masukan Waktu"
+                     v-model="newItemcheck.standart_time">
+            </td>
+            <td>
+              <input class="form-control" type="text" placeholder="Masukan Waktu" v-model="newItemcheck.method">
+            </td>
+            <td>
+              <input class="form-control" type="text" placeholder="Masukan Waktu"
+                     v-model="newItemcheck.control_point">
+            </td>
+            <td>
+              <input class="form-control" type="file" name="ilustration_imgs[]" @change="handleFileInputChange"
+                     multiple>
+
+              <table v-if="selectedImages.length > 0">
+                <tr v-for="(image, index) in selectedImages" :key="index">
+                  <td>
+                    <img :src="image.url" alt="Selected Image" width="100">
+                  </td>
+                  <td>
+                    <button class="btn btn-sm btn-sm btn-danger" @click="removeImage(index)">Remove</button>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-success" @click="ActionAddItemCheck">Save</button>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-warning" @click="cancelAddItemcheck">
+                Cancel
+              </button>
+            </td>
+          </tr>
+          <!-- End: ADD ITEMCHECK -->
+          <tr>
+            <td colspan="8">
+              <button class="btn btn-sm btn-primary mx-auto"
+                      @click="() => { isAddItemCheck = true }">Add
+                Item
+                Check
+              </button>
+            </td>
+          </tr>
           </tbody>
         </table>
       </div>
@@ -257,20 +265,22 @@
 
 
 <script>
-import ITEMCHECK_KANBAN from '@/mocks/ITEMCHECK_KANBAN.mock'
-import NoDataTable from '@/components/table/NoDataTable.vue'
+import ITEMCHECK_KANBAN from "@/mocks/ITEMCHECK_KANBAN.mock";
+import NoDataTable from "@/components/table/NoDataTable.vue";
 import {
   DELETE_ITEMCHECK,
   GET_ITEMCHECKS,
   POST_ITEMCHECK,
   PUT_ITEMCHECK
-} from '@/store/modules/itemchecks.module'
-import { mapGetters } from 'vuex'
-import { GET_KANBAN_DETAIL, PUT_KANBAN } from '@/store/modules/kanban.module'
-import { GET_LINES } from '@/store/modules/line.module'
-import { GET_FREQS } from '@/store/modules/freq.module'
-import { GET_ZONES } from '@/store/modules/zones.module'
-import Swal from 'sweetalert2'
+} from "@/store/modules/itemchecks.module";
+import { mapGetters } from "vuex";
+import { GET_KANBAN_DETAIL, PUT_KANBAN } from "@/store/modules/kanban.module";
+import { GET_LINES } from "@/store/modules/line.module";
+import { GET_FREQS } from "@/store/modules/freq.module";
+import { GET_ZONES } from "@/store/modules/zones.module";
+import Swal from "sweetalert2";
+import ApiService from "@/store/api.service";
+import { toast } from "vue3-toastify";
 
 export default {
   name: "KanbanItemCheckEdit",
@@ -290,81 +300,86 @@ export default {
       isEditKanban: false,
       isAddItemCheck: false,
       selectedImages: [],
-    }
+      sopFile: null
+    };
   },
   computed: {
     ...mapGetters([
-      'getItemchecksWithEditableStatus',
-      'getKanbanDetail',
-      'getLinesOptsWithoutAll',
-      'getFreqsOptsWithoutAll',
-      'getZoneOptsWithoutAll'
+      "getItemchecksWithEditableStatus",
+      "getKanbanDetail",
+      "getLinesOptsWithoutAll",
+      "getFreqsOptsWithoutAll",
+      "getZoneOptsWithoutAll"
     ]),
     totalItemCheckTime() {
-      let total = 0
+      let total = 0;
       if (this.getItemchecksWithEditableStatus) {
         this.getItemchecksWithEditableStatus.forEach(itemcheck => {
-          total += +itemcheck.standart_time
-        })
+          total += +itemcheck.standart_time;
+        });
       }
-      return total
-    },
+      return total;
+    }
   },
   methods: {
     async getKanbanItemCheck() {
       try {
-        this.isLoading = true
-        await this.$store.dispatch(GET_ITEMCHECKS, { kanban_id: this.kanban_id })
-        this.isLoading = false
+        this.isLoading = true;
+        await this.$store.dispatch(GET_ITEMCHECKS, { kanban_id: this.kanban_id });
+        this.isLoading = false;
       } catch (error) {
-        console.log(error)
-        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error);
+        if (error.response.status == 401) this.$router.push("/login");
       }
     },
     async ActionKanbanDetail() {
       try {
-        this.isLoading = true
-        await this.$store.dispatch(GET_KANBAN_DETAIL, { id: this.kanban_id })
-        this.isLoading = false
+        this.isLoading = true;
+        await this.$store.dispatch(GET_KANBAN_DETAIL, { id: this.kanban_id });
+        this.isLoading = false;
       } catch (error) {
-        console.log(error)
-        this.isLoading = false
-        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error);
+        this.isLoading = false;
+        if (error.response.status == 401) this.$router.push("/login");
       }
     },
     async preEditKanban() {
       try {
-        await this.$store.dispatch(GET_LINES)
-        await this.$store.dispatch(GET_FREQS)
-        await this.$store.dispatch(GET_ZONES, { line_id: this.getKanbanDetail.line_id })
+        await this.$store.dispatch(GET_LINES);
+        await this.$store.dispatch(GET_FREQS);
+        await this.$store.dispatch(GET_ZONES, { line_id: this.getKanbanDetail.line_id });
       } catch (error) {
-        console.log(error)
-        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error);
+        if (error.response.status == 401) this.$router.push("/login");
       }
     },
     async ActionEditKanban() {
       try {
-        this.isLoading = true
+        this.isLoading = true;
         const data = {
           id: this.getKanbanDetail.kanban_id,
           freq_id: this.getKanbanDetail.freq_id,
           zone_id: this.getKanbanDetail.zone_id,
           kanban_no: this.getKanbanDetail.kanban_no,
           area_nm: this.getKanbanDetail.area_nm
+        };
+
+        await this.$store.dispatch(PUT_KANBAN, data);
+        if (this.sopFile) {
+          await this.uploadSopFile();
         }
 
-        await this.$store.dispatch(PUT_KANBAN, data)
-        await this.ActionKanbanDetail()
-        this.isLoading = false
-        this.isEditKanban = false
+        await this.ActionKanbanDetail();
+        this.isLoading = false;
+        this.isEditKanban = false;
       } catch (error) {
-        console.log(error)
-        this.isLoading = false
-        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error);
+        this.isLoading = false;
+        if (error.response?.status == 401) this.$router.push("/login");
       }
     },
     cancelAddItemcheck() {
-      this.isAddItemCheck = false
+      this.isAddItemCheck = false;
       this.newItemcheck = {
         kanban_id: null,
         item_check_nm: null,
@@ -372,14 +387,14 @@ export default {
         method: null,
         control_point: null,
         ilustration_imgs: []
-      }
+      };
     },
     async ActionAddItemCheck() {
       try {
-        this.isLoading = true
-        this.newItemcheck.kanban_id = this.getKanbanDetail.kanban_id
-        this.newItemcheck.dest += `_${this.getKanbanDetail.line_nm}_${this.getKanbanDetail.kanban_no}`
-        let newFormKanbanData = new FormData()
+        this.isLoading = true;
+        this.newItemcheck.kanban_id = this.getKanbanDetail.kanban_id;
+        this.newItemcheck.dest += `_${this.getKanbanDetail.line_nm}_${this.getKanbanDetail.kanban_no}`;
+        let newFormKanbanData = new FormData();
         for (const key in this.newItemcheck) {
           const element = this.newItemcheck[key];
           if (Array.isArray(this.newItemcheck[key])) {
@@ -390,10 +405,10 @@ export default {
             newFormKanbanData.append(key, element);
           }
         }
-        await this.$store.dispatch(POST_ITEMCHECK, newFormKanbanData)
-        await this.getKanbanItemCheck()
-        this.isLoading = false
-        this.isAddItemCheck = false
+        await this.$store.dispatch(POST_ITEMCHECK, newFormKanbanData);
+        await this.getKanbanItemCheck();
+        this.isLoading = false;
+        this.isAddItemCheck = false;
         this.newItemcheck = {
           kanban_id: null,
           item_check_nm: null,
@@ -402,16 +417,16 @@ export default {
           ilustration_imgs: [],
           method: null,
           control_point: null
-        }
+        };
       } catch (error) {
-        console.log(error)
-        this.isLoading = false
-        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error);
+        this.isLoading = false;
+        if (error.response.status == 401) this.$router.push("/login");
       }
     },
     async ActionUpdateItemCheck(itemcheck) {
       try {
-        this.isLoading = true
+        this.isLoading = true;
         //   newItemcheck: {
         //   kanban_id: null,
         //   item_check_nm: null,
@@ -428,14 +443,14 @@ export default {
           control_point: itemcheck.control_point,
           dest: "ITEM_CHECKS_KANBAN",
           previous_img_paths: itemcheck.ilustration_imgs ? JSON.stringify(itemcheck.ilustration_imgs) : null, // for handled image
-          ilustration_imgs: [],
-        }
+          ilustration_imgs: []
+        };
         console.log(data);
-        data.dest += `_${this.getKanbanDetail.line_nm}_${this.getKanbanDetail.kanban_no}`
-        let newFormKanbanData = new FormData()
+        data.dest += `_${this.getKanbanDetail.line_nm}_${this.getKanbanDetail.kanban_no}`;
+        let newFormKanbanData = new FormData();
         for (const key in data) {
           const element = data[key];
-          if (Array.isArray(data[key]) && key != 'previous_img_paths') {
+          if (Array.isArray(data[key]) && key != "previous_img_paths") {
             this.selectedImages.forEach((item) => {
               newFormKanbanData.append(`ilustration_imgs`, item.file);
             });
@@ -443,15 +458,15 @@ export default {
             newFormKanbanData.append(key, element);
           }
         }
-        this.isLoading = false
-        await this.$store.dispatch(PUT_ITEMCHECK, newFormKanbanData)
-        this.selectedImages = []
-        this.newItemcheck.ilustration_imgs = []
-        this.newItemcheck.dest = "ITEM_CHECKS_KANBAN"
-        await this.getKanbanItemCheck()
+        this.isLoading = false;
+        await this.$store.dispatch(PUT_ITEMCHECK, newFormKanbanData);
+        this.selectedImages = [];
+        this.newItemcheck.ilustration_imgs = [];
+        this.newItemcheck.dest = "ITEM_CHECKS_KANBAN";
+        await this.getKanbanItemCheck();
       } catch (error) {
-        console.log(error)
-        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error);
+        if (error.response.status == 401) this.$router.push("/login");
       }
     },
     async ActionDeleteItemCheck(item_check_kanban_id) {
@@ -459,17 +474,17 @@ export default {
         await Swal.fire({
           title: `Apakah kamu yakin ingin menghapus item check ini?`,
           showCancelButton: true,
-          confirmButtonText: "Delete",
+          confirmButtonText: "Delete"
         }).then(async (result) => {
           if (result.isConfirmed) {
-            this.isLoading = true
-            await this.$store.dispatch(DELETE_ITEMCHECK, item_check_kanban_id)
-            await this.getKanbanItemCheck()
+            this.isLoading = true;
+            await this.$store.dispatch(DELETE_ITEMCHECK, item_check_kanban_id);
+            await this.getKanbanItemCheck();
           }
         });
       } catch (error) {
-        console.log(error)
-        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error);
+        if (error.response.status == 401) this.$router.push("/login");
       }
     },
     handleFileInputChange(event) {
@@ -488,7 +503,7 @@ export default {
     removeImage(index, itemcheck = null) {
       if (itemcheck) {
         // console.log(itemcheck);
-        itemcheck.ilustration_imgs[index].is_deleted = true
+        itemcheck.ilustration_imgs[index].is_deleted = true;
         console.log(itemcheck.ilustration_imgs);
         // itemcheck.ilustration_imgs[index] = itemcheck.ilustration_imgs[index].reduce(itemcheck => itemcheck.)
         // itemcheck.splice(index, 1);
@@ -496,36 +511,69 @@ export default {
       }
       this.newItemcheck.ilustration_imgs.splice(index, 1);
       this.selectedImages.splice(index, 1);
+    },
+    async uploadSopFile() {
+      try {
+        const formData = new FormData();
+        formData.append("dest", "kanban-sop");
+        formData.append("kanban_id", this.getKanbanDetail.kanban_id);
+        formData.append("sop_file", this.sopFile);
+
+        const upload = await ApiService.post(
+          `/master/kanbans/upload-sop?dest=kanban-sop`,
+          formData,
+          {
+            headers: {
+              "Authorization": `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "multipart/form-data"
+            }
+          }
+        );
+
+        if (upload.data.data) {
+          toast.success("Susccessfully Update Kanban & SOP", {
+            autoClose: 1000
+          });
+        }
+      } catch (error) {
+        toast.error(JSON.stringify(error.message));
+        setTimeout(() => {
+          toast.remove();
+        }, 2000);
+      }
+    },
+    onChangeSopFile(event) {
+      this.sopFile = event.target.files[0];
     }
   },
   watch: {
     kanban_id: {
       immediate: true,
-      handler: function () {
+      handler: function() {
         this.getKanbanItemCheck();
-        this.ActionKanbanDetail()
+        this.ActionKanbanDetail();
       }
     },
     getItemchecksWithEditableStatus: {
       immediate: true,
-      handler: function () {
-        this.itemchecks = this.getItemchecksWithEditableStatus
+      handler: function() {
+        this.itemchecks = this.getItemchecksWithEditableStatus;
       }
-    },
+    }
   },
   props: {
     kanban_id: {
       type: String,
       default: -1
-    },
+    }
   },
   components: {
     NoDataTable
   },
   mounted() {
-    this.preEditKanban()
+    this.preEditKanban();
   }
-}
+};
 </script>
 
 <style scoped>
