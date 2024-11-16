@@ -493,20 +493,39 @@
 
       <ObservationVideo :observationVideo="observation?.video" @on-video-change="videoChange" />
 
-      <div v-if="observation?.comment_sh">
-        <div class="mb-2">
-          <label class="mb-1">Comment SH </label>
-          <input :value="observation.comment_sh" type="text" class="form-control" disabled />
+      <div class="card chat-card">
+        <div class="card-body">
+          <div class="comment-sh-container">
+            <h5>Comments</h5>
+            <div class="chat-box">
+              <div v-for="(message, index) in chatMessages" :key="index"
+                :class="['chat-message', message.noreg === noreg ? 'chat-right' : 'chat-left']">
+                <div class="message-bubble">
+                  <strong>
+                    {{ `${message.name} (${message.noreg || 'Unknown Noreg'})` }}
+                  </strong>
+                  <p>{{ message.comments }}</p>
+                  <span class="timestamp">{{ message.created_at }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="chat-input mt-2">
+              <input type="text" v-model="messageInput" class="form-control" placeholder="Type a message..." />
+              <button class="btn btn-primary" @click="sendMessage">Send</button>
+            </div>
+          </div>
         </div>
       </div>
-      <div v-if="observation?.comment_ammgr">
+
+
+      <!-- <div v-if="observation?.comment_ammgr">
         <div class="mb-2">
           <label class="mb-1">Comment AM / MGR </label>
           <input :value="observation?.comment_ammgr" type="text" class="form-control" disabled />
         </div>
-      </div>
+      </div> -->
 
-      <CInputGroup class="mb-3" v-if="!observation?.comment_sh">
+      <!-- <CInputGroup class="mb-3" v-if="!observation?.comment_sh">
         <CInputGroupText style="width: 200px;">Comment SH </CInputGroupText>
         <input type="text" class="form-control" v-model="comment_sh" />
         <CInputGroupText class="p-0">
@@ -521,7 +540,7 @@
           <CButton color="success" @click="saveCheckObser(comment_ammgr, 'comment_ammgr')" style="font-weight:900;">
             Save</CButton>
         </CInputGroupText>
-      </CInputGroup>
+      </CInputGroup> -->
 
     </div>
   </div>
@@ -542,10 +561,16 @@ import VueMultiselect from 'vue-multiselect'
 import Loading from 'vue-loading-overlay'
 import { ADD_NEW_FINDING } from '@/store/modules/finding.module'
 import ObservationVideo from '@/components/ObservationVideo/ObservationVideo.vue'
+import { GET_COMMENTS, POST_COMMENTS } from '@/store/modules/comments.module'
+
 export default {
   name: 'DetailObservation',
   data() {
     return {
+      chatMessages: [],
+      messageInput: "",
+      userName: localStorage.getItem("name"),
+      noreg: localStorage.getItem("noreg"),
       modalShowVideo: false,
       xlDemo: false,
       observation: null,
@@ -670,6 +695,37 @@ export default {
     ObservationVideo,
   },
   methods: {
+    async getComments() {
+      try {
+        const res = await this.$store.dispatch(GET_COMMENTS, { observation_id: this.$route.params.id });
+        this.chatMessages = res;
+      } catch (error) {
+        console.error("Failed to get comments:", error);
+      }
+    },
+    async sendMessage() {
+      if (this.messageInput.trim()) {
+        const name = localStorage.getItem("name");
+        const noreg = localStorage.getItem("noreg");
+        const now = moment().format("YYYY-MM-DD HH:mm:ss"); // Waktu sekarang
+        const newComment = {
+          observation_id: this.$route.params.id,
+          comments: this.messageInput,
+          created_dt: now,
+          name,
+          noreg,
+        };
+
+        try {
+          await this.$store.dispatch(POST_COMMENTS, newComment);
+          this.messageInput = "";
+          this.getComments()
+        } catch (error) {
+          console.error("Failed to post comment:", error);
+          toast.error("Failed to send comment. Please try again.");
+        }
+      }
+    },
     videoChange() {
       this.getDetail()
     },
@@ -1078,6 +1134,30 @@ export default {
     },
   },
   async mounted() {
+    const savedUserName = localStorage.getItem("name");
+    if (savedUserName) {
+      this.userName = savedUserName;
+    }
+
+
+    try {
+      const comments = await this.$store.dispatch(GET_COMMENTS, {
+        observation_id: this.$route.params.id,
+      });
+
+      const noreg = localStorage.getItem("noreg");
+
+      this.chatMessages = comments.map((comment) => {
+        return {
+          ...comment,
+          role: comment.noreg === noreg ? "user" : "admin",
+          created_at: moment(comment.created_at).format("YYYY-MM-DD HH:mm:ss"), // Format waktu
+        };
+      });
+    } catch (error) {
+      console.error("Failed to load comments:", error);
+      toast.error("Failed to load comments. Please refresh the page.");
+    }
     await this.getDetail()
     await this.getCategories()
     await this.getUsers()
@@ -1096,6 +1176,83 @@ th,
 td {
   border: 1px solid !important;
   padding: 5px 10px;
+}
+
+.chat-card {
+  width: 100%;
+  margin-top: 10px;
+  padding: 20px;
+}
+
+.comment-sh-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chat-box {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.chat-message {
+  display: flex;
+  margin: 10px 0;
+  width: 100%;
+}
+
+.chat-left .message-bubble {
+  background-color: #e9ecef;
+  color: #333;
+  margin-right: auto;
+  border-radius: 15px 15px 15px 5px;
+  padding: 10px;
+  max-width: 80%;
+}
+
+.chat-right .message-bubble {
+  background-color: #daf8cb;
+  color: #333;
+  margin-left: auto;
+  border-radius: 15px 15px 5px 15px;
+  padding: 10px;
+  max-width: 80%;
+}
+
+.message-bubble {
+  position: relative;
+}
+
+.timestamp {
+  font-size: 0.8em;
+  color: #888;
+  margin-top: 5px;
+  display: block;
+  text-align: right;
+}
+
+.chat-input {
+  display: flex;
+  align-items: center;
+  padding-top: 10px;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+}
+
+.chat-input button {
+  margin-left: 15px;
+  padding: 8px 15px;
+  border-radius: 20px;
 }
 </style>
 
