@@ -132,7 +132,7 @@
           </td>
           <td v-if="item.is_abnormal" class="text-center">
             <button class=" btn btn-info btn-sm text-white"
-                    @click="item.findings.length == 0 ? openEditFindingModal(item.schedule_item_check_kanban_id, item.findings, 'update') : openAddFindingModal(item.schedule_item_check_kanban_id, null, 'add')">
+                    @click="item.findings.length ? openEditFindingModal(item.schedule_item_check_kanban_id, item.findings, 'update') : openAddFindingModal(item.schedule_item_check_kanban_id, null, 'add')">
               {{ item.findings.length > 0 ? "Update Finding" : "Add Finding" }}
             </button>
             <!--            <button v-if="item.findings.length == 0" class=" btn btn-info btn-sm text-white"
@@ -159,11 +159,18 @@
                  width="200" height="100" @click="isVisibleFindingImg = true">
             <span v-else class="text-muted">No image</span>
           </td>
-          <td>
-            <button v-if="item.findings[0]?.kaizen_file" class="btn btn-info btn-sm text-white" @click="onClickKaizen(item.findings[0]?.kaizen_file)">
-              Download
-            </button>
-            <span v-else class="text-muted">No Kaizen File</span>
+          <td class="text-center">
+            <template v-if="item.findings[0]">
+              <div class="d-flex gap-2">
+                <input :id="item.findings[0].finding_id"  type="file" hidden @change="onChangeDirectKaizenFile($event, item.findings[0].finding_id)" />
+                <button class="btn btn-info btn-sm text-white"
+                        @click="item.findings[0]?.kaizen_file ? onClickDownloadKaizen(item.findings[0]?.kaizen_file) : null" :disabled="!item.findings[0]?.kaizen_file">
+                  Download
+                </button>
+                <button class="btn btn-info btn-sm text-white" @click="onClickDirectUploadKaizen(item.findings[0]?.finding_id)">Upload</button>
+              </div>
+            </template>
+            <span v-else>No Action</span>
           </td>
         </tr>
         </tbody>
@@ -325,7 +332,7 @@
               <input ref="finding_image" type="file" class="form-control" />
             </div>
           </div>
-          <div class="mb-2 mt-2">
+          <div v-if="!isEdit" class="mb-2 mt-2">
             <label class="mb-1">Kaizen File</label>
             <input ref="kaizen_file" type="file" class="form-control" />
           </div>
@@ -433,7 +440,8 @@ export default {
       isFromFindingValidate: false,
       showErrorFindingPic: false,
       showErrorActualPic: false,
-      planDateSubSchedule: null
+      planDateSubSchedule: null,
+      isDirectUploadKaizen: false
     };
   },
   computed: {
@@ -558,6 +566,7 @@ export default {
       }
       this.findingActionType = actionType;
       const data = findings[0];
+      console.log('clicked finding', data);
 
       this.selectedLineID = { line_name: data?.line_nm, line_id: data?.line_id };
       this.selectedFreqID = data?.freq_id;
@@ -846,6 +855,7 @@ export default {
       this.showErrorActualPic = !this.actualPIC || this.actualPIC?.id == "-1";
     },
     resetForm() {
+      this.isDirectUploadKaizen = false;
       this.selectedFindingID = null;
       this.selectedPIC = null;
       this.findingDate = moment().format("YYYY-MM-DD");
@@ -865,20 +875,34 @@ export default {
       this.actualPicName = null;
       this.enabledReduceTime = false;
     },
-    async uploadKaizen(finding_id) {
+    async uploadKaizen(finding_id, kaizen_file = null) {
+      if (!kaizen_file && !this.$refs.kaizen_file.files.length) {
+        return;
+      }
+
       try {
         const formData = new FormData();
         formData.append("finding_id", finding_id);
         formData.append("dest", "4s-finding-kaizen");
-        formData.append("kaizen_file", this.$refs.kaizen_file.files[0]);
+        formData.append("kaizen_file", kaizen_file ? kaizen_file : this.$refs.kaizen_file.files[0]);
 
         await ApiService.post(`/operational/4s/finding/upload-kaizen?dest=4s-finding-kaizen`, formData);
       } catch (e) {
         console.log("uploadKaizen", e);
       }
     },
-    onClickKaizen(file){
-      window.open(file, '_blank').focus();
+    onClickDownloadKaizen(file) {
+      window.open(file, "_blank").focus();
+    },
+    // eslint-disable-next-line no-unused-vars
+    onClickDirectUploadKaizen(finding_id) {
+      document.getElementById(finding_id).click();
+    },
+    async onChangeDirectKaizenFile(event, finding_id){
+      this.isLoading = true;
+      await this.uploadKaizen(finding_id, event.target.files[0]);
+      this.isLoading = false;
+      this.getScheduleCheck();
     }
   },
   updated() {
