@@ -23,11 +23,12 @@
             <CInputGroup class="mb-3">
               <CInputGroupText>Act Date</CInputGroupText>
               <CFormInput v-if="getSubSchedulesCheck?.actual_time"
-                :value="getSubSchedulesCheck?.actual_time?.substring(0, 10)" disabled />
+                          :value="getSubSchedulesCheck?.actual_time?.substring(0, 10)" disabled />
               <input type="date" class="form-control" v-model="detailActualDate">
               <CInputGroupText>
                 <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()"> {{
-                  isUpdateCheckLoading ? 'updating..' : 'update' }} </button>
+                    isUpdateCheckLoading ? "updating.." : "update" }}
+                </button>
               </CInputGroupText>
             </CInputGroup>
           </div>
@@ -52,7 +53,8 @@
               <Select2 class="form-control" :options="getUsersOpts" v-model="detailActualPIC" />
               <CInputGroupText>
                 <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()">{{
-                  isUpdateCheckLoading ? 'updating..' : 'update' }}</button>
+                    isUpdateCheckLoading ? "updating.." : "update" }}
+                </button>
               </CInputGroupText>
             </CInputGroup>
           </div>
@@ -64,7 +66,7 @@
       <div class="card-header">
         <button class="btn btn-primary" @click="modalKanbanDetail = true">Lihat Kanban</button>
         <CModal backdrop="static" size="xl" :visible="modalKanbanDetail" @close="() => { modalKanbanDetail = false }"
-          aria-labelledby="StaticBackdropExampleLabel">
+                aria-labelledby="StaticBackdropExampleLabel">
           <CModalHeader>
             <CModalTitle>Kanban Check</CModalTitle>
           </CModalHeader>
@@ -78,90 +80,101 @@
     <div class="mt-3">
       <table class="table table-bordered">
         <thead>
-          <tr>
-            <th>No</th>
-            <th>Item Check</th>
-            <th>Method</th>
-            <th>Control Point</th>
-            <th>Judgement</th>
-            <th>Standard Time</th>
-            <th>Actual Time</th>
-            <th>Actions</th>
-            <th>Finding</th>
-            <th>Image</th>
-          </tr>
+        <tr>
+          <th>No</th>
+          <th>Item Check</th>
+          <th>Method</th>
+          <th>Control Point</th>
+          <th>Judgement</th>
+          <th>Standard Time</th>
+          <th>Actual Time</th>
+          <th>Actions</th>
+          <th>Finding</th>
+          <th>Image</th>
+          <th>Kaizen</th>
+        </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) in itemCheks" :key="item" class="align-middle">
-            <td>{{ index + 1 }}</td>
-            <td>{{ item.item_check_nm }}</td>
-            <td>{{ item.method }}</td>
-            <td>{{ item.control_point }}</td>
-            <td>
-              <CFormSelect v-model="item.judgment_id">
-                <option>Select Judgment</option>
-                <option v-for="judg in judgments" :key="judg.id" :value="judg.id">
-                  {{ judg.text }}
-                </option>
-              </CFormSelect>
-            </td>
-            <td>
-              {{ item.standart_time }}
-            </td>
-            <td>
-              <CFormInput v-model="item.actual_time" type="number" />
-            </td>
+        <tr v-for="(item, index) in itemCheks" :key="item" class="align-middle">
+          <td>{{ index + 1 }}</td>
+          <td>{{ item.item_check_nm }}</td>
+          <td>{{ item.method }}</td>
+          <td>{{ item.control_point }}</td>
+          <td>
+            <CFormSelect v-model="item.judgment_id">
+              <option>Select Judgment</option>
+              <option v-for="judg in judgments" :key="judg.id" :value="judg.id">
+                {{ judg.text }}
+              </option>
+            </CFormSelect>
+          </td>
+          <td>
+            {{ item.standart_time }}
+          </td>
+          <td>
+            <CFormInput v-model="item.actual_time" type="number" />
+          </td>
 
-            <td v-if="item.actual_time" class="text-center">
-              <button class="btn btn-success btn-sm text-white"
-                @click="saveScheduleCheck(item.judgment_id, item.actual_time, item.item_check_kanban_id)">
-                {{
-                  isAddCheckLoading?.isLoading && isAddCheckLoading?.id == item.item_check_kanban_id
-                    ? 'Saving...'
-                    : 'Save'
-                }}
-              </button>
-            </td>
-            <td v-else>
-              <button class="btn btn-info btn-sm text-white" disabled>
-                Isi Dahulu
-              </button>
-            </td>
-            <td v-if="item.is_abnormal" class="text-center">
-              <button v-if="item.findings.length == 0" class=" btn btn-info btn-sm text-white"
-                @click="item.findings.length == 0 ? openEditFindingModal(item.schedule_item_check_kanban_id, item.findings, 'update') : openAddFindingModal(item.schedule_item_check_kanban_id, null, 'add')">
-                {{ item.findings.length > 0 ? 'Update Finding' : 'Add Finding' }}
-              </button>
-              <template v-else>
-                <span>
-                  {{ item.findings[0]?.finding_desc }}
-                </span>
-              </template>
-            </td>
-            <td v-else class="text-center">
-              <span class="text-muted">No Action</span>
-            </td>
-            <td>
-              <CModal size="xl" :visible="isVisibleFindingImg" @close="isVisibleFindingImg = false"
-                @closed="isVisibleFindingImg = false">
-                <CModalBody>
-                  <img class="w-100" :src="item.findings[0]?.finding_img" alt="image finding">
-                </CModalBody>
-              </CModal>
-              <img v-if="item.findings[0]?.finding_img" :src="item.findings[0]?.finding_img" alt="image finding"
-                width="200" height="100" @click="isVisibleFindingImg = true">
-              <span v-else class="text-muted">No image</span>
-            </td>
-          </tr>
+          <td v-if="item.actual_time" class="text-center">
+            <button class="btn btn-success btn-sm text-white"
+                    @click="saveScheduleCheck(item.judgment_id, item.actual_time, item.item_check_kanban_id)">
+              {{
+                isAddCheckLoading?.isLoading && isAddCheckLoading?.id == item.item_check_kanban_id
+                  ? "Saving..."
+                  : "Save"
+              }}
+            </button>
+          </td>
+          <td v-else>
+            <button class="btn btn-info btn-sm text-white" disabled>
+              Isi Dahulu
+            </button>
+          </td>
+          <td v-if="item.is_abnormal" class="text-center">
+            <button class=" btn btn-info btn-sm text-white"
+                    @click="item.findings.length == 0 ? openEditFindingModal(item.schedule_item_check_kanban_id, item.findings, 'update') : openAddFindingModal(item.schedule_item_check_kanban_id, null, 'add')">
+              {{ item.findings.length > 0 ? "Update Finding" : "Add Finding" }}
+            </button>
+            <!--            <button v-if="item.findings.length == 0" class=" btn btn-info btn-sm text-white"
+                                @click="item.findings.length == 0 ? openEditFindingModal(item.schedule_item_check_kanban_id, item.findings, 'update') : openAddFindingModal(item.schedule_item_check_kanban_id, null, 'add')">
+                          {{ item.findings.length > 0 ? "Update Finding" : "Add Finding" }}
+                        </button>
+                        <template v-else>
+                            <span>
+                              {{ item.findings[0]?.finding_desc }}
+                            </span>
+                        </template>-->
+          </td>
+          <td v-else class="text-center">
+            <span class="text-muted">No Action</span>
+          </td>
+          <td>
+            <CModal size="xl" :visible="isVisibleFindingImg" @close="isVisibleFindingImg = false"
+                    @closed="isVisibleFindingImg = false">
+              <CModalBody>
+                <img class="w-100" :src="item.findings[0]?.finding_img" alt="image finding">
+              </CModalBody>
+            </CModal>
+            <img v-if="item.findings[0]?.finding_img" :src="item.findings[0]?.finding_img" alt="image finding"
+                 width="200" height="100" @click="isVisibleFindingImg = true">
+            <span v-else class="text-muted">No image</span>
+          </td>
+          <td>
+            <button v-if="item.findings[0]?.kaizen_file" class="btn btn-info btn-sm text-white" @click="onClickKaizen(item.findings[0]?.kaizen_file)">
+              Download
+            </button>
+            <span v-else class="text-muted">No Kaizen File</span>
+          </td>
+        </tr>
         </tbody>
       </table>
     </div>
 
     <!-- modals -->
     <CModal backdrop="static" size="xl" :visible="addFindingModal" @close="() => { addFindingModal = false }"
-      aria-labelledby="StaticBackdropExampleLabel">
+            aria-labelledby="StaticBackdropExampleLabel">
       <CModalHeader>
-        <CModalTitle id="StaticBackdropExampleLabel">{{ isEdit ? 'Edit' : 'Add' }} Finding</CModalTitle>
+        <CModalTitle id="StaticBackdropExampleLabel">{{ isEdit ? "Edit" : "Add" }} Finding</CModalTitle>
       </CModalHeader>
       <CForm @submit="submit" novalidate :validated="isFromFindingValidate">
         <CModalBody>
@@ -200,7 +213,7 @@
               <div class="mb-2">
                 <label class="mb-1">Finding Desc</label>
                 <input type="text" class="form-control" v-model="findingDesc" placeholder="Write Finding Desc"
-                  :disabled="isEdit" :required="!isEdit" />
+                       :disabled="isEdit" :required="!isEdit" />
               </div>
             </div>
           </div>
@@ -209,14 +222,14 @@
               <div class="mb-2">
                 <label class="mb-1">Finding Date</label>
                 <input type="date" class="form-control" v-model="findingDate" placeholder="Select Finding Date"
-                  :disabled="isEdit" :required="!isEdit" />
+                       :disabled="isEdit" :required="!isEdit" />
               </div>
               <div class="mb-2" :class="{ 'invalid': showErrorFindingPic }">
                 <label class="mb-1" style="margin-top: 1.5em;">
                   Finding PIC
                 </label>
                 <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions"
-                  class="vue-multi-select" :disabled="isEdit" @close="closeSelectFindingPic">
+                                class="vue-multi-select" :disabled="isEdit" @close="closeSelectFindingPic">
                 </VueMultiselect>
               </div>
 
@@ -226,9 +239,9 @@
                 <label class="mb-1">Reduce Time Countermeasure (Menit)</label>
                 <div class="d-flex align-items-center">
                   <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" v-model="enabledReduceTime"
-                    class="me-2" style="height: 20px; width: 20px;">
+                         class="me-2" style="height: 20px; width: 20px;">
                   <input type="text" class="form-control" v-model="timeCM" :disabled="!enabledReduceTime"
-                    @keypress="$event.key.match(/^[\d]$/) ? '' : $event.preventDefault()" />
+                         @keypress="$event.key.match(/^[\d]$/) ? '' : $event.preventDefault()" />
                 </div>
                 <small v-if="!enabledReduceTime" class="text-info">* Ceklis & isi waktu pengurangan jika ada</small>
                 <small v-else class="text-success">* Abaikan jika tidak ingin di ubah</small>
@@ -236,7 +249,7 @@
               <div class="mb-2" :class="{ 'invalid': showErrorActualPic }">
                 <label class="mb-1">PIC Countermeasure</label>
                 <VueMultiselect v-model="actualPIC" :options="picData" :custom-label="customPicOptions"
-                  class="vue-multi-select" @close="closeSelectActualPic">
+                                class="vue-multi-select" @close="closeSelectActualPic">
                 </VueMultiselect>
               </div>
             </div>
@@ -260,7 +273,7 @@
               <div class="mb-2">
                 <label class="mb-1">Plan Countermeasure Desc</label>
                 <input type="text" class="form-control" v-model="planCMDesc"
-                  placeholder="Write Plan Countermeasure Desc" :required="!isEdit" :disabled="isEdit" />
+                       placeholder="Write Plan Countermeasure Desc" :required="!isEdit" :disabled="isEdit" />
               </div>
             </div>
           </div>
@@ -313,6 +326,10 @@
             </div>
           </div>
           <div class="mb-2 mt-2">
+            <label class="mb-1">Kaizen File</label>
+            <input ref="kaizen_file" type="file" class="form-control" />
+          </div>
+          <div class="mb-2 mt-2">
             <label class="mb-1">Status Countermeasure</label>
             <select v-model="cmJudg" class="form-select" disabled>
               <option value="true">Sudah</option>
@@ -332,7 +349,7 @@
             Close
           </CButton>
           <CButton color="primary" type="submit">
-            {{ isEdit ? 'Update' : 'Add' }} Finding Data
+            {{ isEdit ? "Update" : "Add" }} Finding Data
           </CButton>
         </CModalFooter>
       </CForm>
@@ -343,25 +360,25 @@
 </template>
 
 <script>
-import moment from 'moment'
-import { mapGetters } from 'vuex'
-import { GET_SCHEDULES_CHECK } from '@/store/modules/schedule4s.module'
-import { GET_LINES } from '@/store/modules/filter.module'
-import { GET_USERS } from '@/store/modules/user.module'
-import ApiService from '@/store/api.service'
-import VueMultiselect from 'vue-multiselect'
-import { GET_ZONES } from '@/store/modules/zones.module'
-import { GET_KANBANS } from '@/store/modules/kanban.module'
-import { GET_FREQS } from '@/store/modules/freq.module'
-import { GET_SYSTEMS } from '@/store/modules/system.module'
-import Loading from 'vue-loading-overlay'
-import { toast } from 'vue3-toastify'
-import KanbanItemCheck from '@/components/kanban4s/KanbanItemCheck.vue'
-import ModalForm4sFinding from '@/components/4s/ModalForm4sFinding.vue'
-import CustomFullLoading from '@/components/CustomFullLoading.vue'
+import moment from "moment";
+import { mapGetters } from "vuex";
+import { GET_SCHEDULES_CHECK } from "@/store/modules/schedule4s.module";
+import { GET_LINES } from "@/store/modules/filter.module";
+import { GET_USERS } from "@/store/modules/user.module";
+import ApiService from "@/store/api.service";
+import VueMultiselect from "vue-multiselect";
+import { GET_ZONES } from "@/store/modules/zones.module";
+import { GET_KANBANS } from "@/store/modules/kanban.module";
+import { GET_FREQS } from "@/store/modules/freq.module";
+import { GET_SYSTEMS } from "@/store/modules/system.module";
+import Loading from "vue-loading-overlay";
+import { toast } from "vue3-toastify";
+import KanbanItemCheck from "@/components/kanban4s/KanbanItemCheck.vue";
+import ModalForm4sFinding from "@/components/4s/ModalForm4sFinding.vue";
+import CustomFullLoading from "@/components/CustomFullLoading.vue";
 
-import 'vue3-treeselect/dist/vue3-treeselect.css'
-import Treeselect from 'vue3-treeselect'
+import "vue3-treeselect/dist/vue3-treeselect.css";
+import Treeselect from "vue3-treeselect";
 
 export default {
   name: "Schedule Check",
@@ -390,9 +407,9 @@ export default {
       selectedKanbanID: null,
       selectedZoneID: null,
       selectedPIC: null,
-      findingDate: moment().format('YYYY-MM-DD'),
+      findingDate: moment().format("YYYY-MM-DD"),
       findingDesc: null,
-      planCMDate: moment().format('YYYY-MM-DD'),
+      planCMDate: moment().format("YYYY-MM-DD"),
       planCMDesc: null,
       timeCM: null,
       timeYokoten: false,
@@ -416,18 +433,18 @@ export default {
       isFromFindingValidate: false,
       showErrorFindingPic: false,
       showErrorActualPic: false,
-      planDateSubSchedule: null,
-    }
+      planDateSubSchedule: null
+    };
   },
   computed: {
     ...mapGetters([
-      'getSubSchedulesCheck',
-      'getUsersOpts',
-      'getLinesOpts',
-      'getZones',
-      'getKanbans',
-      'getFreqs',
-      'getSystemsOptDept'
+      "getSubSchedulesCheck",
+      "getUsersOpts",
+      "getLinesOpts",
+      "getZones",
+      "getKanbans",
+      "getFreqs",
+      "getSystemsOptDept"
     ]),
     Users() {
       if (this.getUsersOpts) {
@@ -435,8 +452,8 @@ export default {
           return {
             id: user.id,
             text: `${user.noreg}-${user.text}`
-          }
-        })
+          };
+        });
         return container;
       } else {
         return [];
@@ -447,49 +464,49 @@ export default {
       const result = this.getSubSchedulesCheck?.finding ?? {
         ...this.getOmSubSchedulesDetail,
         actual_pic_id: null
-      }
+      };
 
-      return result
+      return result;
     },
     isEdit() {
-      return this.selectedFindingID != null
+      return this.selectedFindingID != null;
     }
   },
   watch: {
     getSubSchedulesCheck: {
       handler() {
-        console.log('getSubSchedulesCheck', this.getSubSchedulesCheck)
+        console.log("getSubSchedulesCheck", this.getSubSchedulesCheck);
       }
     }
   },
   methods: {
     async getScheduleCheck() {
-      this.showErrorActualPic = false
-      this.showErrorFindingPic = false
-      this.selectedFindingID = null //reset selected finding_id whenever this func triggered
-      this.isLoading = true
+      this.showErrorActualPic = false;
+      this.showErrorFindingPic = false;
+      this.selectedFindingID = null; //reset selected finding_id whenever this func triggered
+      this.isLoading = true;
       let objQuery = {
         sub_schedule_id: this.$route.params.subScheduleID
-      }
+      };
       await this.$store.dispatch(GET_SCHEDULES_CHECK, objQuery).then((res) => {
         if (res) {
 
-          this.detailActualPIC = res.actual_pic_id ? res.actual_pic_id : res.pic_id
-          this.detailActualDate = res.actual_time ? res.actual_time : res.plan_time
-          this.gettingKanbanID = res.kanban_id
-          this.itemCheks = res.item_check_kanbans
-          this.isLoading = false
+          this.detailActualPIC = res.actual_pic_id ? res.actual_pic_id : res.pic_id;
+          this.detailActualDate = res.actual_time ? res.actual_time : res.plan_time;
+          this.gettingKanbanID = res.kanban_id;
+          this.itemCheks = res.item_check_kanbans;
+          this.isLoading = false;
           this.planDateSubSchedule = res.plan_time;
         }
-      })
+      });
     },
     async saveScheduleCheck(selectedJudgementID, actualTime, itemCheckKanbanID) {
       this.isAddCheckLoading = {
         isLoading: true,
         id: itemCheckKanbanID
-      }
+      };
 
-      ApiService.setHeader()
+      ApiService.setHeader();
       const data = {
         "judgment_id": selectedJudgementID,
         "main_schedule_id": this.$route.params.mainScheduleID,
@@ -497,75 +514,84 @@ export default {
         "actual_time": actualTime,
         //"checked_date": moment().toISOString().split('T')[0],
         "checked_date": this.planDateSubSchedule,
-        "sub_schedule_id": this.$route.params.subScheduleID,
-      }
-      const judgments = await ApiService.post(`operational/4s/schedule-item-check-kanban/add`, data)
-      if (judgments.data.message == 'Success to add 4s schedule item check kanban') {
-        toast.success('Success add data', {
+        "sub_schedule_id": this.$route.params.subScheduleID
+      };
+      const judgments = await ApiService.post(`operational/4s/schedule-item-check-kanban/add`, data);
+      if (judgments.data.message == "Success to add 4s schedule item check kanban") {
+        toast.success("Success add data", {
           autoClose: 700
-        })
+        });
 
         this.isAddCheckLoading = {
           isLoading: false,
           id: itemCheckKanbanID
-        }
+        };
 
-        this.selectedScheduleItemCheckKanbanID = judgments.data.data.schedule_item_check_kanban_id
-        await this.getScheduleCheck()
-      }
-      else {
-        alert('Failed add data')
+        this.selectedScheduleItemCheckKanbanID = judgments.data.data.schedule_item_check_kanban_id;
+        await this.getScheduleCheck();
+      } else {
+        alert("Failed add data");
       }
     },
     openAddFindingModal(scheduleItemCheckKanbanID, findings, actionType) {
-      this.resetForm()
+      this.resetForm();
 
-      this.findingActionType = actionType
+      this.findingActionType = actionType;
       if (scheduleItemCheckKanbanID !== null) {
-        this.selectedScheduleItemCheckKanbanID = scheduleItemCheckKanbanID
+        this.selectedScheduleItemCheckKanbanID = scheduleItemCheckKanbanID;
       }
 
-      this.addFindingModal = true
+      this.addFindingModal = true;
     },
     openEditFindingModal(scheduleItemCheckKanbanID, findings, actionType) {
       if (this.$refs.finding_image) {
-        this.$refs.finding_image.value = ''
+        this.$refs.finding_image.value = "";
       }
 
-      this.selectedFindingID = findings[0]?.finding_id
+      if (this.$refs.kaizen_file) {
+        this.$refs.kaizen_file.value = "";
+      }
+
+      this.selectedFindingID = findings[0]?.finding_id;
       if (scheduleItemCheckKanbanID !== null) {
-        this.selectedScheduleItemCheckKanbanID = scheduleItemCheckKanbanID
+        this.selectedScheduleItemCheckKanbanID = scheduleItemCheckKanbanID;
       }
-      this.findingActionType = actionType
-      const data = findings[0]
+      this.findingActionType = actionType;
+      const data = findings[0];
 
-      this.selectedLineID = { line_name: data?.line_nm, line_id: data?.line_id }
-      this.selectedFreqID = data?.freq_id
-      this.selectedZoneID = data?.zone_id
-      this.selectedKanbanID = data?.kanban_id
+      this.selectedLineID = { line_name: data?.line_nm, line_id: data?.line_id };
+      this.selectedFreqID = data?.freq_id;
+      this.selectedZoneID = data?.zone_id;
+      this.selectedKanbanID = data?.kanban_id;
 
-      this.selectedPIC = data?.finding_pic_id != null ? { pic_name: data?.finding_pic_nm, pic_id: data?.finding_pic_id } : null
-      this.findingDate = data?.finding_date
-      this.findingDesc = data?.finding_desc
-      this.planCMDate = data?.plan_cm_date
-      this.planCMDesc = data?.plan_cm_desc
-      this.timeCM = data?.time_cm
-      this.timeYokoten = data?.time_yokoten ? data?.time_yokoten : false
-      this.optChanges = data?.opt_changes
-      this.optDepartment = data?.opt_depts != null ? data?.opt_depts.split(';') : null
-      this.cmJudg = data?.cm_judg ? data?.cm_judg : false
-      this.actualPIC = data?.actual_pic_id != null ? { pic_name: data.actual_pic_nm, pic_id: data.actual_pic_id } : null
-      this.actualCMDate = data?.actual_cm_date?.substring(0, 10)
-      this.evaluationName = data?.evaluation_nm
-      this.lineName = data?.line_nm
-      this.findingPicName = data?.finding_pic_nm
-      this.actualPicName = data?.actual_pic_nm
+      this.selectedPIC = data?.finding_pic_id != null ? {
+        pic_name: data?.finding_pic_nm,
+        pic_id: data?.finding_pic_id
+      } : null;
+      this.findingDate = data?.finding_date;
+      this.findingDesc = data?.finding_desc;
+      this.planCMDate = data?.plan_cm_date;
+      this.planCMDesc = data?.plan_cm_desc;
+      this.timeCM = data?.time_cm;
+      this.timeYokoten = data?.time_yokoten ? data?.time_yokoten : false;
+      this.optChanges = data?.opt_changes;
+      this.optDepartment = data?.opt_depts != null ? data?.opt_depts.split(";") : null;
+      this.cmJudg = data?.cm_judg ? data?.cm_judg : false;
+      this.actualPIC = data?.actual_pic_id != null ? {
+        pic_name: data.actual_pic_nm,
+        pic_id: data.actual_pic_id
+      } : null;
+      this.actualCMDate = data?.actual_cm_date?.substring(0, 10);
+      this.evaluationName = data?.evaluation_nm;
+      this.lineName = data?.line_nm;
+      this.findingPicName = data?.finding_pic_nm;
+      this.actualPicName = data?.actual_pic_nm;
 
-      this.addFindingModal = true
+      this.addFindingModal = true;
       if (data?.time_cm) {
-        this.enabledReduceTime = true
+        this.enabledReduceTime = true;
       } else {
-        this.enabledReduceTime = false
+        this.enabledReduceTime = false;
       }
     },
     async submit(event) {
@@ -577,8 +603,8 @@ export default {
         // "freq_id": this.selectedFreqID,
         // "zone_id": this.selectedZoneID,
         // "kanban_id": this.selectedKanbanID,
-        finding_pic_id: this.selectedPIC && this.selectedPIC.pic_id != '-1' ? this.selectedPIC.pic_id : null,
-        actual_pic_id: this.actualPIC && this.actualPIC.pic_id != '-1' ? this.actualPIC.pic_id : null,
+        finding_pic_id: this.selectedPIC && this.selectedPIC.pic_id != "-1" ? this.selectedPIC.pic_id : null,
+        actual_pic_id: this.actualPIC && this.actualPIC.pic_id != "-1" ? this.actualPIC.pic_id : null,
         "finding_date": this.findingDate,
         "finding_desc": this.findingDesc,
         "plan_cm_date": this.planCMDate,
@@ -586,276 +612,297 @@ export default {
         "time_cm": +this.timeCM,
         "time_yokoten": this.timeYokoten,
         "opt_changes": this.optChanges,
-        "opt_depts": this.optDepartment?.length > 0 ? this.optDepartment.join(';') : null,
+        "opt_depts": this.optDepartment?.length > 0 ? this.optDepartment.join(";") : null,
         "cm_judg": this.cmJudg,
         "actual_cm_date": this.actualCMDate,
         "evaluation_nm": this.evaluationName
-      }
+      };
 
       const saveFn = async (callback) => {
         if (event.currentTarget.checkValidity() === false) {
-          event.preventDefault()
-          event.stopPropagation()
-        }
-        else {
-          this.isLoadingSave = true
-          await callback()
-          this.isLoadingSave = false
+          event.preventDefault();
+          event.stopPropagation();
+        } else {
+          this.isLoadingSave = true;
+          await callback();
+          this.isLoadingSave = false;
         }
 
-        this.isFromFindingValidate = true
-      }
+        this.isFromFindingValidate = true;
+      };
 
       if (this.isEdit) {
-        this.showErrorActualPic = !this.actualPIC || this.actualPIC.id == '-1'
+        this.showErrorActualPic = !this.actualPIC || this.actualPIC.id == "-1";
         if (this.showErrorActualPic) {
-          this.isFromFindingValidate = true
-          return
+          this.isFromFindingValidate = true;
+          return;
         }
 
-        await saveFn(() => this.updateFinding(findingData))
-      }
-      else {
+        await saveFn(() => this.updateFinding(findingData));
+      } else {
         // non core-ui validating
 
-        this.showErrorFindingPic = !this.selectedPIC || this.selectedPIC?.id == '-1'
+        this.showErrorFindingPic = !this.selectedPIC || this.selectedPIC?.id == "-1";
         if (this.showErrorFindingPic) {
-          this.isFromFindingValidate = true
-          return
+          this.isFromFindingValidate = true;
+          return;
         }
 
-        await saveFn(() => this.addFinding(findingData))
+        await saveFn(() => this.addFinding(findingData));
       }
     },
     async addFinding(findingData) {
       try {
-        ApiService.setHeader()
-        const add = await ApiService.post(`operational/4s/finding/add`, findingData)
+        ApiService.setHeader();
+        const add = await ApiService.post(`operational/4s/finding/add`, findingData);
         if (add.status === 200) {
-          const { finding_id } = add.data.data
+          const { finding_id } = add.data.data;
           if (!finding_id) {
-            throw "Finding id not provide can't add finding image"
+            throw "Finding id not provide can't add finding image";
           }
 
           if (this.$refs.finding_image) {
-            const formData = new FormData()
-            formData.append('finding_id', finding_id)
-            formData.append('dest', 'finding4s')
-            formData.append('attachment', this.$refs.finding_image.files[0])
+            try {
+              const formData = new FormData();
+              formData.append("finding_id", finding_id);
+              formData.append("dest", "finding4s");
+              formData.append("attachment", this.$refs.finding_image.files[0]);
 
-            await ApiService.post(`/operational/4s/finding/upload-image`, formData)
+              await ApiService.post(`/operational/4s/finding/upload-image`, formData);
+            } catch (e) {
+              console.log("error upload finding image", e);
+            }
           }
 
-          toast.success('Success add data', {
-            autoClose: 700
-          })
+          if (this.$refs.kaizen_file) {
+            console.log("uploading finding kaizen");
+            await this.uploadKaizen(finding_id);
+          }
 
-          this.addFindingModal = false
-          await this.getScheduleCheck()
-        }
-        else {
-          throw "Failed to add finding"
+          toast.success("Success add data", {
+            autoClose: 700
+          });
+
+          this.addFindingModal = false;
+          await this.getScheduleCheck();
+        } else {
+          throw "Failed to add finding";
         }
       } catch (error) {
-        console.log(error)
-        if (error?.response?.status == 401) this.$router.push('/login')
+        console.log(error);
+        if (error?.response?.status == 401) this.$router.push("/login");
         toast.error(error?.response?.data?.message ?? error, {
-          autoClose: 10000,
-        })
+          autoClose: 10000
+        });
       }
     },
     async updateFinding(findingData) {
-      ApiService.setHeader()
-      const update = await ApiService.put(`operational/4s/finding/edit/${this.selectedFindingID}`, findingData)
-      console.log('====================================');
-      console.log('updateFinding4s', update);
-      console.log('====================================');
-      if (update.data.message == 'Success to edit 4s finding') {
-        toast.success('Success edit data', {
+      ApiService.setHeader();
+      const update = await ApiService.put(`operational/4s/finding/edit/${this.selectedFindingID}`, findingData);
+      console.log("====================================");
+      console.log("updateFinding4s", update);
+      console.log("====================================");
+      if (update.data.message == "Success to edit 4s finding") {
+        toast.success("Success edit data", {
           autoClose: 700
-        })
+        });
 
-        this.addFindingModal = false
-        await this.getScheduleCheck()
+        this.addFindingModal = false;
+        await this.getScheduleCheck();
       } else {
-        toast.error('Failed', {
+        toast.error("Failed", {
           autoClose: 700
-        })
+        });
       }
     },
     async updateScheduleCheckData() {
-      ApiService.setHeader()
-      this.isUpdateCheckLoading = true
+      ApiService.setHeader();
+      this.isUpdateCheckLoading = true;
       const data = {
         actual_date: this.detailActualDate,
         actual_pic_id: this.detailActualPIC
-      }
-      const updateData = await ApiService.put(`operational/4s/sub-schedule/edit/${this.$route.params.subScheduleID}`, data)
-      if (updateData.data.message == 'Success to edit 4s schedule plan') {
-        this.detailActualDate = null
-        this.detailActualPIC = null
-        this.getScheduleCheck()
-        this.isUpdateCheckLoading = false
+      };
+      const updateData = await ApiService.put(`operational/4s/sub-schedule/edit/${this.$route.params.subScheduleID}`, data);
+      if (updateData.data.message == "Success to edit 4s schedule plan") {
+        this.detailActualDate = null;
+        this.detailActualPIC = null;
+        this.getScheduleCheck();
+        this.isUpdateCheckLoading = false;
       }
     },
     async getJudgements() {
-      ApiService.setHeader()
-      const judgments = await ApiService.get(`master/judgments`)
-      this.judgments = judgments.data.data
+      ApiService.setHeader();
+      const judgments = await ApiService.get(`master/judgments`);
+      this.judgments = judgments.data.data;
     },
     async getLines() {
       try {
-        this.$store.dispatch(GET_LINES)
+        this.$store.dispatch(GET_LINES);
         if (this.getLinesOpts) {
-          this.mapLinesData()
+          this.mapLinesData();
         }
       } catch (error) {
-        if (error.response.status == 401) this.$router.push('/login')
-        console.log(error)
+        if (error.response.status == 401) this.$router.push("/login");
+        console.log(error);
       }
     },
     async getUsers() {
       try {
-        this.$store.dispatch(GET_USERS)
+        this.$store.dispatch(GET_USERS);
         if (this.getUsersOpts) {
-          this.mapUsersData()
+          this.mapUsersData();
         }
       } catch (error) {
-        if (error.response.status == 401) this.$router.push('/login')
-        console.log(error)
+        if (error.response.status == 401) this.$router.push("/login");
+        console.log(error);
       }
     },
     mapLinesData() {
-      this.lineData = []
+      this.lineData = [];
       this.getLinesOpts?.map((item) => {
-        this.lineData.push({ line_id: item.id, line_name: item.text })
-      })
+        this.lineData.push({ line_id: item.id, line_name: item.text });
+      });
     },
     mapUsersData() {
-      this.picData = []
+      this.picData = [];
       this.getUsersOpts?.map((item) => {
-        this.picData.push({ pic_id: item.id, pic_name: item.text })
-      })
+        this.picData.push({ pic_id: item.id, pic_name: item.text });
+      });
     },
     customLineFilterOptions({ line_name }) {
-      return `${line_name}`
+      return `${line_name}`;
     },
     customPicOptions({ pic_name }) {
-      return `${pic_name}`
+      return `${pic_name}`;
     },
 
     async getZone() {
       try {
-        this.$store.dispatch(GET_ZONES)
+        this.$store.dispatch(GET_ZONES);
       } catch (error) {
-        if (error.response.status == 401) this.$router.push('/login')
-        console.log(error)
+        if (error.response.status == 401) this.$router.push("/login");
+        console.log(error);
       }
     },
     async getKanban() {
       try {
-        this.$store.dispatch(GET_KANBANS)
+        this.$store.dispatch(GET_KANBANS);
       } catch (error) {
-        if (error.response.status == 401) this.$router.push('/login')
-        console.log(error)
+        if (error.response.status == 401) this.$router.push("/login");
+        console.log(error);
       }
     },
     async getFreq() {
       try {
-        this.$store.dispatch(GET_FREQS)
+        this.$store.dispatch(GET_FREQS);
       } catch (error) {
-        if (error.response.status == 401) this.$router.push('/login')
-        console.log(error)
+        if (error.response.status == 401) this.$router.push("/login");
+        console.log(error);
       }
     },
     async getOptChangeSystem() {
       let objQuery = {
-        system_type: '4S_OPT_CHANGE'
-      }
+        system_type: "4S_OPT_CHANGE"
+      };
       try {
         this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
-          this.optChangeData = res
-        })
+          this.optChangeData = res;
+        });
       } catch (error) {
-        if (error.response.status == 401) this.$router.push('/login')
-        console.log(error)
+        if (error.response.status == 401) this.$router.push("/login");
+        console.log(error);
       }
     },
     async getOptDeptSystem() {
       let objQuery = {
-        system_type: '4S_OPT_DEPT'
-      }
+        system_type: "4S_OPT_DEPT"
+      };
       try {
         this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
-          this.optDeptData = res
-        })
+          this.optDeptData = res;
+        });
       } catch (error) {
-        if (error.response.status == 401) this.$router.push('/login')
-        console.log(error)
+        if (error.response.status == 401) this.$router.push("/login");
+        console.log(error);
       }
     },
     async getEvaluation() {
       let objQuery = {
-        system_type: '4S_EVALUATION'
-      }
+        system_type: "4S_EVALUATION"
+      };
       try {
         this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
-          this.optEvaluation = res
-        })
+          this.optEvaluation = res;
+        });
       } catch (error) {
-        if (error.response.status == 401) this.$router.push('/login')
-        console.log(error)
+        if (error.response.status == 401) this.$router.push("/login");
+        console.log(error);
       }
     },
     closeSelectFindingPic() {
-      this.showErrorFindingPic = !this.selectedPIC || this.selectedPIC?.id == '-1'
+      this.showErrorFindingPic = !this.selectedPIC || this.selectedPIC?.id == "-1";
     },
     closeSelectActualPic() {
-      this.showErrorActualPic = !this.actualPIC || this.actualPIC?.id == '-1'
+      this.showErrorActualPic = !this.actualPIC || this.actualPIC?.id == "-1";
     },
     resetForm() {
-      this.selectedFindingID = null
-      this.selectedPIC = null
-      this.findingDate = moment().format('YYYY-MM-DD')
-      this.findingDesc = null
-      this.planCMDate = moment().format('YYYY-MM-DD')
-      this.planCMDesc = null
-      this.timeCM = null
-      this.timeYokoten = false
-      this.optChanges = null
-      this.optDepartment = null
-      this.cmJudg = false
-      this.actualPIC = null
-      this.actualCMDate = null
-      this.evaluationName = null
-      this.lineName = null
-      this.findingPicName = null
-      this.actualPicName = null
-      this.enabledReduceTime = false
+      this.selectedFindingID = null;
+      this.selectedPIC = null;
+      this.findingDate = moment().format("YYYY-MM-DD");
+      this.findingDesc = null;
+      this.planCMDate = moment().format("YYYY-MM-DD");
+      this.planCMDesc = null;
+      this.timeCM = null;
+      this.timeYokoten = false;
+      this.optChanges = null;
+      this.optDepartment = null;
+      this.cmJudg = false;
+      this.actualPIC = null;
+      this.actualCMDate = null;
+      this.evaluationName = null;
+      this.lineName = null;
+      this.findingPicName = null;
+      this.actualPicName = null;
+      this.enabledReduceTime = false;
     },
+    async uploadKaizen(finding_id) {
+      try {
+        const formData = new FormData();
+        formData.append("finding_id", finding_id);
+        formData.append("dest", "4s-finding-kaizen");
+        formData.append("kaizen_file", this.$refs.kaizen_file.files[0]);
+
+        await ApiService.post(`/operational/4s/finding/upload-kaizen?dest=4s-finding-kaizen`, formData);
+      } catch (e) {
+        console.log("uploadKaizen", e);
+      }
+    },
+    onClickKaizen(file){
+      window.open(file, '_blank').focus();
+    }
   },
   updated() {
-    this.mapLinesData()
-    this.mapUsersData()
+    this.mapLinesData();
+    this.mapUsersData();
   },
 
   async mounted() {
-    await this.getScheduleCheck()
-    await this.getJudgements()
-    await this.getUsers()
-    await this.getLines()
-    await this.getZone()
-    await this.getFreq()
-    await this.getKanban()
-    await this.getOptChangeSystem()
-    await this.getOptDeptSystem()
-    await this.getEvaluation()
+    await this.getScheduleCheck();
+    await this.getJudgements();
+    await this.getUsers();
+    await this.getLines();
+    await this.getZone();
+    await this.getFreq();
+    await this.getKanban();
+    await this.getOptChangeSystem();
+    await this.getOptDeptSystem();
+    await this.getEvaluation();
 
-    this.selectedFreqID = this.getSubSchedulesCheck?.freq_id
-    this.selectedZoneID = this.getSubSchedulesCheck?.zone_id
-    this.selectedKanbanID = this.getSubSchedulesCheck?.kanban_id
+    this.selectedFreqID = this.getSubSchedulesCheck?.freq_id;
+    this.selectedZoneID = this.getSubSchedulesCheck?.zone_id;
+    this.selectedKanbanID = this.getSubSchedulesCheck?.kanban_id;
   }
-}
+};
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
@@ -869,9 +916,9 @@ export default {
   flex: 1 1 auto !important;
 }
 
-.multiselect--disabled>.multiselect__tags,
-.multiselect--disabled>.multiselect__tags>.multiselect__single,
-.multiselect--disabled>.multiselect__select {
+.multiselect--disabled > .multiselect__tags,
+.multiselect--disabled > .multiselect__tags > .multiselect__single,
+.multiselect--disabled > .multiselect__select {
   background: #D8DBE0 !important;
 }
 

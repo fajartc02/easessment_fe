@@ -44,7 +44,7 @@
           <td class="text-center">
             <button class="btn btn-sm btn-warning" @click="() => { kanban.statusEdit = true }">Edit</button>
             <CModal backdrop="static" :visible="kanban.statusEdit" @close="() => { kanban.statusEdit = false }" clos
-              size="lg">
+              size="xl">
               <CModalHeader>
                 <CModalTitle>Edit Kanban</CModalTitle>
               </CModalHeader>

@@ -6,7 +6,7 @@
           <table class="table table-bordered">
             <thead class="text-light bg-dark">
               <tr>
-                <th colspan="3">
+                <th colspan="4">
                   4S Kanban {{ getKanbanDetail.line_nm }} PRODUCTION
                 </th>
                 <th>
@@ -26,6 +26,9 @@
                 <th>
                   Zone
                 </th>
+                <th>
+                  SOP
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -34,6 +37,10 @@
                 <td>{{ getKanbanDetail.area_nm }}</td>
                 <td>{{ totalItemCheckTime }}</td>
                 <td>{{ getKanbanDetail.zone_nm }}</td>
+                <td>
+                  <img v-if="getKanbanDetail?.sop_file" :src="getKanbanDetail?.sop_file" width="100"  alt="Sop"/>
+                  <span v-else>SOP Not Found</span>
+                </td>
               </tr>
             </tbody>
           </table>
