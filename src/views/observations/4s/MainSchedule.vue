@@ -146,13 +146,13 @@
                               <CIcon icon="cil-x" class="text-danger text-bold" size="sm" />
                             </div>
                           </CButton>
-                          <div style="margin-left: -5px;z-index: 99999;">
+                          <div style="margin-left: -5px;z-index: 1;">
                             <CDropdownToggle color="secondary" class="text-white" split> item</CDropdownToggle>
                             <CDropdownMenu style="z-index: 9999999;">
                               <CDropdownItem @click="openChangeDateModal(children?.date, children?.sub_schedule_id)">
                                 Change Date
                               </CDropdownItem>
-                              <CDropdownItem @click="deleteScheduleCheck(children?.om_sub_schedule_id)">
+                              <CDropdownItem @click="deleteScheduleCheck(children?.sub_schedule_id)">
                                 Delete
                               </CDropdownItem>
                             </CDropdownMenu>
