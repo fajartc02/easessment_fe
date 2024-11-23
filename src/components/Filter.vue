@@ -12,13 +12,8 @@
         </div>
         <div class="col">
           <label>Line</label>
-          <VueMultiselect
-            v-model="selectedLineData"
-            :options="lineData"
-            placeholder=""
-            @select="addFilter('line')"
-            :custom-label="customLineFilterOptions"
-          >
+          <VueMultiselect v-model="selectedLineData" :options="lineData" placeholder="" @select="addFilter('line')"
+            :custom-label="customLineFilterOptions">
           </VueMultiselect>
         </div>
         <div class="col">
@@ -35,29 +30,16 @@
       <div class="row">
         <div class="col">
           <label>Start date</label>
-          <input
-            type="date"
-            class="form-control"
-            @change="addFilter('stwDashboard')"
-          />
+          <input type="date" class="form-control" @change="addFilter('stwDashboard')" />
         </div>
         <div class="col">
           <label>End date</label>
-          <input
-            type="date"
-            class="form-control"
-            @change="addFilter('endDate')"
-          />
+          <input type="date" class="form-control" @change="addFilter('endDate')" />
         </div>
         <div class="col">
           <label>Line</label>
-          <VueMultiselect
-            v-model="selectedLineData"
-            :options="lineData"
-            placeholder=""
-            @select="addFilter('line')"
-            :custom-label="customLineFilterOptions"
-          >
+          <VueMultiselect v-model="selectedLineData" :options="lineData" placeholder="" @select="addFilter('line')"
+            :custom-label="customLineFilterOptions">
           </VueMultiselect>
         </div>
       </div>
@@ -74,13 +56,8 @@
         </div>
         <div class="col">
           <label>Line</label>
-          <VueMultiselect
-            v-model="selectedLineData"
-            :options="lineData"
-            placeholder=""
-            @select="addFilter('line')"
-            :custom-label="customLineFilterOptions"
-          >
+          <VueMultiselect v-model="selectedLineData" :options="lineData" placeholder="" @select="addFilter('line')"
+            :custom-label="customLineFilterOptions">
           </VueMultiselect>
         </div>
         <div class="col">
@@ -103,14 +80,11 @@
         </div>
       </div>
     </div>
-    <div
-      v-if="
-        filterType == 'member-voice' ||
-        filterType == 'focus-theme' ||
-        filterType == 'henkaten'
-      "
-      class="card-header"
-    >
+    <div v-if="
+      filterType == 'member-voice' ||
+      filterType == 'focus-theme' ||
+      filterType == 'henkaten'
+    " class="card-header">
       <div class="row">
         <div class="col">
           <label>Start date</label>
@@ -122,13 +96,8 @@
         </div>
         <div class="col">
           <label>Line</label>
-          <VueMultiselect
-            v-model="selectedLineData"
-            :options="lineData"
-            placeholder=""
-            @select="addFilter('line')"
-            :custom-label="customLineFilterOptions"
-          >
+          <VueMultiselect v-model="selectedLineData" :options="lineData" placeholder="" @select="addFilter('line')"
+            :custom-label="customLineFilterOptions">
           </VueMultiselect>
         </div>
       </div>
@@ -137,7 +106,7 @@
 </template>
 
 
-    
+
 <script>
 import moment from 'moment'
 import { GET_LINES } from '@/store/modules/line.module'
@@ -200,4 +169,3 @@ export default {
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
-    
