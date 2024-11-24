@@ -420,6 +420,7 @@ export default {
     return {
       chatMessages: [],
       messageInput: "",
+      noreg: localStorage.getItem("noreg"),
       isVisibleFindingImg: false,
       modalKanbanDetail: false,
       isLoading: false,
@@ -513,13 +514,34 @@ export default {
     }
   },
   methods: {
+    async getComments() {
+      try {
+        const response = await ApiService.query(
+          `/operational/comments-4s/get`, {
+          sub_schedule_id: this.$route?.params?.subScheduleID
+        }
+        );
+        // console.log(response)
+        if (!response?.data?.data || response?.data?.data?.length === 0) return
+        const noreg = localStorage.getItem("noreg");
+        this.chatMessages = await response?.data?.data.map((comment) => {
+          return {
+            ...comment,
+            role: comment.noreg === noreg ? "user" : "admin",
+            created_at: moment(comment.created_at).format("YYYY-MM-DD HH:mm:ss"), // Format waktu
+          };
+        });
+      } catch (error) {
+        console.log(error)
+      }
+    },
     async sendMessage() {
       if (this.messageInput.trim()) {
         const name = localStorage.getItem("name");
         const noreg = localStorage.getItem("noreg");
         const now = moment().format("YYYY-MM-DD HH:mm:ss"); // Waktu sekarang
         const newComment = {
-          observation_id: this.$route.params.id,
+          sub_schedule_id: this.$route?.params?.subScheduleID,
           comments: this.messageInput,
           created_dt: now,
           name,
@@ -527,8 +549,7 @@ export default {
         };
 
         try {
-          console.log(newComment);
-          // await this.$store.dispatch(POST_COMMENTS, newComment);
+          await ApiService.post("/operational/comments-4s/add", newComment);
           this.messageInput = "";
           this.getComments()
         } catch (error) {
@@ -970,6 +991,7 @@ export default {
     await this.getOptChangeSystem();
     await this.getOptDeptSystem();
     await this.getEvaluation();
+    await this.getComments();
 
     this.selectedFreqID = this.getSubSchedulesCheck?.freq_id;
     this.selectedZoneID = this.getSubSchedulesCheck?.zone_id;
