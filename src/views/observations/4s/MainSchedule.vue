@@ -47,18 +47,25 @@
           <div class="col">
             <div class="d-flex align-items-center">
               <div class="d-flex align-items-center">
-                <div class="bullet" style="width: 20px; height: 20px"></div>
+                <CIcon icon="cil-circle" class="text-dark" size="lg" />
+                <!-- <div class="bullet" style="width: 20px; height: 20px"></div> -->
                 <span class="mx-2">Planning</span>
               </div>
               <div class="d-flex align-items-center">
-                <div class="bullet-filled" style="width: 20px; height: 20px"></div>
+                <CIcon icon="cil-check-circle" class="text-success" size="lg" />
+                <!-- <div class="bullet-filled" style="width: 20px; height: 20px"></div> -->
                 <span class="mx-2">Sudah Cleaning</span>
               </div>
               <div class="d-flex align-items-center">
-                <div class="bullet-cancel d-flex justify-content-center align-items-center"
+                <CIcon icon="cil-circle" class="text-danger" size="lg" />
+                <span class="mx-2">Delay</span>
+              </div>
+              <div class="d-flex align-items-center">
+                <!-- <div class="bullet-cancel d-flex justify-content-center align-items-center"
                   style="width: 20px; height: 20px">
                   <CIcon icon="cil-x" class="text-danger" size="sm" />
-                </div>
+                </div> -->
+                <CIcon icon="cil-bell" class="text-warning" size="lg" />
                 <span class="mx-2">Sudah Cleaning, ada temuan abnormally</span>
               </div>
             </div>
@@ -138,13 +145,19 @@
                             :class="{ 'py-2 px-2': children?.status == 'PROBLEM' }"
                             @click="addScheduleCheck(data.main_schedule_id, children?.sub_schedule_id)"
                             style="z-index: 1">
-                            <div v-if="children?.status == 'PLANNING'" class="bullet"></div>
-                            <div v-else-if="children?.status == 'ACTUAL'" class="bullet-filled"></div>
-                            <div v-else-if="children?.status == 'PROBLEM'"
+                            <CIcon v-if="children?.status == 'PLANNING'" icon="cil-circle" class="text-dark"
+                              size="lg" />
+                            <!-- <div  class="bullet"></div> -->
+                            <!-- <div  class="bullet-filled"></div> -->
+                            <CIcon v-else-if="children?.status == 'ACTUAL'" icon="cil-check-circle" class="text-success"
+                              size="lg" />
+                            <CIcon v-else-if="children?.status == 'PROBLEM'" icon="cil-bell" class="text-warning"
+                              size="lg" />
+                            <!-- <div
                               class="bullet-cancel d-flex justify-content-center align-items-center"
                               style="width: 20px; height: 20px">
                               <CIcon icon="cil-x" class="text-danger text-bold" size="sm" />
-                            </div>
+                            </div> -->
                           </CButton>
                           <div v-if="children?.status == 'PLANNING'" style="margin-left: -5px;z-index: 1">
                             <CDropdownToggle color="secondary" class="text-white" split> item</CDropdownToggle>

@@ -11,9 +11,17 @@
             <table>
               <tr>
                 <td>
-                  <div class="card" style="width: 20px;height: 20px;background-color: #008FFB;"></div>
+                  <div class="card" style="width: 20px;height: 20px;background-color: #B91C1B;"></div>
                 </td>
-                <td>: 4S</td>
+                <td>: Problem</td>
+                <td>
+                  <div class="card" style="width: 20px;height: 20px;background-color: #16803C;"></div>
+                </td>
+                <td>: Closed</td>
+                <td>
+                  <div class="card" style="width: 20px;height: 20px;background-color: #A16207;"></div>
+                </td>
+                <td>: Remain</td>
               </tr>
             </table>
           </div>
@@ -221,6 +229,7 @@ export default {
             vertical: true,
           },
         },
+        colors: ['#15803d', '#b91c1c', '#a16207'],
         tooltip: {
           y: {
             formatter: (value, { series, seriesIndex, dataPointIndex, w }) => {
