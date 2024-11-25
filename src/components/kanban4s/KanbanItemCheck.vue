@@ -1,5 +1,16 @@
 <template>
   <div class="card" v-if="getKanbanDetail && !isLoading">
+    <CModal scrollable size="lg" backdrop="static" alignment="center" :visible="showModalSop"
+      @close="showModalSop = false">
+      <CModalHeader>
+        <CModalTitle>SOP</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <vue-pdf-embed v-if="getKanbanDetail?.sop_file" :source="getKanbanDetail?.sop_file"
+          @loaded="handleDocumentRender" />
+        <small class="text-sm text-muted">*mohon tunggu pdf sedang di muat</small>
+      </CModalBody>
+    </CModal>
     <div class="card-body p-0">
       <div class="row">
         <div class="col">
@@ -38,7 +49,10 @@
                 <td>{{ totalItemCheckTime }}</td>
                 <td>{{ getKanbanDetail.zone_nm }}</td>
                 <td>
-                  <img v-if="getKanbanDetail?.sop_file" :src="getKanbanDetail?.sop_file" width="100"  alt="Sop"/>
+                  <button class="btn btn-primary" v-if="getKanbanDetail?.sop_file" @click="() => {
+                    showModalSop = true
+                    isPdfLoad = true
+                  }">Lihat SOP</button>
                   <span v-else>SOP Not Found</span>
                 </td>
               </tr>
@@ -101,6 +115,7 @@ import NoDataTable from '@/components/table/NoDataTable.vue'
 import { GET_ITEMCHECKS } from '@/store/modules/itemchecks.module'
 import { mapGetters } from 'vuex'
 import { GET_KANBAN_DETAIL } from '@/store/modules/kanban.module'
+import VuePdfEmbed from 'vue-pdf-embed'
 
 export default {
   name: "KanbanItemCheck",
@@ -108,6 +123,7 @@ export default {
     return {
       itemchecks: [] || ITEMCHECK_KANBAN,
       isLoading: false,
+      showModalSop: false
     }
   },
   computed: {
@@ -132,6 +148,11 @@ export default {
         console.log(error)
         if (error.response.status == 401) this.$router.push('/login')
       }
+    },
+    handleDocumentRender() {
+      console.log('Document loaded')
+      this.isPdfLoad = false
+      console.log(this.isPdfLoad)
     },
     async ActionKanbanDetail() {
       try {
@@ -167,7 +188,8 @@ export default {
     },
   },
   components: {
-    NoDataTable
+    NoDataTable,
+    VuePdfEmbed
   }
 }
 </script>

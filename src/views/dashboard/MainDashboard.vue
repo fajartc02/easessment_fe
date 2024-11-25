@@ -32,7 +32,8 @@
         </div>
       </div>
       <!-- end filter -->
-      <STWFindingGraph :selectedLineID="selectedLineID" @emit-lineID="(payload) => { selectedLineID = payload }"
+
+      <SFindingGraph :selectedLineID="selectedLineID" @emit-lineID="(payload) => { selectedLineID = payload }"
         :selectedFilterStartDate="selectedFilterStartDate"
         @emit-filterStartDate="(payload) => { selectedFilterStartDate = payload }"
         :selectedFilterEndDate="selectedFilterEndDate"
@@ -42,7 +43,7 @@
         @emit-cond="(payload) => { cond = payload }" :isLoading="isLoading"
         @emit-isLoading="(payload) => { isLoading = payload }" />
 
-      <SFindingGraph :selectedLineID="selectedLineID" @emit-lineID="(payload) => { selectedLineID = payload }"
+      <STWFindingGraph :selectedLineID="selectedLineID" @emit-lineID="(payload) => { selectedLineID = payload }"
         :selectedFilterStartDate="selectedFilterStartDate"
         @emit-filterStartDate="(payload) => { selectedFilterStartDate = payload }"
         :selectedFilterEndDate="selectedFilterEndDate"
