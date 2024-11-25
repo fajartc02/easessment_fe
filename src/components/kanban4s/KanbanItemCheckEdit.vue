@@ -121,13 +121,13 @@
             </th>
             <th>Control Point</th>
             <th>Ilustrations</th>
-            <th colspan="2">Actions</th>
+            <th colspan="3">Actions</th>
           </tr>
           </thead>
           <tbody>
           <!-- Start: EDIT ITEMCHECK -->
           <template v-if="getItemchecksWithEditableStatus">
-            <tr v-for="(itemcheck) in getItemchecksWithEditableStatus" :key="itemcheck.item_check_kanban_id">
+            <tr v-for="(itemcheck) in getItemchecksWithEditableStatus" :key="itemcheck.item_check_kanban_id" class="tr-centered">
               <template v-if="!itemcheck.is_edit">
                 <td>{{ itemcheck.no }}</td>
                 <td>{{ itemcheck.item_check_nm }}</td>
@@ -193,6 +193,9 @@
                 <button class="btn btn-sm btn-danger"
                         @click="ActionDeleteItemCheck(itemcheck.item_check_kanban_id)">Delete
                 </button>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-primary" :disabled="itemcheck.total_history === 0">History</button>
               </td>
             </tr>
           </template>
