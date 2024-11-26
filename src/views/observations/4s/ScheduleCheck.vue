@@ -125,7 +125,7 @@
 
           <td v-if="item.actual_time" class="text-center">
             <button class="btn btn-success btn-sm text-white"
-                    @click="saveScheduleCheck(item.judgment_id, item.actual_time, item.item_check_kanban_id, item.standart_time)">
+                    @click="saveScheduleCheck(item.judgment_id, item.actual_time, item.item_check_kanban_id, item.judgment_id !== 'c4f5ff30-1b95-4ad8-8af8-e3e9d90bd942' ?  item.standart_time : null)">
               {{
                 isAddCheckLoading?.isLoading && isAddCheckLoading?.id == item.item_check_kanban_id
                   ? "Saving..."
@@ -607,7 +607,7 @@ export default {
         //"checked_date": moment().toISOString().split('T')[0],
         "checked_date": this.planDateSubSchedule,
         "sub_schedule_id": this.$route.params.subScheduleID,
-        standart_time: standartTime
+        standart_time: standartTime,
       };
       const judgments = await ApiService.post(`operational/4s/schedule-item-check-kanban/add`, data);
       if (judgments.data.message == "Success to add 4s schedule item check kanban") {
