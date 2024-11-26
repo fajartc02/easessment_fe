@@ -41,7 +41,7 @@
             <td>{{ totalItemCheckTime }}</td>
             <td>{{ getKanbanDetail.zone_nm }}</td>
             <td>
-              <img v-if="getKanbanDetail?.sop_file" :src="getKanbanDetail?.sop_file" width="100"  alt="Sop"/>
+              <img v-if="getKanbanDetail?.sop_file" :src="getKanbanDetail?.sop_file" width="100" alt="Sop" />
               <span v-else>"changes this to Visual SOP"</span>
               <!-- handling file upload SOP -->
             </td>
@@ -127,7 +127,8 @@
           <tbody>
           <!-- Start: EDIT ITEMCHECK -->
           <template v-if="getItemchecksWithEditableStatus">
-            <tr v-for="(itemcheck) in getItemchecksWithEditableStatus" :key="itemcheck.item_check_kanban_id" class="tr-centered">
+            <tr v-for="(itemcheck) in getItemchecksWithEditableStatus" :key="itemcheck.item_check_kanban_id"
+                class="tr-centered">
               <template v-if="!itemcheck.is_edit">
                 <td>{{ itemcheck.no }}</td>
                 <td>{{ itemcheck.item_check_nm }}</td>
@@ -195,7 +196,11 @@
                 </button>
               </td>
               <td>
-                <button class="btn btn-sm btn-primary" :disabled="itemcheck.total_history === 0">History</button>
+                <button
+                  :class="{'btn btn-sm': true, 'btn-primary': itemcheck.total_history > 0, 'btn-secondary': itemcheck.total_history === 0}"
+                  :disabled="itemcheck.total_history === 0" @click="onClickHistoryItemCheck(itemcheck)">
+                  History
+                </button>
               </td>
             </tr>
           </template>
@@ -264,6 +269,7 @@
     <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
     Loading...
   </template>
+
 </template>
 
 
@@ -303,7 +309,7 @@ export default {
       isEditKanban: false,
       isAddItemCheck: false,
       selectedImages: [],
-      sopFile: null
+      sopFile: null,
     };
   },
   computed: {
@@ -547,7 +553,13 @@ export default {
     },
     onChangeSopFile(event) {
       this.sopFile = event.target.files[0];
-    }
+    },
+    onClickHistoryItemCheck(itemCheck) {
+      this.emitter.emit("toggleModalHistory", {
+        visible: true,
+        selectedItem: itemCheck,
+      });
+    },
   },
   watch: {
     kanban_id: {

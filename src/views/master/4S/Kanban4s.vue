@@ -5,7 +5,7 @@
     </div>
     <div class="flex-column">
       <button class="btn btn-primary" @click="() => { isAddModal = true }">Add Kanban</button>
-      <CModal backdrop="static" :visible="isAddModal" @close="() => {
+      <CModal backdrop="static" size="xl" :visible="isAddModal" @close="() => {
         isAddModal = false
         this.newKanban = {
           line_id: null,
@@ -36,7 +36,7 @@
             <div class="col">
               <label>Zone</label>
               <select v-if="getZoneOptsWithoutAll.length > 0" class="form-select" v-model="newKanban.zone_id"
-                :disabled="!newKanban.line_id">
+                      :disabled="!newKanban.line_id">
                 <option v-for="(line, index) in getZoneOptsWithoutAll" :key="index" :value="line.id">
                   {{ line.text }}
                 </option>
@@ -50,7 +50,7 @@
             <div class="col">
               <label>Periodic</label>
               <select v-if="getFreqsOptsWithoutAll.length > 0" class="form-select" v-model="newKanban.freq_id"
-                :disabled="!newKanban.zone_id">
+                      :disabled="!newKanban.zone_id">
                 <option v-for="(line, index) in getFreqsOptsWithoutAll" :key="index" :value="line.id">
                   {{ line.text }}
                 </option>
@@ -64,14 +64,14 @@
             <div class="col">
               <label>Kanban No.</label>
               <input class="form-control" type="text" v-model="newKanban.kanban_no" :disabled="!newKanban.freq_id"
-                placeholder="Masukan nomer kanban">
+                     placeholder="Masukan nomer kanban">
             </div>
           </div>
           <div class="row">
             <div class="col">
               <label>Area</label>
               <input class="form-control" type="text" v-model="newKanban.area_nm" :disabled="!newKanban.kanban_no"
-                placeholder="Masukan Area">
+                     placeholder="Masukan Area">
             </div>
           </div>
           <!-- <div class="row">
@@ -155,29 +155,33 @@
         <div class="col"></div>
         <div class="col-xl-3" v-if="filter.total_data > 1">
           <CustPagination :totalItems="filter.total_data" :items-per-page="filter.limit"
-            :current-page="filter.current_page" @page-changed="handlePageChange" />
+                          :current-page="filter.current_page" @page-changed="handlePageChange" />
         </div>
       </div>
     </div>
   </div>
+  <ModalHistory4sItemCheck :selected-item-check="selectedHistoryItemCheck"
+                           :visible="isVisibleModalHistory"
+                           @close="onCloseHistoryItemCheck" />
 </template>
 
 
 <script>
-import { mapGetters } from 'vuex'
-import { GET_LINES } from '@/store/modules/line.module'
-import { GET_ZONES } from '@/store/modules/zone.module'
-import { GET_KANBANS, POST_KANBAN } from '@/store/modules/kanban.module'
-import { GET_FREQS } from '@/store/modules/freq.module'
+import { mapGetters } from "vuex";
+import { GET_LINES } from "@/store/modules/line.module";
+import { GET_ZONES } from "@/store/modules/zone.module";
+import { GET_KANBANS, POST_KANBAN } from "@/store/modules/kanban.module";
+import { GET_FREQS } from "@/store/modules/freq.module";
 
-import CustPagination from '@/components/pagination/CustPagination.vue';
-import TableKanban4s from '@/components/table/TableKanban4s.vue'
+import CustPagination from "@/components/pagination/CustPagination.vue";
+import TableKanban4s from "@/components/table/TableKanban4s.vue";
 
-import FnRequireFullFillInput from '@/functions/FnRequireFullFillInput'
-import { toast } from 'vue3-toastify'
+import FnRequireFullFillInput from "@/functions/FnRequireFullFillInput";
+import { toast } from "vue3-toastify";
+import ModalHistory4sItemCheck from "@/components/4s/ModalHistory4sItemCheck.vue";
 
 export default {
-  name: 'Kanban4s',
+  name: "Kanban4s",
   data() {
     return {
       filter: {
@@ -199,22 +203,24 @@ export default {
         kanban_imgs: []
       },
       selectedImages: [],
-      isLoading: false
-    }
+      isLoading: false,
+      isVisibleModalHistory: false,
+      selectedHistoryItemCheck: null
+    };
   },
   computed: {
     ...mapGetters([
-      'getLinesOpts',
-      'getZoneOpts',
-      'getPagination',
-      'getFreqsOpts',
-      'getLinesOptsWithoutAll',
-      'getZoneOptsWithoutAll',
-      'getFreqsOptsWithoutAll'
+      "getLinesOpts",
+      "getZoneOpts",
+      "getPagination",
+      "getFreqsOpts",
+      "getLinesOptsWithoutAll",
+      "getZoneOptsWithoutAll",
+      "getFreqsOptsWithoutAll"
     ]),
     getLineName() {
-      let line = this.getLinesOptsWithoutAll.find(line => line.id == this.newKanban.line_id)
-      return line.text
+      let line = this.getLinesOptsWithoutAll.find(line => line.id == this.newKanban.line_id);
+      return line.text;
     }
   },
   watch: {
@@ -225,23 +231,23 @@ export default {
           limit: this.getPagination.limit,
           total_data: this.getPagination.total_data,
           current_page: this.getPagination.current_page
-        }
+        };
       },
       deep: true
     },
     filter: {
       handler() {
-        this.$store.dispatch(GET_KANBANS, this.filter)
+        this.$store.dispatch(GET_KANBANS, this.filter);
       },
       deep: true
     },
-    ['filter.line_id']: function () {
+    ["filter.line_id"]: function() {
       // this.changesLine()
     },
     newKanban: {
       handler() {
         if (this.newKanban.line_id) {
-          this.$store.dispatch(GET_ZONES, { line_id: this.newKanban.line_id })
+          this.$store.dispatch(GET_ZONES, { line_id: this.newKanban.line_id });
         }
       },
       deep: true
@@ -250,43 +256,43 @@ export default {
   methods: {
     async getLines() {
       try {
-        this.$store.dispatch(GET_LINES)
+        this.$store.dispatch(GET_LINES);
       } catch (error) {
-        if (error.response.status == 401) this.$router.push('/login')
-        console.log(error)
+        if (error.response.status == 401) this.$router.push("/login");
+        console.log(error);
       }
     },
     changesLine() {
       if (this.filter.selectedLine != -1) {
-        this.getZones()
+        this.getZones();
       } else {
-        this.filter.selectedZone = -1
+        this.filter.selectedZone = -1;
       }
     },
     async getZones() {
       try {
-        this.$store.dispatch(GET_ZONES, { line_id: this.filter.line_id })
+        this.$store.dispatch(GET_ZONES, { line_id: this.filter.line_id });
       } catch (error) {
-        if (error.response.status == 401) this.$router.push('/login')
-        console.log(error)
+        if (error.response.status == 401) this.$router.push("/login");
+        console.log(error);
       }
     },
     async fetchFreqs() {
       try {
-        this.$store.dispatch(GET_FREQS)
+        this.$store.dispatch(GET_FREQS);
       } catch (error) {
-        if (error.response.status == 401) this.$router.push('/login')
-        console.log(error)
+        if (error.response.status == 401) this.$router.push("/login");
+        console.log(error);
       }
     },
     async storeNewKanban() {
       try {
-        this.isLoading = true
-        const isInputFullFill = FnRequireFullFillInput(this.newKanban)
+        this.isLoading = true;
+        const isInputFullFill = FnRequireFullFillInput(this.newKanban);
         if (isInputFullFill) {
-          this.newKanban.dest = `KANBAN_${this.getLineName}_${this.newKanban.kanban_no}`
-          delete this.newKanban.line_id
-          let newFormKanbanData = new FormData()
+          this.newKanban.dest = `KANBAN_${this.getLineName}_${this.newKanban.kanban_no}`;
+          delete this.newKanban.line_id;
+          let newFormKanbanData = new FormData();
           for (const key in this.newKanban) {
             const element = this.newKanban[key];
             if (Array.isArray(this.newKanban[key])) {
@@ -297,9 +303,9 @@ export default {
               newFormKanbanData.append(key, element);
             }
           }
-          await this.$store.dispatch(POST_KANBAN, newFormKanbanData)
-          this.isLoading = false
-          this.isAddModal = false
+          await this.$store.dispatch(POST_KANBAN, newFormKanbanData);
+          this.isLoading = false;
+          this.isAddModal = false;
           this.newKanban = {
             line_id: null,
             zone_id: null,
@@ -308,25 +314,25 @@ export default {
             area_nm: null,
             dest: null,
             kanban_imgs: []
-          }
-          this.selectedImages = []
+          };
+          this.selectedImages = [];
         } else {
-          toast.info('Lengkapi input terlebih dahulu', {
+          toast.info("Lengkapi input terlebih dahulu", {
             autoClose: 1000
-          })
+          });
           // alert("Lengkapi input terlebih dahulu")
-          this.isLoading = false
+          this.isLoading = false;
         }
       } catch (error) {
-        this.isLoading = false
-        alert(error.response.data.message)
+        this.isLoading = false;
+        alert(error.response.data.message);
         // if (error.response.status == 401) this.$router.push('/login')
-        console.log(error)
+        console.log(error);
       }
     },
     handlePageChange(page) {
       this.filter.current_page = page;
-      this.$store.dispatch(GET_KANBANS, this.filter)
+      this.$store.dispatch(GET_KANBANS, this.filter);
     },
     handleFileInputChange(event) {
       const files = event.target.files;
@@ -344,26 +350,51 @@ export default {
     removeImage(index) {
       this.newKanban.kanban_imgs.splice(index, 1);
       this.selectedImages.splice(index, 1);
+    },
+    onCloseHistoryItemCheck() {
+      this.isVisibleModalHistory = false;
+      this.selectedHistoryItemCheck = null;
+
+      this.emitter.emit("toggleModalItemCheckEdit", {
+        visible: true,
+        kanban_id: null
+      });
     }
   },
   async mounted() {
-    if (localStorage.getItem('line_id')) {
-      this.filter.line_id = localStorage.getItem('line_id')
+    if (localStorage.getItem("line_id")) {
+      this.filter.line_id = localStorage.getItem("line_id");
     }
-    this.filter.current_page = this.getPagination.current_page
-    this.filter.limit = this.getPagination.limit
-    this.filter.total_data = this.getPagination.total_data
-    this.isLoading = true
+    this.filter.current_page = this.getPagination.current_page;
+    this.filter.limit = this.getPagination.limit;
+    this.filter.total_data = this.getPagination.total_data;
+    this.isLoading = true;
     await this.getLines();
     await this.getZones();
     await this.fetchFreqs();
-    await this.$store.dispatch(GET_KANBANS, this.filter)
-    this.isLoading = false
+    await this.$store.dispatch(GET_KANBANS, this.filter);
+    this.isLoading = false;
+
+    // eslint-disable-next-line no-unused-vars
+    const self = this;
+
+    this.emitter.on("toggleModalHistory", (val) => {
+      this.isVisibleModalHistory = val.visible;
+      this.selectedHistoryItemCheck = val.selectedItem;
+
+      if(val.visible){
+        self.emitter.emit("toggleModalItemCheckEdit", {
+          visible: false,
+          kanban_id: val.selectedItem.kanban_id
+        });
+      }
+    });
   },
   components: {
+    ModalHistory4sItemCheck,
     TableKanban4s,
     CustPagination
   }
-}
+};
 </script>
 @/functions/FnRequireFullFillInput

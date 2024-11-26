@@ -22,8 +22,8 @@ import "vue-toastification/dist/index.css";
 import 'vue-loading-overlay/dist/css/index.css';
 import "vue3-toastify/dist/index.css";
 
-
-
+import mitt from 'mitt';
+const emitter = mitt();
 
 
 const app = createApp(App)
@@ -41,10 +41,9 @@ app.component('Select2', Select2)
 app.component("v-icon", OhVueIcon);
 app.component("downloadExcel", JsonExcel);
 
-
 app.use(VueApexCharts);
 
-
+app.config.globalProperties.emitter = emitter;
 
 ApiService.init();
 app.mount('#app')

@@ -18,13 +18,13 @@
           <div class="col">
             <label>Zona</label>
             <Select2 v-if="getZoneOpts.length > 1" class="form-control" v-model="selectedZoneID" :options="getZoneOpts"
-              @select="addFilter()" :disabled="getZoneOpts.length == 1" />
+                     @select="addFilter()" :disabled="getZoneOpts.length == 1" />
             <input v-else type="text" class="form-control" value="tidak ada zona" disabled>
           </div>
           <div class="col">
             <label>Kanban</label>
             <Select2 v-if="getZoneOpts.length > 1" class="form-control" v-model="selectedKanbanID"
-              :options="getKanbansOpts" @select="addFilter()" />
+                     :options="getKanbansOpts" @select="addFilter()" />
             <input v-else type="text" class="form-control" value="tidak ada kanban" disabled>
           </div>
           <div class="col">
@@ -65,7 +65,8 @@
                   style="width: 20px; height: 20px">
                   <CIcon icon="cil-x" class="text-danger" size="sm" />
                 </div> -->
-                <CIcon icon="cil-bell" class="text-warning" size="lg" />
+                <!--                <CIcon icon="cil-bell" class="text-warning" size="lg" />-->
+                <img src="../../../assets/red-x-mark.svg" width="23" />
                 <span class="mx-2">Sudah Cleaning, ada temuan abnormally</span>
               </div>
             </div>
@@ -84,221 +85,225 @@
             <div class="card-body p-0 tableFixHead" :ref="'content_' + index">
               <table class="table table-hover" style="width: 100%;">
                 <thead class="bg-dark text-light">
-                  <tr>
-                    <th colspan="40" class="text-center">
-                      4S Schedule Activities ({{ mainSchedule.line_nm }} - {{ mainSchedule.group_nm }})
-                    </th>
-                  </tr>
-                  <tr>
-                    <th id="fixCol-1" class="bg-dark" rowspan="2">No</th>
-                    <th id="fixCol-2" class="bg-dark" rowspan="2">Zona</th>
-                    <th id="fixCol-3" class="bg-dark" rowspan="2">No Kanban</th>
-                    <th id="fixCol-4" class="bg-dark" rowspan="2">Area</th>
-                    <th style="z-index: 1;" rowspan="2">Time</th>
-                    <th style="z-index: 1;" rowspan="2">PIC</th>
-                    <th style="z-index: 1;" rowspan="2">Freq</th>
-                    <th :colspan="getDateThisMonth" class="text-center">{{ getMonthStr }}</th>
-                  </tr>
-                  <tr>
-                    <th v-for="n in getDateThisMonth" :key="n">{{ n }}</th>
-                  </tr>
+                <tr>
+                  <th colspan="40" class="text-center">
+                    4S Schedule Activities ({{ mainSchedule.line_nm }} - {{ mainSchedule.group_nm }})
+                  </th>
+                </tr>
+                <tr>
+                  <th id="fixCol-1" class="bg-dark" rowspan="2">No</th>
+                  <th id="fixCol-2" class="bg-dark" rowspan="2">Zona</th>
+                  <th id="fixCol-3" class="bg-dark" rowspan="2">No Kanban</th>
+                  <th id="fixCol-4" class="bg-dark" rowspan="2">Area</th>
+                  <th style="z-index: 1;" rowspan="2">Time</th>
+                  <th style="z-index: 1;" rowspan="2">PIC</th>
+                  <th style="z-index: 1;" rowspan="2">Freq</th>
+                  <th :colspan="getDateThisMonth" class="text-center">{{ getMonthStr }}</th>
+                </tr>
+                <tr>
+                  <th v-for="n in getDateThisMonth" :key="n">{{ n }}</th>
+                </tr>
                 </thead>
                 <tbody>
-                  <td v-if="mainSchedule.sub_schedules.length == 0 && !isLoading" :colspan="getDateThisMonth + 9"
+                <td v-if="mainSchedule.sub_schedules.length == 0 && !isLoading" :colspan="getDateThisMonth + 9"
                     class="text-center p-3" style="min-width: 50px;">
-                    No Data Available
-                  </td>
-                  <td v-else-if="isLoading" :colspan="getDateThisMonth + 9" class="p-5 text-center"
+                  No Data Available
+                </td>
+                <td v-else-if="isLoading" :colspan="getDateThisMonth + 9" class="p-5 text-center"
                     style="min-width: 50px;">
-                    <CSpinner aria-hidden="true" />
-                  </td>
-                  <template v-else>
-                    <tr v-for="(data, scheduleIndex) in mainSchedule.sub_schedules" :key="scheduleIndex">
-                      <td id="fixCol-body-1" style="background-color: white;">{{ data?.no }}</td>
-                      <td id="fixCol-body-2" style="min-width: 100px;background-color: white;">
-                        {{ data?.zone_nm }}
-                      </td>
-                      <td id="fixCol-body-3" style="min-width: 120px;background-color: white;">{{ data?.kanban_no }}
-                      </td>
-                      <td id="fixCol-body-4" style="min-width: 200px;background-color: white;">{{ data?.area_nm }}</td>
-                      <td style="min-width: 50px">{{ data?.standart_time }}</td>
-                      <td style="min-width: 100px">
-                        <div style="cursor: pointer;" v-if="data?.pic_nm"
-                          @click="openEditModal(data.sub_schedule_id, data.pic_id, data.pic_nm)">
-                          <p class="cursor-pointer"> {{ data?.pic_nm }}</p>
-                        </div>
-                        <div v-else>
-                          <button class="btn btn-info btn-sm mx-2 text-white"
-                            @click="openEditModal(data.sub_schedule_id, null, null)">
-                            Add
-                          </button>
-                        </div>
-                      </td>
-                      <td> {{ data?.freq_nm }}</td>
+                  <CSpinner aria-hidden="true" />
+                </td>
+                <template v-else>
+                  <tr v-for="(data, scheduleIndex) in mainSchedule.sub_schedules" :key="scheduleIndex">
+                    <td id="fixCol-body-1" style="background-color: white;">{{ data?.no }}</td>
+                    <td id="fixCol-body-2" style="min-width: 100px;background-color: white;">
+                      {{ data?.zone_nm }}
+                    </td>
+                    <td id="fixCol-body-3" style="min-width: 120px;background-color: white;">{{ data?.kanban_no }}
+                    </td>
+                    <td id="fixCol-body-4" style="min-width: 200px;background-color: white;">{{ data?.area_nm }}</td>
+                    <td style="min-width: 50px">{{ data?.standart_time }}</td>
+                    <td style="min-width: 100px">
+                      <div style="cursor: pointer;" v-if="data?.pic_nm"
+                           @click="openEditModal(data.sub_schedule_id, data.pic_id, data.pic_nm)">
+                        <p class="cursor-pointer"> {{ data?.pic_nm }}</p>
+                      </div>
+                      <div v-else>
+                        <button class="btn btn-info btn-sm mx-2 text-white"
+                                @click="openEditModal(data.sub_schedule_id, null, null)">
+                          Add
+                        </button>
+                      </div>
+                    </td>
+                    <td> {{ data?.freq_nm }}</td>
 
-                      <td v-for="(children) in data?.children" :key="children"
+                    <td v-for="(children) in data?.children" :key="children"
                         :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''} ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''}; z-index: 10; min-width: 80px;`">
 
-                        <CDropdown variant="btn-group"
-                          v-if="children?.status && children?.status != '' && children?.status != 'NIGHT_SHIFT'">
-                          <CButton color="secondary" class="text-secondary bg-white"
-                            :class="{ 'py-2 px-2': children?.status == 'PROBLEM' }"
-                            @click="addScheduleCheck(data.main_schedule_id, children?.sub_schedule_id)"
-                            style="z-index: 1">
-                            <CIcon v-if="children?.status == 'PLANNING'" icon="cil-circle" class="text-dark"
-                              size="lg" />
-                            <!-- <div  class="bullet"></div> -->
-                            <!-- <div  class="bullet-filled"></div> -->
-                            <CIcon v-else-if="children?.status == 'ACTUAL'" icon="cil-check-circle" class="text-success"
-                              size="lg" />
-                            <CIcon v-else-if="children?.status == 'PROBLEM'" icon="cil-bell" class="text-warning"
-                              size="lg" />
-                            <!-- <div
-                              class="bullet-cancel d-flex justify-content-center align-items-center"
-                              style="width: 20px; height: 20px">
-                              <CIcon icon="cil-x" class="text-danger text-bold" size="sm" />
-                            </div> -->
-                          </CButton>
-                          <div style="margin-left: -5px;z-index: 1;">
-                            <CDropdownToggle color="secondary" class="text-white" split> item</CDropdownToggle>
-                            <CDropdownMenu style="z-index: 9999999;">
-                              <CDropdownItem @click="openChangeDateModal(children?.date, children?.sub_schedule_id)">
-                                Change Date
-                              </CDropdownItem>
-                              <CDropdownItem @click="deleteScheduleCheck(children?.sub_schedule_id)">
-                                Delete
-                              </CDropdownItem>
-                            </CDropdownMenu>
+                      <CDropdown variant="btn-group"
+                                 v-if="children?.status && children?.status != '' && children?.status != 'NIGHT_SHIFT'">
+                        <CButton color="secondary" class="text-secondary bg-white"
+                                 @click="addScheduleCheck(data.main_schedule_id, children?.sub_schedule_id)"
+                                 style="z-index: 1">
+<!--                          :class="{ 'py-2 px-2': children?.status == 'PROBLEM' }"-->
+                          <CIcon v-if="children?.status == 'PLANNING'" icon="cil-circle" class="text-dark"
+                                 size="lg" />
+                          <!-- <div  class="bullet"></div> -->
+                          <!-- <div  class="bullet-filled"></div> -->
+                          <CIcon v-else-if="children?.status == 'ACTUAL'" icon="cil-check-circle" class="text-success"
+                                 size="lg" />
+                          <!--                            <CIcon v-else-if="children?.status == 'PROBLEM'" icon="cil-bell" class="text-warning"
+                                                        size="lg" />-->
+                          <div v-else-if="children?.status == 'PROBLEM'">
+                            <img src="../../../assets/red-x-mark.svg" width="23" />
                           </div>
-                          <img v-if="children.total_comment" src="@/assets/comment.png" alt="comment" width="40"
-                               :style="`position: absolute;top: -30px; right: -20px; z-index: 50;`">
-                        </CDropdown>
-                        <!-- <CDropdown variant="btn-group" v-if="!children?.is_holiday && children?.status == 'PLANNING'">
-                      <CButton color="secondary" class="text-secondary bg-white"
-                        @click="addScheduleCheck(data.main_schedule_id, children?.sub_schedule_id)">
-                        <div class="bullet"></div>
-                      </CButton>
-                      <CDropdownToggle color="secondary" class="text-white" split> item </CDropdownToggle>
-                      <CDropdownMenu>
-                        <CDropdownItem @click="openChangeDateModal(children?.date, children?.sub_schedule_id)">Change date
-                        </CDropdownItem>
-                        <CDropdownItem @click="deleteScheduleCheck(children?.sub_schedule_id)">Delete</CDropdownItem>
-                      </CDropdownMenu>
-                    </CDropdown>
-
-                    <CDropdown variant="btn-group" v-if="!children?.is_holiday && children?.status == 'ACTUAL'">
-                      <CButton color="secondary" class="text-secondary bg-white p-2"
-                        @click="addScheduleCheck(data.main_schedule_id, data.sub_schedule_id)">
-                        <div class="bullet-filled"></div>
-                      </CButton>
-                    </CDropdown>
-
-                    <CDropdown variant="btn-group" v-if="!children?.is_holiday && children?.status == 'PROBLEM'">
-                      <CButton color="secondary" class="text-secondary bg-white p-2"
-                        @click="addScheduleCheck(data.main_schedule_id, data.sub_schedule_id)">
-                        <div class="bullet-cancel d-flex justify-content-center align-items-center"
-                          style="width: 20px; height: 20px">
-                          <CIcon icon="cil-x" class="text-danger text-bold" size="sm" />
+                          <!-- <div
+                            class="bullet-cancel d-flex justify-content-center align-items-center"
+                            style="width: 20px; height: 20px">
+                            <CIcon icon="cil-x" class="text-danger text-bold" size="sm" />
+                          </div> -->
+                        </CButton>
+                        <div style="margin-left: -5px;z-index: 1;">
+                          <CDropdownToggle color="secondary" class="text-white" split> item</CDropdownToggle>
+                          <CDropdownMenu style="z-index: 9999999;">
+                            <CDropdownItem @click="openChangeDateModal(children?.date, children?.sub_schedule_id)">
+                              Change Date
+                            </CDropdownItem>
+                            <CDropdownItem @click="deleteScheduleCheck(children?.sub_schedule_id)">
+                              Delete
+                            </CDropdownItem>
+                          </CDropdownMenu>
                         </div>
-                      </CButton>
-                    </CDropdown> -->
-                      </td>
-                    </tr>
+                        <img v-if="children.total_comment" src="@/assets/comment.png" alt="comment" width="40"
+                             :style="`position: absolute;top: -30px; right: -20px; z-index: 50;`">
+                      </CDropdown>
+                      <!-- <CDropdown variant="btn-group" v-if="!children?.is_holiday && children?.status == 'PLANNING'">
+                    <CButton color="secondary" class="text-secondary bg-white"
+                      @click="addScheduleCheck(data.main_schedule_id, children?.sub_schedule_id)">
+                      <div class="bullet"></div>
+                    </CButton>
+                    <CDropdownToggle color="secondary" class="text-white" split> item </CDropdownToggle>
+                    <CDropdownMenu>
+                      <CDropdownItem @click="openChangeDateModal(children?.date, children?.sub_schedule_id)">Change date
+                      </CDropdownItem>
+                      <CDropdownItem @click="deleteScheduleCheck(children?.sub_schedule_id)">Delete</CDropdownItem>
+                    </CDropdownMenu>
+                  </CDropdown>
 
-                    <!-- Sign TL 1 -->
-                    <tr>
-                      <td colspan="7" class="text-center">Sign TL 1</td>
-                      <td v-for="children in mainSchedule?.sub_schedules[0]?.children" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
+                  <CDropdown variant="btn-group" v-if="!children?.is_holiday && children?.status == 'ACTUAL'">
+                    <CButton color="secondary" class="text-secondary bg-white p-2"
+                      @click="addScheduleCheck(data.main_schedule_id, data.sub_schedule_id)">
+                      <div class="bullet-filled"></div>
+                    </CButton>
+                  </CDropdown>
+
+                  <CDropdown variant="btn-group" v-if="!children?.is_holiday && children?.status == 'PROBLEM'">
+                    <CButton color="secondary" class="text-secondary bg-white p-2"
+                      @click="addScheduleCheck(data.main_schedule_id, data.sub_schedule_id)">
+                      <div class="bullet-cancel d-flex justify-content-center align-items-center"
+                        style="width: 20px; height: 20px">
+                        <CIcon icon="cil-x" class="text-danger text-bold" size="sm" />
+                      </div>
+                    </CButton>
+                  </CDropdown> -->
+                    </td>
+                  </tr>
+
+                  <!-- Sign TL 1 -->
+                  <tr>
+                    <td colspan="7" class="text-center">Sign TL 1</td>
+                    <td v-for="children in mainSchedule?.sub_schedules[0]?.children" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
                         } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
                         } `">
 
-                        <div class="d-flex align-items-center justify-content-center w-full">
-                          <button @click="
+                      <div class="d-flex align-items-center justify-content-center w-full">
+                        <button @click="
                             openSignModal(children?.tl1_sign_checker_id, 'sign_tl_1')
                             " v-if="children?.tl1_sign_checker_id && !children?.has_tl1_sign"
-                            class="check-wrapper-null d-flex align-items-center justify-content-center">
-                            <CIcon icon="cil-x" class="text-danger" size="sm" />
-                          </button>
-                          <button @click="
+                                class="check-wrapper-null d-flex align-items-center justify-content-center">
+                          <CIcon icon="cil-x" class="text-danger" size="sm" />
+                        </button>
+                        <button @click="
                             openSignModal(children?.tl1_sign_checker_id, 'sign_tl_1')
                             " v-else-if="children?.has_tl1_sign"
-                            class="check-wrapper d-flex align-items-center justify-content-center">
-                            <CIcon icon="cil-check" class="text-black" size="sm" />
-                          </button>
+                                class="check-wrapper d-flex align-items-center justify-content-center">
+                          <CIcon icon="cil-check" class="text-black" size="sm" />
+                        </button>
 
-                        </div>
-                      </td>
-                    </tr>
+                      </div>
+                    </td>
+                  </tr>
 
-                    <!-- SIGN TL 2 -->
-                    <tr>
-                      <td colspan="7" class="text-center">Sign TL 2</td>
-                      <td v-for="children in mainSchedule?.sub_schedules[0]?.children" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
+                  <!-- SIGN TL 2 -->
+                  <!-- should hide when line is crank shaft (temporary) -->
+                  <tr v-if="mainSchedule.line_id !== '73a281a9-8923-48d3-a80e-e62ed61d89b7'">
+                    <td colspan="7" class="text-center">Sign TL 2</td>
+                    <td v-for="children in mainSchedule?.sub_schedules[0]?.children" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
                         } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
                         }`">
 
-                        <div class="d-flex align-items-center justify-content-center w-full">
-                          <button @click="
+                      <div class="d-flex align-items-center justify-content-center w-full">
+                        <button @click="
                             openSignModal(children?.tl2_sign_checker_id, 'sign_tl_2')
                             " v-if="children?.tl2_sign_checker_id && !children?.has_tl2_sign"
-                            class="check-wrapper-null d-flex align-items-center justify-content-center">
-                            <CIcon icon="cil-x" class="text-danger" size="sm" />
-                          </button>
-                          <button @click="
+                                class="check-wrapper-null d-flex align-items-center justify-content-center">
+                          <CIcon icon="cil-x" class="text-danger" size="sm" />
+                        </button>
+                        <button @click="
                             openSignModal(children?.tl2_sign_checker_id, 'sign_tl_2')
                             " v-else-if="children?.has_tl2_sign"
-                            class="check-wrapper d-flex align-items-center justify-content-center">
-                            <CIcon icon="cil-check" class="text-black" size="md" />
-                          </button>
+                                class="check-wrapper d-flex align-items-center justify-content-center">
+                          <CIcon icon="cil-check" class="text-black" size="md" />
+                        </button>
 
-                        </div>
-                      </td>
-                    </tr>
+                      </div>
+                    </td>
+                  </tr>
 
-                    <!-- SIGN GL -->
-                    <tr>
-                      <td colspan="7" class="text-center">Sign GL</td>
-                      <td v-for="children in mainSchedule?.glSigns" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
+                  <!-- SIGN GL -->
+                  <tr>
+                    <td colspan="7" class="text-center">Sign GL</td>
+                    <td v-for="children in mainSchedule?.glSigns" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
                         } `" :colspan="children?.col_span">
-                        <div class="d-flex align-items-center justify-content-center w-full">
-                          <button @click="
+                      <div class="d-flex align-items-center justify-content-center w-full">
+                        <button @click="
                             openSignModal(children?.sign_checker_id, 'sign_gl')
                             " v-if="!children?.is_holiday && !children?.sign"
-                            class="check-wrapper-null d-flex align-items-center justify-content-center">
-                            <CIcon icon="cil-x" class="text-danger" size="md" />
-                          </button>
-                          <button @click="
+                                class="check-wrapper-null d-flex align-items-center justify-content-center">
+                          <CIcon icon="cil-x" class="text-danger" size="md" />
+                        </button>
+                        <button @click="
                             openSignModal(children?.sign_checker_id, 'sign_gl')
                             " v-else-if="!children?.is_holiday && children?.sign"
-                            class="check-wrapper d-flex align-items-center justify-content-center">
-                            <CIcon icon="cil-check" class="text-black" size="md" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                                class="check-wrapper d-flex align-items-center justify-content-center">
+                          <CIcon icon="cil-check" class="text-black" size="md" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
 
-                    <!-- SIGN SH -->
-                    <tr>
-                      <td colspan="7" class="text-center">Sign SH</td>
-                      <td class="" v-for="children in mainSchedule?.shSigns" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
+                  <!-- SIGN SH -->
+                  <tr>
+                    <td colspan="7" class="text-center">Sign SH</td>
+                    <td class="" v-for="children in mainSchedule?.shSigns" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
                         }`" :colspan="children?.col_span">
-                        <div class="d-flex align-items-center justify-content-center w-full">
-                          <button @click="
+                      <div class="d-flex align-items-center justify-content-center w-full">
+                        <button @click="
                             openSignModal(children?.sign_checker_id, 'sign_sh')
                             " v-if="!children?.is_holiday && !children?.sign"
-                            class="check-wrapper-null d-flex align-items-center justify-content-center">
-                            <CIcon icon="cil-x" class="text-danger" size="md" />
-                          </button>
-                          <button @click="
+                                class="check-wrapper-null d-flex align-items-center justify-content-center">
+                          <CIcon icon="cil-x" class="text-danger" size="md" />
+                        </button>
+                        <button @click="
                             openSignModal(children?.sign_checker_id, 'sign_sh')
                             " v-else-if="!children?.is_holiday && children?.sign"
-                            class="check-wrapper d-flex align-items-center justify-content-center">
-                            <CIcon icon="cil-check" class="text-black" size="md" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  </template>
+                                class="check-wrapper d-flex align-items-center justify-content-center">
+                          <CIcon icon="cil-check" class="text-black" size="md" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </template>
                 </tbody>
               </table>
             </div>
@@ -308,7 +313,7 @@
                   <div class="input-group mb-3">
                     <label class="input-group-text">Limit</label>
                     <select class="form-select" v-model="mainSchedule.limit"
-                      @change="handleLimitChangeSubSchedule($event, mainSchedule.main_schedule_id, index)">
+                            @change="handleLimitChangeSubSchedule($event, mainSchedule.main_schedule_id, index)">
                       <option selected value="10">10</option>
                       <option value="20">20</option>
                       <option value="40">40</option>
@@ -319,8 +324,8 @@
                 </div>
                 <div v-if="mainSchedule.total_data > 0">
                   <CustPagination :totalItems="mainSchedule.total_data" :items-per-page="mainSchedule.limit"
-                    :current-page="mainSchedule.current_page"
-                    @page-changed="handlePageChangeSubSchedule($event, mainSchedule.main_schedule_id, index)" />
+                                  :current-page="mainSchedule.current_page"
+                                  @page-changed="handlePageChangeSubSchedule($event, mainSchedule.main_schedule_id, index)" />
                 </div>
               </div>
             </div>
@@ -343,7 +348,7 @@
             <vueSignature ref="sign_tl_1" :sigOption="option" :w="'100%'" :h="'100px'">
             </vueSignature>
             <button class="btn btn-info my-3 btn-sm text-white" :disabled="isUploadSignLoading"
-              @click="saveSignature('sign_tl_1')">
+                    @click="saveSignature('sign_tl_1')">
               {{ isUploadSignLoading ? "Saving.." : "Save TL 1" }}
             </button>
             <button class="btn btn-info btn-sm mx-2 my-3 text-white" @click="clearSignature('sign_tl_1')">
@@ -357,7 +362,7 @@
             <vueSignature ref="sign_tl_2" :sigOption="option" :w="'100%'" :h="'100px'">
             </vueSignature>
             <button class="btn btn-info my-3 btn-sm text-white" :disabled="isUploadSignLoading"
-              @click="saveSignature('sign_tl_2')">
+                    @click="saveSignature('sign_tl_2')">
               {{ isUploadSignLoading ? "Saving.." : "Save TL 2" }}
             </button>
             <button class="btn btn-info btn-sm mx-2 my-3 text-white" @click="clearSignature('sign_tl_2')">
@@ -371,7 +376,7 @@
             <vueSignature ref="sign_gl" :sigOption="option" :w="'100%'" :h="'100px'">
             </vueSignature>
             <button class="btn btn-info my-3 btn-sm text-white" :disabled="isUploadSignLoading"
-              @click="saveSignature('sign_gl')">
+                    @click="saveSignature('sign_gl')">
               {{ isUploadSignLoading ? "Saving.." : "Save Sign GL" }}
             </button>
             <button class="btn btn-info btn-sm mx-2 my-3 text-white" @click="clearSignature('sign_gl')">
@@ -385,7 +390,7 @@
             <vueSignature ref="sign_sh" :sigOption="option" :w="'100%'" :h="'100px'">
             </vueSignature>
             <button class="btn btn-info my-3 btn-sm text-white" :disabled="isUploadSignLoading"
-              @click="saveSignature('sign_sh')">
+                    @click="saveSignature('sign_sh')">
               {{ isUploadSignLoading ? "Saving.." : "Save Sign SH" }}
             </button>
             <button class="btn btn-info btn-sm mx-2 my-3 text-white" @click="clearSignature('sign_sh')">
@@ -481,7 +486,7 @@ import VueMultiselect from "vue-multiselect";
 import Swal from "sweetalert2";
 import { toast } from "vue3-toastify";
 import CustPagination from "@/components/pagination/CustPagination.vue";
-import html2pdf from 'html2pdf.js'
+import html2pdf from "html2pdf.js";
 
 
 export default {
@@ -595,19 +600,19 @@ export default {
     }
   },
   watch: {
-    selectedMonth: function () {
+    selectedMonth: function() {
       if (this.selectedMonth) {
         this.generateDate();
         let idx = this.idxMonth.indexOf(this.selectedMonth.split("-")[1]);
         this.yearMonth = `${this.monthStr[idx]} ${this.selectedMonth.split("-")[0]
-          }`;
+        }`;
       }
     },
-    selectedLineID: function () {
+    selectedLineID: function() {
       this.getZone();
       this.onChangeLine();
     },
-    selectedZoneID: function () {
+    selectedZoneID: function() {
       this.getKanban();
     }
   },
@@ -623,7 +628,7 @@ export default {
 
       // Pastikan nama file sesuai shift
       const shift = this.mainScheduleData[index]?.group_nm || "Default";
-      const nameFile = `4S_Schedule_${shift.replace(/\s+/g, '_')}`;
+      const nameFile = `4S_Schedule_${shift.replace(/\s+/g, "_")}`;
 
       // Konfigurasi ekspor
       const options = {
@@ -632,13 +637,13 @@ export default {
         image: { type: "jpeg", quality: 1 },
         html2canvas: {
           scale: 3,
-          useCORS: true,
+          useCORS: true
         },
         jsPDF: {
           unit: "pt",
           format: [2500, 1500],
-          orientation: "landscape",
-        },
+          orientation: "landscape"
+        }
       };
 
       // Eksekusi ekspor
@@ -680,9 +685,9 @@ export default {
               item.tl2Signs = [];
               item.glSigns = [];
               item.shSigns = [];
-              item.limit = 10
-              item.current_page = 1
-              item.total_data = 0
+              item.limit = 10;
+              item.current_page = 1;
+              item.total_data = 0;
 
               return item;
             });
@@ -719,7 +724,7 @@ export default {
           let whiteTemp = "";
           let temp = res.schedule;
           // console.log(temp[0]?.group_nm)
-          temp.sort(function (a, b) {
+          temp.sort(function(a, b) {
             redTemp = a.group_nm;
             whiteTemp = b.group_nm;
             return redTemp.localeCompare(whiteTemp);
@@ -1128,14 +1133,14 @@ export default {
   width: 38px;
   top: 0px;
   left: 0px;
-  z-index: 60;
+  z-index: 70;
 }
 
 #fixCol-2 {
   position: sticky;
   top: 0px;
   left: 37px;
-  z-index: 60;
+  z-index: 70;
 }
 
 #fixCol-3 {
@@ -1143,14 +1148,14 @@ export default {
   min-width: 121px;
   top: 0px;
   left: 125px;
-  z-index: 60;
+  z-index: 70;
 }
 
 #fixCol-4 {
   position: sticky;
   top: 0px;
-  left: 220px;
-  z-index: 60;
+  left: 240px;
+  z-index: 70;
 }
 
 #fixCol-body-1 {
@@ -1179,7 +1184,7 @@ export default {
 #fixCol-body-4 {
   position: sticky;
   top: 0px;
-  left: 220px;
+  left: 240px;
   z-index: 60;
 }
 </style>
