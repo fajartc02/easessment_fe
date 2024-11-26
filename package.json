@@ -40,6 +40,7 @@
     "core-js": "^3.26.1",
     "global": "^4.4.0",
     "html2pdf.js": "^0.10.1",
+    "mitt": "^3.0.1",
     "moment": "^2.29.4",
     "oh-vue-icons": "^1.0.0-rc3",
     "signature_pad": "^4.2.0",

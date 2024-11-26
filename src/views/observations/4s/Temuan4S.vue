@@ -102,31 +102,31 @@
               <th id="fixCol-head-5" rowspan="2">Freq 4S</th>
               <th id="fixCol-head-6" rowspan="2">Date</th>
               <th id="fixCol-head-7" rowspan="2">Problem</th>
-              <th colspan="2">Reduce Time</th>
-              <th :colspan="changeOpts.length">Perubahan</th>
-              <th :colspan="deptOpts.length">Departement Terkait</th>
-              <th colspan="4">Jan</th>
-              <th colspan="4">Feb</th>
-              <th colspan="4">March</th>
-              <th colspan="4">Apr</th>
-              <th colspan="4">May</th>
-              <th colspan="4">June</th>
-              <th colspan="4">July</th>
-              <th colspan="4">Aug</th>
-              <th colspan="4">Sept</th>
-              <th colspan="4">Oct</th>
-              <th colspan="4">Nov</th>
-              <th colspan="4">Dec</th>
-              <th rowspan="2">Evaluasi</th>
-              <th rowspan="2" colspan="2">Actions</th>
+              <th class="fix-col-parent" colspan="2">Reduce Time</th>
+              <th class="fix-col-parent" :colspan="changeOpts.length">Perubahan</th>
+              <th class="fix-col-parent" :colspan="deptOpts.length">Departement Terkait</th>
+              <th class="fix-col-parent" colspan="4">Jan</th>
+              <th class="fix-col-parent" colspan="4">Feb</th>
+              <th class="fix-col-parent" colspan="4">March</th>
+              <th class="fix-col-parent" colspan="4">Apr</th>
+              <th class="fix-col-parent" colspan="4">May</th>
+              <th class="fix-col-parent" colspan="4">June</th>
+              <th class="fix-col-parent" colspan="4">July</th>
+              <th class="fix-col-parent" colspan="4">Aug</th>
+              <th class="fix-col-parent" colspan="4">Sept</th>
+              <th class="fix-col-parent" colspan="4">Oct</th>
+              <th class="fix-col-parent" colspan="4">Nov</th>
+              <th class="fix-col-parent" colspan="4">Dec</th>
+              <th class="fix-col-parent" rowspan="2">Evaluasi</th>
+              <th class="fix-col-parent" rowspan="2" colspan="2">Actions</th>
             </tr>
-            <tr>
+            <tr  class="fix-col-child">
               <th>Waktu 4S (mnt)</th>
               <th>Yokoten</th>
-              <th v-for="optChange in changeOpts" :key="optChange">
+              <th  v-for="optChange in changeOpts" :key="optChange">
                 {{ optChange.system_value }}
               </th>
-              <th v-for="dept in deptOpts" :key="dept">
+              <th  v-for="dept in deptOpts" :key="dept">
                 {{ dept.system_value }}
               </th>
               <th width="100">I</th>
@@ -194,7 +194,7 @@
               <td id="fixCol-1">{{ findingIndex + 1 }}</td>
               <td id="fixCol-2">{{ finding.line_nm }}</td>
               <td id="fixCol-3" class="text-center">{{ finding.zone_nm }}</td>
-              <td id="fixCol-4"  class="text-center">{{ finding.kanban_no }}</td>
+              <td id="fixCol-4" class="text-center">{{ finding.kanban_no }}</td>
               <td id="fixCol-5" class="text-center">{{ finding.freq_nm }}</td>
               <td id="fixCol-6">{{ formatDate(finding.plan_cm_date) }}</td>
               <td id="fixCol-7">{{ finding.finding_desc }}</td>
@@ -1051,8 +1051,8 @@ export default {
     onClickDownloadKaizen(file) {
       window.open(file, "_blank").focus();
     },
-    formatDate(date){
-      return moment(date).format('DD/MM/YYYY');
+    formatDate(date) {
+      return moment(date).format("DD/MM/YYYY");
     }
   },
 
@@ -1138,6 +1138,7 @@ export default {
 .tableFixHead {
   overflow: auto;
   height: 100%;
+  max-height: 70vh;
 }
 
 
@@ -1153,7 +1154,7 @@ export default {
   width: 38px;
   top: 0px;
   left: 0px;
-  z-index: 3;
+  z-index: 6;
   background-color: white;
 }
 
@@ -1161,7 +1162,7 @@ export default {
   position: sticky;
   top: 0px;
   left: 37px;
-  z-index: 3;
+  z-index: 6;
   min-width: 100px;
   background-color: white;
 }
@@ -1171,7 +1172,7 @@ export default {
   min-width: 131px;
   top: 0px;
   left: 125px;
-  z-index: 3;
+  z-index: 6;
   background-color: white;
 }
 
@@ -1180,7 +1181,7 @@ export default {
   top: 0px;
   left: 250px;
   min-width: 100px;
-  z-index: 3;
+  z-index: 6;
   background-color: white;
 }
 
@@ -1189,7 +1190,7 @@ export default {
   top: 0px;
   left: 350px;
   min-width: 100px;
-  z-index: 3;
+  z-index: 6;
   background-color: white;
 }
 
@@ -1198,7 +1199,7 @@ export default {
   top: 0px;
   left: 450px;
   min-width: 100px;
-  z-index: 3;
+  z-index: 6;
   background-color: white;
 }
 
@@ -1207,7 +1208,7 @@ export default {
   top: 0px;
   left: 550px;
   min-width: 100px;
-  z-index: 3;
+  z-index: 6;
   background-color: white;
 }
 
@@ -1277,6 +1278,15 @@ export default {
 .vue-multi-select {
   width: auto !important;
   flex: 1 1 auto !important;
+}
+
+.fix-col-parent {
+  z-index: 5 !important;
+}
+
+.fix-col-child {
+  position: sticky;
+  top: 41px !important;
 }
 
 

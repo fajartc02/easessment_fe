@@ -199,7 +199,7 @@
               {{ `${message.name} (${message.noreg || "Unknown Noreg"})` }}
             </strong>
             <p>{{ message.comments }}</p>
-            <span class="timestamp">{{ message.created_at }}</span>
+<!--            <span class="timestamp">{{ message.created_at }}</span>-->
           </div>
         </div>
       </div>
