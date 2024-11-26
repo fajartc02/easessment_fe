@@ -10,7 +10,6 @@
           <table class="table table-bordered">
             <thead>
             <tr class="tr-centered">
-              <th>No.</th>
               <th>Date</th>
               <th>Time</th>
               <th>Kaizen</th>
@@ -24,7 +23,6 @@
               </td>
             </tr>
             <tr class="tr-centered" v-else v-for="(item, index) in histories" :key="index">
-              <td>{{ index + 1 }}</td>
               <td>{{ item.history_created_dt }}</td>
               <td>{{ item.before_standart_time ?? '-' }}</td>
               <td>
