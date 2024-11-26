@@ -100,7 +100,8 @@
               <th id="fixCol-head-3" rowspan="2">Zone</th>
               <th id="fixCol-head-4" rowspan="2">No Kanban</th>
               <th id="fixCol-head-5" rowspan="2">Freq 4S</th>
-              <th id="fixCol-head-6" rowspan="2">Problem</th>
+              <th id="fixCol-head-6" rowspan="2">Date</th>
+              <th id="fixCol-head-7" rowspan="2">Problem</th>
               <th colspan="2">Reduce Time</th>
               <th :colspan="changeOpts.length">Perubahan</th>
               <th :colspan="deptOpts.length">Departement Terkait</th>
@@ -192,10 +193,11 @@
                 :key="finding">
               <td id="fixCol-1">{{ findingIndex + 1 }}</td>
               <td id="fixCol-2">{{ finding.line_nm }}</td>
-              <td id="fixCol-3">{{ finding.zone_nm }}</td>
-              <td id="fixCol-4">{{ finding.kanban_no }}</td>
-              <td id="fixCol-5">{{ finding.freq_nm }}</td>
-              <td id="fixCol-6">{{ finding.finding_desc }}</td>
+              <td id="fixCol-3" class="text-center">{{ finding.zone_nm }}</td>
+              <td id="fixCol-4"  class="text-center">{{ finding.kanban_no }}</td>
+              <td id="fixCol-5" class="text-center">{{ finding.freq_nm }}</td>
+              <td id="fixCol-6">{{ formatDate(finding.plan_cm_date) }}</td>
+              <td id="fixCol-7">{{ finding.finding_desc }}</td>
               <td class="text-center">
                 {{ finding.time_cm }}
               </td>
@@ -1048,6 +1050,9 @@ export default {
     },
     onClickDownloadKaizen(file) {
       window.open(file, "_blank").focus();
+    },
+    formatDate(date){
+      return moment(date).format('DD/MM/YYYY');
     }
   },
 
@@ -1197,6 +1202,15 @@ export default {
   background-color: white;
 }
 
+#fixCol-head-7 {
+  position: sticky;
+  top: 0px;
+  left: 550px;
+  min-width: 100px;
+  z-index: 3;
+  background-color: white;
+}
+
 #fixCol-1 {
   position: sticky;
   width: 38px;
@@ -1246,6 +1260,15 @@ export default {
   position: sticky;
   top: 0px;
   left: 450px;
+  min-width: 100px;
+  z-index: 3;
+  background-color: white;
+}
+
+#fixCol-7 {
+  position: sticky;
+  top: 0px;
+  left: 550px;
   min-width: 100px;
   z-index: 3;
   background-color: white;

@@ -170,6 +170,8 @@
                               </CDropdownItem>
                             </CDropdownMenu>
                           </div>
+                          <img v-if="children.total_comment" src="@/assets/comment.png" alt="comment" width="40"
+                               :style="`position: absolute;top: -30px; right: -20px; z-index: 50;`">
                         </CDropdown>
                         <!-- <CDropdown variant="btn-group" v-if="!children?.is_holiday && children?.status == 'PLANNING'">
                       <CButton color="secondary" class="text-secondary bg-white"
@@ -1126,14 +1128,14 @@ export default {
   width: 38px;
   top: 0px;
   left: 0px;
-  z-index: 40;
+  z-index: 60;
 }
 
 #fixCol-2 {
   position: sticky;
   top: 0px;
   left: 37px;
-  z-index: 40;
+  z-index: 60;
 }
 
 #fixCol-3 {
@@ -1141,14 +1143,14 @@ export default {
   min-width: 121px;
   top: 0px;
   left: 125px;
-  z-index: 40;
+  z-index: 60;
 }
 
 #fixCol-4 {
   position: sticky;
   top: 0px;
   left: 220px;
-  z-index: 40;
+  z-index: 60;
 }
 
 #fixCol-body-1 {
@@ -1156,14 +1158,14 @@ export default {
   width: 38px;
   top: 0px;
   left: 0px;
-  z-index: 10;
+  z-index: 60;
 }
 
 #fixCol-body-2 {
   position: sticky;
   top: 0px;
   left: 37px;
-  z-index: 10;
+  z-index: 60;
 }
 
 #fixCol-body-3 {
@@ -1171,14 +1173,14 @@ export default {
   min-width: 121px;
   top: 0px;
   left: 125px;
-  z-index: 10;
+  z-index: 60;
 }
 
 #fixCol-body-4 {
   position: sticky;
   top: 0px;
   left: 220px;
-  z-index: 10;
+  z-index: 60;
 }
 </style>
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
