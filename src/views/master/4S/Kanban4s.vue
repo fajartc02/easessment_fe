@@ -226,6 +226,7 @@ export default {
   watch: {
     getPagination: {
       handler() {
+        console.log("paginated chnged");
         this.filter = {
           ...this.filter,
           limit: this.getPagination.limit,
@@ -237,7 +238,10 @@ export default {
     },
     filter: {
       handler() {
-        this.$store.dispatch(GET_KANBANS, this.filter);
+        console.log("called");
+        this.$nextTick(() => {
+          this.$store.dispatch(GET_KANBANS, this.filter);
+        });
       },
       deep: true
     },
@@ -247,7 +251,7 @@ export default {
     newKanban: {
       handler() {
         if (this.newKanban.line_id) {
-          this.$store.dispatch(GET_ZONES, { line_id: this.newKanban.line_id });
+          this.$store.dispatch(GET_ZONES, { line_id: this.newKanban.line_id, isPaginate: false });
         }
       },
       deep: true
@@ -288,9 +292,9 @@ export default {
     async storeNewKanban() {
       try {
         this.isLoading = true;
+        this.newKanban.dest = `KANBAN_${this.getLineName}_${this.newKanban.kanban_no}`;
         const isInputFullFill = FnRequireFullFillInput(this.newKanban);
         if (isInputFullFill) {
-          this.newKanban.dest = `KANBAN_${this.getLineName}_${this.newKanban.kanban_no}`;
           delete this.newKanban.line_id;
           let newFormKanbanData = new FormData();
           for (const key in this.newKanban) {
@@ -331,6 +335,7 @@ export default {
       }
     },
     handlePageChange(page) {
+      console.log("page changes");
       this.filter.current_page = page;
       this.$store.dispatch(GET_KANBANS, this.filter);
     },
@@ -362,17 +367,24 @@ export default {
     }
   },
   async mounted() {
+    const initialFilter = {};
     if (localStorage.getItem("line_id")) {
-      this.filter.line_id = localStorage.getItem("line_id");
+      initialFilter.line_id = localStorage.getItem("line_id");
     }
-    this.filter.current_page = this.getPagination.current_page;
-    this.filter.limit = this.getPagination.limit;
-    this.filter.total_data = this.getPagination.total_data;
+
+    initialFilter.current_page = this.getPagination.current_page;
+    initialFilter.limit = this.getPagination.limit;
+    initialFilter.total_data = this.getPagination.total_data;
+
+    this.filter = {
+      ...initialFilter
+    };
+
     this.isLoading = true;
     await this.getLines();
     await this.getZones();
     await this.fetchFreqs();
-    await this.$store.dispatch(GET_KANBANS, this.filter);
+    //await this.$store.dispatch(GET_KANBANS, this.filter);
     this.isLoading = false;
 
     // eslint-disable-next-line no-unused-vars
@@ -382,7 +394,7 @@ export default {
       this.isVisibleModalHistory = val.visible;
       this.selectedHistoryItemCheck = val.selectedItem;
 
-      if(val.visible){
+      if (val.visible) {
         self.emitter.emit("toggleModalItemCheckEdit", {
           visible: false,
           kanban_id: val.selectedItem.kanban_id
