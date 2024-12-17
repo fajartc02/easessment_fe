@@ -55,7 +55,7 @@
       <tr>
         <td class="text-center" colspan="9">
           <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
-          Loading...
+          Loading Kanban ...
         </td>
       </tr>
     </template>
@@ -154,19 +154,20 @@ export default {
   watch: {
     filter: {
       handler() {
-        this.getKanban();
+        //console.log('filter change');
+        //this.getKanban();
       },
       deep: true
     },
     selectedZone() {
-      this.getKanban();
+      //this.getKanban();
     },
     getKanbans() {
       this.kanbans = this.getKanbansWithStatusModal;
     }
   },
   mounted() {
-    this.isLoading = true;
+    //this.isLoading = true;
     this.getKanban();
 
     // eslint-disable-next-line no-unused-vars

@@ -108,7 +108,8 @@ export default {
         limit: 10,
         total_data: 1,
         current_page: 1,
-        freq_id: -1
+        freq_id: -1,
+        isPaginate: true,
       },
       isAddModal: false,
       newZone: {
