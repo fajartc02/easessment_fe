@@ -22,8 +22,8 @@
       position: relative;
       ${child.is_finding ? 'background-color: #fef2f2;' : ''}
       ${child.is_wajik ? 'transform: rotate(45deg);' : ''}`" @click="$emit('detail-schedule', child)">
-        <img v-if="observation.comment_sh !== null" src="@/assets/comment.png" alt="comment" width="45"
-          :style="`position: absolute;top: -30px;left: 20px;${child.is_wajik ? 'transform: rotate(-45deg);left: 10;top:-20px' : ''}`">
+        <img v-if="observation.comments.length > 0" src="@/assets/comment.png" alt="comment" width="45"
+          :style="`z-index: 10;position: absolute;top: -30px;left: 20px;${child.is_wajik ? 'transform: rotate(-45deg);left: 10;top:-20px' : ''}`">
         <!-- <CIcon class="mx-2" icon="cil-user" size="lg" :style="`
           position: absolute;
           top: -10px;
