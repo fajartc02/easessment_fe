@@ -125,7 +125,7 @@
     <div class="card-body overflow-auto">
       <CInputGroup class="mb-3">
         <CInputGroupText style="width: 120px;">Actual Date</CInputGroupText>
-        <input :disabled="isCheck" class="form-control" type="date" v-model="form.actual_check_dt" />
+        <input class="form-control" type="date" v-model="form.actual_check_dt" />
         <CInputGroupText class="p-0">
           <CButton color="success" @click="saveCheckObser(form.actual_check_dt, 'actual_check_dt')"
             style="font-weight:900;">
@@ -135,7 +135,7 @@
       </CInputGroup>
       <CInputGroup class="mb-3">
         <CInputGroupText style="width: 120px;">Shift</CInputGroupText>
-        <CFormSelect :disabled="isCheck" v-model="form.group_id">
+        <CFormSelect v-model="form.group_id">
           <option>Select Shift</option>
           <option v-for="judg in groups" :key="judg.id" :value="judg.id">
             {{ judg.group_nm }}
@@ -1138,7 +1138,6 @@ export default {
     if (savedUserName) {
       this.userName = savedUserName;
     }
-
 
     try {
       const comments = await this.$store.dispatch(GET_COMMENTS, {
