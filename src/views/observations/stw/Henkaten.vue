@@ -127,8 +127,9 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">PIC</label>
-                  <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
-                  </VueMultiselect>
+                  <treeselect v-if="getUsersTree" class="w-100" v-model="selectedPIC" :options="getUsersTree" />
+                  <!-- <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions"> -->
+                  <!-- </VueMultiselect> -->
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Perubahan</label>
@@ -689,6 +690,9 @@ import Loading from 'vue-loading-overlay'
 import Pagination from '@/components/Pagination.vue'
 import { toast } from 'vue3-toastify'
 
+import Treeselect from '@cholakovdev/vue3-treeselect'
+import '@cholakovdev/vue3-treeselect/dist/vue3-treeselect.css'
+
 
 export default {
   name: 'Henkaten',
@@ -766,7 +770,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getUsersOpts', 'getHenkatens', 'getLinesOpts']),
+    ...mapGetters(['getUsersOpts', 'getHenkatens', 'getLinesOpts', 'getUsersTree']),
   },
   methods: {
     onPageChange(page) {
@@ -1135,7 +1139,7 @@ export default {
     this.mapLinesData()
     this.mapUsersData()
   },
-  components: { VueMultiselect, Loading, Pagination },
+  components: { VueMultiselect, Loading, Pagination, Treeselect },
 }
 </script>
 

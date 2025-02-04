@@ -611,8 +611,7 @@
                     </div>
                     <div class="col">
                       <label class="mb-1">Edit PIC</label>
-                      <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
-                      </VueMultiselect>
+                      <treeselect v-if="getUsersTree" class="w-50" v-model="selectedPIC" :options="getUsersTree" />
                       <small v-if="selectedPIC" class="text-success">*Abaikan jika tidak ingin
                         diubah</small>
                       <small v-else class="text-danger">*Silahkan masukan pic</small>
@@ -716,8 +715,7 @@
                     </div>
                     <div class="col">
                       <label class="mb-1">Edit PIC</label>
-                      <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
-                      </VueMultiselect>
+                      <treeselect class="w-100" v-if="getUsersTree" v-model="selectedPIC" :options="getUsersTree" />
                       <small v-if="selectedFindingPIC" class="text-success">*Abaikan jika tidak
                         ingin
                         diubah</small>
@@ -1022,6 +1020,9 @@ import Loading from 'vue-loading-overlay'
 import { toast } from 'vue3-toastify'
 import Pagination from '@/components/Pagination.vue'
 
+import Treeselect from '@cholakovdev/vue3-treeselect'
+import '@cholakovdev/vue3-treeselect/dist/vue3-treeselect.css'
+
 export default {
   name: 'Member Voice',
   data() {
@@ -1109,7 +1110,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getLinesOpts', 'getUsersOpts', 'getMemberVoice']),
+    ...mapGetters(['getLinesOpts', 'getUsersTree', 'getMemberVoice']),
   },
   watch: {
     selectedPIC(newVal) {
@@ -1486,10 +1487,8 @@ export default {
       }
     },
     getPicName(picID) {
-      const data = this.getUsersOpts.filter((pic) => {
-        return pic.id === picID
-      })
-      return data[0].text
+      const data = this.getUsersTree.find((pic) => pic.id === picID)
+      return data.label
     },
     activateFindingsAccordionItem() {
       this.accordionAddMVActiveKey = 2
@@ -1509,7 +1508,7 @@ export default {
     await this.getFactors()
     await this.getCategories()
   },
-  components: { VueMultiselect, Loading, Pagination },
+  components: { VueMultiselect, Loading, Pagination, Treeselect },
 }
 </script>
 

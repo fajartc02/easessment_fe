@@ -1,5 +1,5 @@
 <template>
-  <CTooltip placement="top" :style="customTooltipStyle">
+  <CTooltip :style="customTooltipStyle">
     <template #content>
       <table class="table table-striped border-light text-light">
         <tr>
@@ -24,17 +24,6 @@
       ${child.is_wajik ? 'transform: rotate(45deg);' : ''}`" @click="$emit('detail-schedule', child)">
         <img v-if="observation.comments.length > 0" src="@/assets/comment.png" alt="comment" width="45"
           :style="`z-index: 10;position: absolute;top: -30px;left: 20px;${child.is_wajik ? 'transform: rotate(-45deg);left: 10;top:-20px' : ''}`">
-        <!-- <CIcon class="mx-2" icon="cil-user" size="lg" :style="`
-          position: absolute;
-          top: -10px;
-          left: 20px;
-          background-color: yellow;
-          border: none;
-          color: #0369a1;
-          border-radius: 6px;
-
-        `" /> -->
-        <!-- </button> -->
         <span v-if="child.is_finding">
           <CIcon icon="cil-bell" class="text-danger font-weight-bold" size="lg"
             :style="child.is_wajik ? 'transform: rotate(-45deg)' : ''" />
@@ -52,6 +41,8 @@
   </CTooltip>
 </template>
 <script>
+
+
 export default {
   name: "TooltipStwSchedule",
   props: {

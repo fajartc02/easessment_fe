@@ -107,6 +107,7 @@
                       <template v-if="child.idxdate === String(item.idx)">
                         <TooltipStwSchedule :child="child" :customTooltipStyle="customTooltipStyle" :observation="child"
                           :currentDate="currentDate" @detail-schedule="detailSchedule" />
+
                       </template>
                     </template>
                   </td>
@@ -156,6 +157,7 @@
                     </div>
                   </td>
                 </tr>
+
                 <tr v-for="(observationRedShift, i) in observationScheduleRedShift" :key="observationRedShift.pos_id">
                   <td id="fixCol-1">{{ i + 1 }}</td>
                   <td id="fixCol-2">{{ observationRedShift.line_snm }}</td>
@@ -168,9 +170,13 @@
                   <td id="fixCol-5">{{ observationRedShift.group_nm }}</td>
                   <td v-for="item in containerDate" :key="item.idx" style="min-width: 63px">
                     <template v-for="child in observationRedShift.children" :key="child.observation_id">
+                      <ejs-tooltip ref="tooltip" content='Tooltip content 1'>
+                        Tooltip
+                      </ejs-tooltip>
                       <template v-if="child.idxdate === String(item.idx)">
                         <TooltipStwSchedule :child="child" :customTooltipStyle="customTooltipStyle" :observation="child"
                           :currentDate="currentDate" @detail-schedule="detailSchedule" />
+
                       </template>
                     </template>
                   </td>
@@ -387,7 +393,7 @@ export default {
   components: {
     Loading,
     // Yamazumi,
-    TooltipStwSchedule
+    TooltipStwSchedule,
   },
 }
 </script>

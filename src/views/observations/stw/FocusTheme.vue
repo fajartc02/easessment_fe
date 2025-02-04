@@ -187,8 +187,9 @@
 
                 <div class="mb-2">
                   <label class="mb-1">PIC </label>
-                  <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
-                  </VueMultiselect>
+                  <treeselect v-if="getUsersTree" class="w-50" v-model="selectedFindingPIC" :options="getUsersTree" />
+                  <!-- <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
+                  </VueMultiselect> -->
                 </div>
 
                 <div class="mb-2">
@@ -698,6 +699,10 @@ import Loading from 'vue-loading-overlay'
 import { toast } from 'vue3-toastify'
 import Pagination from '@/components/Pagination.vue'
 
+import Treeselect from '@cholakovdev/vue3-treeselect'
+import '@cholakovdev/vue3-treeselect/dist/vue3-treeselect.css'
+
+
 export default {
   name: 'Focus Theme',
   data() {
@@ -772,8 +777,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getLinesOpts', 'getUsersOpts', 'getFocusTheme']),
-
+    ...mapGetters(['getLinesOpts', 'getUsersOpts', 'getFocusTheme', 'getUsersTree']),
   },
   updated() {
     this.mapLinesData()
@@ -1163,7 +1167,7 @@ export default {
     await this.getCategories()
     await this.getUsers()
   },
-  components: { VueMultiselect, Loading, Pagination },
+  components: { VueMultiselect, Loading, Pagination, Treeselect },
 }
 </script>
 
