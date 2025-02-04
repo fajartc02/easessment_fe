@@ -170,9 +170,7 @@
                   <td id="fixCol-5">{{ observationRedShift.group_nm }}</td>
                   <td v-for="item in containerDate" :key="item.idx" style="min-width: 63px">
                     <template v-for="child in observationRedShift.children" :key="child.observation_id">
-                      <ejs-tooltip ref="tooltip" content='Tooltip content 1'>
-                        Tooltip
-                      </ejs-tooltip>
+
                       <template v-if="child.idxdate === String(item.idx)">
                         <TooltipStwSchedule :child="child" :customTooltipStyle="customTooltipStyle" :observation="child"
                           :currentDate="currentDate" @detail-schedule="detailSchedule" />
