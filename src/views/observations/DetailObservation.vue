@@ -80,7 +80,7 @@
             <CModalHeader>
               <CModalTitle v-if="observation.job_type_nm">{{
                 tskLabel
-                }}</CModalTitle>
+              }}</CModalTitle>
             </CModalHeader>
             <CModalBody>
               <vue-pdf-embed v-if="tskFile" :source="tskFile" />
@@ -207,7 +207,7 @@
                 <div v-if="item.stw_ct5">
                   <div class="row">
                     <div class="col-12">
-                      <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(1) }}</span>
+                      <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(2) }}</span>
                     </div>
                   </div>
                   <div class="row">
@@ -220,7 +220,7 @@
                 <div v-else>
                   <div class="row">
                     <div class="col-12">
-                      <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(1) }}</span>
+                      <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(2) }}</span>
                     </div>
                   </div>
                   <div class="row">
@@ -243,7 +243,7 @@
               <div v-if="item.stw_ct1">
                 <div class="row">
                   <div class="col-12">
-                    <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(1) }}</span>
+                    <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(2) }}</span>
                   </div>
                 </div>
                 <div class="row">
@@ -738,17 +738,19 @@ export default {
     async saveCheckCategory(item) {
       try {
         this.isLoading = true
+        console.log(item)
         let checkedData = {
           observation_id: this.$route.params.id,
           category_id: item.id,
-          judgment_id: (this.observation?.job_type_nm === 'Type 1' || this.observation?.job_type_nm === 'Type 3') && item.category_id == '3ce06d66-fe82-4e0a-a1fd-ce927ec85167' ? this.judgementID : item.judgment_id,
+          judgment_id: (this.observation?.job_type_nm === 'Type 1' || this.observation?.job_type_nm === 'Type 3') && item.id == '3ce06d66-fe82-4e0a-a1fd-ce927ec85167' ? this.judgementID : item.judgment_id,
           stw_ct1: item.stw_ct1,
           stw_ct2: item.stw_ct2,
           stw_ct3: item.stw_ct3,
           stw_ct4: item.stw_ct4,
           stw_ct5: item.stw_ct5
         }
-
+        console.log(this.judgementID)
+        console.log(checkedData)
         await this.$store.dispatch(SAVE_OBSERVATION_CATEGORY, checkedData)
         this.isLoading = false
         await this.getDetail()
