@@ -387,8 +387,9 @@
 
                 <div class="mb-2">
                   <label class="mb-1">PIC </label>
-                  <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
-                  </VueMultiselect>
+                  <treeselect v-if="getUsersTree" class="w-50" v-model="selectedPIC" :options="getUsersTree" />
+                  <!-- <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
+                  </VueMultiselect> -->
                 </div>
 
                 <div class="mb-2">
