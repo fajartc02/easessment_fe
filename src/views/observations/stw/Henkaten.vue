@@ -200,8 +200,10 @@
 
                 <div class="mb-2">
                   <label class="mb-1">PIC </label>
-                  <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
-                  </VueMultiselect>
+                  <!-- here -->
+                  <treeselect v-if="getUsersTree" class="w-100" v-model="selectedPIC" :options="getUsersTree" />
+                  <!-- <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
+                  </VueMultiselect> -->
                 </div>
 
                 <div class="mb-2">
@@ -367,8 +369,9 @@
                     </div>
                     <div class="col">
                       <label class="mb-1">Edit PIC</label>
-                      <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
-                      </VueMultiselect>
+                      <treeselect v-if="getUsersTree" class="w-100" v-model="selectedPIC" :options="getUsersTree" />
+                      <!-- <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
+                      </VueMultiselect> -->
                       <small v-if="henkatenDetail.henkaten_pic" class="text-success">*Abaikan jika
                         tidak
                         ingin
@@ -484,8 +487,10 @@
                     </div>
                     <div class="col">
                       <label class="mb-1">Edit PIC</label>
-                      <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
-                      </VueMultiselect>
+                      <treeselect v-if="getUsersTree" class="w-100" v-model="selectedFindingPIC"
+                        :options="getUsersTree" />
+                      <!-- <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
+                      </VueMultiselect> -->
                       <small v-if="henkatenDetail.findings[0].cm_pic_id" class="text-success">*Abaikan jika
                         tidak
                         ingin

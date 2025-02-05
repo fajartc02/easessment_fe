@@ -319,10 +319,8 @@
 
                 <div class="mb-2">
                   <label class="mb-1">PIC</label>
-                  <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions" @change="() => {
-                    selectedPIC = selectedPIC
-                  }">
-                  </VueMultiselect>
+                  <!-- here -->
+                  <treeselect v-if="getUsersTree" class="w-50" v-model="selectedPIC" :options="getUsersTree" />
                 </div>
                 <div class="row">
                   <div class="col">
