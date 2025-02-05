@@ -127,7 +127,8 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">PIC</label>
-                  <treeselect v-if="getUsersTree" class="w-100" v-model="selectedPIC" :options="getUsersTree" />
+                  <treeselect v-if="getUsersTree" class="w-100" v-model="henkatenData.henkaten_pic"
+                    :options="getUsersTree" />
                   <!-- <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions"> -->
                   <!-- </VueMultiselect> -->
                 </div>
@@ -201,7 +202,8 @@
                 <div class="mb-2">
                   <label class="mb-1">PIC </label>
                   <!-- here -->
-                  <treeselect v-if="getUsersTree" class="w-100" v-model="selectedPIC" :options="getUsersTree" />
+                  <treeselect v-if="getUsersTree" class="w-100" v-model="findingsData.cm_pic_id"
+                    :options="getUsersTree" />
                   <!-- <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
                   </VueMultiselect> -->
                 </div>
@@ -369,7 +371,8 @@
                     </div>
                     <div class="col">
                       <label class="mb-1">Edit PIC</label>
-                      <treeselect v-if="getUsersTree" class="w-100" v-model="selectedPIC" :options="getUsersTree" />
+                      <treeselect v-if="getUsersTree" class="w-100" v-model="henkatenDetail.henkaten_pic"
+                        :options="getUsersTree" />
                       <!-- <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
                       </VueMultiselect> -->
                       <small v-if="henkatenDetail.henkaten_pic" class="text-success">*Abaikan jika
@@ -487,7 +490,7 @@
                     </div>
                     <div class="col">
                       <label class="mb-1">Edit PIC</label>
-                      <treeselect v-if="getUsersTree" class="w-100" v-model="selectedFindingPIC"
+                      <treeselect v-if="getUsersTree" class="w-100" v-model="henkatenDetail.findings[0].cm_pic_id"
                         :options="getUsersTree" />
                       <!-- <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
                       </VueMultiselect> -->
@@ -857,14 +860,14 @@ export default {
     },
     addHenkatenData() {
       this.henkatenData.henkaten_line_id = this.selectedLineID?.line_id
-      this.henkatenData.henkaten_pic = this.selectedPIC?.pic_id
+      // this.henkatenData.henkaten_pic = this.selectedPIC?.pic_id
 
       this.findingsData.cm_result_factor_id = this.findingsData?.factor_id
       this.findingsData.finding_date = this.henkatenData.henkaten_date
       this.findingsData.finding_location = this.henkatenData.henkaten_location
       this.findingsData.finding_desc = this.henkatenData.henkaten_desc
       this.findingsData.line_id = this.selectedLineID?.line_id
-      this.findingsData.cm_pic_id = this.selectedPIC?.pic_id
+      // this.findingsData.cm_pic_id = this.selectedPIC?.pic_id
 
       if (!this.findingsData.finding_img || !this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.finding_location || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date) {
         toast.error('Harap isi semua field di finding', {
@@ -882,9 +885,7 @@ export default {
       const updateData = {
         henkaten_date: this.formatTheDate(this.henkatenDetail.henkaten_date),
         henkaten_location: this.henkatenDetail.henkaten_location,
-        henkaten_pic: this.selectedPIC
-          ? this.selectedPIC.pic_id
-          : this.henkatenDetail.henkaten_pic,
+        henkaten_pic: this.henkatenDetail.henkaten_pic,
         henkaten_desc: this.henkatenDetail.henkaten_desc,
         henkaten_purpose: this.henkatenDetail.henkaten_purpose,
         henkaten_flw_safety: this.henkatenDetail.henkaten_flw_safety,

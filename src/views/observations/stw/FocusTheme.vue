@@ -187,7 +187,8 @@
 
                 <div class="mb-2">
                   <label class="mb-1">PIC </label>
-                  <treeselect v-if="getUsersTree" class="w-50" v-model="selectedFindingPIC" :options="getUsersTree" />
+                  <treeselect v-if="getUsersTree" class="w-50" v-model="findingsData.cm_pic_id"
+                    :options="getUsersTree" />
                   <!-- <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
                   </VueMultiselect> -->
                 </div>
@@ -441,8 +442,10 @@
                     </div>
                     <div class="col">
                       <label class="mb-1">Edit PIC</label>
-                      <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
-                      </VueMultiselect>
+                      <treeselect v-if="getUsersTree" class="w-50" v-model="focusThemeDetail.findings[0].cm_pic_id"
+                        :options="getUsersTree" />
+                      <!-- <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
+                      </VueMultiselect> -->
                       <small v-if="focusThemeDetail.findings[0].cm_pic_id" class="text-success">*Abaikan jika
                         tidak
                         ingin
@@ -924,9 +927,19 @@ export default {
       this.focusThemeData.ft_line_id = this.selectedLineID?.line_id
       this.findingsData.cm_result_factor_id = this.findingsData?.factor_id
       this.findingsData.line_id = this.selectedLineID?.line_id
-      this.findingsData.cm_pic_id = this.selectedFindingPIC?.pic_id
+      // this.findingsData.cm_pic_id = this.selectedFindingPIC?.pic_id
 
-      if (!this.findingsData.finding_img || !this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.finding_location || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date) {
+      if (!this.findingsData.finding_img
+        || !this.findingsData.line_id
+        || !this.findingsData.cm_pic_id
+        || !this.findingsData.finding_location
+        || !this.findingsData.finding_desc
+        || !this.findingsData.finding_location
+        || !this.findingsData.cm_desc
+        || !this.findingsData.cm_priority
+        || !this.findingsData.factor_id
+        || !this.findingsData.cm_str_plan_date
+        || !this.findingsData.cm_end_plan_date) {
         toast.error('Harap isi semua field di finding', {
           autoClose: 1000
         })
@@ -942,7 +955,7 @@ export default {
     async addFocusTheme(data) {
       try {
         await this.$store.dispatch(POST_FOCUSTHEME, data).then((res) => {
-          if (res.data.message == 'Success to POST Focus Thema') {
+          if (res?.message == 'Success to POST Focus Thema') {
             toast.success('Data added', {
               autoClose: 1000
             })
@@ -1149,7 +1162,7 @@ export default {
       const data = this.getUsersOpts.filter((pic) => {
         return pic.id === picID
       })
-      return data[0].text
+      return data[0]?.text
     },
   },
   async mounted() {

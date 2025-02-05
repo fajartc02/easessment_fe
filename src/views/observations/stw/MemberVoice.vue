@@ -320,7 +320,8 @@
                 <div class="mb-2">
                   <label class="mb-1">PIC</label>
                   <!-- here -->
-                  <treeselect v-if="getUsersTree" class="w-50" v-model="selectedPIC" :options="getUsersTree" />
+                  <treeselect v-if="getUsersTree" class="w-50" v-model="memberVoiceData.mv_pic_id"
+                    :options="getUsersTree" />
                 </div>
                 <div class="row">
                   <div class="col">
@@ -387,7 +388,8 @@
 
                 <div class="mb-2">
                   <label class="mb-1">PIC </label>
-                  <treeselect v-if="getUsersTree" class="w-50" v-model="selectedPIC" :options="getUsersTree" />
+                  <treeselect v-if="getUsersTree" class="w-50" v-model="findingsData.cm_pic_id"
+                    :options="getUsersTree" />
                   <!-- <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
                   </VueMultiselect> -->
                 </div>
@@ -610,7 +612,8 @@
                     </div>
                     <div class="col">
                       <label class="mb-1">Edit PIC</label>
-                      <treeselect v-if="getUsersTree" class="w-50" v-model="selectedPIC" :options="getUsersTree" />
+                      <treeselect v-if="getUsersTree" class="w-50" v-model="memberVoiceDetail.mv_pic_id"
+                        :options="getUsersTree" />
                       <small v-if="selectedPIC" class="text-success">*Abaikan jika tidak ingin
                         diubah</small>
                       <small v-else class="text-danger">*Silahkan masukan pic</small>
@@ -714,7 +717,8 @@
                     </div>
                     <div class="col">
                       <label class="mb-1">Edit PIC</label>
-                      <treeselect class="w-100" v-if="getUsersTree" v-model="selectedPIC" :options="getUsersTree" />
+                      <treeselect class="w-100" v-if="getUsersTree" v-model="memberVoiceDetail.findings[0].cm_pic_id"
+                        :options="getUsersTree" />
                       <small v-if="selectedFindingPIC" class="text-success">*Abaikan jika tidak
                         ingin
                         diubah</small>
@@ -1193,12 +1197,12 @@ export default {
     },
     addMemberVoiceData() {
       this.memberVoiceData.line_id = this.selectedLineID?.line_id
-      this.memberVoiceData.mv_pic_id = this.selectedPIC?.pic_id
+      // this.memberVoiceData.mv_pic_id = this.selectedPIC?.id
       this.findingsData.line_id = this.selectedLineID?.line_id
       this.findingsData.cm_result_factor_id = this.findingsData?.factor_id
-      this.findingsData.cm_pic_id = this.selectedPIC?.pic_id
+      // this.findingsData.cm_pic_id = this.selectedPIC?.id
       this.findingsData.finding_location = this.memberVoiceData.mv_location
-
+      console.log(this.findingsData)
       if (!this.findingsData.finding_img || !this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.finding_location || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date) {
         toast.error('Harap isi semua field di finding', {
           autoClose: 1000
@@ -1487,7 +1491,7 @@ export default {
     },
     getPicName(picID) {
       const data = this.getUsersTree.find((pic) => pic.id === picID)
-      return data.label
+      return data?.label
     },
     activateFindingsAccordionItem() {
       this.accordionAddMVActiveKey = 2
