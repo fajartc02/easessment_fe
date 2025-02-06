@@ -80,7 +80,7 @@
             <CModalHeader>
               <CModalTitle v-if="observation.job_type_nm">{{
                 tskLabel
-              }}</CModalTitle>
+                }}</CModalTitle>
             </CModalHeader>
             <CModalBody>
               <vue-pdf-embed v-if="tskFile" :source="tskFile" />
@@ -742,7 +742,7 @@ export default {
         let checkedData = {
           observation_id: this.$route.params.id,
           category_id: item.id,
-          judgment_id: (this.observation?.job_type_nm === 'Type 1' || this.observation?.job_type_nm === 'Type 3') && item.id == '3ce06d66-fe82-4e0a-a1fd-ce927ec85167' ? this.judgementID : item.judgment_id,
+          judgment_id: (this.observation?.job_type_nm === 'Type 1' || this.observation?.job_type_nm === 'Type 2' || this.observation?.job_type_nm === 'Type 3') && item.id == '3ce06d66-fe82-4e0a-a1fd-ce927ec85167' ? this.judgementID : item.judgment_id,
           stw_ct1: item.stw_ct1,
           stw_ct2: item.stw_ct2,
           stw_ct3: item.stw_ct3,
