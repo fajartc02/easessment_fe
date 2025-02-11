@@ -98,8 +98,12 @@
                   <td id="fixCol-2">{{ observation.line_snm }}</td>
                   <td id="fixCol-3">{{ observation.pos_nm }}</td>
                   <td id="fixCol-4">
-                    <CBadge v-for="observer in observation.checkers" :key="observer" color="secondary">{{ observer }}
-                    </CBadge>
+                    <template v-for="observer in observation.checkers" :key="observer">
+                      <CBadge color="secondary">
+                        {{ observer }}
+                      </CBadge>
+                      <br>
+                    </template>
                   </td>
                   <td id="fixCol-5">{{ observation.group_nm }}</td>
                   <td v-for="item in containerDate" :key="item.idx" style="min-width: 63px">

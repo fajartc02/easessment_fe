@@ -80,7 +80,7 @@
             <CModalHeader>
               <CModalTitle v-if="observation.job_type_nm">{{
                 tskLabel
-                }}</CModalTitle>
+              }}</CModalTitle>
             </CModalHeader>
             <CModalBody>
               <vue-pdf-embed v-if="tskFile" :source="tskFile" />
@@ -301,6 +301,7 @@
             v-if="item.is_already_check && judgments.find((judg) => judg.id == item.judgment_id)?.is_abnormal || (i == 0 && judgments.find((judg) => judg.id == judgementID)?.is_abnormal && item.is_already_check)">
             <div v-if="item.findings.length == 0">
               <button class="btn btn-info" @click="() => {
+                resetData()
                 item.is_active_modal = true
                 finding.finding_location = observation.pos_nm
                 finding.category_id = item.id
