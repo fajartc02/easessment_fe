@@ -147,8 +147,8 @@
                 <td id="fixCol-4" class="px-2">{{ formatTheDate(finding.finding_date) }}</td>
                 <td id="fixCol-5" class="px-2">{{ finding.finding_location }}</td>
                 <td id="fixCol-6" class="px-2">
-                  <template v-if="finding.finding_desc.length > 30 && !finding.is_open">
-                    {{ finding.finding_desc.slice(0, 30) }}
+                  <template v-if="`${finding?.finding_desc}`.length > 30 && !finding.is_open">
+                    {{ `${finding?.finding_desc}`.slice(0, 30) }}
                     <span class="text-info" style="cursor: pointer;" @click="() => {
                       finding.finding_desc = finding.finding_desc
                       finding.is_open = true
