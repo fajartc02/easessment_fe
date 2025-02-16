@@ -710,13 +710,26 @@ export default {
   name: 'Focus Theme',
   data() {
     return {
+      // finding_desc: itm.findings[0].finding_desc,
+      // finding_factor: itm.findings[0].factor_nm,
+      // finding_cm: itm.findings[0].cm_desc,
+      // finding_cm_date: itm.findings[0].cm_str_plan_date,
+      // finding_pic: itm.findings[0].cm_pic_nm
       json_fields: {
         FT_ID: 'ft_id',
-        Focus_Tema: 'ft_desc',
-        FT_Eval_Num: 'ft_evaluation_num',
-        FT_Remark: 'ft_remark',
-        FT_Pillar: 'ft_pillar',
-        FT_Line: 'line_nm',
+        Line: 'line_nm',
+        'Focus Thema': 'ft_desc',
+        Findings: 'finding_desc',
+        Factor: 'finding_factor',
+        Countermeasure: 'finding_cm',
+        // 'Countermeasure Date': 'finding_cm_date',
+        'C/M Plan Date': 'cm_str_plan_date',
+        'C/M Actual Date': 'cm_str_act_date',
+        PIC: 'finding_pic',
+        'Evaluation': 'ft_evaluation_num',
+        Remark: 'ft_remark',
+        Pillar: 'ft_pillar',
+        Status: 'cm_status'
       },
       evaluationOpts: [],
       json_data: null,
@@ -858,7 +871,22 @@ export default {
           if (res) {
             this.totalPage = res[0]?.total_page
             this.isLoading = false
-            this.json_data = res
+            console.log(res, 'res');
+            const mapFindingShow = res.map(itm => {
+              return {
+                ...itm,
+                finding_desc: itm.findings[0].finding_desc,
+                finding_factor: itm.findings[0].factor_nm,
+                finding_cm: itm.findings[0].cm_desc,
+                finding_cm_date: itm.findings[0].cm_str_plan_date,
+                finding_pic: itm.findings[0].cm_pic_nm,
+                cm_desc: itm.findings[0].cm_desc,
+                cm_str_plan_date: itm.findings[0].cm_str_plan_date,
+                cm_str_act_date: itm.findings[0].cm_str_act_date,
+                cm_status: itm.findings[0].cm_judg ? 'Closed' : 'Open',
+              }
+            })
+            this.json_data = mapFindingShow
           }
         })
       } catch (error) {
@@ -955,6 +983,7 @@ export default {
     async addFocusTheme(data) {
       try {
         await this.$store.dispatch(POST_FOCUSTHEME, data).then((res) => {
+          console.log(res, ': FT RES')
           if (res?.message == 'Success to POST Focus Thema') {
             toast.success('Data added', {
               autoClose: 1000

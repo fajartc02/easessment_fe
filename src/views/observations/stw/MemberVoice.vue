@@ -1031,14 +1031,18 @@ export default {
   data() {
     return {
       json_fields: {
-        MV_ID: 'mv_id',
-        MV_Problem: 'mv_problem',
-        MV_Location: 'mv_location',
-        MV_Process: 'mv_process_no',
-        MV_Category: 'mv_category',
-        MV_Countermeasure: 'mv_countermeasure',
-        MV_Evaluation: 'mv_evaluation',
-        MV_PIC: 'mv_pic_nm',
+        id: 'mv_id',
+        Date: 'mv_date_finding',
+        Problem: 'mv_problem',
+        'Location': 'mv_location',
+        'Process': 'mv_process_no',
+        'Category': 'mv_category',
+        'Countermeasure': 'mv_countermeasure',
+        'C/M Plan Date': 'mv_plan_date',
+        'Plan Date': 'cm_str_plan_date',
+        'Actual Date': 'cm_str_act_date',
+        'PIC': 'mv_pic_nm',
+        Status: 'cm_status'
       },
       json_data: null,
       isLoading: false,
@@ -1258,6 +1262,19 @@ export default {
           if (res) {
             this.totalPage = res[0]?.total_page
             this.isLoading = false
+            if (res.length > 0) {
+              const remapFinding = res.map(itm => {
+                return {
+                  ...itm,
+                  cm_desc: itm.findings[0].cm_desc,
+                  cm_str_plan_date: itm.findings[0].cm_str_plan_date,
+                  cm_str_act_date: itm.findings[0].cm_str_act_date,
+                  cm_status: itm.findings[0].cm_judg ? 'Closed' : 'Open',
+                }
+              })
+              this.json_data = remapFinding
+              return
+            }
             this.json_data = res
           }
         })

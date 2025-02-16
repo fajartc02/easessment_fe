@@ -707,14 +707,19 @@ export default {
   data() {
     return {
       json_fields: {
-        ID: 'henkaten_id',
-        Desc: 'henkaten_desc',
-        Purpose: 'henkaten_purpose',
-        FLW_Safety: 'henkaten_flw_safety',
-        FLW_Quality: 'henkaten_flw_quality',
-        Location: 'henkaten_location',
-        PIC: 'henkaten_pic_nm',
+        id: 'henkaten_id',
+        Date: 'henkaten_date',
         Line: 'line_nm',
+        Location: 'henkaten_location',
+        'Henkaten Point': 'henkaten_desc',
+        Tujuan: 'henkaten_purpose',
+        'Safety Point': 'henkaten_flw_safety',
+        'Quality Point': 'henkaten_flw_quality',
+        Countermeasure: 'cm_desc',
+        'Plan Date': 'cm_str_plan_date',
+        'Actual Date': 'cm_str_act_date',
+        PIC: 'henkaten_pic_nm',
+        Status: 'cm_status'
       },
       json_data: null,
       isLoading: false,
@@ -961,6 +966,24 @@ export default {
         this.$store.dispatch(GET_HENKATEN, objQuery).then((res) => {
           if (res) {
             this.isLoading = false
+            //     Countermeasure: 'cm_desc',
+            // 'Plan Date': 'cm_end_plan_date',
+            // 'Actual Date': 'cm_str_act_date',
+            // PIC: 'henkaten_pic_nm',
+            // Status: 'cm_status'
+            if (res.length > 0) {
+              const remapFinding = res.map(itm => {
+                return {
+                  ...itm,
+                  cm_desc: itm.findings[0].cm_desc,
+                  cm_str_plan_date: itm.findings[0].cm_str_plan_date,
+                  cm_str_act_date: itm.findings[0].cm_str_act_date,
+                  cm_status: itm.findings[0].cm_judg ? 'Closed' : 'Open',
+                }
+              })
+              this.json_data = remapFinding
+              return
+            }
             this.json_data = res
           }
         })
