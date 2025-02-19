@@ -1087,7 +1087,7 @@ export default {
       // findings data
       findingsData: {
         line_id: null,
-        finding_date: null,
+        finding_date: moment().format('YYYY-MM-DD'),
         finding_location: null,
         finding_desc: null,
         cm_desc: null,
@@ -1125,6 +1125,10 @@ export default {
         this.accordionAddMVActiveKey = 2
       }
     },
+    ['memberVoiceData.mv_date_finding'](newVal) {
+      console.log(newVal)
+      this.findingsData.finding_date = newVal
+    }
   },
   updated() {
     this.mapLinesData()
