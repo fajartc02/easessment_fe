@@ -168,7 +168,7 @@
                             <CDropdownToggle color="secondary" class="text-white" split> item</CDropdownToggle>
                             <CDropdownMenu>
                               <!-- <CDropdownItem> -->
-                              <CRow style="margin: 0px 5px">
+                              <CRow v-if="children?.status === 'PLANNING'" style="margin: 0px 5px">
                                 <CCol>
                                   <CButton color="success" class="text-white"
                                     @click="judgmentConf(data, 'OK', childIdx + 1, children)" :disabled="!data?.pic_nm">

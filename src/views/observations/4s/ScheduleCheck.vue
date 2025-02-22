@@ -23,11 +23,11 @@
             <CInputGroup class="mb-3">
               <CInputGroupText>Act Date</CInputGroupText>
               <CFormInput v-if="getSubSchedulesCheck?.actual_time"
-                          :value="getSubSchedulesCheck?.actual_time?.substring(0, 10)" disabled />
+                :value="getSubSchedulesCheck?.actual_time?.substring(0, 10)" disabled />
               <input type="date" class="form-control" v-model="detailActualDate">
               <CInputGroupText>
                 <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()"> {{
-                    isUpdateCheckLoading ? "updating.." : "update" }}
+                  isUpdateCheckLoading ? "updating.." : "update" }}
                 </button>
               </CInputGroupText>
             </CInputGroup>
@@ -53,7 +53,7 @@
               <Select2 class="form-control" :options="getUsersOpts" v-model="detailActualPIC" />
               <CInputGroupText>
                 <button class="btn btn-info btn-sm text-white" @click="updateScheduleCheckData()">{{
-                    isUpdateCheckLoading ? "updating.." : "update" }}
+                  isUpdateCheckLoading ? "updating.." : "update" }}
                 </button>
               </CInputGroupText>
             </CInputGroup>
@@ -66,7 +66,7 @@
       <div class="card-header">
         <button class="btn btn-primary" @click="modalKanbanDetail = true">Lihat Kanban</button>
         <CModal backdrop="static" size="xl" :visible="modalKanbanDetail" @close="() => { modalKanbanDetail = false }"
-                aria-labelledby="StaticBackdropExampleLabel">
+          aria-labelledby="StaticBackdropExampleLabel">
           <CModalHeader>
             <CModalTitle>Kanban Check</CModalTitle>
           </CModalHeader>
@@ -80,70 +80,70 @@
     <div class="mt-3">
       <table class="table table-bordered">
         <thead>
-        <tr class="tr-centered">
-          <th>No</th>
-          <th style="min-width: 200px;">Item Check</th>
-          <th>Method</th>
-          <th  style="min-width: 200px;">Control Point</th>
-          <th>Judgement</th>
-          <th>History Standard Time</th>
-          <th>Standard Time</th>
-          <th>Actual Time</th>
-          <th>Actions</th>
-          <th>Finding</th>
-          <th>Image</th>
-          <th>Kaizen</th>
-        </tr>
+          <tr class="tr-centered">
+            <th>No</th>
+            <th style="min-width: 200px;">Item Check</th>
+            <th>Method</th>
+            <th style="min-width: 200px;">Control Point</th>
+            <th>Judgement</th>
+            <th>History Standard Time</th>
+            <th>Standard Time</th>
+            <th>Actual Time</th>
+            <th>Actions</th>
+            <th>Finding</th>
+            <th>Image</th>
+            <th>Kaizen</th>
+          </tr>
         </thead>
         <tbody>
-        <tr v-for="(item, index) in itemCheks" :key="item" class="align-middle">
-          <td class="text-center">{{ index + 1 }}</td>
-          <td>{{ item.item_check_nm }}</td>
-          <td>{{ item.method }}</td>
-          <td>{{ item.control_point }}</td>
-          <td>
-            <CFormSelect v-model="item.judgment_id">
-              <option>Select</option>
-              <option v-for="judg in judgments" :key="judg.id" :value="judg.id">
-                {{ judg.text }}
-              </option>
-            </CFormSelect>
-          </td>
-          <td>
-            {{ item.before_standart_time ?? '-' }}
-          </td>
-          <td>
-            <CFormInput v-if="item.judgment_id !== 'c4f5ff30-1b95-4ad8-8af8-e3e9d90bd942'" v-model="item.standart_time"
-                        type="number" />
-            <span v-else>
+          <tr v-for="(item, index) in itemCheks" :key="item" class="align-middle">
+            <td class="text-center">{{ index + 1 }}</td>
+            <td>{{ item.item_check_nm }}</td>
+            <td>{{ item.method }}</td>
+            <td>{{ item.control_point }}</td>
+            <td>
+              <CFormSelect v-model="item.judgment_id">
+                <option>Select</option>
+                <option v-for="judg in judgments" :key="judg.id" :value="judg.id">
+                  {{ judg.text }}
+                </option>
+              </CFormSelect>
+            </td>
+            <td>
+              {{ item.before_standart_time ?? '-' }}
+            </td>
+            <td>
+              <CFormInput v-if="item.judgment_id !== 'c4f5ff30-1b95-4ad8-8af8-e3e9d90bd942'"
+                v-model="item.standart_time" type="number" />
+              <span v-else>
                 {{ item.standart_time }}
               </span>
-          </td>
-          <td>
-            <CFormInput v-model="item.actual_time" type="number" />
-          </td>
+            </td>
+            <td>
+              <CFormInput v-model="item.actual_time" type="number" />
+            </td>
 
-          <td v-if="item.actual_time" class="text-center">
-            <button class="btn btn-success btn-sm text-white"
-                    @click="saveScheduleCheck(item.judgment_id, item.actual_time, item.item_check_kanban_id, item.judgment_id !== 'c4f5ff30-1b95-4ad8-8af8-e3e9d90bd942' ?  item.standart_time : null)">
-              {{
-                isAddCheckLoading?.isLoading && isAddCheckLoading?.id == item.item_check_kanban_id
-                  ? "Saving..."
-                  : "Save"
-              }}
-            </button>
-          </td>
-          <td v-else>
-            <button class="btn btn-info btn-sm text-white" disabled>
-              Isi Dahulu
-            </button>
-          </td>
-          <td v-if="item.is_abnormal" class="text-center">
-            <button class=" btn btn-info btn-sm text-white"
-                    @click="item.findings.length ? openEditFindingModal(item.schedule_item_check_kanban_id, item.findings, 'update') : openAddFindingModal(item.schedule_item_check_kanban_id, null, 'add')">
-              {{ item.findings.length > 0 ? "Update Finding" : "Add Finding" }}
-            </button>
-            <!--            <button v-if="item.findings.length == 0" class=" btn btn-info btn-sm text-white"
+            <td v-if="item.actual_time" class="text-center">
+              <button class="btn btn-success btn-sm text-white"
+                @click="saveScheduleCheck(item.judgment_id, item.actual_time, item.item_check_kanban_id, item.judgment_id !== 'c4f5ff30-1b95-4ad8-8af8-e3e9d90bd942' ? item.standart_time : null)">
+                {{
+                  isAddCheckLoading?.isLoading && isAddCheckLoading?.id == item.item_check_kanban_id
+                    ? "Saving..."
+                    : "Save"
+                }}
+              </button>
+            </td>
+            <td v-else>
+              <button class="btn btn-info btn-sm text-white" disabled>
+                Isi Dahulu
+              </button>
+            </td>
+            <td v-if="item.is_abnormal" class="text-center">
+              <button class=" btn btn-info btn-sm text-white"
+                @click="item.findings.length ? openEditFindingModal(item.schedule_item_check_kanban_id, item.findings, 'update') : openAddFindingModal(item.schedule_item_check_kanban_id, null, 'add')">
+                {{ item.findings.length > 0 ? "Update Finding" : "Add Finding" }}
+              </button>
+              <!--            <button v-if="item.findings.length == 0" class=" btn btn-info btn-sm text-white"
                               @click="item.findings.length == 0 ? openEditFindingModal(item.schedule_item_check_kanban_id, item.findings, 'update') : openAddFindingModal(item.schedule_item_check_kanban_id, null, 'add')">
                         {{ item.findings.length > 0 ? "Update Finding" : "Add Finding" }}
                       </button>
@@ -152,39 +152,39 @@
                             {{ item.findings[0]?.finding_desc }}
                           </span>
                       </template>-->
-          </td>
-          <td v-else class="text-center">
-            <span class="text-muted">No Action</span>
-          </td>
-          <td>
-            <CModal size="xl" :visible="isVisibleFindingImg" @close="isVisibleFindingImg = false"
-                    @closed="isVisibleFindingImg = false">
-              <CModalBody>
-                <img class="w-100" :src="item.findings[0]?.finding_img" alt="image finding">
-              </CModalBody>
-            </CModal>
-            <img v-if="item.findings[0]?.finding_img" :src="item.findings[0]?.finding_img" alt="image finding"
-                 width="200" height="100" @click="isVisibleFindingImg = true">
-            <span v-else class="text-muted">No image</span>
-          </td>
-          <td class="text-center">
-            <template v-if="item.findings[0]">
-              <div class="d-flex gap-2">
-                <input :id="item.findings[0].finding_id" type="file" hidden
-                       @change="onChangeDirectKaizenFile($event, item.findings[0].finding_id)" />
-                <button class="btn btn-info btn-sm text-white"
-                        @click="item.findings[0]?.kaizen_file ? onClickDownloadKaizen(item.findings[0]?.kaizen_file) : null"
-                        :disabled="!item.findings[0]?.kaizen_file">
-                  Download
-                </button>
-                <button class="btn btn-info btn-sm text-white"
-                        @click="onClickDirectUploadKaizen(item.findings[0]?.finding_id)">Upload
-                </button>
-              </div>
-            </template>
-            <span v-else>No Action</span>
-          </td>
-        </tr>
+            </td>
+            <td v-else class="text-center">
+              <span class="text-muted">No Action</span>
+            </td>
+            <td>
+              <CModal size="xl" :visible="isVisibleFindingImg" @close="isVisibleFindingImg = false"
+                @closed="isVisibleFindingImg = false">
+                <CModalBody>
+                  <img class="w-100" :src="item.findings[0]?.finding_img" alt="image finding">
+                </CModalBody>
+              </CModal>
+              <img v-if="item.findings[0]?.finding_img" :src="item.findings[0]?.finding_img" alt="image finding"
+                width="200" height="100" @click="isVisibleFindingImg = true">
+              <span v-else class="text-muted">No image</span>
+            </td>
+            <td class="text-center">
+              <template v-if="item.findings[0]">
+                <div class="d-flex gap-2">
+                  <input :id="item.findings[0].finding_id" type="file" hidden
+                    @change="onChangeDirectKaizenFile($event, item.findings[0].finding_id)" />
+                  <button class="btn btn-info btn-sm text-white"
+                    @click="item.findings[0]?.kaizen_file ? onClickDownloadKaizen(item.findings[0]?.kaizen_file) : null"
+                    :disabled="!item.findings[0]?.kaizen_file">
+                    Download
+                  </button>
+                  <button class="btn btn-info btn-sm text-white"
+                    @click="onClickDirectUploadKaizen(item.findings[0]?.finding_id)">Upload
+                  </button>
+                </div>
+              </template>
+              <span v-else>No Action</span>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -193,13 +193,13 @@
       <h5>Comments</h5>
       <div class="chat-box">
         <div v-for="(message, index) in chatMessages" :key="index"
-             :class="['chat-message', message.noreg === noreg ? 'chat-right' : 'chat-left']">
+          :class="['chat-message', message.noreg === noreg ? 'chat-right' : 'chat-left']">
           <div class="message-bubble">
             <strong>
               {{ `${message.name} (${message.noreg || "Unknown Noreg"})` }}
             </strong>
             <p>{{ message.comments }}</p>
-<!--            <span class="timestamp">{{ message.created_at }}</span>-->
+            <!--            <span class="timestamp">{{ message.created_at }}</span>-->
           </div>
         </div>
       </div>
@@ -211,7 +211,7 @@
 
     <!-- modals -->
     <CModal backdrop="static" size="xl" :visible="addFindingModal" @close="() => { addFindingModal = false }"
-            aria-labelledby="StaticBackdropExampleLabel">
+      aria-labelledby="StaticBackdropExampleLabel">
       <CModalHeader>
         <CModalTitle id="StaticBackdropExampleLabel">{{ isEdit ? "Edit" : "Add" }} Finding</CModalTitle>
       </CModalHeader>
@@ -252,7 +252,7 @@
               <div class="mb-2">
                 <label class="mb-1">Finding Desc</label>
                 <input type="text" class="form-control" v-model="findingDesc" placeholder="Write Finding Desc"
-                       :required="!isEdit" />
+                  :required="!isEdit" />
               </div>
             </div>
           </div>
@@ -261,14 +261,14 @@
               <div class="mb-2">
                 <label class="mb-1">Finding Date</label>
                 <input type="date" class="form-control" v-model="findingDate" placeholder="Select Finding Date"
-                       :required="!isEdit" />
+                  :required="!isEdit" />
               </div>
               <div class="mb-2" :class="{ 'invalid': showErrorFindingPic }">
                 <label class="mb-1" style="margin-top: 1.5em;">
                   Finding PIC
                 </label>
                 <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions"
-                                class="vue-multi-select" @close="closeSelectFindingPic">
+                  class="vue-multi-select" @close="closeSelectFindingPic">
                 </VueMultiselect>
               </div>
 
@@ -278,9 +278,9 @@
                 <label class="mb-1">Reduce Time Countermeasure (Menit)</label>
                 <div class="d-flex align-items-center">
                   <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" v-model="enabledReduceTime"
-                         class="me-2" style="height: 20px; width: 20px;">
+                    class="me-2" style="height: 20px; width: 20px;">
                   <input type="text" class="form-control" v-model="timeCM" :disabled="!enabledReduceTime"
-                         @keypress="$event.key.match(/^[\d]$/) ? '' : $event.preventDefault()" />
+                    @keypress="$event.key.match(/^[\d]$/) ? '' : $event.preventDefault()" />
                 </div>
                 <small v-if="!enabledReduceTime" class="text-info">* Ceklis & isi waktu pengurangan jika ada</small>
                 <small v-else class="text-success">* Abaikan jika tidak ingin di ubah</small>
@@ -288,7 +288,7 @@
               <div class="mb-2" :class="{ 'invalid': showErrorActualPic }">
                 <label class="mb-1">PIC Countermeasure</label>
                 <VueMultiselect v-model="actualPIC" :options="picData" :custom-label="customPicOptions"
-                                class="vue-multi-select" @close="closeSelectActualPic">
+                  class="vue-multi-select" @close="closeSelectActualPic">
                 </VueMultiselect>
               </div>
             </div>
@@ -312,7 +312,7 @@
               <div class="mb-2">
                 <label class="mb-1">Plan Countermeasure Desc</label>
                 <input type="text" class="form-control" v-model="planCMDesc"
-                       placeholder="Write Plan Countermeasure Desc" />
+                  placeholder="Write Plan Countermeasure Desc" />
               </div>
             </div>
           </div>
@@ -527,8 +527,8 @@ export default {
       try {
         const response = await ApiService.query(
           `/operational/comments-4s/get`, {
-            sub_schedule_id: this.$route?.params?.subScheduleID
-          }
+          sub_schedule_id: this.$route?.params?.subScheduleID
+        }
         );
         // console.log(response)
         if (!response?.data?.data || response?.data?.data?.length === 0) return;
@@ -1042,9 +1042,9 @@ export default {
   flex: 1 1 auto !important;
 }
 
-.multiselect--disabled > .multiselect__tags,
-.multiselect--disabled > .multiselect__tags > .multiselect__single,
-.multiselect--disabled > .multiselect__select {
+.multiselect--disabled>.multiselect__tags,
+.multiselect--disabled>.multiselect__tags>.multiselect__single,
+.multiselect--disabled>.multiselect__select {
   background: #D8DBE0 !important;
 }
 
