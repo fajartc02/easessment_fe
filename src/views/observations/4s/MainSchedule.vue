@@ -1062,7 +1062,8 @@ export default {
     }
     this.newSubScheduleData = [];
     const year = moment().format("YYYY");
-    const month = moment().set('month', 0).format("MM");
+    const month = moment().format("MM");
+    // const month = moment().set('month', 0).format("MM");
     this.selectedMonth = `${year}-${month}`;
     await this.getLines();
     this.getGroup();
