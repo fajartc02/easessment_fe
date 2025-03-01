@@ -32,6 +32,7 @@
         <tr>
           <th>No</th>
           <th>Line</th>
+          <th>Shift</th>
           <th>Pos</th>
           <th>Type Pekerjaan</th>
           <th>Petugas</th>
@@ -53,6 +54,7 @@
             :key="obaservation.uuid">
             <td>{{ i + 1 }}</td>
             <td>{{ obaservation.line_nm }}</td>
+            <td>{{ obaservation.group_nm }}</td>
             <td>{{ obaservation.pos_nm }}</td>
             <td>{{ obaservation.job_type_nm }}</td>
             <td v-if="obaservation.checkers.length > 0">
