@@ -3,18 +3,21 @@
     <div class="card mb-3">
       <!-- filter -->
       <div class="card-header">
-        <div class="row">
+        <div class="row align-items-end justify-content-between">
           <div class="col">
             <label>Select month</label>
-            <input type="month" class="form-control" v-model="selectedMonth" @change="addFilter()" />
+            <input type="month" class="form-control" v-model="selectedMonth" />
           </div>
           <div class="col">
             <label>Line</label>
-            <select class="form-select" v-model="selectedLine" @change="addFilter()">
+            <select class="form-select" v-model="selectedLine">
               <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
                 {{ line.text }}
               </option>
             </select>
+          </div>
+          <div class="col">
+            <CButton color="primary" @click="searchData">Search</CButton>
           </div>
         </div>
       </div>
@@ -274,11 +277,16 @@ export default {
     ]),
   },
   watch: {
-    selectedLine: function () {
-      if (this.selectedLine != '0') this.getObsSchedule()
-    },
-    selectedMonth: function () {
-      if (this.selectedMonth) {
+    // selectedLine: function () {
+
+    // },
+    // selectedMonth: function () {
+
+    // },
+  },
+  methods: {
+    searchData() {
+      if (this.selectedMonth || this.selectedLine != '0') {
         this.generateDate()
         let idx = this.idxMonth.indexOf(this.selectedMonth.split('-')[1])
         this.yearMonth = `${this.monthStr[idx]} ${this.selectedMonth.split('-')[0]
@@ -287,8 +295,6 @@ export default {
         this.getObsScheduleRedShift()
       }
     },
-  },
-  methods: {
     onPageChange(page) {
       if (page == -1) {
         this.currentPage = this.currentPage - 1
@@ -384,8 +390,9 @@ export default {
     this.selectedMonth = `${year}-${month}`
     this.selectedLine = localStorage.getItem('line_id')
 
-    await this.getObsSchedule()
-    await this.getObsScheduleRedShift()
+    // await this.getObsSchedule()
+    // await this.getObsScheduleRedShift()
+    this.searchData()
   },
   updated() {
     if (this.$route.query.line) {
