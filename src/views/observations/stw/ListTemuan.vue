@@ -135,18 +135,21 @@
                 <th id="fixCol-1">{{ findingIndex + 1 }}</th>
                 <td id="fixCol-2" class="px-2">{{ finding.line_nm }}</td>
                 <td id="fixCol-3" class="px-2">
-                  <button class="btn btn-info" v-if="finding.observation_id" @click="() => {
-                    $router.push(`/observation/${finding.observation_id}`)
-                  }">
+                  <button class="btn btn-info" :style="`background-color: ${COLOR_STW[finding.source_category]}`"
+                    v-if="finding.observation_id" @click="() => {
+                      $router.push(`/observation/${finding.observation_id}`)
+                    }">
                     Observation
                   </button>
                   <template v-else>
-                    {{ finding.source_category }}
+                    <div class="card text-light" :style="`background-color: ${COLOR_STW[finding.source_category]}`">
+                      {{ finding.source_category }}
+                    </div>
                   </template>
                 </td>
                 <td id="fixCol-4" class="px-2">{{ formatTheDate(finding.finding_date) }}</td>
-                <td id="fixCol-5" class="px-2">{{ finding.finding_location }}</td>
-                <td id="fixCol-6" class="px-2">
+                <td id="fixCol-5" class="px-2 text-start">{{ finding.finding_location }}</td>
+                <td id="fixCol-6" class="px-2 text-start">
                   <template v-if="`${finding?.finding_desc}`.length > 30 && !finding.is_open">
                     {{ `${finding?.finding_desc}`.slice(0, 30) }}
                     <span class="text-info" style="cursor: pointer;" @click="() => {
@@ -155,15 +158,17 @@
                     }">...</span>
                   </template>
                   <template v-else-if="finding.is_open">
-                    <div style="overflow: auto;padding: 20px;">
+                    <div class="text-start" style="overflow: auto;">
                       {{ finding.finding_desc }}
                     </div>
                   </template>
                   <template v-else>
-                    {{ finding.finding_desc }}
+                    <div class="text-start">
+                      {{ finding.finding_desc }}
+                    </div>
                   </template>
                 </td>
-                <td class="px-2">
+                <td class="px-2 text-start">
                   {{ finding.cm_desc }}
                 </td>
                 <td class="px-2">{{ finding.cm_priority }}</td>
@@ -255,7 +260,7 @@
                     <button v-if="finding.finding_img" @click="() => {
                       openFindingImage(finding.finding_img)
                     }
-                      " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
+                    " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
                       Finding image
                     </button>
                     <button v-else class="btn btn-secondary btn-sm" disabled>
@@ -265,7 +270,7 @@
                       getDetailTemuan(findingIndex)
                       addSignModal = true
                     }
-                      " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
+                    " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
                       Add sign
                     </button>
                     <!-- <button class="btn btn-info btn-sm text-white w-full mx-1 my-1" style="margin-right: 10px" @click="() => {
@@ -279,7 +284,7 @@
                       getDetailTemuan(findingIndex)
                       editTemuanModal = true
                     }
-                      " class="btn btn-info btn-sm text-white w-full my-1">
+                    " class="btn btn-info btn-sm text-white w-full my-1">
                       Edit
                     </button>
                     <button @click="deleteFinding(finding.finding_id)"
@@ -512,7 +517,7 @@
               showSignLhWhite = false
               showSignSH = false
             }
-              ">
+            ">
               Edit sign
             </button>
           </div>
@@ -561,7 +566,7 @@
               showSignLhWhite = true
               showSignSH = false
             }
-              ">
+            ">
               Edit sign
             </button>
           </div>
@@ -610,7 +615,7 @@
               showSignLhWhite = false
               showSignSH = true
             }
-              ">
+            ">
               Edit sign
             </button>
           </div>
@@ -679,14 +684,14 @@
         <CButton color="info" class="text-white" @click="() => {
           updateFindingList()
         }
-          ">
+        ">
           Update data
         </CButton>
         <CButton color="secondary" class="text-white" @click="() => {
           selectedFindingIndex = null
           editTemuanModal = false
         }
-          ">
+        ">
           Close
         </CButton>
       </CModalFooter>
@@ -711,7 +716,7 @@
               showSignLhWhite = false
               showSignSH = false
             }
-              ">
+            ">
               Edit sign
             </button>
           </div>
@@ -766,7 +771,7 @@
               showSignLhWhite = true
               showSignSH = false
             }
-              ">
+            ">
               Edit sign
             </button>
           </div>
@@ -820,7 +825,7 @@
               showSignLhWhite = false
               showSignSH = true
             }
-              ">
+            ">
               Edit sign
             </button>
           </div>
@@ -868,7 +873,7 @@
           addSignModal = false
           getFindingsFunc()
         }
-          ">
+        ">
           Close
         </CButton>
       </CModalFooter>
@@ -887,7 +892,7 @@
         <CButton color="secondary" class="text-white" @click="() => {
           findingImageModal = false
         }
-          ">
+        ">
           Close
         </CButton>
       </CModalFooter>
@@ -911,12 +916,14 @@ import vueSignature from 'vue-signature'
 import { toast } from 'vue3-toastify'
 import ModalFindingDetail from '@/components/ModalFinding/ModalFindingDetail.vue'
 import HeadFindingList from '@/components/table/HeadFindingList.vue'
+import { COLOR_STW } from '@/constant/COLOR_STW'
 
 export default {
   name: 'List Temuan',
   data() {
     return {
       // for export data
+      COLOR_STW,
       json_fields: {
         FindingID: 'finding_id',
         'Finding Date': 'finding_date',
