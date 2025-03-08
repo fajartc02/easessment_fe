@@ -55,7 +55,7 @@ const actions = {
         .then((result) => {
           console.log(result);
           console.log(commit);
-          resolve(true)
+          resolve(result?.data?.data)
         }).catch((err) => {
           reject(err)
         });

@@ -69,21 +69,23 @@
             <td>{{ obaservation.job_nm }}</td>
             <td>{{ `${obaservation.plan_check_dt}` }}</td>
             <td :class="`${obaservation.actual_check_dt}`.split('T')[0] == 'null'
-              ? 'bg-danger'
+              ? obaservation.parent_revision_id ? 'bg-info' : 'bg-danger'
               : ''
               ">
               {{
                 `${obaservation.actual_check_dt}`.split('T')[0] != 'null'
                   ? `${obaservation.actual_check_dt}`.split('T')[0]
-                  : 'belum cek'
+                  : obaservation.parent_revision_id ? `Reschedule ${obaservation.date_revision.split(' ')[0]}` : 'belum cek'
               }}
             </td>
             <td>
               <div class="d-flex">
-                <button class="btn btn-info btn-sm mx-1 text-white" @click="editPos(obaservation.id)">
+                <button class="btn btn-info btn-sm mx-1 text-white" @click="editPos(obaservation.id)"
+                  :disabled="obaservation.parent_revision_id">
                   edit
                 </button>
-                <button class="btn btn-danger btn-sm text-white" @click="deletePos(obaservation.id)">
+                <button class="btn btn-danger btn-sm text-white" @click="deletePos(obaservation.id)"
+                  :disabled="obaservation.parent_revision_id">
                   delete
                 </button>
               </div>

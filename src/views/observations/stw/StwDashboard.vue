@@ -51,7 +51,7 @@
               </CButton>
             </div>
           </div>
-          <div>
+          <div class="d-flex justify-content-center align-items-center">
             OnProgress:
             <CIcon icon="cil-circle" class="text-dark" size="sm" />
             Done:
@@ -60,6 +60,8 @@
             <CIcon icon="cil-circle" class="text-danger" size="sm" />
             Is Finding:
             <CIcon icon="cil-bell" class="text-warning" size="sm" />
+            Revision:
+            <h6 class="m-0 p-0 text-primary">R</h6>
           </div>
         </div>
       </div>

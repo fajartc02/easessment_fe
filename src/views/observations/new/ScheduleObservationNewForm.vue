@@ -66,7 +66,11 @@
 </template>
 
 <script>
-import { POST_OBSERVATION_SCHEDULE, GET_OBSERVATION_SCHEDULE_LIST, EDIT_OBSERVATION_SCHEDULE } from '@/store/modules/observation.module'
+import {
+  POST_OBSERVATION_SCHEDULE,
+  GET_OBSERVATION_SCHEDULE_LIST,
+  EDIT_OBSERVATION_SCHEDULE
+} from '@/store/modules/observation.module'
 import { GET_JOB } from '@/store/modules/job.module'
 import { GET_USERS } from '@/store/modules/user.module'
 import { GET_LINES } from '@/store/modules/line.module'
@@ -74,9 +78,6 @@ import { GET_POS } from '@/store/modules/pos.module'
 import { GET_GROUP } from '@/store/modules/group.module'
 import { mapGetters } from 'vuex'
 
-// import formatDate from '@/functions/formatDate'
-// import 'vue3-treeselect/dist/vue3-treeselect.css'
-// import Treeselect from 'vue3-treeselect'
 import Treeselect from '@cholakovdev/vue3-treeselect'
 import '@cholakovdev/vue3-treeselect/dist/vue3-treeselect.css'
 import moment from 'moment'
@@ -187,7 +188,7 @@ export default {
       }
       await this.$store.dispatch(GET_USERS)
     },
-    async postSchedule() {
+    async postSchedule(isEdit = false) {
       try {
         let notAllow = []
         for (const key in this.form) {
@@ -206,8 +207,11 @@ export default {
         })
         this.form.checkers = mapCheckers
         this.form.is_new_form = true
-        this.$store.dispatch(POST_OBSERVATION_SCHEDULE, this.form)
-          .then(() => {
+        return this.$store.dispatch(POST_OBSERVATION_SCHEDULE, this.form)
+          .then((data) => {
+            if (isEdit) {
+              return data
+            }
             Swal.fire('Success menambah schedule', '', 'success')
             this.$router.push('/schedule/observation')
           })
@@ -236,9 +240,35 @@ export default {
           }
         })
         this.form.checkers = mapCheckers
-        const payload = {
+        let payload = {
           id: this.$route.query.id,
           payload: this.form
+        }
+        if (payload?.payload?.plan_check_dt !== this.observationSchedule[0]?.plan_check_dt) {
+          // alert('date changes')
+          // input reason_revision
+          const reason_revision = prompt('Input Alasan kenapa di rubah schedulenya?')
+          // console.log(reason_revision)
+          const response = await this.postSchedule(true)
+          console.log(response, 'response')
+          // get prev_schedule_id
+          const parent_revision_id = response[0]?.observation_id
+          // set form.plan_check_dt to NULL
+          this.form.plan_check_dt = null
+          payload = {
+            id: this.$route.query.id,
+            payload: {
+              ...this.form,
+              parent_revision_id,
+              reason_revision
+            }
+          }
+          await this.$store.dispatch(EDIT_OBSERVATION_SCHEDULE, payload)
+          Swal.fire('Success to edit schedule', '', 'success')
+          setTimeout(() => {
+            this.$router.push('/schedule/observation')
+          }, 1000)
+          return
         }
         await this.$store.dispatch(EDIT_OBSERVATION_SCHEDULE, payload)
         Swal.fire('Success to edit schedule', '', 'success')
