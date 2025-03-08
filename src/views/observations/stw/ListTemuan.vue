@@ -137,7 +137,11 @@
                 <td id="fixCol-3" class="px-2">
                   <button class="btn btn-info" :style="`background-color: ${COLOR_STW[finding.source_category]}`"
                     v-if="finding.observation_id" @click="() => {
-                      $router.push(`/observation/${finding.observation_id}`)
+                      if (finding?.is_new_form) {
+                        $router.push(`/new-observation/${finding.observation_id}`)
+                      } else {
+                        $router.push(`/observation/${finding.observation_id}`)
+                      }
                     }">
                     Observation
                   </button>

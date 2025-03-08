@@ -376,7 +376,12 @@ export default {
         })
     },
     detailSchedule(obser) {
-      this.$router.push(`/observation/${obser.observation_id}`)
+      console.log(obser)
+      if (obser.is_new_form) {
+        this.$router.push(`/new-observation/${obser.observation_id}`)
+      } else {
+        this.$router.push(`/observation/${obser.observation_id}`)
+      }
     },
     addFilter() {
       this.getObsSchedule()

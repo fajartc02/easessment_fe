@@ -20,7 +20,9 @@
               </select>
             </CInputGroup>
           </div>
-          <button class="btn btn-sm btn-success text-white" @click="this.$router.push('/schedule/observation/form')">
+          <!-- OLD Routing: /schedule/observation/form -->
+          <button class="btn btn-sm btn-success text-white"
+            @click="this.$router.push('/schedule/observation/new-form')">
             Add Schedule
             <CIcon icon="cil-plus" size="sm" />
           </button>
@@ -224,7 +226,7 @@ export default {
         })
     },
     async editPos(id) {
-      await this.$router.push(`/schedule/observation/form?id=${id}`)
+      await this.$router.push(`/schedule/observation/new-form?id=${id}`)
     },
     deletePos(id) {
       console.log(id)
