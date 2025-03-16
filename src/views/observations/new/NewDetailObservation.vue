@@ -42,13 +42,33 @@
         <div class="col-9 my-auto">
           <div class="d-flex align-items-center">
             <b class="mr-3">Data Observasi</b>
-            <button v-if="resultCheck.length == categories.length" class="btn btn-secondary mx-3"
-              :disabled="resultCheck.length != 5" @click="viewReport()">
+            <button
+              v-if="resultCheck.length == categories.length"
+              class="btn btn-secondary mx-3"
+              :disabled="resultCheck.length != 5"
+              @click="viewReport()"
+            >
               View Report
             </button>
-            <CButton v-if="resultCheck.length == categories.length" color="info" @click="() => { xlDemo = true }">Lihat
-              Video</CButton>
-            <CModal size="xl" :visible="xlDemo" @close="() => { xlDemo = false }">
+            <CButton
+              v-if="resultCheck.length == categories.length"
+              color="info"
+              @click="
+                () => {
+                  xlDemo = true
+                }
+              "
+              >Lihat Video</CButton
+            >
+            <CModal
+              size="xl"
+              :visible="xlDemo"
+              @close="
+                () => {
+                  xlDemo = false
+                }
+              "
+            >
               <CModalHeader>
                 <CModalTitle>Video Observasi SW</CModalTitle>
               </CModalHeader>
@@ -56,45 +76,70 @@
                 <div class="row">
                   <div class="col border-all">
                     <h6>Before & After</h6>
-                    <video muted style="width: 100%;height: 100%;" autoplay controls>
-                      <source src="@/assets/video1.mp4" type="video/mp4">
+                    <video
+                      muted
+                      style="width: 100%; height: 100%"
+                      autoplay
+                      controls
+                    >
+                      <source src="@/assets/video1.mp4" type="video/mp4" />
                       Your browser does not support the video tag.
                     </video>
                   </div>
                 </div>
-
               </CModalBody>
             </CModal>
           </div>
-
         </div>
         <div class="d-flex col-3 text-right justify-content-around">
-          <CButton variant="ghost" color="info" @click="() => {
-            demoTSK = true
-          }
-          ">{{ tskLabel }}</CButton>
-          <CModal size="xl" :visible="demoTSK" @close="() => {
-            demoTSK = false
-          }
-          ">
+          <CButton
+            variant="ghost"
+            color="info"
+            @click="
+              () => {
+                demoTSK = true
+              }
+            "
+            >{{ tskLabel }}</CButton
+          >
+          <CModal
+            size="xl"
+            :visible="demoTSK"
+            @close="
+              () => {
+                demoTSK = false
+              }
+            "
+          >
             <CModalHeader>
               <CModalTitle v-if="observation.job_type_nm">{{
                 tskLabel
-                }}</CModalTitle>
+              }}</CModalTitle>
             </CModalHeader>
             <CModalBody>
               <vue-pdf-embed v-if="tskFile" :source="tskFile" />
               <h2 v-else>TIDAK ADA {{ tskLabel }}</h2>
             </CModalBody>
           </CModal>
-          <CButton variant="ghost" color="info" @click="() => {
-            demoTSKK = true
-          }
-          ">{{ tskkLabel }}</CButton>
-          <CModal size="xl" :visible="demoTSKK" @close="() => {
-            demoTSKK = false
-          }
-          ">
+          <CButton
+            variant="ghost"
+            color="info"
+            @click="
+              () => {
+                demoTSKK = true
+              }
+            "
+            >{{ tskkLabel }}</CButton
+          >
+          <CModal
+            size="xl"
+            :visible="demoTSKK"
+            @close="
+              () => {
+                demoTSKK = false
+              }
+            "
+          >
             <CModalHeader>
               <CModalTitle>{{ tskkLabel }}</CModalTitle>
             </CModalHeader>
@@ -103,14 +148,25 @@
               <h2 v-else>TIDAK ADA {{ tskkLabel }}</h2>
             </CModalBody>
           </CModal>
-          <CButton variant="ghost" color="info" @click="() => {
-            demoSOP = true
-          }
-          ">SOP</CButton>
-          <CModal size="xl" :visible="demoSOP" @close="() => {
-            demoSOP = false
-          }
-          ">
+          <CButton
+            variant="ghost"
+            color="info"
+            @click="
+              () => {
+                demoSOP = true
+              }
+            "
+            >SOP</CButton
+          >
+          <CModal
+            size="xl"
+            :visible="demoSOP"
+            @close="
+              () => {
+                demoSOP = false
+              }
+            "
+          >
             <CModalHeader>
               <CModalTitle>SOP</CModalTitle>
             </CModalHeader>
@@ -124,17 +180,24 @@
     </div>
     <div class="card-body overflow-auto">
       <CInputGroup class="mb-3">
-        <CInputGroupText style="width: 120px;">Actual Date</CInputGroupText>
-        <input class="form-control" type="date" v-model="form.actual_check_dt" />
+        <CInputGroupText style="width: 120px">Actual Date</CInputGroupText>
+        <input
+          class="form-control"
+          type="date"
+          v-model="form.actual_check_dt"
+        />
         <CInputGroupText class="p-0">
-          <CButton color="success" @click="saveCheckObser(form.actual_check_dt, 'actual_check_dt')"
-            style="font-weight:900;">
-            Save</CButton>
+          <CButton
+            color="success"
+            @click="saveCheckObser(form.actual_check_dt, 'actual_check_dt')"
+            style="font-weight: 900"
+          >
+            Save</CButton
+          >
         </CInputGroupText>
-
       </CInputGroup>
       <CInputGroup class="mb-3">
-        <CInputGroupText style="width: 120px;">Shift</CInputGroupText>
+        <CInputGroupText style="width: 120px">Shift</CInputGroupText>
         <CFormSelect v-model="form.group_id">
           <option disabled selected>Select Shift</option>
           <option v-for="group in groups" :key="group.id" :value="group.id">
@@ -142,8 +205,13 @@
           </option>
         </CFormSelect>
         <CInputGroupText class="p-0">
-          <CButton color="success" @click="saveCheckObser(form.group_id, 'group_id')" style="font-weight:900;">
-            Save</CButton>
+          <CButton
+            color="success"
+            @click="saveCheckObser(form.group_id, 'group_id')"
+            style="font-weight: 900"
+          >
+            Save</CButton
+          >
         </CInputGroupText>
       </CInputGroup>
       <table class="table table-responsive" style="border: 1px solid black">
@@ -151,7 +219,7 @@
           <th class="text-center">No</th>
           <th class="p-2">Category</th>
           <th class="p-2">Item Check</th>
-          <th class="p-2" style="min-width: 300px;">Alat</th>
+          <th class="p-2" style="min-width: 300px">Alat</th>
           <th class="p-2">Methode</th>
           <th class="p-2">Standard</th>
           <th class="p-2">Judgment</th>
@@ -162,8 +230,12 @@
         </tr>
         <template v-for="(item, i) in categories" :key="i">
           <tr>
-            <td :rowspan="item.sub_categories.length + 1" class="text-center">{{ i + 1 }}</td>
-            <td :rowspan="item.sub_categories.length + 1" class="p-2">{{ item.category_nm }}</td>
+            <td :rowspan="item.sub_categories.length + 1" class="text-center">
+              {{ i + 1 }}
+            </td>
+            <td :rowspan="item.sub_categories.length + 1" class="p-2">
+              {{ item.category_nm }}
+            </td>
           </tr>
           <tr v-for="(sub_category, i) in item.sub_categories" :key="i">
             <td>
@@ -180,33 +252,85 @@
             </td>
             <td>
               <!-- TYPE 1/2 -->
-              <div v-if="observation.job_type_nm !== 'Type 3' &&
-                item.category_nm == 'Standarize Work' && !sub_category?.is_judgment
-              ">
+              <div
+                v-if="
+                  observation.job_type_nm !== 'Type 3' &&
+                  item.category_nm == 'Standarize Work' &&
+                  !sub_category?.is_judgment
+                "
+              >
                 <div class="d-flex justify-content-between">
                   <div>
-                    <input type="number" v-model="sub_category.stw_ct1" class="form-control text-center"
-                      style="width: 70px" placeholder="CT1" :disabled="!isHeaderAreSubmitted" />
-                    <button v-if="!intervalAutoCount" class="btn btn-sm btn-primary w-100"
-                      @click="toggleTimer(sub_category, true, 'stw_ct1')">Start</button>
-                    <button v-if="keyActiveTimer === 'stw_ct1'" class="btn btn-sm btn-danger w-100"
-                      @click="toggleTimer(sub_category, false)">Stop</button>
+                    <input
+                      type="number"
+                      v-model="sub_category.stw_ct1"
+                      class="form-control text-center"
+                      style="width: 70px"
+                      placeholder="CT1"
+                      :disabled="!isHeaderAreSubmitted"
+                    />
+                    <button
+                      v-if="!intervalAutoCount"
+                      class="btn btn-sm btn-primary w-100"
+                      @click="toggleTimer(sub_category, true, 'stw_ct1')"
+                    >
+                      Start
+                    </button>
+                    <button
+                      v-if="keyActiveTimer === 'stw_ct1'"
+                      class="btn btn-sm btn-danger w-100"
+                      @click="toggleTimer(sub_category, false)"
+                    >
+                      Stop
+                    </button>
                   </div>
                   <div>
-                    <input type="number" v-model="sub_category.stw_ct2" class="form-control text-center"
-                      style="width: 70px" placeholder="CT2" :disabled="!isHeaderAreSubmitted" />
-                    <button v-if="!intervalAutoCount" class="btn btn-sm btn-primary w-100"
-                      @click="toggleTimer(sub_category, true, 'stw_ct2')">Start</button>
-                    <button v-if="keyActiveTimer === 'stw_ct2'" class="btn btn-sm btn-danger w-100"
-                      @click="toggleTimer(sub_category, false)">Stop</button>
+                    <input
+                      type="number"
+                      v-model="sub_category.stw_ct2"
+                      class="form-control text-center"
+                      style="width: 70px"
+                      placeholder="CT2"
+                      :disabled="!isHeaderAreSubmitted"
+                    />
+                    <button
+                      v-if="!intervalAutoCount"
+                      class="btn btn-sm btn-primary w-100"
+                      @click="toggleTimer(sub_category, true, 'stw_ct2')"
+                    >
+                      Start
+                    </button>
+                    <button
+                      v-if="keyActiveTimer === 'stw_ct2'"
+                      class="btn btn-sm btn-danger w-100"
+                      @click="toggleTimer(sub_category, false)"
+                    >
+                      Stop
+                    </button>
                   </div>
                   <div>
-                    <input type="number" v-model="sub_category.stw_ct3" class="form-control text-center"
-                      style="width: 70px" placeholder="CT3" :disabled="!isHeaderAreSubmitted" />
-                    <button v-if="!intervalAutoCount" class="btn btn-sm btn-primary w-100"
-                      @click="toggleTimer(item, true, 'stw_ct3')">Start</button>
-                    <button v-if="keyActiveTimer === 'stw_ct3'" class="btn btn-sm btn-danger w-100"
-                      @click="toggleTimer(item, false)">Stop</button>
+                    <input
+                      type="number"
+                      v-model="sub_category.stw_ct3"
+                      class="form-control text-center"
+                      style="width: 70px"
+                      placeholder="CT3"
+                      :disabled="!isHeaderAreSubmitted"
+                    />
+                    <button
+                      v-if="!intervalAutoCount"
+                      class="btn btn-sm btn-primary w-100"
+                      @click="toggleTimer(item, true, 'stw_ct3')"
+                    >
+                      Start
+                    </button>
+                    <button
+                      v-if="keyActiveTimer === 'stw_ct3'"
+                      class="btn btn-sm btn-danger w-100"
+                      @click="toggleTimer(item, false)"
+                    >
+                      Stop
+                    </button>
                   </div>
                   <!-- <div>
                     <input type="number" :disabled="item.is_already_check" v-model="item.stw_ct4"
@@ -227,12 +351,16 @@
                   <div v-if="item.stw_ct3">
                     <div class="row">
                       <div class="col-12">
-                        <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(2) }}</span>
+                        <span class="badge bg-primary w-100 p-2"
+                          >Rata-Rata: {{ judgementAverage.toFixed(2) }}</span
+                        >
                       </div>
                     </div>
                     <div class="row">
                       <div class="col-12">
-                        <span class="badge bg-success mt-1 w-100">Persentasi: {{ judgementPrecentage }} %</span>
+                        <span class="badge bg-success mt-1 w-100"
+                          >Persentasi: {{ judgementPrecentage }} %</span
+                        >
                       </div>
                     </div>
                   </div>
@@ -240,43 +368,79 @@
                   <div v-else>
                     <div class="row">
                       <div class="col-12">
-                        <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(2) }}</span>
+                        <span class="badge bg-primary w-100 p-2"
+                          >Rata-Rata: {{ judgementAverage.toFixed(2) }}</span
+                        >
                       </div>
                     </div>
                     <div class="row">
                       <div class="col-12">
-                        <span class="badge bg-success mt-1 w-100">Persentasi: {{ judgementPrecentage }} %</span>
+                        <span class="badge bg-success mt-1 w-100"
+                          >Persentasi: {{ judgementPrecentage }} %</span
+                        >
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div
-                v-else-if="item.category_nm == 'Standarize Work' && observation.job_type_nm === 'Type 3' && !sub_category?.is_judgment">
+                v-else-if="
+                  item.category_nm == 'Standarize Work' &&
+                  observation.job_type_nm === 'Type 3' &&
+                  !sub_category?.is_judgment
+                "
+              >
                 <div>
-                  <input type="number" v-model="sub_category.stw_ct1" class="form-control text-center" placeholder="CT1"
-                    :disabled="!isHeaderAreSubmitted" />
-                  <button v-if="!intervalAutoCount" class="btn btn-sm btn-primary w-100"
-                    @click="toggleTimer(sub_category, true, 'stw_ct1')">Start</button>
-                  <button v-if="keyActiveTimer === 'stw_ct1'" class="btn btn-sm btn-danger w-100"
-                    @click="toggleTimer(sub_category, false)">Stop</button>
+                  <input
+                    type="number"
+                    v-model="sub_category.stw_ct1"
+                    class="form-control text-center"
+                    placeholder="CT1"
+                    :disabled="!isHeaderAreSubmitted"
+                  />
+                  <button
+                    v-if="!intervalAutoCount"
+                    class="btn btn-sm btn-primary w-100"
+                    @click="toggleTimer(sub_category, true, 'stw_ct1')"
+                  >
+                    Start
+                  </button>
+                  <button
+                    v-if="keyActiveTimer === 'stw_ct1'"
+                    class="btn btn-sm btn-danger w-100"
+                    @click="toggleTimer(sub_category, false)"
+                  >
+                    Stop
+                  </button>
                 </div>
                 <div v-if="sub_category.stw_ct1">
                   <div class="row">
                     <div class="col-12">
-                      <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(2) }}</span>
+                      <span class="badge bg-primary w-100 p-2"
+                        >Rata-Rata: {{ judgementAverage.toFixed(2) }}</span
+                      >
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-12">
-                      <span class="badge bg-success mt-1 w-100">Persentasi: {{ judgementPrecentage }} %</span>
+                      <span class="badge bg-success mt-1 w-100"
+                        >Persentasi: {{ judgementPrecentage }} %</span
+                      >
                     </div>
                   </div>
                 </div>
               </div>
-              <CFormSelect v-else v-model="sub_category.judgment_id" :disabled="!isHeaderAreSubmitted">
+              <CFormSelect
+                v-else
+                v-model="sub_category.judgment_id"
+                :disabled="!isHeaderAreSubmitted"
+              >
                 <option value="false">Select Judgment</option>
-                <option v-for="judg in judgments" :key="judg.id" :value="judg.id">
+                <option
+                  v-for="judg in judgments"
+                  :key="judg.id"
+                  :value="judg.id"
+                >
                   {{ judg.text }}
                 </option>
               </CFormSelect>
@@ -286,33 +450,67 @@
               <!-- judgments.find((judg) => judg.id == sub_category.judgment_id)?.is_abnormal" -->
               <!-- FIXING JUDGMENT ID -->
               <!-- form.actual_check_dt && form.group_id -->
-              <button class="btn btn-outline-secondary text-small" v-if="!isHeaderAreSubmitted" :disabled="true">Save
-                Actual Date &
-                Shift Dahulu</button>
               <button
-                v-else-if="!sub_category.is_already_check && (sub_category.judgment_id && sub_category.judgment_id != 'false')"
-                class="btn btn-outline-success" @click="saveCheckCategory(sub_category, item)"
-                :disabled="sub_category.is_already_check || isLoading">Save
+                class="btn btn-outline-secondary text-small"
+                v-if="!isHeaderAreSubmitted"
+                :disabled="true"
+              >
+                Save Actual Date & Shift Dahulu
               </button>
               <button
-                v-else-if="(!sub_category.judgment_id || sub_category.judgment_id == 'false') && (!sub_category.is_already_check)"
-                class="btn btn-outline-info" disabled>Silahkan
-                isi</button>
-              <button v-else class="btn btn-outline-warning" @click="updateCheckCategory(sub_category, item)"
-                :disabled="isLoading">Update</button>
+                v-else-if="
+                  !sub_category.is_already_check &&
+                  sub_category.judgment_id &&
+                  sub_category.judgment_id != 'false'
+                "
+                class="btn btn-outline-success"
+                @click="saveCheckCategory(sub_category, item)"
+                :disabled="sub_category.is_already_check || isLoading"
+              >
+                Save
+              </button>
+              <button
+                v-else-if="
+                  (!sub_category.judgment_id ||
+                    sub_category.judgment_id == 'false') &&
+                  !sub_category.is_already_check
+                "
+                class="btn btn-outline-info"
+                disabled
+              >
+                Silahkan isi
+              </button>
+              <button
+                v-else
+                class="btn btn-outline-warning"
+                @click="updateCheckCategory(sub_category, item)"
+                :disabled="isLoading"
+              >
+                Update
+              </button>
             </td>
             <td
-              v-if="sub_category.is_already_check && judgments.find((judg) => judg.id == sub_category.judgment_id)?.is_abnormal && sub_category.is_already_check">
+              v-if="
+                sub_category.is_already_check &&
+                judgments.find((judg) => judg.id == sub_category.judgment_id)
+                  ?.is_abnormal &&
+                sub_category.is_already_check
+              "
+            >
               <div v-if="sub_category.findings.length == 0">
-                <button class="btn btn-info" @click="() => {
-                  resetData()
-                  sub_category.is_active_modal = true
-                  finding.finding_location = observation.pos_nm
-                  finding.category_id = sub_category.id
-                  finding.obs_result_id = sub_category.obs_result_id
-                  mapUsersData()
-                }
-                ">
+                <button
+                  class="btn btn-info"
+                  @click="
+                    () => {
+                      resetData()
+                      sub_category.is_active_modal = true
+                      finding.finding_location = observation.pos_nm
+                      finding.category_id = sub_category.id
+                      finding.obs_result_id = sub_category.obs_result_id
+                      mapUsersData()
+                    }
+                  "
+                >
                   Add findings
                 </button>
               </div>
@@ -321,9 +519,19 @@
               </div>
 
               <!-- modal -->
-              <CModal scrollable alignment="center" :visible="sub_category.is_active_modal" size="xl" backdrop="static">
+              <CModal
+                scrollable
+                alignment="center"
+                :visible="sub_category.is_active_modal"
+                size="xl"
+                backdrop="static"
+              >
                 <CModalHeader>
-                  <CModalTitle>Add temuan ({{ item?.category_nm }}-{{ sub_category?.sub_category_nm }})</CModalTitle>
+                  <CModalTitle
+                    >Add temuan ({{ item?.category_nm }}-{{
+                      sub_category?.sub_category_nm
+                    }})</CModalTitle
+                  >
                 </CModalHeader>
                 <CModalBody>
                   <div>
@@ -332,21 +540,38 @@
                       <div class="mt-2">
                         <div class="mb-2">
                           <label class="mb-1">Tanggal temuan</label>
-                          <input type="date" class="form-control" v-model="finding.finding_date" />
+                          <input
+                            type="date"
+                            class="form-control"
+                            v-model="finding.finding_date"
+                          />
                         </div>
                         <div class="mb-2">
                           <label class="mb-1">Pos</label>
-                          <input type="text" class="form-control" v-model="finding.finding_location" />
+                          <input
+                            type="text"
+                            class="form-control"
+                            v-model="finding.finding_location"
+                          />
                         </div>
                         <div class="mb-2">
                           <label class="mb-1">Finding description</label>
-                          <textarea cols="30" rows="5" class="form-control" v-model="finding.finding_desc"></textarea>
+                          <textarea
+                            cols="30"
+                            rows="5"
+                            class="form-control"
+                            v-model="finding.finding_desc"
+                          ></textarea>
                         </div>
                         <div class="mb-2">
                           <label class="mb-1">Finding Factor</label>
                           <CFormSelect v-model="finding.factor_id">
                             <option>Select Factor</option>
-                            <option v-for="factor in factors" :key="factor.text" :value="factor.id">
+                            <option
+                              v-for="factor in factors"
+                              :key="factor.text"
+                              :value="factor.id"
+                            >
                               {{ factor.text }}
                             </option>
                           </CFormSelect>
@@ -354,24 +579,44 @@
                         <div class="mb-2">
                           <div>
                             <label class="mb-1">Finding image </label>
-                            <input :ref="`finding_image-${i}`" type="file" class="form-control" />
+                            <input
+                              :ref="`finding_image-${i}`"
+                              type="file"
+                              class="form-control"
+                            />
                           </div>
-                          <button class="btn btn-info my-2 text-white" :disabled="isUploadLoading" @click="
-                            uploadFindingImage(`finding_image-${i}`, finding)
-                            ">
+                          <button
+                            class="btn btn-info my-2 text-white"
+                            :disabled="isUploadLoading"
+                            @click="
+                              uploadFindingImage(`finding_image-${i}`, finding)
+                            "
+                          >
                             {{ isUploadLoading ? 'Uploading' : 'Upload' }}
                           </button>
                           <div v-if="selectedFindingImage">
-                            <img :src="selectedFindingImage" width="300" alt="" />
+                            <img
+                              :src="selectedFindingImage"
+                              width="300"
+                              alt=""
+                            />
                           </div>
                         </div>
                         <div class="mb-2">
                           <label class="mb-1">Countermeasure description</label>
-                          <textarea cols="30" rows="5" class="form-control" v-model="finding.cm_desc"></textarea>
+                          <textarea
+                            cols="30"
+                            rows="5"
+                            class="form-control"
+                            v-model="finding.cm_desc"
+                          ></textarea>
                         </div>
                         <div class="mb-2">
                           <label class="mb-1">Priority</label>
-                          <select class="form-select" v-model="finding.cm_priority">
+                          <select
+                            class="form-select"
+                            v-model="finding.cm_priority"
+                          >
                             <option selected>Select priority</option>
                             <option value="P1">
                               P1: Safety and Quality Issue
@@ -383,21 +628,49 @@
 
                         <div class="mb-2">
                           <label class="mb-1">PIC </label>
-                          <VueMultiselect v-model="finding.cm_pic_id" :options="picData"
-                            :custom-label="customPicOptions">
+                          <VueMultiselect
+                            v-model="finding.cm_pic_id"
+                            :options="picData"
+                            :custom-label="customPicOptions"
+                          >
                           </VueMultiselect>
+                        </div>
+                        <div class="mb-2">
+                          <label class="mb-1">Department Terkait</label>
+                          <CFormSelect v-model="finding.department_id">
+                            <option>Select Department</option>
+                            <option
+                              v-for="department in departementsOpts"
+                              :key="department.text"
+                              :value="department.id"
+                            >
+                              {{ department.text }}
+                            </option>
+                          </CFormSelect>
                         </div>
                         <div class="row">
                           <div class="col-12 col-lg-6">
                             <div class="mb-2">
-                              <label class="mb-1">Countermeasure Start Plan Date </label>
-                              <input type="date" class="form-control" v-model="finding.cm_str_plan_date" />
+                              <label class="mb-1"
+                                >Countermeasure Start Plan Date
+                              </label>
+                              <input
+                                type="date"
+                                class="form-control"
+                                v-model="finding.cm_str_plan_date"
+                              />
                             </div>
                           </div>
                           <div class="col12 col-lg-6">
                             <div class="mb-2">
-                              <label class="mb-1">Countermeasure End Plan Date </label>
-                              <input type="date" class="form-control" v-model="finding.cm_end_plan_date" />
+                              <label class="mb-1"
+                                >Countermeasure End Plan Date
+                              </label>
+                              <input
+                                type="date"
+                                class="form-control"
+                                v-model="finding.cm_end_plan_date"
+                              />
                             </div>
                           </div>
                         </div>
@@ -405,7 +678,11 @@
                           <label class="mb-1">Countermeasure Factor</label>
                           <CFormSelect v-model="finding.cm_result_factor_id">
                             <option>Select Factor</option>
-                            <option v-for="factor in factors" :key="factor.text" :value="factor.id">
+                            <option
+                              v-for="factor in factors"
+                              :key="factor.text"
+                              :value="factor.id"
+                            >
                               {{ factor.text }}
                             </option>
                           </CFormSelect>
@@ -414,20 +691,45 @@
                         <hr />
 
                         <div class="mb-2">
-                          <label class="mb-1">Countermeasure Start actual date</label>
-                          <input type="date" class="form-control" v-model="finding.cm_str_act_date" disabled />
+                          <label class="mb-1"
+                            >Countermeasure Start actual date</label
+                          >
+                          <input
+                            type="date"
+                            class="form-control"
+                            v-model="finding.cm_str_act_date"
+                            disabled
+                          />
                         </div>
                         <div class="mb-2">
-                          <label class="mb-1">Countermeasure End actual date</label>
-                          <input type="date" class="form-control" v-model="finding.cm_end_act_date" disabled />
+                          <label class="mb-1"
+                            >Countermeasure End actual date</label
+                          >
+                          <input
+                            type="date"
+                            class="form-control"
+                            v-model="finding.cm_end_act_date"
+                            disabled
+                          />
                         </div>
                         <div class="mb-2">
-                          <label class="mb-1">Countermeasure Training date</label>
-                          <input type="date" class="form-control" v-model="finding.cm_training_date" disabled />
+                          <label class="mb-1"
+                            >Countermeasure Training date</label
+                          >
+                          <input
+                            type="date"
+                            class="form-control"
+                            v-model="finding.cm_training_date"
+                            disabled
+                          />
                         </div>
                         <div class="mb-2">
                           <label class="mb-1">Countermeasure Judge</label>
-                          <select class="form-select" v-model="finding.cm_judg" disabled>
+                          <select
+                            class="form-select"
+                            v-model="finding.cm_judg"
+                            disabled
+                          >
                             <option>Select judgement</option>
                             <option value="true">Sudah</option>
                             <option value="false">Belum</option>
@@ -438,7 +740,9 @@
                           <input type="file" class="form-control" disabled />
                         </div>
                         <div class="mb-2">
-                          <label class="mb-1">Countermeasure Sign LH White</label>
+                          <label class="mb-1"
+                            >Countermeasure Sign LH White</label
+                          >
                           <input type="file" class="form-control" disabled />
                         </div>
                         <div class="mb-2">
@@ -451,33 +755,56 @@
                         </div>
                         <div class="mb-2">
                           <label class="mb-1">Countermeasure Comments</label>
-                          <input type="text" class="form-control" disabled v-model="finding.cm_comments" />
+                          <input
+                            type="text"
+                            class="form-control"
+                            disabled
+                            v-model="finding.cm_comments"
+                          />
                         </div>
                       </div>
                     </div>
                   </div>
                 </CModalBody>
                 <CModalFooter>
-                  <div v-if="findings.filter((fin) => {
-                    return fin.category_id == item.id
-                  }).length == 0
-                  ">
+                  <div
+                    v-if="
+                      findings.filter((fin) => {
+                        return fin.category_id == item.id
+                      }).length == 0
+                    "
+                  >
                     <template v-if="!validationFindingMustFilled(finding)">
-                      <CButton color="primary" class="text-white" @click="addSingleFinding(finding, item)"
-                        :disabled="validationFindingMustFilled(finding)">
-                        Save finding data</CButton>
+                      <CButton
+                        color="primary"
+                        class="text-white"
+                        @click="addSingleFinding(finding, item)"
+                        :disabled="validationFindingMustFilled(finding)"
+                      >
+                        Save finding data</CButton
+                      >
                     </template>
                     <template v-else>
                       <CButton color="secondary" :disabled="true">
-                        Lengkapi Form Dahulu</CButton>
+                        Lengkapi Form Dahulu</CButton
+                      >
                     </template>
                   </div>
                   <div v-else>
-                    <CButton color="primary" class="text-white"
-                      @click="updateFindingData(item.id, item.factor_id, finding)">Update
-                      finding data</CButton>
+                    <CButton
+                      color="primary"
+                      class="text-white"
+                      @click="
+                        updateFindingData(item.id, item.factor_id, finding)
+                      "
+                      >Update finding data</CButton
+                    >
                   </div>
-                  <CButton color="secondary" class="text-white mx-2" @click="closeFindingModal(item)">
+                  <CButton
+                    color="secondary"
+                    class="text-white mx-2"
+                    @click="closeFindingModal(item)"
+                  >
                     Cancel
                   </CButton>
                 </CModalFooter>
@@ -488,35 +815,69 @@
             </td>
             <td class="text-center">
               <div v-if="item.findings[0]?.finding_img">
-                <img :src="item.findings[0]?.finding_img" alt="image" height="100" width="200"
-                  @click="() => { item.is_active_image = true }">
-                <CModal size="xl" :visible="item.is_active_image" @close="() => { item.is_active_image = false }">
+                <img
+                  :src="item.findings[0]?.finding_img"
+                  alt="image"
+                  height="100"
+                  width="200"
+                  @click="
+                    () => {
+                      item.is_active_image = true
+                    }
+                  "
+                />
+                <CModal
+                  size="xl"
+                  :visible="item.is_active_image"
+                  @close="
+                    () => {
+                      item.is_active_image = false
+                    }
+                  "
+                >
                   <CModalBody>
-                    <img class="w-100" :src="item.findings[0].finding_img" alt="image"
-                      @click="() => { item.is_active_image = true }">
+                    <img
+                      class="w-100"
+                      :src="item.findings[0].finding_img"
+                      alt="image"
+                      @click="
+                        () => {
+                          item.is_active_image = true
+                        }
+                      "
+                    />
                   </CModalBody>
                 </CModal>
               </div>
-              <i class="text-danger" v-else>
-                No Image
-              </i>
+              <i class="text-danger" v-else> No Image </i>
             </td>
           </tr>
         </template>
       </table>
 
-      <ObservationVideo :observationVideo="observation?.video" @on-video-change="videoChange" />
+      <ObservationVideo
+        :observationVideo="observation?.video"
+        @on-video-change="videoChange"
+      />
 
       <div class="card chat-card">
         <div class="card-body">
           <div class="comment-sh-container">
             <h5>Comments</h5>
             <div class="chat-box">
-              <div v-for="(message, index) in chatMessages" :key="index"
-                :class="['chat-message', message.noreg === noreg ? 'chat-right' : 'chat-left']">
+              <div
+                v-for="(message, index) in chatMessages"
+                :key="index"
+                :class="[
+                  'chat-message',
+                  message.noreg === noreg ? 'chat-right' : 'chat-left',
+                ]"
+              >
                 <div class="message-bubble">
                   <strong>
-                    {{ `${message.name} (${message.noreg || 'Unknown Noreg'})` }}
+                    {{
+                      `${message.name} (${message.noreg || 'Unknown Noreg'})`
+                    }}
                   </strong>
                   <p>{{ message.comments }}</p>
                   <span class="timestamp">{{ message.created_at }}</span>
@@ -524,24 +885,28 @@
               </div>
             </div>
             <div class="chat-input mt-2">
-              <input type="text" v-model="messageInput" class="form-control" placeholder="Type a message..." />
-              <button class="btn btn-primary" @click="sendMessage">Send </button>
+              <input
+                type="text"
+                v-model="messageInput"
+                class="form-control"
+                placeholder="Type a message..."
+              />
+              <button class="btn btn-primary" @click="sendMessage">Send</button>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
 import {
-  GET_OBSERVATION_DETAIL, SAVE_OBSERVATION,
+  GET_OBSERVATION_DETAIL,
+  SAVE_OBSERVATION,
   // SAVE_OBSERVATION_CATEGORY,
   SAVE_OBSERVATION_CATEGORY_V2,
-  UPDATE_OBSERVATION_CATEGORY
-
+  UPDATE_OBSERVATION_CATEGORY,
 } from '@/store/modules/observation.module'
 import { POST_OBSERVATION_CHECK } from '@/store/modules/observation.module'
 import { GET_USERS } from '@/store/modules/user.module'
@@ -556,15 +921,16 @@ import Loading from 'vue-loading-overlay'
 import { ADD_NEW_FINDING } from '@/store/modules/finding.module'
 import ObservationVideo from '@/components/ObservationVideo/ObservationVideo.vue'
 import { GET_COMMENTS, POST_COMMENTS } from '@/store/modules/comments.module'
+import { GET_SYSTEMS } from '@/store/modules/system.module'
 
 export default {
   name: 'NewDetailObservation',
   data() {
     return {
       chatMessages: [],
-      messageInput: "",
-      userName: localStorage.getItem("name"),
-      noreg: localStorage.getItem("noreg"),
+      messageInput: '',
+      userName: localStorage.getItem('name'),
+      noreg: localStorage.getItem('noreg'),
       modalShowVideo: false,
       xlDemo: false,
       observation: null,
@@ -626,12 +992,16 @@ export default {
         cm_sign_sh: null,
         cm_comments: null,
         finding_img: null,
+
+        // new related with abnormality apps linkage
+        department_id: null,
       },
+      departementsOpts: [],
       selectedFindingImage: null,
       TRESHOLD_STW_NG: 3,
       isLoading: false,
       intervalAutoCount: null,
-      keyActiveTimer: null
+      keyActiveTimer: null,
     }
   },
   watch: {
@@ -674,19 +1044,25 @@ export default {
         newValue.map((element, i) => {
           element.sub_categories.map((child, j) => {
             if (child?.stw_ct3 && child?.stw_ct3 !== 0) {
-              let isType3 = false;
+              let isType3 = false
               if (this.observation?.job_type_nm === 'Type 3') {
                 isType3 = true
               }
-              this.categories[i].sub_categories[j].judgment_id = this.calculateJudgement(child, isType3)
+              this.categories[i].sub_categories[j].judgment_id =
+                this.calculateJudgement(child, isType3)
               console.log(this.categories[i].sub_categories[j].judgment_id)
             }
-            if (this.observation?.job_type_nm === 'Type 3' && child?.stw_ct1 && child?.stw_ct1 !== 0) {
-              let isType3 = false;
+            if (
+              this.observation?.job_type_nm === 'Type 3' &&
+              child?.stw_ct1 &&
+              child?.stw_ct1 !== 0
+            ) {
+              let isType3 = false
               if (this.observation?.job_type_nm === 'Type 3') {
                 isType3 = true
               }
-              this.categories[i].sub_categories[j].judgment_id = this.calculateJudgement(child, isType3)
+              this.categories[i].sub_categories[j].judgment_id =
+                this.calculateJudgement(child, isType3)
               console.log(this.categories[i].sub_categories[j].judgment_id)
             }
             return child
@@ -702,8 +1078,8 @@ export default {
       handler() {
         this.validationFindingMustFilled(this.finding)
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   computed: {
     ...mapGetters(['observationData', 'getUsersOpts']),
@@ -715,47 +1091,67 @@ export default {
     ObservationVideo,
   },
   methods: {
+    async getDepartements() {
+      try {
+        // this for needs linkage abnormality apps
+        const response = await this.$store.dispatch(GET_SYSTEMS, {
+          system_type: 'OPT_DEPT',
+        })
+        this.departementsOpts = response.map((item) => {
+          return {
+            id: item.id,
+            text: item.system_value,
+          }
+        })
+      } catch (error) {
+        console.log(error)
+      }
+    },
     validationFindingMustFilled(finding) {
-      if (finding?.finding_desc !== ''
-        && finding?.factor_id
-        && finding?.cm_desc !== ''
-        && finding?.cm_priority
-        && finding?.cm_pic_id
-        && finding?.cm_str_plan_date !== ''
-        && finding?.cm_end_plan_date !== ''
-        && finding?.cm_result_factor_id) {
+      if (
+        finding?.finding_desc !== '' &&
+        finding?.factor_id &&
+        finding?.cm_desc !== '' &&
+        finding?.cm_priority &&
+        finding?.cm_pic_id &&
+        finding?.cm_str_plan_date !== '' &&
+        finding?.cm_end_plan_date !== '' &&
+        finding?.cm_result_factor_id
+      ) {
         return false
       }
       return true
     },
     async getComments() {
       try {
-        const res = await this.$store.dispatch(GET_COMMENTS, { observation_id: this.$route.params.id });
-        this.chatMessages = res;
+        const res = await this.$store.dispatch(GET_COMMENTS, {
+          observation_id: this.$route.params.id,
+        })
+        this.chatMessages = res
       } catch (error) {
-        console.error("Failed to get comments:", error);
+        console.error('Failed to get comments:', error)
       }
     },
     async sendMessage() {
       if (this.messageInput.trim()) {
-        const name = localStorage.getItem("name");
-        const noreg = localStorage.getItem("noreg");
-        const now = moment().format("YYYY-MM-DD HH:mm:ss"); // Waktu sekarang
+        const name = localStorage.getItem('name')
+        const noreg = localStorage.getItem('noreg')
+        const now = moment().format('YYYY-MM-DD HH:mm:ss') // Waktu sekarang
         const newComment = {
           observation_id: this.$route.params.id,
           comments: this.messageInput,
           created_dt: now,
           name,
           noreg,
-        };
+        }
 
         try {
-          await this.$store.dispatch(POST_COMMENTS, newComment);
-          this.messageInput = "";
+          await this.$store.dispatch(POST_COMMENTS, newComment)
+          this.messageInput = ''
           this.getComments()
         } catch (error) {
-          console.error("Failed to post comment:", error);
-          toast.error("Failed to send comment. Please try again.");
+          console.error('Failed to post comment:', error)
+          toast.error('Failed to send comment. Please try again.')
         }
       }
     },
@@ -766,7 +1162,7 @@ export default {
       if (statusTimer) {
         this.keyActiveTimer = key
         this.intervalAutoCount = setInterval(() => {
-          object[key] = Number(object[key] || 0) + 1;
+          object[key] = Number(object[key] || 0) + 1
         }, 1000)
       } else {
         this.keyActiveTimer = null
@@ -777,17 +1173,20 @@ export default {
     async addSingleFinding(findingData, item) {
       try {
         this.isLoading = true
+        console.log(item)
+        console.log(findingData, 'findingData')
         await this.$store.dispatch(ADD_NEW_FINDING, findingData)
         await this.getDetail()
         await this.getCategories()
         this.isLoading = false
         toast.success('Success to add data', {
-          autoClose: 1000
+          autoClose: 1000,
         })
         item.is_active_modal = false
       } catch (error) {
-        console.log(error);
+        console.log(error)
         toast.error(error)
+        this.isLoading = false
       }
     },
     async saveCheckCategory(item, category) {
@@ -798,23 +1197,29 @@ export default {
           observation_id: this.$route.params.id,
           category_id: category?.uuid,
           sub_category_id: item?.sub_category_id,
-          judgment_id: (this.observation?.job_type_nm === 'Type 1' || this.observation?.job_type_nm === 'Type 2' || this.observation?.job_type_nm === 'Type 3') && item.id == '3ce06d66-fe82-4e0a-a1fd-ce927ec85167' ? this.judgementID : item.judgment_id,
+          judgment_id:
+            (this.observation?.job_type_nm === 'Type 1' ||
+              this.observation?.job_type_nm === 'Type 2' ||
+              this.observation?.job_type_nm === 'Type 3') &&
+            item.id == '3ce06d66-fe82-4e0a-a1fd-ce927ec85167'
+              ? this.judgementID
+              : item.judgment_id,
           stw_ct1: item.stw_ct1,
           stw_ct2: item.stw_ct2,
           stw_ct3: item.stw_ct3,
           stw_ct4: item.stw_ct4,
-          stw_ct5: item.stw_ct5
+          stw_ct5: item.stw_ct5,
         }
         await this.$store.dispatch(SAVE_OBSERVATION_CATEGORY_V2, checkedData)
         this.isLoading = false
         await this.getDetail()
         await this.getCategories()
         toast.success('Success to save data', {
-          autoClose: 1000
+          autoClose: 1000,
         })
       } catch (error) {
         this.isLoading = false
-        console.log(error);
+        console.log(error)
         toast.error(JSON.stringify(error))
       }
     },
@@ -833,18 +1238,18 @@ export default {
           stw_ct3: item.stw_ct3,
           stw_ct4: item.stw_ct4,
           stw_ct5: item.stw_ct5,
-          obs_result_id: item.obs_result_id
+          obs_result_id: item.obs_result_id,
         }
         await this.$store.dispatch(UPDATE_OBSERVATION_CATEGORY, checkedData)
         this.isLoading = false
         await this.getDetail()
         await this.getCategories()
         toast.success('Success to save data', {
-          autoClose: 1000
+          autoClose: 1000,
         })
       } catch (error) {
         this.isLoading = false
-        console.log(error);
+        console.log(error)
         toast.error(JSON.stringify(error))
       }
     },
@@ -852,15 +1257,15 @@ export default {
       try {
         let data = {
           observation_id: this.$route.params.id,
-          [`${key}`]: value
+          [`${key}`]: value,
         }
         await this.$store.dispatch(SAVE_OBSERVATION, data)
         toast.success('Success to save data', {
-          autoClose: 1000
+          autoClose: 1000,
         })
         await this.getDetail()
       } catch (error) {
-        console.log(error);
+        console.log(error)
         toast.error(error)
       }
     },
@@ -898,9 +1303,9 @@ export default {
     },
     checkLabelTypeJob(jobType) {
       if (jobType == 'Type 3') {
-        ; (this.tskLabel = 'Gentani'), (this.tskkLabel = 'Yamazumi')
+        ;(this.tskLabel = 'Gentani'), (this.tskkLabel = 'Yamazumi')
       } else {
-        ; (this.tskLabel = 'TSK'), (this.tskkLabel = 'TSKK')
+        ;(this.tskLabel = 'TSK'), (this.tskkLabel = 'TSKK')
       }
     },
     viewReport() {
@@ -911,7 +1316,10 @@ export default {
     async getDetail() {
       try {
         this.isLoading = true
-        await this.$store.dispatch(GET_OBSERVATION_DETAIL, this.$route.params.id)
+        await this.$store.dispatch(
+          GET_OBSERVATION_DETAIL,
+          this.$route.params.id,
+        )
         this.isLoading = false
       } catch (error) {
         toast.error(JSON.stringify(error))
@@ -1005,7 +1413,7 @@ export default {
 
       if (uploadImage.data.data) {
         toast.success('Finding image uploaded', {
-          autoClose: 1000
+          autoClose: 1000,
         })
         this.isUploadLoading = false
         this.selectedFindingImage = `${process.env.VUE_APP_URL}/file?path=${uploadImage.data.data}`
@@ -1013,25 +1421,19 @@ export default {
       }
     },
     calculateJudgement(newValue, isType3 = false) {
-      console.log('isType3', isType3);
-      console.log('Judgment', newValue);
+      console.log('isType3', isType3)
+      console.log('Judgment', newValue)
       if (isType3) {
         const OK_ID = 'c4f5ff30-1b95-4ad8-8af8-e3e9d90bd942'
         const NG_ID = '2e247c66-3e9c-44b6-951a-0a26791ad37d'
 
         const result = newValue
 
-        let total =
-          result.stw_ct1
+        let total = result.stw_ct1
         let totalAvg = total / 1
 
         let totalPrecentage =
-          ((Math.max(
-            result.stw_ct1,
-          ) -
-            Math.min(
-              result.stw_ct1,
-            )) /
+          ((Math.max(result.stw_ct1) - Math.min(result.stw_ct1)) /
             2 /
             totalAvg) *
           100
@@ -1050,10 +1452,7 @@ export default {
 
       const result = newValue
 
-      let total =
-        result.stw_ct1 +
-        result.stw_ct2 +
-        result.stw_ct3
+      let total = result.stw_ct1 + result.stw_ct2 + result.stw_ct3
       // +
       // result.stw_ct4 +
       // result.stw_ct5
@@ -1067,11 +1466,7 @@ export default {
           // result.stw_ct4,
           // result.stw_ct5,
         ) -
-          Math.min(
-            result.stw_ct1,
-            result.stw_ct2,
-            result.stw_ct3,
-          )) /
+          Math.min(result.stw_ct1, result.stw_ct2, result.stw_ct3)) /
           2 /
           totalAvg) *
         100
@@ -1088,12 +1483,18 @@ export default {
     },
     async getCategories() {
       ApiService.setHeader()
-      const convertedJobTypeFormat = `${this.observation?.job_type_nm}`.toUpperCase().split(' ').join('_')
-      const categories = await ApiService.query(`master/categories/categories-v2`, {
-        job_type: convertedJobTypeFormat
-      })
+      const convertedJobTypeFormat = `${this.observation?.job_type_nm}`
+        .toUpperCase()
+        .split(' ')
+        .join('_')
+      const categories = await ApiService.query(
+        `master/categories/categories-v2`,
+        {
+          job_type: convertedJobTypeFormat,
+        },
+      )
       const mapCategory = await categories.data.data.map((itm) => {
-        itm.sub_categories = itm.sub_categories.map(sub_category => {
+        itm.sub_categories = itm.sub_categories.map((sub_category) => {
           sub_category.judgment_id = null
           sub_category.factor_id = null
           sub_category.stw_ct1 = null
@@ -1106,9 +1507,10 @@ export default {
           sub_category.is_active_modal = false
           sub_category.is_active_image = false
           sub_category.obs_result_id = null
-          let result = this.resultCheck.find(result => result.sub_category_id == sub_category.sub_category_id)
+          let result = this.resultCheck.find(
+            (result) => result.sub_category_id == sub_category.sub_category_id,
+          )
           if (result) {
-
             sub_category.is_already_check = true
             sub_category.obs_result_id = result.obs_result_id
             sub_category.judgment_id = result.judgment_id
@@ -1119,7 +1521,7 @@ export default {
             sub_category.stw_ct4 = result.stw_ct4
             sub_category.stw_ct5 = result.stw_ct5
             sub_category.findings = result.findings
-            let isType3 = false;
+            let isType3 = false
             if (this.observation?.job_type_nm === 'Type 3') {
               isType3 = true
             }
@@ -1167,7 +1569,13 @@ export default {
           this.resultCheck.push(newObj)
         }
 
-        if (this.resultCheck[0].judgment_id === null || this.resultCheck[1].judgment_id === null || this.resultCheck[2].judgment_id === null || this.resultCheck[3].judgment_id === null || this.resultCheck[4].judgment_id === null) {
+        if (
+          this.resultCheck[0].judgment_id === null ||
+          this.resultCheck[1].judgment_id === null ||
+          this.resultCheck[2].judgment_id === null ||
+          this.resultCheck[3].judgment_id === null ||
+          this.resultCheck[4].judgment_id === null
+        ) {
           alert('Pilih semua judgement')
         } else {
           let formInput = {
@@ -1218,28 +1626,28 @@ export default {
     },
   },
   async mounted() {
-    const savedUserName = localStorage.getItem("name");
+    const savedUserName = localStorage.getItem('name')
     if (savedUserName) {
-      this.userName = savedUserName;
+      this.userName = savedUserName
     }
 
     try {
       const comments = await this.$store.dispatch(GET_COMMENTS, {
         observation_id: this.$route.params.id,
-      });
+      })
 
-      const noreg = localStorage.getItem("noreg");
+      const noreg = localStorage.getItem('noreg')
 
       this.chatMessages = comments.map((comment) => {
         return {
           ...comment,
-          role: comment.noreg === noreg ? "user" : "admin",
-          created_at: moment(comment.created_at).format("YYYY-MM-DD HH:mm:ss"), // Format waktu
-        };
-      });
+          role: comment.noreg === noreg ? 'user' : 'admin',
+          created_at: moment(comment.created_at).format('YYYY-MM-DD HH:mm:ss'), // Format waktu
+        }
+      })
     } catch (error) {
-      console.error("Failed to load comments:", error);
-      toast.error("Failed to load comments. Please refresh the page.");
+      console.error('Failed to load comments:', error)
+      toast.error('Failed to load comments. Please refresh the page.')
     }
     await this.getDetail()
     await this.getCategories()
@@ -1248,6 +1656,8 @@ export default {
     // await this.judgments()
     this.finding.finding_location = await this.observation?.pos_nm
     this.finding.line_id = await this.observation?.line_id
+
+    this.getDepartements()
   },
 }
 </script>
