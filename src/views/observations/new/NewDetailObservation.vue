@@ -635,19 +635,6 @@
                           >
                           </VueMultiselect>
                         </div>
-                        <div class="mb-2">
-                          <label class="mb-1">Department Terkait</label>
-                          <CFormSelect v-model="finding.department_id">
-                            <option>Select Department</option>
-                            <option
-                              v-for="department in departementsOpts"
-                              :key="department.text"
-                              :value="department.id"
-                            >
-                              {{ department.text }}
-                            </option>
-                          </CFormSelect>
-                        </div>
                         <div class="row">
                           <div class="col-12 col-lg-6">
                             <div class="mb-2">
@@ -684,6 +671,25 @@
                               :value="factor.id"
                             >
                               {{ factor.text }}
+                            </option>
+                          </CFormSelect>
+                        </div>
+                        <div class="mb-2">
+                          <CFormSwitch
+                            label="Add To Abnormality Dashboard"
+                            v-model="isLinkAbnormality"
+                          />
+                        </div>
+                        <div class="mb-2" v-if="isLinkAbnormality">
+                          <label class="mb-1">Department Terkait</label>
+                          <CFormSelect v-model="finding.department_id">
+                            <option>Select Department</option>
+                            <option
+                              v-for="department in departementsOpts"
+                              :key="department.text"
+                              :value="department.id"
+                            >
+                              {{ department.text }}
                             </option>
                           </CFormSelect>
                         </div>
@@ -1002,6 +1008,7 @@ export default {
       isLoading: false,
       intervalAutoCount: null,
       keyActiveTimer: null,
+      isLinkAbnormality: false,
     }
   },
   watch: {
@@ -1116,7 +1123,8 @@ export default {
         finding?.cm_pic_id &&
         finding?.cm_str_plan_date !== '' &&
         finding?.cm_end_plan_date !== '' &&
-        finding?.cm_result_factor_id
+        finding?.cm_result_factor_id &&
+        (this.isLinkAbnormality ? finding.department_id : true)
       ) {
         return false
       }
