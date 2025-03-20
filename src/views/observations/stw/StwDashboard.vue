@@ -1,4 +1,42 @@
 <template>
+  <CModal
+    backdrop="static"
+    alignment="center"
+    :visible="addSignModal"
+    @close="addSignModal = false"
+    size="lg"
+  >
+    <CModalHeader>
+      <CModalTitle>Add sign</CModalTitle>
+    </CModalHeader>
+    <CModalBody>
+      <div style="height: 150px">
+        <div style="width: 100px; height: 100px; border: 1px solid #eaeaea">
+          <vueSignature ref="sign" :sigOption="option" :w="'100%'" :h="'100px'">
+          </vueSignature>
+          <button
+            class="btn btn-info btn-sm mx-2 my-3 text-white"
+            @click="clearSignature()"
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+    </CModalBody>
+    <CModalFooter>
+      <CButton
+        color="success"
+        class="text-white"
+        :disabled="isUploadSignLoading"
+        @click="saveSignature()"
+      >
+        {{ isUploadSignLoading ? 'Saving..' : 'Submit' }}
+      </CButton>
+      <CButton color="secondary" class="text-white" @click="closeSignModal()">
+        Close
+      </CButton>
+    </CModalFooter>
+  </CModal>
   <div>
     <div class="card mb-3">
       <!-- filter -->
@@ -11,7 +49,11 @@
           <div class="col">
             <label>Line</label>
             <select class="form-select" v-model="selectedLine">
-              <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
+              <option
+                v-for="(line, index) in getLinesOpts"
+                :key="index"
+                :value="line.id"
+              >
                 {{ line.text }}
               </option>
             </select>
@@ -23,7 +65,9 @@
       </div>
       <!-- end filter -->
 
-      <div class="card-header d-flex justify-content-between align-items-center">
+      <div
+        class="card-header d-flex justify-content-between align-items-center"
+      >
         <h6>Schedule Observation</h6>
         <div class="d-flex align-items-center">
           <div class="d-flex" style="margin-right: 20px">
@@ -41,12 +85,17 @@
             </div>
             <div>
               Pengecekan 2 TL:
-              <CButton color="dark" variant="outline" disabled style="
+              <CButton
+                color="dark"
+                variant="outline"
+                disabled
+                style="
                   margin-left: 5px;
                   width: 35px;
                   height: 35px;
                   transform: rotate(45deg);
-                ">
+                "
+              >
                 <CIcon icon="cil-circlea" class="text-dark" size="sm" />
               </CButton>
             </div>
@@ -84,7 +133,11 @@
                   <th :colspan="containerDate.length">{{ yearMonth }}</th>
                 </tr>
                 <tr>
-                  <th v-for="date in containerDate" :key="date" :class="date.bg">
+                  <th
+                    v-for="date in containerDate"
+                    :key="date"
+                    :class="date.bg"
+                  >
                     {{ date.idx }}
                   </th>
                 </tr>
@@ -93,37 +146,123 @@
                 <tr v-if="isLoading">
                   <td colspan="40" class="p-0" style="height: 200px">
                     <div class="vl-parent p-0" style="height: 100%">
-                      <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false"
-                        :on-cancel="onCancel" />
+                      <loading
+                        v-model:active="isLoading"
+                        :can-cancel="true"
+                        :is-full-page="false"
+                        :on-cancel="onCancel"
+                      />
                     </div>
                   </td>
                 </tr>
-                <tr v-else v-for="(observation, i) in observationSchedule" :key="observation.pos_id">
+                <tr
+                  v-else
+                  v-for="(observation, i) in observationSchedule"
+                  :key="observation.pos_id"
+                >
                   <td id="fixCol-1">{{ i + 1 }}</td>
                   <td id="fixCol-2">{{ observation.line_snm }}</td>
                   <td id="fixCol-3">{{ observation.pos_nm }}</td>
                   <td id="fixCol-4">
-                    <template v-for="observer in observation.checkers" :key="observer">
+                    <template
+                      v-for="observer in observation.checkers"
+                      :key="observer"
+                    >
                       <CBadge color="secondary">
                         {{ observer }}
                       </CBadge>
-                      <br>
+                      <br />
                     </template>
                   </td>
                   <td id="fixCol-5">{{ observation.group_nm }}</td>
-                  <td v-for="item in containerDate" :key="item.idx" style="min-width: 63px">
-                    <template v-for="child in observation.children" :key="child.observation_id">
+                  <td
+                    v-for="item in containerDate"
+                    :key="item.idx"
+                    style="min-width: 63px"
+                  >
+                    <template
+                      v-for="child in observation.children"
+                      :key="child.observation_id"
+                    >
                       <template v-if="child.idxdate === String(item.idx)">
-                        <TooltipStwSchedule :child="child" :customTooltipStyle="customTooltipStyle" :observation="child"
-                          :currentDate="currentDate" @detail-schedule="detailSchedule" />
-
+                        <TooltipStwSchedule
+                          :child="child"
+                          :customTooltipStyle="customTooltipStyle"
+                          :observation="child"
+                          :currentDate="currentDate"
+                          @detail-schedule="detailSchedule"
+                        />
                       </template>
                     </template>
                   </td>
                 </tr>
-                <tr v-if="observationSchedule?.length < 1">
+                <tr v-if="observationSchedule?.length < 1 && !isLoading">
                   <td colspan="50">
                     <h3 class="my-2">Data kosong</h3>
+                  </td>
+                </tr>
+                <tr
+                  style="
+                    position: sticky;
+                    bottom: 0px;
+                    z-index: 10;
+                    background-color: white;
+                  "
+                >
+                  <td colspan="5">
+                    <h5>Sign TL</h5>
+                  </td>
+                  <td
+                    v-for="date in containerDate"
+                    :key="date"
+                    :class="date.bg"
+                  >
+                    <template
+                      v-if="
+                        observationSchedule.find((obserChild) =>
+                          obserChild.children.find(
+                            (childObser) => childObser.idxdate == date.idx,
+                          ),
+                        )
+                      "
+                    >
+                      <!-- make condition for switch if sign in this date is available -->
+
+                      <CButton
+                        v-if="
+                          !signObservations.find(
+                            (obserChild) =>
+                              obserChild.date_idx == date.idx &&
+                              obserChild.role_sign_sys == 'TL' &&
+                              obserChild.group_nm == 'WHITE',
+                          )
+                        "
+                        color="dark"
+                        variant="outline"
+                        size="sm"
+                        @click="
+                          () => {
+                            showModalSignTL(date.date, 'WHITE', 'TL', date.idx)
+                          }
+                        "
+                      >
+                        <CIcon icon="cil-pencil" class="text-dark" size="sm" />
+                      </CButton>
+                      <img
+                        v-else
+                        :src="
+                          signObservations.find(
+                            (obserChild) =>
+                              obserChild.date_idx == date.idx &&
+                              obserChild.role_sign_sys == 'TL' &&
+                              obserChild.group_nm == 'WHITE',
+                          )?.sign
+                        "
+                        width="50"
+                        height="50"
+                        alt="sign"
+                      />
+                    </template>
                   </td>
                 </tr>
               </tbody>
@@ -131,7 +270,6 @@
           </div>
         </div>
       </div>
-
       <hr />
 
       <!-- Red shift table -->
@@ -152,7 +290,11 @@
                   <th :colspan="containerDate.length">{{ yearMonth }}</th>
                 </tr>
                 <tr>
-                  <th v-for="date in containerDate" :key="date" :class="date.bg">
+                  <th
+                    v-for="date in containerDate"
+                    :key="date"
+                    :class="date.bg"
+                  >
                     {{ date.idx }}
                   </th>
                 </tr>
@@ -161,36 +303,125 @@
                 <tr v-if="isRedShiftLoading">
                   <td colspan="40" class="p-0" style="height: 200px">
                     <div class="vl-parent p-0" style="height: 100%">
-                      <loading v-model:active="isRedShiftLoading" :can-cancel="true" :is-full-page="false"
-                        :on-cancel="onCancel" />
+                      <loading
+                        v-model:active="isRedShiftLoading"
+                        :can-cancel="true"
+                        :is-full-page="false"
+                        :on-cancel="onCancel"
+                      />
                     </div>
                   </td>
                 </tr>
 
-                <tr v-for="(observationRedShift, i) in observationScheduleRedShift" :key="observationRedShift.pos_id">
+                <tr
+                  v-for="(
+                    observationRedShift, i
+                  ) in observationScheduleRedShift"
+                  :key="observationRedShift.pos_id"
+                >
                   <td id="fixCol-1">{{ i + 1 }}</td>
                   <td id="fixCol-2">{{ observationRedShift.line_snm }}</td>
                   <td id="fixCol-3">{{ observationRedShift.pos_nm }}</td>
                   <td id="fixCol-4">
-                    <CBadge v-for="observer in observationRedShift.checkers" :key="observer" color="secondary">{{
-                      observer }}
+                    <CBadge
+                      v-for="observer in observationRedShift.checkers"
+                      :key="observer"
+                      color="secondary"
+                      >{{ observer }}
                     </CBadge>
                   </td>
                   <td id="fixCol-5">{{ observationRedShift.group_nm }}</td>
-                  <td v-for="item in containerDate" :key="item.idx" style="min-width: 63px">
-                    <template v-for="child in observationRedShift.children" :key="child.observation_id">
-
+                  <td
+                    v-for="item in containerDate"
+                    :key="item.idx"
+                    style="min-width: 63px"
+                  >
+                    <template
+                      v-for="child in observationRedShift.children"
+                      :key="child.observation_id"
+                    >
                       <template v-if="child.idxdate === String(item.idx)">
-                        <TooltipStwSchedule :child="child" :customTooltipStyle="customTooltipStyle" :observation="child"
-                          :currentDate="currentDate" @detail-schedule="detailSchedule" />
-
+                        <TooltipStwSchedule
+                          :child="child"
+                          :customTooltipStyle="customTooltipStyle"
+                          :observation="child"
+                          :currentDate="currentDate"
+                          @detail-schedule="detailSchedule"
+                        />
                       </template>
                     </template>
                   </td>
                 </tr>
-                <tr v-if="observationScheduleRedShift?.length < 1">
+                <tr
+                  v-if="observationScheduleRedShift?.length < 1 && !isLoading"
+                >
                   <td colspan="50">
                     <h3 class="my-2">Data kosong</h3>
+                  </td>
+                </tr>
+                <tr
+                  style="
+                    position: sticky;
+                    bottom: 0px;
+                    z-index: 10;
+                    background-color: white;
+                  "
+                  v-if="observationScheduleRedShift?.length > 0"
+                >
+                  <td colspan="5">
+                    <h5>Sign TL</h5>
+                  </td>
+                  <td
+                    v-for="date in containerDate"
+                    :key="date"
+                    :class="date.bg"
+                  >
+                    <template
+                      v-if="
+                        observationScheduleRedShift.find((obserChild) =>
+                          obserChild.children.find(
+                            (childObser) => childObser.idxdate == date.idx,
+                          ),
+                        )
+                      "
+                    >
+                      <!-- make condition for switch if sign in this date is available -->
+
+                      <CButton
+                        v-if="
+                          !signObservations.find(
+                            (obserChild) =>
+                              obserChild.date_idx == date.idx &&
+                              obserChild.role_sign_sys == 'TL' &&
+                              obserChild.group_nm == 'RED',
+                          )
+                        "
+                        color="dark"
+                        variant="outline"
+                        size="sm"
+                        @click="
+                          () => {
+                            showModalSignTL(date.date, 'RED', 'TL', date.idx)
+                          }
+                        "
+                      >
+                        <CIcon icon="cil-pencil" class="text-dark" size="sm" />
+                      </CButton>
+                      <img
+                        v-else
+                        :src="
+                          signObservations.find(
+                            (obserChild) =>
+                              obserChild.date_idx == date.idx &&
+                              obserChild.role_sign_sys == 'TL' &&
+                              obserChild.group_nm == 'RED',
+                          )?.sign
+                        "
+                        width="50"
+                        height="50"
+                        alt="sign"
+                      />
+                    </template>
                   </td>
                 </tr>
               </tbody>
@@ -219,6 +450,9 @@ import { mapGetters } from 'vuex'
 import Loading from 'vue-loading-overlay'
 // import Yamazumi from '@/components/yamazumi/Yamazumi.vue'
 import TooltipStwSchedule from '@/components/TooltipSchedule/TooltipStwSchedule.vue'
+import vueSignature from 'vue-signature'
+import ApiService from '@/store/api.service'
+import { toast } from 'vue3-toastify'
 
 export default {
   name: 'STW Dashboard',
@@ -269,6 +503,24 @@ export default {
       whiteShiftID: 'cb7e9c37-b39c-49b4-b34d-b0a8f9f462df',
       redShiftID: '36ad3451-e2fe-4b50-84b0-2d6ca942ae1e',
       currentDate: `${new Date().getDate()}`,
+      // for sign
+      option: {
+        penColor: 'rgb(0, 0, 0)',
+        backgroundColor: 'rgb(255,255,255)',
+      },
+      selectedSignature: null,
+      isShowSignModal: false,
+      signForm: {
+        date_sign: null,
+        sign: null,
+        group_nm: null,
+        role_sign_sys: null,
+        date_idx: null,
+        line_id: null,
+      },
+      addSignModal: false,
+      isUploadSignLoading: false,
+      signObservations: [],
     }
   },
   computed: {
@@ -278,23 +530,90 @@ export default {
       'observationScheduleRedShift',
     ]),
   },
-  watch: {
-    // selectedLine: function () {
-
-    // },
-    // selectedMonth: function () {
-
-    // },
-  },
   methods: {
+    showModalSignTL(date_sign, group_nm, role_sign_sys, date_idx) {
+      this.addSignModal = true
+      this.signForm.date_sign = moment(date_sign).format('YYYY-MM-DD')
+      this.signForm.group_nm = group_nm
+      this.signForm.role_sign_sys = role_sign_sys
+      this.signForm.date_idx = date_idx
+      this.signForm.line_id = this.selectedLine
+    },
+    saveSignature() {
+      var signFile
+
+      signFile = this.$refs['sign'].save()
+      this.signForm.sign = signFile
+
+      this.addSign()
+    },
+    async addSign() {
+      this.isUploadSignLoading = true
+      try {
+        ApiService.setHeader()
+        const addSign = await ApiService.post(
+          `/operational/observation/sign`,
+          this.signForm,
+        )
+        console.log(addSign, 'addSign')
+        if (addSign.data.message == 'Success to add sign') {
+          this.isUploadSignLoading = false
+          this.closeSignModal(true)
+          toast.success('Success to add sign', {
+            autoClose: 1000,
+          })
+          this.getSignature()
+        }
+      } catch (error) {
+        toast.error('error to add toast')
+      }
+    },
+    closeSignModal() {
+      this.addSignModal = false
+      this.signForm = {
+        date_sign: null,
+        sign: null,
+        group_nm: null,
+        role_sign_sys: null,
+        date_idx: null,
+        line_id: null,
+      }
+      this.clearSignature()
+    },
+    clearSignature() {
+      this.$refs['sign'].clear()
+    },
+    async getSignature() {
+      try {
+        ApiService.setHeader()
+        const getData = await ApiService.query(
+          `/operational/observation/sign`,
+          {
+            month: +this.selectedMonth.split('-')[1],
+            year: +this.selectedMonth.split('-')[0],
+            line_id: this.selectedLine,
+            role_sign_sys: 'TL',
+          },
+        )
+        if (getData.data.message == 'Success to get sign') {
+          this.signObservations = getData.data.data
+        }
+      } catch (error) {
+        toast.error('Error to get signature data', {
+          autoClose: 1000,
+        })
+      }
+    },
     searchData() {
       if (this.selectedMonth || this.selectedLine != '0') {
         this.generateDate()
         let idx = this.idxMonth.indexOf(this.selectedMonth.split('-')[1])
-        this.yearMonth = `${this.monthStr[idx]} ${this.selectedMonth.split('-')[0]
-          }`
+        this.yearMonth = `${this.monthStr[idx]} ${
+          this.selectedMonth.split('-')[0]
+        }`
         this.getObsSchedule()
         this.getObsScheduleRedShift()
+        this.getSignature()
       }
     },
     onPageChange(page) {
@@ -400,6 +719,7 @@ export default {
     // await this.getObsSchedule()
     // await this.getObsScheduleRedShift()
     this.searchData()
+    this.getSignature()
   },
   updated() {
     if (this.$route.query.line) {
@@ -410,6 +730,7 @@ export default {
     Loading,
     // Yamazumi,
     TooltipStwSchedule,
+    vueSignature,
   },
 }
 </script>
@@ -472,7 +793,6 @@ export default {
   z-index: 3;
   background-color: white;
 }
-
 
 #fixCol-1 {
   position: sticky;
