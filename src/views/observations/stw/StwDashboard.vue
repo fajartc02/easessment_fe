@@ -204,13 +204,13 @@
                 <tr
                   style="
                     position: sticky;
-                    bottom: 0px;
+                    bottom: 120px;
                     z-index: 10;
                     background-color: white;
                   "
                 >
                   <td colspan="5">
-                    <h5>Sign TL</h5>
+                    <h5>Sign TL 1</h5>
                   </td>
                   <td
                     v-for="date in containerDate"
@@ -230,10 +230,10 @@
 
                       <CButton
                         v-if="
-                          !signObservations.find(
+                          !signObservationsTL_1.find(
                             (obserChild) =>
                               obserChild.date_idx == date.idx &&
-                              obserChild.role_sign_sys == 'TL' &&
+                              obserChild.role_sign_sys == 'TL_1' &&
                               obserChild.group_nm == 'WHITE',
                           )
                         "
@@ -242,7 +242,12 @@
                         size="sm"
                         @click="
                           () => {
-                            showModalSignTL(date.date, 'WHITE', 'TL', date.idx)
+                            showModalSignTL(
+                              date.date,
+                              'WHITE',
+                              'TL_1',
+                              date.idx,
+                            )
                           }
                         "
                       >
@@ -251,10 +256,207 @@
                       <img
                         v-else
                         :src="
-                          signObservations.find(
+                          signObservationsTL_1.find(
                             (obserChild) =>
                               obserChild.date_idx == date.idx &&
-                              obserChild.role_sign_sys == 'TL' &&
+                              obserChild.role_sign_sys == 'TL_1' &&
+                              obserChild.group_nm == 'WHITE',
+                          )?.sign
+                        "
+                        width="50"
+                        height="50"
+                        alt="sign"
+                      />
+                    </template>
+                  </td>
+                </tr>
+                <tr
+                  style="
+                    position: sticky;
+                    bottom: 80px;
+                    z-index: 10;
+                    background-color: white;
+                  "
+                >
+                  <td colspan="5">
+                    <h5>Sign TL 2</h5>
+                  </td>
+                  <td
+                    v-for="date in containerDate"
+                    :key="date"
+                    :class="date.bg"
+                  >
+                    <template
+                      v-if="
+                        observationSchedule.find((obserChild) =>
+                          obserChild.children.find(
+                            (childObser) => childObser.idxdate == date.idx,
+                          ),
+                        )
+                      "
+                    >
+                      <!-- make condition for switch if sign in this date is available -->
+
+                      <CButton
+                        v-if="
+                          !signObservationsTL_2.find(
+                            (obserChild) =>
+                              obserChild.date_idx == date.idx &&
+                              obserChild.role_sign_sys == 'TL_2' &&
+                              obserChild.group_nm == 'WHITE',
+                          )
+                        "
+                        color="dark"
+                        variant="outline"
+                        size="sm"
+                        @click="
+                          () => {
+                            showModalSignTL(
+                              date.date,
+                              'WHITE',
+                              'TL_2',
+                              date.idx,
+                            )
+                          }
+                        "
+                      >
+                        <CIcon icon="cil-pencil" class="text-dark" size="sm" />
+                      </CButton>
+                      <img
+                        v-else
+                        :src="
+                          signObservationsTL_2.find(
+                            (obserChild) =>
+                              obserChild.date_idx == date.idx &&
+                              obserChild.role_sign_sys == 'TL_2' &&
+                              obserChild.group_nm == 'WHITE',
+                          )?.sign
+                        "
+                        width="50"
+                        height="50"
+                        alt="sign"
+                      />
+                    </template>
+                  </td>
+                </tr>
+                <tr
+                  style="
+                    position: sticky;
+                    bottom: 30px;
+                    z-index: 10;
+                    background-color: white;
+                  "
+                >
+                  <td colspan="5">
+                    <h5>Sign GL</h5>
+                  </td>
+                  <td
+                    v-for="date in containerDate"
+                    :key="date"
+                    :class="date.bg"
+                  >
+                    <template
+                      v-if="
+                        observationSchedule.find((obserChild) =>
+                          obserChild.children.find(
+                            (childObser) => childObser.idxdate == date.idx,
+                          ),
+                        )
+                      "
+                    >
+                      <!-- make condition for switch if sign in this date is available -->
+
+                      <CButton
+                        v-if="
+                          !signObservationsGL.find(
+                            (obserChild) =>
+                              obserChild.date_idx == date.idx &&
+                              obserChild.role_sign_sys == 'GL' &&
+                              obserChild.group_nm == 'WHITE',
+                          )
+                        "
+                        color="dark"
+                        variant="outline"
+                        size="sm"
+                        @click="
+                          () => {
+                            showModalSignTL(date.date, 'WHITE', 'GL', date.idx)
+                          }
+                        "
+                      >
+                        <CIcon icon="cil-pencil" class="text-dark" size="sm" />
+                      </CButton>
+                      <img
+                        v-else
+                        :src="
+                          signObservationsGL.find(
+                            (obserChild) =>
+                              obserChild.date_idx == date.idx &&
+                              obserChild.role_sign_sys == 'GL' &&
+                              obserChild.group_nm == 'WHITE',
+                          )?.sign
+                        "
+                        width="50"
+                        height="50"
+                        alt="sign"
+                      />
+                    </template>
+                  </td>
+                </tr>
+                <tr
+                  style="
+                    position: sticky;
+                    bottom: 0px;
+                    z-index: 10;
+                    background-color: white;
+                  "
+                >
+                  <td colspan="5">
+                    <h5>Sign SH</h5>
+                  </td>
+                  <td
+                    v-for="date in containerDate"
+                    :key="date"
+                    :class="date.bg"
+                  >
+                    <template
+                      v-if="
+                        observationSchedule.find((obserChild) =>
+                          obserChild.children.find(
+                            (childObser) => childObser.idxdate == date.idx,
+                          ),
+                        )
+                      "
+                    >
+                      <!-- make condition for switch if sign in this date is available -->
+
+                      <CButton
+                        v-if="
+                          !signObservationsSH.find(
+                            (obserChild) =>
+                              obserChild.date_idx == date.idx &&
+                              obserChild.role_sign_sys == 'SH' &&
+                              obserChild.group_nm == 'WHITE',
+                          )
+                        "
+                        color="dark"
+                        variant="outline"
+                        size="sm"
+                        @click="
+                          () => {
+                            showModalSignTL(date.date, 'WHITE', 'SH', date.idx)
+                          }
+                        "
+                      >
+                        <CIcon icon="cil-pencil" class="text-dark" size="sm" />
+                      </CButton>
+                      <img
+                        v-else
+                        :src="
+                          signObservationsSH.find(
+                            (obserChild) =>
+                              obserChild.date_idx == date.idx &&
+                              obserChild.role_sign_sys == 'SH' &&
                               obserChild.group_nm == 'WHITE',
                           )?.sign
                         "
@@ -369,7 +571,7 @@
                   v-if="observationScheduleRedShift?.length > 0"
                 >
                   <td colspan="5">
-                    <h5>Sign TL</h5>
+                    <h5>Sign TL 1</h5>
                   </td>
                   <td
                     v-for="date in containerDate"
@@ -389,10 +591,10 @@
 
                       <CButton
                         v-if="
-                          !signObservations.find(
+                          !signObservationsTL_1.find(
                             (obserChild) =>
                               obserChild.date_idx == date.idx &&
-                              obserChild.role_sign_sys == 'TL' &&
+                              obserChild.role_sign_sys == 'TL_1' &&
                               obserChild.group_nm == 'RED',
                           )
                         "
@@ -401,7 +603,7 @@
                         size="sm"
                         @click="
                           () => {
-                            showModalSignTL(date.date, 'RED', 'TL', date.idx)
+                            showModalSignTL(date.date, 'RED', 'TL_1', date.idx)
                           }
                         "
                       >
@@ -410,10 +612,202 @@
                       <img
                         v-else
                         :src="
-                          signObservations.find(
+                          signObservationsTL_1.find(
                             (obserChild) =>
                               obserChild.date_idx == date.idx &&
-                              obserChild.role_sign_sys == 'TL' &&
+                              obserChild.role_sign_sys == 'TL_1' &&
+                              obserChild.group_nm == 'RED',
+                          )?.sign
+                        "
+                        width="50"
+                        height="50"
+                        alt="sign"
+                      />
+                    </template>
+                  </td>
+                </tr>
+                <tr
+                  style="
+                    position: sticky;
+                    bottom: 80px;
+                    z-index: 10;
+                    background-color: white;
+                  "
+                >
+                  <td colspan="5">
+                    <h5>Sign TL 2</h5>
+                  </td>
+                  <td
+                    v-for="date in containerDate"
+                    :key="date"
+                    :class="date.bg"
+                  >
+                    <template
+                      v-if="
+                        observationSchedule.find((obserChild) =>
+                          obserChild.children.find(
+                            (childObser) => childObser.idxdate == date.idx,
+                          ),
+                        )
+                      "
+                    >
+                      <!-- make condition for switch if sign in this date is available -->
+
+                      <CButton
+                        v-if="
+                          !signObservationsTL_2.find(
+                            (obserChild) =>
+                              obserChild.date_idx == date.idx &&
+                              obserChild.role_sign_sys == 'TL_2' &&
+                              obserChild.group_nm == 'RED',
+                          )
+                        "
+                        color="dark"
+                        variant="outline"
+                        size="sm"
+                        @click="
+                          () => {
+                            showModalSignTL(date.date, 'RED', 'TL_2', date.idx)
+                          }
+                        "
+                      >
+                        <CIcon icon="cil-pencil" class="text-dark" size="sm" />
+                      </CButton>
+                      <img
+                        v-else
+                        :src="
+                          signObservationsTL_2.find(
+                            (obserChild) =>
+                              obserChild.date_idx == date.idx &&
+                              obserChild.role_sign_sys == 'TL_2' &&
+                              obserChild.group_nm == 'RED',
+                          )?.sign
+                        "
+                        width="50"
+                        height="50"
+                        alt="sign"
+                      />
+                    </template>
+                  </td>
+                </tr>
+                <tr
+                  style="
+                    position: sticky;
+                    bottom: 30px;
+                    z-index: 10;
+                    background-color: white;
+                  "
+                >
+                  <td colspan="5">
+                    <h5>Sign GL</h5>
+                  </td>
+                  <td
+                    v-for="date in containerDate"
+                    :key="date"
+                    :class="date.bg"
+                  >
+                    <template
+                      v-if="
+                        observationSchedule.find((obserChild) =>
+                          obserChild.children.find(
+                            (childObser) => childObser.idxdate == date.idx,
+                          ),
+                        )
+                      "
+                    >
+                      <!-- make condition for switch if sign in this date is available -->
+
+                      <CButton
+                        v-if="
+                          !signObservationsGL.find(
+                            (obserChild) =>
+                              obserChild.date_idx == date.idx &&
+                              obserChild.role_sign_sys == 'GL' &&
+                              obserChild.group_nm == 'RED',
+                          )
+                        "
+                        color="dark"
+                        variant="outline"
+                        size="sm"
+                        @click="
+                          () => {
+                            showModalSignTL(date.date, 'RED', 'GL', date.idx)
+                          }
+                        "
+                      >
+                        <CIcon icon="cil-pencil" class="text-dark" size="sm" />
+                      </CButton>
+                      <img
+                        v-else
+                        :src="
+                          signObservationsGL.find(
+                            (obserChild) =>
+                              obserChild.date_idx == date.idx &&
+                              obserChild.role_sign_sys == 'GL' &&
+                              obserChild.group_nm == 'RED',
+                          )?.sign
+                        "
+                        width="50"
+                        height="50"
+                        alt="sign"
+                      />
+                    </template>
+                  </td>
+                </tr>
+                <tr
+                  style="
+                    position: sticky;
+                    bottom: 0px;
+                    z-index: 10;
+                    background-color: white;
+                  "
+                >
+                  <td colspan="5">
+                    <h5>Sign SH</h5>
+                  </td>
+                  <td
+                    v-for="date in containerDate"
+                    :key="date"
+                    :class="date.bg"
+                  >
+                    <template
+                      v-if="
+                        observationSchedule.find((obserChild) =>
+                          obserChild.children.find(
+                            (childObser) => childObser.idxdate == date.idx,
+                          ),
+                        )
+                      "
+                    >
+                      <!-- make condition for switch if sign in this date is available -->
+
+                      <CButton
+                        v-if="
+                          !signObservationsSH.find(
+                            (obserChild) =>
+                              obserChild.date_idx == date.idx &&
+                              obserChild.role_sign_sys == 'SH' &&
+                              obserChild.group_nm == 'RED',
+                          )
+                        "
+                        color="dark"
+                        variant="outline"
+                        size="sm"
+                        @click="
+                          () => {
+                            showModalSignTL(date.date, 'RED', 'SH', date.idx)
+                          }
+                        "
+                      >
+                        <CIcon icon="cil-pencil" class="text-dark" size="sm" />
+                      </CButton>
+                      <img
+                        v-else
+                        :src="
+                          signObservationsSH.find(
+                            (obserChild) =>
+                              obserChild.date_idx == date.idx &&
+                              obserChild.role_sign_sys == 'SH' &&
                               obserChild.group_nm == 'RED',
                           )?.sign
                         "
@@ -520,7 +914,10 @@ export default {
       },
       addSignModal: false,
       isUploadSignLoading: false,
-      signObservations: [],
+      signObservationsTL_1: [],
+      signObservationsTL_2: [],
+      signObservationsGL: [],
+      signObservationsSH: [],
     }
   },
   computed: {
@@ -562,7 +959,10 @@ export default {
           toast.success('Success to add sign', {
             autoClose: 1000,
           })
-          this.getSignature()
+          this.getSignature('TL_1', 'signObservationsTL_1')
+          this.getSignature('TL_2', 'signObservationsTL_2')
+          this.getSignature('GL', 'signObservationsGL')
+          this.getSignature('SH', 'signObservationsSH')
         }
       } catch (error) {
         toast.error('error to add toast')
@@ -583,7 +983,7 @@ export default {
     clearSignature() {
       this.$refs['sign'].clear()
     },
-    async getSignature() {
+    async getSignature(role_sign_sys = 'TL_1', state = 'signObservationsTL1') {
       try {
         ApiService.setHeader()
         const getData = await ApiService.query(
@@ -592,11 +992,11 @@ export default {
             month: +this.selectedMonth.split('-')[1],
             year: +this.selectedMonth.split('-')[0],
             line_id: this.selectedLine,
-            role_sign_sys: 'TL',
+            role_sign_sys: role_sign_sys,
           },
         )
         if (getData.data.message == 'Success to get sign') {
-          this.signObservations = getData.data.data
+          this[state] = getData.data.data
         }
       } catch (error) {
         toast.error('Error to get signature data', {
@@ -613,7 +1013,10 @@ export default {
         }`
         this.getObsSchedule()
         this.getObsScheduleRedShift()
-        this.getSignature()
+        this.getSignature('TL_1', 'signObservationsTL_1')
+        this.getSignature('TL_2', 'signObservationsTL_2')
+        this.getSignature('GL', 'signObservationsGL')
+        this.getSignature('SH', 'signObservationsSH')
       }
     },
     onPageChange(page) {
@@ -719,7 +1122,10 @@ export default {
     // await this.getObsSchedule()
     // await this.getObsScheduleRedShift()
     this.searchData()
-    this.getSignature()
+    this.getSignature('TL_1', 'signObservationsTL_1')
+    this.getSignature('TL_2', 'signObservationsTL_2')
+    this.getSignature('GL', 'signObservationsGL')
+    this.getSignature('SH', 'signObservationsSH')
   },
   updated() {
     if (this.$route.query.line) {
@@ -742,7 +1148,7 @@ export default {
 
 .tableFixHead {
   overflow: auto;
-  height: 35vh;
+  height: 100vh;
 }
 
 .tableFixHead th {
