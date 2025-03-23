@@ -187,8 +187,10 @@
 
                 <div class="mb-2">
                   <label class="mb-1">PIC </label>
-                  <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
-                  </VueMultiselect>
+                  <treeselect v-if="getUsersTree" class="w-50" v-model="findingsData.cm_pic_id"
+                    :options="getUsersTree" />
+                  <!-- <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
+                  </VueMultiselect> -->
                 </div>
 
                 <div class="mb-2">
@@ -440,8 +442,10 @@
                     </div>
                     <div class="col">
                       <label class="mb-1">Edit PIC</label>
-                      <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
-                      </VueMultiselect>
+                      <treeselect v-if="getUsersTree" class="w-50" v-model="focusThemeDetail.findings[0].cm_pic_id"
+                        :options="getUsersTree" />
+                      <!-- <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
+                      </VueMultiselect> -->
                       <small v-if="focusThemeDetail.findings[0].cm_pic_id" class="text-success">*Abaikan jika
                         tidak
                         ingin
@@ -698,17 +702,34 @@ import Loading from 'vue-loading-overlay'
 import { toast } from 'vue3-toastify'
 import Pagination from '@/components/Pagination.vue'
 
+import Treeselect from '@cholakovdev/vue3-treeselect'
+import '@cholakovdev/vue3-treeselect/dist/vue3-treeselect.css'
+
+
 export default {
   name: 'Focus Theme',
   data() {
     return {
+      // finding_desc: itm.findings[0].finding_desc,
+      // finding_factor: itm.findings[0].factor_nm,
+      // finding_cm: itm.findings[0].cm_desc,
+      // finding_cm_date: itm.findings[0].cm_str_plan_date,
+      // finding_pic: itm.findings[0].cm_pic_nm
       json_fields: {
         FT_ID: 'ft_id',
-        Focus_Tema: 'ft_desc',
-        FT_Eval_Num: 'ft_evaluation_num',
-        FT_Remark: 'ft_remark',
-        FT_Pillar: 'ft_pillar',
-        FT_Line: 'line_nm',
+        Line: 'line_nm',
+        'Focus Thema': 'ft_desc',
+        Findings: 'finding_desc',
+        Factor: 'finding_factor',
+        Countermeasure: 'finding_cm',
+        // 'Countermeasure Date': 'finding_cm_date',
+        'C/M Plan Date': 'cm_str_plan_date',
+        'C/M Actual Date': 'cm_str_act_date',
+        PIC: 'finding_pic',
+        'Evaluation': 'ft_evaluation_num',
+        Remark: 'ft_remark',
+        Pillar: 'ft_pillar',
+        Status: 'cm_status'
       },
       evaluationOpts: [],
       json_data: null,
@@ -772,8 +793,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getLinesOpts', 'getUsersOpts', 'getFocusTheme']),
-
+    ...mapGetters(['getLinesOpts', 'getUsersOpts', 'getFocusTheme', 'getUsersTree']),
   },
   updated() {
     this.mapLinesData()
@@ -851,7 +871,22 @@ export default {
           if (res) {
             this.totalPage = res[0]?.total_page
             this.isLoading = false
-            this.json_data = res
+            console.log(res, 'res');
+            const mapFindingShow = res.map(itm => {
+              return {
+                ...itm,
+                finding_desc: itm.findings[0].finding_desc,
+                finding_factor: itm.findings[0].factor_nm,
+                finding_cm: itm.findings[0].cm_desc,
+                finding_cm_date: itm.findings[0].cm_str_plan_date,
+                finding_pic: itm.findings[0].cm_pic_nm,
+                cm_desc: itm.findings[0].cm_desc,
+                cm_str_plan_date: itm.findings[0].cm_str_plan_date,
+                cm_str_act_date: itm.findings[0].cm_str_act_date,
+                cm_status: itm.findings[0].cm_judg ? 'Closed' : 'Open',
+              }
+            })
+            this.json_data = mapFindingShow
           }
         })
       } catch (error) {
@@ -920,9 +955,19 @@ export default {
       this.focusThemeData.ft_line_id = this.selectedLineID?.line_id
       this.findingsData.cm_result_factor_id = this.findingsData?.factor_id
       this.findingsData.line_id = this.selectedLineID?.line_id
-      this.findingsData.cm_pic_id = this.selectedFindingPIC?.pic_id
+      // this.findingsData.cm_pic_id = this.selectedFindingPIC?.pic_id
 
-      if (!this.findingsData.finding_img || !this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.finding_location || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date) {
+      if (!this.findingsData.finding_img
+        || !this.findingsData.line_id
+        || !this.findingsData.cm_pic_id
+        || !this.findingsData.finding_location
+        || !this.findingsData.finding_desc
+        || !this.findingsData.finding_location
+        || !this.findingsData.cm_desc
+        || !this.findingsData.cm_priority
+        || !this.findingsData.factor_id
+        || !this.findingsData.cm_str_plan_date
+        || !this.findingsData.cm_end_plan_date) {
         toast.error('Harap isi semua field di finding', {
           autoClose: 1000
         })
@@ -938,7 +983,8 @@ export default {
     async addFocusTheme(data) {
       try {
         await this.$store.dispatch(POST_FOCUSTHEME, data).then((res) => {
-          if (res.data.message == 'Success to POST Focus Thema') {
+          console.log(res, ': FT RES')
+          if (res?.message == 'Success to POST Focus Thema') {
             toast.success('Data added', {
               autoClose: 1000
             })
@@ -1145,7 +1191,7 @@ export default {
       const data = this.getUsersOpts.filter((pic) => {
         return pic.id === picID
       })
-      return data[0].text
+      return data[0]?.text
     },
   },
   async mounted() {
@@ -1163,7 +1209,7 @@ export default {
     await this.getCategories()
     await this.getUsers()
   },
-  components: { VueMultiselect, Loading, Pagination },
+  components: { VueMultiselect, Loading, Pagination, Treeselect },
 }
 </script>
 

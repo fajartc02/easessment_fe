@@ -127,8 +127,10 @@
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">PIC</label>
-                  <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
-                  </VueMultiselect>
+                  <treeselect v-if="getUsersTree" class="w-100" v-model="henkatenData.henkaten_pic"
+                    :options="getUsersTree" />
+                  <!-- <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions"> -->
+                  <!-- </VueMultiselect> -->
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Perubahan</label>
@@ -199,8 +201,11 @@
 
                 <div class="mb-2">
                   <label class="mb-1">PIC </label>
-                  <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
-                  </VueMultiselect>
+                  <!-- here -->
+                  <treeselect v-if="getUsersTree" class="w-100" v-model="findingsData.cm_pic_id"
+                    :options="getUsersTree" />
+                  <!-- <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
+                  </VueMultiselect> -->
                 </div>
 
                 <div class="mb-2">
@@ -366,8 +371,10 @@
                     </div>
                     <div class="col">
                       <label class="mb-1">Edit PIC</label>
-                      <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
-                      </VueMultiselect>
+                      <treeselect v-if="getUsersTree" class="w-100" v-model="henkatenDetail.henkaten_pic"
+                        :options="getUsersTree" />
+                      <!-- <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
+                      </VueMultiselect> -->
                       <small v-if="henkatenDetail.henkaten_pic" class="text-success">*Abaikan jika
                         tidak
                         ingin
@@ -483,8 +490,10 @@
                     </div>
                     <div class="col">
                       <label class="mb-1">Edit PIC</label>
-                      <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
-                      </VueMultiselect>
+                      <treeselect v-if="getUsersTree" class="w-100" v-model="henkatenDetail.findings[0].cm_pic_id"
+                        :options="getUsersTree" />
+                      <!-- <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
+                      </VueMultiselect> -->
                       <small v-if="henkatenDetail.findings[0].cm_pic_id" class="text-success">*Abaikan jika
                         tidak
                         ingin
@@ -689,20 +698,28 @@ import Loading from 'vue-loading-overlay'
 import Pagination from '@/components/Pagination.vue'
 import { toast } from 'vue3-toastify'
 
+import Treeselect from '@cholakovdev/vue3-treeselect'
+import '@cholakovdev/vue3-treeselect/dist/vue3-treeselect.css'
+
 
 export default {
   name: 'Henkaten',
   data() {
     return {
       json_fields: {
-        ID: 'henkaten_id',
-        Desc: 'henkaten_desc',
-        Purpose: 'henkaten_purpose',
-        FLW_Safety: 'henkaten_flw_safety',
-        FLW_Quality: 'henkaten_flw_quality',
-        Location: 'henkaten_location',
-        PIC: 'henkaten_pic_nm',
+        id: 'henkaten_id',
+        Date: 'henkaten_date',
         Line: 'line_nm',
+        Location: 'henkaten_location',
+        'Henkaten Point': 'henkaten_desc',
+        Tujuan: 'henkaten_purpose',
+        'Safety Point': 'henkaten_flw_safety',
+        'Quality Point': 'henkaten_flw_quality',
+        Countermeasure: 'cm_desc',
+        'Plan Date': 'cm_str_plan_date',
+        'Actual Date': 'cm_str_act_date',
+        PIC: 'henkaten_pic_nm',
+        Status: 'cm_status'
       },
       json_data: null,
       isLoading: false,
@@ -766,7 +783,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getUsersOpts', 'getHenkatens', 'getLinesOpts']),
+    ...mapGetters(['getUsersOpts', 'getHenkatens', 'getLinesOpts', 'getUsersTree']),
   },
   methods: {
     onPageChange(page) {
@@ -848,14 +865,14 @@ export default {
     },
     addHenkatenData() {
       this.henkatenData.henkaten_line_id = this.selectedLineID?.line_id
-      this.henkatenData.henkaten_pic = this.selectedPIC?.pic_id
+      // this.henkatenData.henkaten_pic = this.selectedPIC?.pic_id
 
       this.findingsData.cm_result_factor_id = this.findingsData?.factor_id
       this.findingsData.finding_date = this.henkatenData.henkaten_date
       this.findingsData.finding_location = this.henkatenData.henkaten_location
       this.findingsData.finding_desc = this.henkatenData.henkaten_desc
       this.findingsData.line_id = this.selectedLineID?.line_id
-      this.findingsData.cm_pic_id = this.selectedPIC?.pic_id
+      // this.findingsData.cm_pic_id = this.selectedPIC?.pic_id
 
       if (!this.findingsData.finding_img || !this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.finding_location || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date) {
         toast.error('Harap isi semua field di finding', {
@@ -873,9 +890,7 @@ export default {
       const updateData = {
         henkaten_date: this.formatTheDate(this.henkatenDetail.henkaten_date),
         henkaten_location: this.henkatenDetail.henkaten_location,
-        henkaten_pic: this.selectedPIC
-          ? this.selectedPIC.pic_id
-          : this.henkatenDetail.henkaten_pic,
+        henkaten_pic: this.henkatenDetail.henkaten_pic,
         henkaten_desc: this.henkatenDetail.henkaten_desc,
         henkaten_purpose: this.henkatenDetail.henkaten_purpose,
         henkaten_flw_safety: this.henkatenDetail.henkaten_flw_safety,
@@ -951,6 +966,24 @@ export default {
         this.$store.dispatch(GET_HENKATEN, objQuery).then((res) => {
           if (res) {
             this.isLoading = false
+            //     Countermeasure: 'cm_desc',
+            // 'Plan Date': 'cm_end_plan_date',
+            // 'Actual Date': 'cm_str_act_date',
+            // PIC: 'henkaten_pic_nm',
+            // Status: 'cm_status'
+            if (res.length > 0) {
+              const remapFinding = res.map(itm => {
+                return {
+                  ...itm,
+                  cm_desc: itm.findings[0].cm_desc,
+                  cm_str_plan_date: itm.findings[0].cm_str_plan_date,
+                  cm_str_act_date: itm.findings[0].cm_str_act_date,
+                  cm_status: itm.findings[0].cm_judg ? 'Closed' : 'Open',
+                }
+              })
+              this.json_data = remapFinding
+              return
+            }
             this.json_data = res
           }
         })
@@ -1135,7 +1168,7 @@ export default {
     this.mapLinesData()
     this.mapUsersData()
   },
-  components: { VueMultiselect, Loading, Pagination },
+  components: { VueMultiselect, Loading, Pagination, Treeselect },
 }
 </script>
 

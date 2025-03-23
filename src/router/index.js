@@ -53,10 +53,20 @@ const routes = [{
     component: () =>
       import('@/views/observations/ScheduleObservationForm.vue'),
   }, {
+    path: '/schedule/observation/new-form',
+    name: 'ScheduleObservationNewForm',
+    component: () =>
+      import('@/views/observations/new/ScheduleObservationNewForm.vue'),
+  }, {
     path: '/observation/:id',
     name: 'DetailObservation',
     component: () =>
       import('@/views/observations/DetailObservation.vue'),
+  }, {
+    path: '/new-observation/:id',
+    name: 'NewDetailObservation',
+    component: () =>
+      import('@/views/observations/new/NewDetailObservation.vue'),
   }, {
     path: '/observation/report/:id',
     name: 'ReportObservation',

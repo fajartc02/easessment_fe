@@ -20,7 +20,9 @@
               </select>
             </CInputGroup>
           </div>
-          <button class="btn btn-sm btn-success text-white" @click="this.$router.push('/schedule/observation/form')">
+          <!-- OLD Routing: /schedule/observation/form -->
+          <button class="btn btn-sm btn-success text-white"
+            @click="this.$router.push('/schedule/observation/new-form')">
             Add Schedule
             <CIcon icon="cil-plus" size="sm" />
           </button>
@@ -32,6 +34,7 @@
         <tr>
           <th>No</th>
           <th>Line</th>
+          <th>Shift</th>
           <th>Pos</th>
           <th>Type Pekerjaan</th>
           <th>Petugas</th>
@@ -53,6 +56,7 @@
             :key="obaservation.uuid">
             <td>{{ i + 1 }}</td>
             <td>{{ obaservation.line_nm }}</td>
+            <td>{{ obaservation.group_nm }}</td>
             <td>{{ obaservation.pos_nm }}</td>
             <td>{{ obaservation.job_type_nm }}</td>
             <td v-if="obaservation.checkers.length > 0">
@@ -65,21 +69,23 @@
             <td>{{ obaservation.job_nm }}</td>
             <td>{{ `${obaservation.plan_check_dt}` }}</td>
             <td :class="`${obaservation.actual_check_dt}`.split('T')[0] == 'null'
-              ? 'bg-danger'
+              ? obaservation.parent_revision_id ? 'bg-info' : 'bg-danger'
               : ''
               ">
               {{
                 `${obaservation.actual_check_dt}`.split('T')[0] != 'null'
                   ? `${obaservation.actual_check_dt}`.split('T')[0]
-                  : 'belum cek'
+                  : obaservation.parent_revision_id ? `Reschedule ${obaservation.date_revision.split(' ')[0]}` : 'belum cek'
               }}
             </td>
             <td>
               <div class="d-flex">
-                <button class="btn btn-info btn-sm mx-1 text-white" @click="editPos(obaservation.id)">
+                <button class="btn btn-info btn-sm mx-1 text-white" @click="editPos(obaservation.id)"
+                  :disabled="obaservation.parent_revision_id">
                   edit
                 </button>
-                <button class="btn btn-danger btn-sm text-white" @click="deletePos(obaservation.id)">
+                <button class="btn btn-danger btn-sm text-white" @click="deletePos(obaservation.id)"
+                  :disabled="obaservation.parent_revision_id">
                   delete
                 </button>
               </div>
@@ -222,7 +228,7 @@ export default {
         })
     },
     async editPos(id) {
-      await this.$router.push(`/schedule/observation/form?id=${id}`)
+      await this.$router.push(`/schedule/observation/new-form?id=${id}`)
     },
     deletePos(id) {
       console.log(id)

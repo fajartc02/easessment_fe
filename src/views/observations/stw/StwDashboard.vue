@@ -3,18 +3,21 @@
     <div class="card mb-3">
       <!-- filter -->
       <div class="card-header">
-        <div class="row">
+        <div class="row align-items-end justify-content-between">
           <div class="col">
             <label>Select month</label>
-            <input type="month" class="form-control" v-model="selectedMonth" @change="addFilter()" />
+            <input type="month" class="form-control" v-model="selectedMonth" />
           </div>
           <div class="col">
             <label>Line</label>
-            <select class="form-select" v-model="selectedLine" @change="addFilter()">
+            <select class="form-select" v-model="selectedLine">
               <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
                 {{ line.text }}
               </option>
             </select>
+          </div>
+          <div class="col">
+            <CButton color="primary" @click="searchData">Search</CButton>
           </div>
         </div>
       </div>
@@ -48,7 +51,7 @@
               </CButton>
             </div>
           </div>
-          <div>
+          <div class="d-flex justify-content-center align-items-center">
             OnProgress:
             <CIcon icon="cil-circle" class="text-dark" size="sm" />
             Done:
@@ -57,6 +60,8 @@
             <CIcon icon="cil-circle" class="text-danger" size="sm" />
             Is Finding:
             <CIcon icon="cil-bell" class="text-warning" size="sm" />
+            Revision:
+            <h6 class="m-0 p-0 text-primary">R</h6>
           </div>
         </div>
       </div>
@@ -98,8 +103,12 @@
                   <td id="fixCol-2">{{ observation.line_snm }}</td>
                   <td id="fixCol-3">{{ observation.pos_nm }}</td>
                   <td id="fixCol-4">
-                    <CBadge v-for="observer in observation.checkers" :key="observer" color="secondary">{{ observer }}
-                    </CBadge>
+                    <template v-for="observer in observation.checkers" :key="observer">
+                      <CBadge color="secondary">
+                        {{ observer }}
+                      </CBadge>
+                      <br>
+                    </template>
                   </td>
                   <td id="fixCol-5">{{ observation.group_nm }}</td>
                   <td v-for="item in containerDate" :key="item.idx" style="min-width: 63px">
@@ -107,6 +116,7 @@
                       <template v-if="child.idxdate === String(item.idx)">
                         <TooltipStwSchedule :child="child" :customTooltipStyle="customTooltipStyle" :observation="child"
                           :currentDate="currentDate" @detail-schedule="detailSchedule" />
+
                       </template>
                     </template>
                   </td>
@@ -156,6 +166,7 @@
                     </div>
                   </td>
                 </tr>
+
                 <tr v-for="(observationRedShift, i) in observationScheduleRedShift" :key="observationRedShift.pos_id">
                   <td id="fixCol-1">{{ i + 1 }}</td>
                   <td id="fixCol-2">{{ observationRedShift.line_snm }}</td>
@@ -168,9 +179,11 @@
                   <td id="fixCol-5">{{ observationRedShift.group_nm }}</td>
                   <td v-for="item in containerDate" :key="item.idx" style="min-width: 63px">
                     <template v-for="child in observationRedShift.children" :key="child.observation_id">
+
                       <template v-if="child.idxdate === String(item.idx)">
                         <TooltipStwSchedule :child="child" :customTooltipStyle="customTooltipStyle" :observation="child"
                           :currentDate="currentDate" @detail-schedule="detailSchedule" />
+
                       </template>
                     </template>
                   </td>
@@ -266,11 +279,16 @@ export default {
     ]),
   },
   watch: {
-    selectedLine: function () {
-      if (this.selectedLine != '0') this.getObsSchedule()
-    },
-    selectedMonth: function () {
-      if (this.selectedMonth) {
+    // selectedLine: function () {
+
+    // },
+    // selectedMonth: function () {
+
+    // },
+  },
+  methods: {
+    searchData() {
+      if (this.selectedMonth || this.selectedLine != '0') {
         this.generateDate()
         let idx = this.idxMonth.indexOf(this.selectedMonth.split('-')[1])
         this.yearMonth = `${this.monthStr[idx]} ${this.selectedMonth.split('-')[0]
@@ -279,8 +297,6 @@ export default {
         this.getObsScheduleRedShift()
       }
     },
-  },
-  methods: {
     onPageChange(page) {
       if (page == -1) {
         this.currentPage = this.currentPage - 1
@@ -362,7 +378,12 @@ export default {
         })
     },
     detailSchedule(obser) {
-      this.$router.push(`/observation/${obser.observation_id}`)
+      console.log(obser)
+      if (obser.is_new_form) {
+        this.$router.push(`/new-observation/${obser.observation_id}`)
+      } else {
+        this.$router.push(`/observation/${obser.observation_id}`)
+      }
     },
     addFilter() {
       this.getObsSchedule()
@@ -376,8 +397,9 @@ export default {
     this.selectedMonth = `${year}-${month}`
     this.selectedLine = localStorage.getItem('line_id')
 
-    await this.getObsSchedule()
-    await this.getObsScheduleRedShift()
+    // await this.getObsSchedule()
+    // await this.getObsScheduleRedShift()
+    this.searchData()
   },
   updated() {
     if (this.$route.query.line) {
@@ -387,7 +409,7 @@ export default {
   components: {
     Loading,
     // Yamazumi,
-    TooltipStwSchedule
+    TooltipStwSchedule,
   },
 }
 </script>

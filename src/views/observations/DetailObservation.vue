@@ -80,7 +80,7 @@
             <CModalHeader>
               <CModalTitle v-if="observation.job_type_nm">{{
                 tskLabel
-                }}</CModalTitle>
+              }}</CModalTitle>
             </CModalHeader>
             <CModalBody>
               <vue-pdf-embed v-if="tskFile" :source="tskFile" />
@@ -125,7 +125,7 @@
     <div class="card-body overflow-auto">
       <CInputGroup class="mb-3">
         <CInputGroupText style="width: 120px;">Actual Date</CInputGroupText>
-        <input :disabled="isCheck" class="form-control" type="date" v-model="form.actual_check_dt" />
+        <input class="form-control" type="date" v-model="form.actual_check_dt" />
         <CInputGroupText class="p-0">
           <CButton color="success" @click="saveCheckObser(form.actual_check_dt, 'actual_check_dt')"
             style="font-weight:900;">
@@ -135,7 +135,7 @@
       </CInputGroup>
       <CInputGroup class="mb-3">
         <CInputGroupText style="width: 120px;">Shift</CInputGroupText>
-        <CFormSelect :disabled="isCheck" v-model="form.group_id">
+        <CFormSelect v-model="form.group_id">
           <option>Select Shift</option>
           <option v-for="judg in groups" :key="judg.id" :value="judg.id">
             {{ judg.group_nm }}
@@ -207,7 +207,7 @@
                 <div v-if="item.stw_ct5">
                   <div class="row">
                     <div class="col-12">
-                      <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(1) }}</span>
+                      <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(2) }}</span>
                     </div>
                   </div>
                   <div class="row">
@@ -220,7 +220,7 @@
                 <div v-else>
                   <div class="row">
                     <div class="col-12">
-                      <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(1) }}</span>
+                      <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(2) }}</span>
                     </div>
                   </div>
                   <div class="row">
@@ -243,7 +243,7 @@
               <div v-if="item.stw_ct1">
                 <div class="row">
                   <div class="col-12">
-                    <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(1) }}</span>
+                    <span class="badge bg-primary w-100 p-2">Rata-Rata: {{ judgementAverage.toFixed(2) }}</span>
                   </div>
                 </div>
                 <div class="row">
@@ -301,6 +301,7 @@
             v-if="item.is_already_check && judgments.find((judg) => judg.id == item.judgment_id)?.is_abnormal || (i == 0 && judgments.find((judg) => judg.id == judgementID)?.is_abnormal && item.is_already_check)">
             <div v-if="item.findings.length == 0">
               <button class="btn btn-info" @click="() => {
+                resetData()
                 item.is_active_modal = true
                 finding.finding_location = observation.pos_nm
                 finding.category_id = item.id
@@ -516,39 +517,17 @@
           </div>
         </div>
       </div>
-
-
-      <!-- <div v-if="observation?.comment_ammgr">
-        <div class="mb-2">
-          <label class="mb-1">Comment AM / MGR </label>
-          <input :value="observation?.comment_ammgr" type="text" class="form-control" disabled />
-        </div>
-      </div> -->
-
-      <!-- <CInputGroup class="mb-3" v-if="!observation?.comment_sh">
-        <CInputGroupText style="width: 200px;">Comment SH </CInputGroupText>
-        <input type="text" class="form-control" v-model="comment_sh" />
-        <CInputGroupText class="p-0">
-          <CButton color="success" @click="saveCheckObser(comment_sh, 'comment_sh')" style="font-weight:900;">
-            Save</CButton>
-        </CInputGroupText>
-      </CInputGroup>
-      <CInputGroup class="mb-3" v-if="!observation?.comment_ammgr">
-        <CInputGroupText style="width: 200px;">Comment AM / Mgr </CInputGroupText>
-        <input type="text" class="form-control" v-model="comment_ammgr" />
-        <CInputGroupText class="p-0">
-          <CButton color="success" @click="saveCheckObser(comment_ammgr, 'comment_ammgr')" style="font-weight:900;">
-            Save</CButton>
-        </CInputGroupText>
-      </CInputGroup> -->
-
     </div>
   </div>
 
 </template>
 
 <script>
-import { GET_OBSERVATION_DETAIL, SAVE_OBSERVATION, SAVE_OBSERVATION_CATEGORY } from '@/store/modules/observation.module'
+import {
+  GET_OBSERVATION_DETAIL, SAVE_OBSERVATION,
+  SAVE_OBSERVATION_CATEGORY
+
+} from '@/store/modules/observation.module'
 import { POST_OBSERVATION_CHECK } from '@/store/modules/observation.module'
 import { GET_USERS } from '@/store/modules/user.module'
 import { mapGetters } from 'vuex'
@@ -760,16 +739,19 @@ export default {
     async saveCheckCategory(item) {
       try {
         this.isLoading = true
+        console.log(item)
         let checkedData = {
           observation_id: this.$route.params.id,
           category_id: item.id,
-          judgment_id: item.stw_ct5 || this.observation?.job_type_nm === 'Type 3' ? this.judgementID : item.judgment_id,
+          judgment_id: (this.observation?.job_type_nm === 'Type 1' || this.observation?.job_type_nm === 'Type 2' || this.observation?.job_type_nm === 'Type 3') && item.id == '3ce06d66-fe82-4e0a-a1fd-ce927ec85167' ? this.judgementID : item.judgment_id,
           stw_ct1: item.stw_ct1,
           stw_ct2: item.stw_ct2,
           stw_ct3: item.stw_ct3,
           stw_ct4: item.stw_ct4,
           stw_ct5: item.stw_ct5
         }
+        console.log(this.judgementID)
+        console.log(checkedData)
         await this.$store.dispatch(SAVE_OBSERVATION_CATEGORY, checkedData)
         this.isLoading = false
         await this.getDetail()
@@ -949,7 +931,7 @@ export default {
     },
     calculateJudgement(newValue, isType3 = false) {
       console.log('isType3', isType3);
-
+      console.log('isType3', newValue);
       if (isType3) {
         const OK_ID = 'c4f5ff30-1b95-4ad8-8af8-e3e9d90bd942'
         const NG_ID = '2e247c66-3e9c-44b6-951a-0a26791ad37d'
@@ -971,14 +953,13 @@ export default {
             totalAvg) *
           100
         this.judgementAverage = totalAvg
-        console.log('totalPrecentage', totalPrecentage);
-
         let is_nan = Number.isNaN(totalPrecentage)
         this.judgementPrecentage = is_nan ? 0 : totalPrecentage.toFixed()
         if (totalPrecentage.toFixed() >= 10) {
           this.judgementID = NG_ID
         }
         this.judgementID = OK_ID
+        console.log(this.judgementID, isType3, ': masuuuk!')
         return
       }
       const OK_ID = 'c4f5ff30-1b95-4ad8-8af8-e3e9d90bd942'
@@ -1051,7 +1032,6 @@ export default {
           itm.stw_ct5 = result.stw_ct5
           itm.findings = result.findings
         }
-
         return itm
       })
 
@@ -1063,6 +1043,7 @@ export default {
       if (this.observation?.job_type_nm === 'Type 3') {
         isType3 = true
       }
+
       this.calculateJudgement(mapCategory[0], isType3)
     },
     async postCheckObs() {
@@ -1138,7 +1119,6 @@ export default {
     if (savedUserName) {
       this.userName = savedUserName;
     }
-
 
     try {
       const comments = await this.$store.dispatch(GET_COMMENTS, {

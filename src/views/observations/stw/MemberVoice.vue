@@ -319,10 +319,9 @@
 
                 <div class="mb-2">
                   <label class="mb-1">PIC</label>
-                  <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions" @change="() => {
-                    selectedPIC = selectedPIC
-                  }">
-                  </VueMultiselect>
+                  <!-- here -->
+                  <treeselect v-if="getUsersTree" class="w-50" v-model="memberVoiceData.mv_pic_id"
+                    :options="getUsersTree" />
                 </div>
                 <div class="row">
                   <div class="col">
@@ -389,8 +388,10 @@
 
                 <div class="mb-2">
                   <label class="mb-1">PIC </label>
-                  <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
-                  </VueMultiselect>
+                  <treeselect v-if="getUsersTree" class="w-50" v-model="findingsData.cm_pic_id"
+                    :options="getUsersTree" />
+                  <!-- <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
+                  </VueMultiselect> -->
                 </div>
 
                 <div class="mb-2">
@@ -611,8 +612,8 @@
                     </div>
                     <div class="col">
                       <label class="mb-1">Edit PIC</label>
-                      <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
-                      </VueMultiselect>
+                      <treeselect v-if="getUsersTree" class="w-50" v-model="memberVoiceDetail.mv_pic_id"
+                        :options="getUsersTree" />
                       <small v-if="selectedPIC" class="text-success">*Abaikan jika tidak ingin
                         diubah</small>
                       <small v-else class="text-danger">*Silahkan masukan pic</small>
@@ -716,8 +717,8 @@
                     </div>
                     <div class="col">
                       <label class="mb-1">Edit PIC</label>
-                      <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
-                      </VueMultiselect>
+                      <treeselect class="w-100" v-if="getUsersTree" v-model="memberVoiceDetail.findings[0].cm_pic_id"
+                        :options="getUsersTree" />
                       <small v-if="selectedFindingPIC" class="text-success">*Abaikan jika tidak
                         ingin
                         diubah</small>
@@ -1022,19 +1023,26 @@ import Loading from 'vue-loading-overlay'
 import { toast } from 'vue3-toastify'
 import Pagination from '@/components/Pagination.vue'
 
+import Treeselect from '@cholakovdev/vue3-treeselect'
+import '@cholakovdev/vue3-treeselect/dist/vue3-treeselect.css'
+
 export default {
   name: 'Member Voice',
   data() {
     return {
       json_fields: {
-        MV_ID: 'mv_id',
-        MV_Problem: 'mv_problem',
-        MV_Location: 'mv_location',
-        MV_Process: 'mv_process_no',
-        MV_Category: 'mv_category',
-        MV_Countermeasure: 'mv_countermeasure',
-        MV_Evaluation: 'mv_evaluation',
-        MV_PIC: 'mv_pic_nm',
+        id: 'mv_id',
+        Date: 'mv_date_finding',
+        Problem: 'mv_problem',
+        'Location': 'mv_location',
+        'Process': 'mv_process_no',
+        'Category': 'mv_category',
+        'Countermeasure': 'mv_countermeasure',
+        'C/M Plan Date': 'mv_plan_date',
+        'Plan Date': 'cm_str_plan_date',
+        'Actual Date': 'cm_str_act_date',
+        'PIC': 'mv_pic_nm',
+        Status: 'cm_status'
       },
       json_data: null,
       isLoading: false,
@@ -1079,7 +1087,7 @@ export default {
       // findings data
       findingsData: {
         line_id: null,
-        finding_date: null,
+        finding_date: moment().format('YYYY-MM-DD'),
         finding_location: null,
         finding_desc: null,
         cm_desc: null,
@@ -1109,7 +1117,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getLinesOpts', 'getUsersOpts', 'getMemberVoice']),
+    ...mapGetters(['getLinesOpts', 'getUsersTree', 'getMemberVoice']),
   },
   watch: {
     selectedPIC(newVal) {
@@ -1117,6 +1125,10 @@ export default {
         this.accordionAddMVActiveKey = 2
       }
     },
+    ['memberVoiceData.mv_date_finding'](newVal) {
+      console.log(newVal)
+      this.findingsData.finding_date = newVal
+    }
   },
   updated() {
     this.mapLinesData()
@@ -1193,12 +1205,12 @@ export default {
     },
     addMemberVoiceData() {
       this.memberVoiceData.line_id = this.selectedLineID?.line_id
-      this.memberVoiceData.mv_pic_id = this.selectedPIC?.pic_id
+      // this.memberVoiceData.mv_pic_id = this.selectedPIC?.id
       this.findingsData.line_id = this.selectedLineID?.line_id
       this.findingsData.cm_result_factor_id = this.findingsData?.factor_id
-      this.findingsData.cm_pic_id = this.selectedPIC?.pic_id
+      // this.findingsData.cm_pic_id = this.selectedPIC?.id
       this.findingsData.finding_location = this.memberVoiceData.mv_location
-
+      console.log(this.findingsData)
       if (!this.findingsData.finding_img || !this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.finding_location || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date) {
         toast.error('Harap isi semua field di finding', {
           autoClose: 1000
@@ -1254,6 +1266,19 @@ export default {
           if (res) {
             this.totalPage = res[0]?.total_page
             this.isLoading = false
+            if (res.length > 0) {
+              const remapFinding = res.map(itm => {
+                return {
+                  ...itm,
+                  cm_desc: itm.findings[0].cm_desc,
+                  cm_str_plan_date: itm.findings[0].cm_str_plan_date,
+                  cm_str_act_date: itm.findings[0].cm_str_act_date,
+                  cm_status: itm.findings[0].cm_judg ? 'Closed' : 'Open',
+                }
+              })
+              this.json_data = remapFinding
+              return
+            }
             this.json_data = res
           }
         })
@@ -1486,10 +1511,8 @@ export default {
       }
     },
     getPicName(picID) {
-      const data = this.getUsersOpts.filter((pic) => {
-        return pic.id === picID
-      })
-      return data[0].text
+      const data = this.getUsersTree.find((pic) => pic.id === picID)
+      return data?.label
     },
     activateFindingsAccordionItem() {
       this.accordionAddMVActiveKey = 2
@@ -1509,7 +1532,7 @@ export default {
     await this.getFactors()
     await this.getCategories()
   },
-  components: { VueMultiselect, Loading, Pagination },
+  components: { VueMultiselect, Loading, Pagination, Treeselect },
 }
 </script>
 
