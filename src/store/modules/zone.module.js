@@ -58,6 +58,21 @@ const getters = {
     } else {
       return [];
     }
+  },
+  getZoneOptsTreeselect(state) {
+    if (state.zones)
+    {
+      const mapZones = state.zones.map(zone => {
+        return {
+          id: zone.zone_id,
+          label: zone.zone_nm
+        };
+      });
+      return mapZones;
+    } else
+    {
+      return [];
+    }
   }
 };
 

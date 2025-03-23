@@ -145,6 +145,9 @@
               <span class="mx-2">Actual</span>
             </div>
           </div>
+          <button class="btn btn-info text-white mx-2" @click="openAddFindingModal()">
+            Add Finding
+          </button>
         </div>
       </div>
       <div class="card-body p-0">
@@ -384,13 +387,13 @@
                 </td>
               </tr>
 
-              <tr v-else>
-                <td colspan="80">
-                  <div class="alert alert-danger w-full" role="alert">
-                    Data not found!
-                  </div>
-                </td>
-              </tr>
+                <tr v-else>
+                  <td colspan="80">
+                    <div class="alert alert-danger w-full" role="alert">
+                      Data not found!
+                    </div>
+                  </td>
+                </tr>
             </tbody>
           </table>
         </div>
@@ -413,7 +416,7 @@
       @close="
         () => {
           editFindingModal = false
-        }
+  }
       "
       aria-labelledby="StaticBackdropExampleLabel"
     >
@@ -841,6 +844,8 @@
       :visible="isVisibleFindingImage"
       @close="isVisibleFindingImage = false"
     />
+    <ModalForm4sFinding :visible="addFindingModal" :is-input="true" :loadedFinding="null"
+      @close="onCloseModalFinding($event)" />
   </div>
 </template>
 
@@ -994,6 +999,7 @@ export default {
       optDeptData: null,
       selectedFindingImage: null,
       isVisibleFindingImage: false,
+      addFindingModal: false,
     }
   },
   computed: {
@@ -1024,7 +1030,7 @@ export default {
         }`
       }
     },
-    zoneGetID: function () {
+    zoneGetID: function  () {
       this.getFindings()
     },
   },
@@ -1037,17 +1043,20 @@ export default {
       return `${value.text}`
     },
     onPageChange(page, type) {
-      if (type == 'prev') {
+      if (type == 'prev')
+      {
         this.currentPage = this.currentPage - 1
         this.getFindingsFunc()
       }
 
-      if (type == 'next') {
+      if (type == 'next')
+      {
         this.currentPage = this.currentPage + 1
         this.getFindingsFunc()
       }
 
-      if (type == 'fromnumber') {
+      if (type == 'fromnumber')
+      {
         this.currentPage = page
         this.getFindingsFunc()
       }
@@ -1062,7 +1071,8 @@ export default {
       }`
     },
     async getSystem() {
-      try {
+      try
+      {
         ApiService.setHeader()
         const changeOpts = await ApiService.get(
           `master/systems/get/4S_OPT_CHANGE`,
@@ -1074,7 +1084,8 @@ export default {
         this.changeOpts = changeOpts.data.data
         this.deptOpts = depts.data.data
         this.evaluationOpts = evaluation.data.data
-      } catch (error) {
+      } catch (error)
+      {
         toast.error(error.response.data.message, {
           autoClose: 1000,
         })
@@ -1099,8 +1110,13 @@ export default {
         this.currentPage = res.current_page
       })
     },
+    openAddFindingModal() {
+      this.addFindingModal = true;
+
+    },
     openEditFindingModal(finding) {
       console.log(finding)
+
 
       const data = finding
       this.selectedFindingID = finding.finding_id
@@ -1138,9 +1154,11 @@ export default {
         data.actual_cm_date != null ? data.actual_cm_date.split(' ')[0] : null // formating form yyy-mm-dd HH:mm:ss
       this.evaluationName = data.evaluation_nm
       this.selectedSubScheduleID = data.sub_schedule_id
-      if (data.time_cm) {
+      if (data.time_cm)
+      {
         this.enabledReduceTime = true
-      } else {
+      } else
+      {
         this.enabledReduceTime = false
       }
       this.editFindingModal = true
@@ -1172,14 +1190,16 @@ export default {
         `operational/4s/finding/edit/${this.selectedFindingID}`,
         findingData,
       )
-      if (add.data.message == 'Success to edit 4s finding') {
+      if (add.data.message == 'Success to edit 4s finding')
+      {
         toast.success('Success edit data', {
           autoClose: 700,
         })
         this.editFindingModal = false
         this.isUpdateFindingLoading = false
         await this.getFindings()
-      } else {
+      } else
+      {
         toast.error('Failed to edit data', {
           autoClose: 700,
         })
@@ -1196,23 +1216,27 @@ export default {
         confirmButtonText: 'Sure',
         denyButtonText: `No`,
       }).then((result) => {
-        if (result.isConfirmed) {
+        if (result.isConfirmed)
+        {
           ApiService.setHeader()
           const deleteData = ApiService.delete(
             `operational/4s/finding/delete/${findingID}`,
           )
 
-          if (deleteData) {
+          if (deleteData)
+          {
             toast.success('Success to delete data', {
               autoClose: 700,
             })
             this.getFindings()
-          } else {
+          } else
+          {
             toast.error('Failed edit data', {
               autoClose: 700,
             })
           }
-        } else if (result.isDenied) {
+        } else if (result.isDenied)
+        {
           Swal.fire('Canceled', '', 'info')
         }
       })
@@ -1230,10 +1254,12 @@ export default {
     },
 
     async getUsers() {
-      try {
+      try
+      {
         await this.$store.dispatch(GET_USERS)
         this.mapUsersData()
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -1248,41 +1274,51 @@ export default {
       })
     },
     async getLines() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_LINES)
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getGroup() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_GROUP)
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getZone() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_ZONES, { line_id: this.selectedLineIDFilter })
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getKanban() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_KANBANS)
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getFreq() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_FREQS)
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -1291,11 +1327,13 @@ export default {
       let objQuery = {
         system_type: '4S_EVALUATION',
       }
-      try {
+      try
+      {
         this.$store.dispatch(GET_SYSTEMS, objQuery).then((res) => {
           this.optEvaluation = res
         })
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -1304,11 +1342,13 @@ export default {
       let objQuery = {
         system_type: '4S_OPT_CHANGE',
       }
-      try {
+      try
+      {
         this.$store.dispatch(GET_SYSTEMS, objQuery).then((res) => {
           this.optChangeData = res
         })
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -1318,11 +1358,13 @@ export default {
       let objQuery = {
         system_type: '4S_OPT_DEPT',
       }
-      try {
+      try
+      {
         this.$store.dispatch(GET_SYSTEMS, objQuery).then((res) => {
           this.optDeptData = res
         })
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -1334,7 +1376,8 @@ export default {
       var lastDay = new Date(year, month, 0)
       let container = []
       this.containerDate = []
-      for (let i = 1; i <= lastDay.getDate(); i++) {
+      for (let i = 1; i <= lastDay.getDate(); i++)
+      {
         let setDt = new Date(selectedMonth).setDate(i)
         let newDate = new Date(setDt)
         container.push(newDate.getDate())
@@ -1361,6 +1404,13 @@ export default {
     formatDate(date) {
       return moment(date).format('DD/MM/YYYY')
     },
+    onCloseModalFinding(e) {
+      this.addFindingModal = false;
+      if (e.refresh)
+      {
+        this.getFindings();
+      }
+    },
   },
 
   async mounted() {
@@ -1371,7 +1421,8 @@ export default {
     this.selectedFilterStartDate = `${year}-01-01`
     this.selectedFilterEndDate = `${year}-12-30`
 
-    if (localStorage.getItem('line_id')) {
+    if (localStorage.getItem('line_id'))
+    {
       this.selectedLineIDFilter = localStorage.getItem('line_id')
     }
     await this.getSystem()
@@ -1597,9 +1648,9 @@ export default {
 
 /* highlight on hover */
 
-.multiselect--disabled > .multiselect__tags,
-.multiselect--disabled > .multiselect__tags > .multiselect__single,
-.multiselect--disabled > .multiselect__select {
+.multiselect--disabled>.multiselect__tags,
+.multiselect--disabled>.multiselect__tags>.multiselect__single,
+.multiselect--disabled>.multiselect__select {
   background: #d8dbe0 !important;
 }
 </style>
