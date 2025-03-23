@@ -34,7 +34,7 @@
           <div class="col">
             <label>Kanban</label>
             <Select2 class="form-control" v-model="selectedKanbanIDFilter" :options="getKanbansOpts"
-                     @select="addFilter()" />
+              @select="addFilter()" />
           </div>
           <div class="col">
             <label>Freq</label>
@@ -88,189 +88,191 @@
               <span class="mx-2">Actual</span>
             </div>
           </div>
+          <button class="btn btn-info text-white mx-2" @click="openAddFindingModal()">
+            Add Finding
+          </button>
         </div>
       </div>
       <div class="card-body p-0">
         <div class="tableFixHead">
           <table class="table table-hover">
             <thead class="text-center">
-            <tr>
-              <th id="fixCol-head-1" rowspan="2">No</th>
-              <th id="fixCol-head-2" rowspan="2">Line</th>
-              <th id="fixCol-head-3" rowspan="2">Zone</th>
-              <th id="fixCol-head-4" rowspan="2">No Kanban</th>
-              <th id="fixCol-head-5" rowspan="2">Freq 4S</th>
-              <th id="fixCol-head-6" rowspan="2">Date</th>
-              <th id="fixCol-head-7" rowspan="2">Problem</th>
-              <th class="fix-col-parent" colspan="2">Reduce Time</th>
-              <th class="fix-col-parent" :colspan="changeOpts.length">Perubahan</th>
-              <th class="fix-col-parent" :colspan="deptOpts.length">Departement Terkait</th>
-              <th class="fix-col-parent" colspan="4">Jan</th>
-              <th class="fix-col-parent" colspan="4">Feb</th>
-              <th class="fix-col-parent" colspan="4">March</th>
-              <th class="fix-col-parent" colspan="4">Apr</th>
-              <th class="fix-col-parent" colspan="4">May</th>
-              <th class="fix-col-parent" colspan="4">June</th>
-              <th class="fix-col-parent" colspan="4">July</th>
-              <th class="fix-col-parent" colspan="4">Aug</th>
-              <th class="fix-col-parent" colspan="4">Sept</th>
-              <th class="fix-col-parent" colspan="4">Oct</th>
-              <th class="fix-col-parent" colspan="4">Nov</th>
-              <th class="fix-col-parent" colspan="4">Dec</th>
-              <th class="fix-col-parent" rowspan="2">Evaluasi</th>
-              <th class="fix-col-parent" rowspan="2" colspan="2">Actions</th>
-            </tr>
-            <tr  class="fix-col-child">
-              <th>Waktu 4S (mnt)</th>
-              <th>Yokoten</th>
-              <th  v-for="optChange in changeOpts" :key="optChange">
-                {{ optChange.system_value }}
-              </th>
-              <th  v-for="dept in deptOpts" :key="dept">
-                {{ dept.system_value }}
-              </th>
-              <th width="100">I</th>
-              <th width="100">II</th>
-              <th width="100">III</th>
-              <th class="week">IV</th>
-              <th width="100">I</th>
-              <th width="100">II</th>
-              <th width="100">III</th>
-              <th class="week">IV</th>
-              <th width="100">I</th>
-              <th width="100">II</th>
-              <th width="100">III</th>
-              <th class="week">IV</th>
-              <th class="week">I</th>
-              <th class="week">II</th>
-              <th class="week">III</th>
-              <th class="week">IV</th>
-              <th class="week">I</th>
-              <th class="week">II</th>
-              <th class="week">III</th>
-              <th class="week">IV</th>
-              <th class="week">I</th>
-              <th class="week">II</th>
-              <th class="week">III</th>
-              <th class="week">IV</th>
-              <th class="week">I</th>
-              <th class="week">II</th>
-              <th class="week">III</th>
-              <th class="week">IV</th>
-              <th class="week">I</th>
-              <th class="week">II</th>
-              <th class="week">III</th>
-              <th class="week">IV</th>
-              <th class="week">I</th>
-              <th class="week">II</th>
-              <th class="week">III</th>
-              <th class="week">IV</th>
-              <th class="week">I</th>
-              <th class="week">II</th>
-              <th class="week">III</th>
-              <th class="week">IV</th>
-              <th class="week">I</th>
-              <th class="week">II</th>
-              <th class="week">III</th>
-              <th class="week">IV</th>
-              <th class="week">I</th>
-              <th class="week">II</th>
-              <th class="week">III</th>
-              <th class="week">IV</th>
-            </tr>
+              <tr>
+                <th id="fixCol-head-1" rowspan="2">No</th>
+                <th id="fixCol-head-2" rowspan="2">Line</th>
+                <th id="fixCol-head-3" rowspan="2">Zone</th>
+                <th id="fixCol-head-4" rowspan="2">No Kanban</th>
+                <th id="fixCol-head-5" rowspan="2">Freq 4S</th>
+                <th id="fixCol-head-6" rowspan="2">Date</th>
+                <th id="fixCol-head-7" rowspan="2">Problem</th>
+                <th class="fix-col-parent" colspan="2">Reduce Time</th>
+                <th class="fix-col-parent" :colspan="changeOpts.length">Perubahan</th>
+                <th class="fix-col-parent" :colspan="deptOpts.length">Departement Terkait</th>
+                <th class="fix-col-parent" colspan="4">Jan</th>
+                <th class="fix-col-parent" colspan="4">Feb</th>
+                <th class="fix-col-parent" colspan="4">March</th>
+                <th class="fix-col-parent" colspan="4">Apr</th>
+                <th class="fix-col-parent" colspan="4">May</th>
+                <th class="fix-col-parent" colspan="4">June</th>
+                <th class="fix-col-parent" colspan="4">July</th>
+                <th class="fix-col-parent" colspan="4">Aug</th>
+                <th class="fix-col-parent" colspan="4">Sept</th>
+                <th class="fix-col-parent" colspan="4">Oct</th>
+                <th class="fix-col-parent" colspan="4">Nov</th>
+                <th class="fix-col-parent" colspan="4">Dec</th>
+                <th class="fix-col-parent" rowspan="2">Evaluasi</th>
+                <th class="fix-col-parent" rowspan="2" colspan="2">Actions</th>
+              </tr>
+              <tr class="fix-col-child">
+                <th>Waktu 4S (mnt)</th>
+                <th>Yokoten</th>
+                <th v-for="optChange in changeOpts" :key="optChange">
+                  {{ optChange.system_value }}
+                </th>
+                <th v-for="dept in deptOpts" :key="dept">
+                  {{ dept.system_value }}
+                </th>
+                <th width="100">I</th>
+                <th width="100">II</th>
+                <th width="100">III</th>
+                <th class="week">IV</th>
+                <th width="100">I</th>
+                <th width="100">II</th>
+                <th width="100">III</th>
+                <th class="week">IV</th>
+                <th width="100">I</th>
+                <th width="100">II</th>
+                <th width="100">III</th>
+                <th class="week">IV</th>
+                <th class="week">I</th>
+                <th class="week">II</th>
+                <th class="week">III</th>
+                <th class="week">IV</th>
+                <th class="week">I</th>
+                <th class="week">II</th>
+                <th class="week">III</th>
+                <th class="week">IV</th>
+                <th class="week">I</th>
+                <th class="week">II</th>
+                <th class="week">III</th>
+                <th class="week">IV</th>
+                <th class="week">I</th>
+                <th class="week">II</th>
+                <th class="week">III</th>
+                <th class="week">IV</th>
+                <th class="week">I</th>
+                <th class="week">II</th>
+                <th class="week">III</th>
+                <th class="week">IV</th>
+                <th class="week">I</th>
+                <th class="week">II</th>
+                <th class="week">III</th>
+                <th class="week">IV</th>
+                <th class="week">I</th>
+                <th class="week">II</th>
+                <th class="week">III</th>
+                <th class="week">IV</th>
+                <th class="week">I</th>
+                <th class="week">II</th>
+                <th class="week">III</th>
+                <th class="week">IV</th>
+                <th class="week">I</th>
+                <th class="week">II</th>
+                <th class="week">III</th>
+                <th class="week">IV</th>
+              </tr>
             </thead>
             <tbody>
-            <tr v-if="isLoading">
-              <td colspan="10" class="p-0" style="height: 200px">
-                <div class="vl-parent p-0" style="height: 100%">
-                  <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false"
-                           :on-cancel="onCancel" />
-                </div>
-              </td>
-            </tr>
+              <tr v-if="isLoading">
+                <td colspan="10" class="p-0" style="height: 200px">
+                  <div class="vl-parent p-0" style="height: 100%">
+                    <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false"
+                      :on-cancel="onCancel" />
+                  </div>
+                </td>
+              </tr>
 
-            <tr v-else-if="!isLoading && findingList?.length > 0" v-for=" (finding, findingIndex) in findingList"
+              <tr v-else-if="!isLoading && findingList?.length > 0" v-for="(finding, findingIndex) in findingList"
                 :key="finding">
-              <td id="fixCol-1">{{ findingIndex + 1 }}</td>
-              <td id="fixCol-2">{{ finding.line_nm }}</td>
-              <td id="fixCol-3" class="text-center">{{ finding.zone_nm }}</td>
-              <td id="fixCol-4" class="text-center">{{ finding.kanban_no }}</td>
-              <td id="fixCol-5" class="text-center">{{ finding.freq_nm }}</td>
-              <td id="fixCol-6">{{ formatDate(finding.plan_cm_date) }}</td>
-              <td id="fixCol-7">{{ finding.finding_desc }}</td>
-              <td class="text-center">
-                {{ finding.time_cm }}
-              </td>
-              <td class="text-center">
-                <CIcon v-if="finding.time_yokoten" icon="cil-check" size="sm" />
-              </td>
-              <td class="text-center" v-for="(optChange) in changeOpts" :key="optChange">
-                <CIcon
-                  v-if="finding.opt_changes != null && finding.opt_changes?.split(';').findIndex(x => x == optChange.system_value) != -1"
-                  icon="cil-check" size="sm" />
-              </td>
-              <td class="text-center" v-for="(dept) in deptOpts" :key="dept">
-                <CIcon
-                  v-if="finding.opt_depts != null && finding.opt_depts?.split(';').findIndex(x => x == dept.system_value) != -1"
-                  icon="cil-check" size="sm" />
-              </td>
-              <td v-for="item in totalDate" :key="item.idx" style="min-width: 30px">
-                <div v-if="item == finding.week_plan - 1"
-                     :style="`width: 20px; height: 20px; border: 2px dotted #64748b; background-color: ${finding.status_check == 'CLOSED' ? '#bbf7d0' : finding.status_check == 'DELAY' ? '#fee2e2' : '#f3f4f6'}`">
-                </div>
+                <td id="fixCol-1">{{ findingIndex + 1 }}</td>
+                <td id="fixCol-2">{{ finding.line_nm }}</td>
+                <td id="fixCol-3" class="text-center">{{ finding.zone_nm }}</td>
+                <td id="fixCol-4" class="text-center">{{ finding.kanban_no }}</td>
+                <td id="fixCol-5" class="text-center">{{ finding.freq_nm }}</td>
+                <td id="fixCol-6">{{ formatDate(finding.plan_cm_date) }}</td>
+                <td id="fixCol-7">{{ finding.finding_desc }}</td>
+                <td class="text-center">
+                  {{ finding.time_cm }}
+                </td>
+                <td class="text-center">
+                  <CIcon v-if="finding.time_yokoten" icon="cil-check" size="sm" />
+                </td>
+                <td class="text-center" v-for="(optChange) in changeOpts" :key="optChange">
+                  <CIcon
+                    v-if="finding.opt_changes != null && finding.opt_changes?.split(';').findIndex(x => x == optChange.system_value) != -1"
+                    icon="cil-check" size="sm" />
+                </td>
+                <td class="text-center" v-for="(dept) in deptOpts" :key="dept">
+                  <CIcon
+                    v-if="finding.opt_depts != null && (finding.opt_depts?.split(';').findIndex(x => x == dept.system_value) != -1 || finding.opt_depts?.split(',').findIndex(x => x == dept.system_value) != -1)"
+                    icon="cil-check" size="sm" />
+                </td>
+                <td v-for="item in totalDate" :key="item.idx" style="min-width: 30px">
+                  <div v-if="item == finding.week_plan - 1"
+                    :style="`width: 20px; height: 20px; border: 2px dotted #64748b; background-color: ${finding.status_check == 'CLOSED' ? '#bbf7d0' : finding.status_check == 'DELAY' ? '#fee2e2' : '#f3f4f6'}`">
+                  </div>
 
-                <div v-if="item == finding.week_actual - 1" class="mt-2"
-                     style="width: 20px; height: 20px; border: 2px solid #64748b; background-color: #bbf7d0">
-                </div>
-              </td>
-              <td class="text-center">
-                <img v-if="finding.evaluation_nm" :src="getImage(finding.evaluation_nm)"
-                     :alt="getImage(finding.evaluation_nm)" width="50" height="50">
-                <span v-else class="text-muted"> No Evaluation</span>
-              </td>
-              <td>
-                <div class="d-flex gap-2">
-                  <button v-if="finding.finding_img" class="btn btn-info btn-sm text-white w-full my-1"
-                          @click="showModalFindingImage(finding)">
-                    Finding image
-                  </button>
-                  <button v-else class="btn btn-secondary btn-sm" disabled>
-                    No Image
-                  </button>
-                  <button
-                    :class="{'btn btn-sm': true, 'btn-info text-white': finding.kaizen_file, 'btn-secondary': !finding.kaizen_file}"
-                    @click="onClickDownloadKaizen(finding.kaizen_file)" :disabled="!finding.kaizen_file">
-                    {{ finding.kaizen_file ? "Download Kaizen" : "No Kaizen" }}
-                  </button>
-                  <button class="btn btn-info btn-sm text-white"
-                          @click="openEditFindingModal(finding, findingIndex)">Edit
-                  </button>
-                  <button class="btn btn-warning btn-sm text-white"
-                          @click="deleteFinding(finding.finding_id)">Delete
-                  </button>
-                </div>
-              </td>
-            </tr>
+                  <div v-if="item == finding.week_actual - 1" class="mt-2"
+                    style="width: 20px; height: 20px; border: 2px solid #64748b; background-color: #bbf7d0">
+                  </div>
+                </td>
+                <td class="text-center">
+                  <img v-if="finding.evaluation_nm" :src="getImage(finding.evaluation_nm)"
+                    :alt="getImage(finding.evaluation_nm)" width="50" height="50">
+                  <span v-else class="text-muted"> No Evaluation</span>
+                </td>
+                <td>
+                  <div class="d-flex gap-2">
+                    <button v-if="finding.finding_img" class="btn btn-info btn-sm text-white w-full my-1"
+                      @click="showModalFindingImage(finding)">
+                      Finding image
+                    </button>
+                    <button v-else class="btn btn-secondary btn-sm" disabled>
+                      No Image
+                    </button>
+                    <button
+                      :class="{ 'btn btn-sm': true, 'btn-info text-white': finding.kaizen_file, 'btn-secondary': !finding.kaizen_file }"
+                      @click="onClickDownloadKaizen(finding.kaizen_file)" :disabled="!finding.kaizen_file">
+                      {{ finding.kaizen_file ? "Download Kaizen" : "No Kaizen" }}
+                    </button>
+                    <button class="btn btn-info btn-sm text-white"
+                      @click="openEditFindingModal(finding, findingIndex)">Edit
+                    </button>
+                    <button class="btn btn-warning btn-sm text-white" @click="deleteFinding(finding.finding_id)">Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
 
-            <tr v-else>
-              <td colspan="80">
-                <div class="alert alert-danger w-full" role="alert">
-                  Data not found!
-                </div>
-              </td>
-            </tr>
+              <tr v-else>
+                <td colspan="80">
+                  <div class="alert alert-danger w-full" role="alert">
+                    Data not found!
+                  </div>
+                </td>
+              </tr>
 
             </tbody>
           </table>
         </div>
       </div>
       <Pagination :totalPages="10" :perPage="10" :currentPage="currentPage" @changePage="onPageChange"
-                  :totalPage="totalPage" @changeLimit="onPageChangeLimit" />
+        :totalPage="totalPage" @changeLimit="onPageChangeLimit" />
     </div>
 
     <!-- edit modal -->
     <CModal backdrop="static" size="xl" :visible="editFindingModal" @close="() => { editFindingModal = false }"
-            aria-labelledby="StaticBackdropExampleLabel">
+      aria-labelledby="StaticBackdropExampleLabel">
       <CModalHeader>
         <CModalTitle id="StaticBackdropExampleLabel">Update finding</CModalTitle>
       </CModalHeader>
@@ -433,12 +435,12 @@
             <div class="mb-2">
               <label class="mb-1">Finding Date</label>
               <input type="date" class="form-control" v-model="findingDate" placeholder="Select Finding Date"
-                     disabled />
+                disabled />
             </div>
             <div class="mb-2">
               <label class="mb-1">Finding PIC</label>
               <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions"
-                              class="vue-multi-select" :disabled="true">
+                class="vue-multi-select" :disabled="true">
               </VueMultiselect>
             </div>
 
@@ -448,9 +450,9 @@
               <label class="mb-1">Reduce Time Countermeasure (Menit)</label>
               <div class="d-flex align-items-center">
                 <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" v-model="enabledReduceTime"
-                       class="me-2" style="height: 20px; width: 20px;">
+                  class="me-2" style="height: 20px; width: 20px;">
                 <input type="text" class="form-control" v-model="timeCM" :disabled="!enabledReduceTime"
-                       @keypress="$event.key.match(/^[\d]$/) ? '' : $event.preventDefault()" />
+                  @keypress="$event.key.match(/^[\d]$/) ? '' : $event.preventDefault()" />
               </div>
               <small v-if="!enabledReduceTime" class="text-info">* Ceklis & isi waktu pengurangan jika ada</small>
               <small v-else class="text-success">* Abaikan jika tidak ingin di ubah</small>
@@ -458,7 +460,7 @@
             <div class="mb-2">
               <label class="mb-1">PIC Countermeasure</label>
               <VueMultiselect v-model="actualPIC" :disabled="findingActionType == 'update'" :options="picData"
-                              :custom-label="customPicOptions" class="vue-multi-select">
+                :custom-label="customPicOptions" class="vue-multi-select">
               </VueMultiselect>
             </div>
           </div>
@@ -474,7 +476,7 @@
             <div class="mb-2">
               <label class="mb-1">Actual Countermeasure Date</label>
               <input type="date" class="form-control" v-model="actualCMDate"
-                     :disabled="findingActionType == 'update'" />
+                :disabled="findingActionType == 'update'" />
             </div>
           </div>
         </div>
@@ -483,14 +485,14 @@
             <div class="mb-2">
               <label class="mb-1">Plan Countermeasure Desc</label>
               <input type="text" class="form-control" v-model="planCMDesc"
-                     placeholder="Write Plan Countermeasure Desc" />
+                placeholder="Write Plan Countermeasure Desc" />
             </div>
           </div>
           <div class="col-md-12 col-12">
             <div class="mb-2">
               <label class="mb-1">Department Terkait</label>
               <treeselect class="" v-if="getSystemsOptDept" v-model="optDepartment" :multiple="true"
-                          :options="getSystemsOptDept" />
+                :options="getSystemsOptDept" />
             </div>
           </div>
         </div>
@@ -562,6 +564,8 @@
     </CModal>
     <!-- <ModalForm4sFinding :visiblee="modalFormFinding" :loadedFinding="" /> -->
     <ModalImage :img="selectedFindingImage" :visible="isVisibleFindingImage" @close="isVisibleFindingImage = false" />
+    <ModalForm4sFinding :visible="addFindingModal" :is-input="true" :loadedFinding="null"
+      @close="onCloseModalFinding($event)" />
   </div>
 </template>
 
@@ -704,7 +708,8 @@ export default {
       optEvaluation: null,
       optDeptData: null,
       selectedFindingImage: null,
-      isVisibleFindingImage: false
+      isVisibleFindingImage: false,
+      addFindingModal: false,
     };
   },
   computed: {
@@ -726,15 +731,16 @@ export default {
     }
   },
   watch: {
-    selectedMonth: function() {
-      if (this.selectedMonth) {
+    selectedMonth: function () {
+      if (this.selectedMonth)
+      {
         this.generateDate();
         let idx = this.idxMonth.indexOf(this.selectedMonth.split("-")[1]);
         this.yearMonth = `${this.monthStr[idx]} ${this.selectedMonth.split("-")[0]
-        }`;
+          }`;
       }
     },
-    zoneGetID: function() {
+    zoneGetID: function () {
       this.getFindings();
     }
   },
@@ -747,17 +753,20 @@ export default {
       return `${value.text}`;
     },
     onPageChange(page, type) {
-      if (type == "prev") {
+      if (type == "prev")
+      {
         this.currentPage = this.currentPage - 1;
         this.getFindingsFunc();
       }
 
-      if (type == "next") {
+      if (type == "next")
+      {
         this.currentPage = this.currentPage + 1;
         this.getFindingsFunc();
       }
 
-      if (type == "fromnumber") {
+      if (type == "fromnumber")
+      {
         this.currentPage = page;
         this.getFindingsFunc();
       }
@@ -770,7 +779,8 @@ export default {
       return `./tanoko/${this.evaluationOpts.findIndex(x => x.system_value == eval_nm) + ".png"}`;
     },
     async getSystem() {
-      try {
+      try
+      {
         ApiService.setHeader();
         const changeOpts = await ApiService.get(`master/systems/get/4S_OPT_CHANGE`);
         const depts = await ApiService.get("master/systems/get/4S_OPT_DEPT");
@@ -778,7 +788,8 @@ export default {
         this.changeOpts = changeOpts.data.data;
         this.deptOpts = depts.data.data;
         this.evaluationOpts = evaluation.data.data;
-      } catch (error) {
+      } catch (error)
+      {
         toast.error(error.response.data.message, {
           autoClose: 1000
         });
@@ -803,8 +814,13 @@ export default {
         this.currentPage = res.current_page;
       });
     },
+    openAddFindingModal() {
+      this.addFindingModal = true;
+
+    },
     openEditFindingModal(finding) {
       console.log(finding);
+
 
       const data = finding;
       this.selectedFindingID = finding.finding_id;
@@ -834,9 +850,11 @@ export default {
       this.actualCMDate = data.actual_cm_date != null ? data.actual_cm_date.split(" ")[0] : null; // formating form yyy-mm-dd HH:mm:ss
       this.evaluationName = data.evaluation_nm;
       this.selectedSubScheduleID = data.sub_schedule_id;
-      if (data.time_cm) {
+      if (data.time_cm)
+      {
         this.enabledReduceTime = true;
-      } else {
+      } else
+      {
         this.enabledReduceTime = false;
       }
       this.editFindingModal = true;
@@ -864,14 +882,16 @@ export default {
       };
 
       const add = await ApiService.put(`operational/4s/finding/edit/${this.selectedFindingID}`, findingData);
-      if (add.data.message == "Success to edit 4s finding") {
+      if (add.data.message == "Success to edit 4s finding")
+      {
         toast.success("Success edit data", {
           autoClose: 700
         });
         this.editFindingModal = false;
         this.isUpdateFindingLoading = false;
         await this.getFindings();
-      } else {
+      } else
+      {
         toast.error("Failed to edit data", {
           autoClose: 700
         });
@@ -888,21 +908,25 @@ export default {
         confirmButtonText: "Sure",
         denyButtonText: `No`
       }).then((result) => {
-        if (result.isConfirmed) {
+        if (result.isConfirmed)
+        {
           ApiService.setHeader();
           const deleteData = ApiService.delete(`operational/4s/finding/delete/${findingID}`);
 
-          if (deleteData) {
+          if (deleteData)
+          {
             toast.success("Success to delete data", {
               autoClose: 700
             });
             this.getFindings();
-          } else {
+          } else
+          {
             toast.error("Failed edit data", {
               autoClose: 700
             });
           }
-        } else if (result.isDenied) {
+        } else if (result.isDenied)
+        {
           Swal.fire("Canceled", "", "info");
         }
       });
@@ -922,10 +946,12 @@ export default {
     },
 
     async getUsers() {
-      try {
+      try
+      {
         await this.$store.dispatch(GET_USERS);
         this.mapUsersData();
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
@@ -940,41 +966,51 @@ export default {
       });
     },
     async getLines() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_LINES);
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
     },
     async getGroup() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_GROUP);
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
     },
     async getZone() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_ZONES, { line_id: this.selectedLineIDFilter });
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
     },
     async getKanban() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_KANBANS);
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
     },
     async getFreq() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_FREQS);
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
@@ -983,11 +1019,13 @@ export default {
       let objQuery = {
         system_type: "4S_EVALUATION"
       };
-      try {
+      try
+      {
         this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
           this.optEvaluation = res;
         });
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
@@ -996,11 +1034,13 @@ export default {
       let objQuery = {
         system_type: "4S_OPT_CHANGE"
       };
-      try {
+      try
+      {
         this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
           this.optChangeData = res;
         });
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
@@ -1010,12 +1050,14 @@ export default {
       let objQuery = {
         system_type: "4S_OPT_DEPT"
       };
-      try {
+      try
+      {
         this.$store.dispatch(GET_SYSTEMS, objQuery).then(res => {
 
           this.optDeptData = res;
         });
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
@@ -1027,7 +1069,8 @@ export default {
       var lastDay = new Date(year, month, 0);
       let container = [];
       this.containerDate = [];
-      for (let i = 1; i <= lastDay.getDate(); i++) {
+      for (let i = 1; i <= lastDay.getDate(); i++)
+      {
         let setDt = new Date(selectedMonth).setDate(i);
         let newDate = new Date(setDt);
         container.push(newDate.getDate());
@@ -1053,6 +1096,13 @@ export default {
     },
     formatDate(date) {
       return moment(date).format("DD/MM/YYYY");
+    },
+    onCloseModalFinding(e) {
+      this.addFindingModal = false;
+      if (e.refresh)
+      {
+        this.getFindings();
+      }
     }
   },
 
@@ -1064,7 +1114,8 @@ export default {
     this.selectedFilterStartDate = `${year}-01-01`;
     this.selectedFilterEndDate = `${year}-12-30`;
 
-    if (localStorage.getItem("line_id")) {
+    if (localStorage.getItem("line_id"))
+    {
       this.selectedLineIDFilter = localStorage.getItem("line_id");
     }
     await this.getSystem();
@@ -1292,9 +1343,9 @@ export default {
 
 /* highlight on hover */
 
-.multiselect--disabled > .multiselect__tags,
-.multiselect--disabled > .multiselect__tags > .multiselect__single,
-.multiselect--disabled > .multiselect__select {
+.multiselect--disabled>.multiselect__tags,
+.multiselect--disabled>.multiselect__tags>.multiselect__single,
+.multiselect--disabled>.multiselect__select {
   background: #D8DBE0 !important;
 }
 </style>
