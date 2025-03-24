@@ -67,6 +67,18 @@ const getters = {
       });
       return mapKanbans;
     }
+  },
+  getKanbansOptsTreeselect(state) {
+    if (state.kanbans)
+    {
+      const mapKanbans = state.kanbans.map(kanban => {
+        return {
+          id: kanban.kanban_id,
+          label: `${kanban.kanban_no}-${kanban.area_nm}`
+        };
+      });
+      return mapKanbans;
+    }
   }
 };
 
