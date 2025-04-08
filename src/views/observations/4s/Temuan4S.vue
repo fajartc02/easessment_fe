@@ -870,7 +870,7 @@ import { toast } from 'vue3-toastify'
 import Pagination from '@/components/Pagination.vue'
 import 'vue3-treeselect/dist/vue3-treeselect.css'
 import Treeselect from 'vue3-treeselect'
-// import ModalForm4sFinding from '@/components/4s/ModalForm4sFinding.vue'
+import ModalForm4sFinding from '@/components/4s/ModalForm4sFinding.vue'
 import ModalImage from '@/components/ModalImage.vue'
 
 export default {
@@ -881,7 +881,7 @@ export default {
     VueMultiselect,
     Pagination,
     Treeselect,
-    // ModalForm4sFinding,
+    ModalForm4sFinding,
     ModalImage,
   },
   data() {
