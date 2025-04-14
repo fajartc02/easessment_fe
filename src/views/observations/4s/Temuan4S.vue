@@ -5,84 +5,41 @@
         <div class="row d-flex align-items-center">
           <div class="col">
             <label>Start date</label>
-            <input
-              type="date"
-              class="form-control"
-              v-model="selectedFilterStartDate"
-              @change="addFilter()"
-            />
+            <input type="date" class="form-control" v-model="selectedFilterStartDate" @change="addFilter()" />
           </div>
           <div class="col">
             <label>End date</label>
-            <input
-              type="date"
-              class="form-control"
-              v-model="selectedFilterEndDate"
-              @change="addFilter()"
-            />
+            <input type="date" class="form-control" v-model="selectedFilterEndDate" @change="addFilter()" />
           </div>
           <div class="col">
             <label>Line</label>
-            <select
-              class="form-select"
-              v-model="selectedLineIDFilter"
-              @change="addFilter()"
-            >
-              <option
-                v-for="(line, index) in getLinesOpts"
-                :key="index"
-                :value="line.id"
-              >
+            <select class="form-select" v-model="selectedLineIDFilter" @change="addFilter()">
+              <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
                 {{ line.text }}
               </option>
             </select>
           </div>
           <div class="col">
             <label>Shift / group</label>
-            <select
-              class="form-select"
-              v-model="selectedGroupIDFilter"
-              @change="addFilter()"
-            >
-              <option
-                v-for="group in getGroupsOpts"
-                :key="group.id"
-                :value="group.id"
-              >
+            <select class="form-select" v-model="selectedGroupIDFilter" @change="addFilter()">
+              <option v-for="group in getGroupsOpts" :key="group.id" :value="group.id">
                 {{ group.text }}
               </option>
             </select>
           </div>
           <div class="col">
             <label>Zona</label>
-            <Select2
-              class="form-control"
-              v-model="selectedZoneIDFilter"
-              :options="getZoneOpts"
-              @select="addFilter()"
-            />
+            <Select2 class="form-control" v-model="selectedZoneIDFilter" :options="getZoneOpts" @select="addFilter()" />
           </div>
           <div class="col">
             <label>Kanban</label>
-            <Select2
-              class="form-control"
-              v-model="selectedKanbanIDFilter"
-              :options="getKanbansOpts"
-              @select="addFilter()"
-            />
+            <Select2 class="form-control" v-model="selectedKanbanIDFilter" :options="getKanbansOpts"
+              @select="addFilter()" />
           </div>
           <div class="col">
             <label>Freq</label>
-            <select
-              class="form-select"
-              v-model="selectedFreqIDFilter"
-              @change="addFilter()"
-            >
-              <option
-                v-for="freq in getFreqsOpts"
-                :key="freq.id"
-                :value="freq.id"
-              >
+            <select class="form-select" v-model="selectedFreqIDFilter" @change="addFilter()">
+              <option v-for="freq in getFreqsOpts" :key="freq.id" :value="freq.id">
                 {{ freq.text }}
               </option>
             </select>
@@ -94,9 +51,7 @@
           </div>
         </div>
       </div>
-      <div
-        class="card-header d-flex justify-content-between align-items-center"
-      >
+      <div class="card-header d-flex justify-content-between align-items-center">
         <h5>List temuan</h5>
         <div class="d-flex align-items-center justify-content-center">
           <table class="table">
@@ -123,25 +78,21 @@
         <div class="d-flex align-items-center">
           <div class="mx-2 d-flex align-items-center">
             <div class="d-flex align-items-center">
-              <div
-                style="
+              <div style="
                   background-color: transparent;
                   width: 20px;
                   height: 20px;
                   border: 2px dotted black;
-                "
-              ></div>
+                "></div>
               <span class="mx-2">Plan</span>
             </div>
             <div class="d-flex align-items-center">
-              <div
-                style="
+              <div style="
                   background-color: transparent;
                   width: 20px;
                   height: 20px;
                   border: 2px solid black;
-                "
-              ></div>
+                "></div>
               <span class="mx-2">Actual</span>
             </div>
           </div>
@@ -156,6 +107,7 @@
             <thead class="text-center">
               <tr>
                 <th id="fixCol-head-1" rowspan="2">No</th>
+                <th id="fixCol-schedule" rowspan="2">Is Schedule</th>
                 <th id="fixCol-head-2" rowspan="2">Line</th>
                 <th id="fixCol-head-3" rowspan="2">Zone</th>
                 <th id="fixCol-head-4" rowspan="2">No Kanban</th>
@@ -247,22 +199,18 @@
               <tr v-if="isLoading">
                 <td colspan="10" class="p-0" style="height: 200px">
                   <div class="vl-parent p-0" style="height: 100%">
-                    <loading
-                      v-model:active="isLoading"
-                      :can-cancel="true"
-                      :is-full-page="false"
-                      :on-cancel="onCancel"
-                    />
+                    <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false"
+                      :on-cancel="onCancel" />
                   </div>
                 </td>
               </tr>
 
-              <tr
-                v-else-if="!isLoading && findingList?.length > 0"
-                v-for="(finding, findingIndex) in findingList"
-                :key="finding"
-              >
+              <tr v-else-if="!isLoading && findingList?.length > 0" v-for="(finding, findingIndex) in findingList"
+                :key="finding">
                 <td id="fixCol-1">{{ findingIndex + 1 }}</td>
+                <td id="fixCol-schedule-td" class="text-center">
+                  <CIcon v-if="finding.sub_schedule_id" icon="cil-check" size="sm" />
+                </td>
                 <td id="fixCol-2">{{ finding.line_nm }}</td>
                 <td id="fixCol-3" class="text-center">{{ finding.zone_nm }}</td>
                 <td id="fixCol-4" class="text-center">
@@ -275,155 +223,96 @@
                   {{ finding.time_cm }}
                 </td>
                 <td class="text-center">
-                  <CIcon
-                    v-if="finding.time_yokoten"
-                    icon="cil-check"
-                    size="sm"
-                  />
+                  <CIcon v-if="finding.time_yokoten" icon="cil-check" size="sm" />
                 </td>
-                <td
-                  class="text-center"
-                  v-for="optChange in changeOpts"
-                  :key="optChange"
-                >
-                  <CIcon
-                    v-if="
+                <td class="text-center" v-for="optChange in changeOpts" :key="optChange">
+                  <CIcon v-if="
                       finding.opt_changes != null &&
                       finding.opt_changes
                         ?.split(';')
                         .findIndex((x) => x == optChange.system_value) != -1
-                    "
-                    icon="cil-check"
-                    size="sm"
-                  />
+                    " icon="cil-check" size="sm" />
                 </td>
                 <td class="text-center" v-for="dept in deptOpts" :key="dept">
-                  <CIcon
-                    v-if="
+                  <CIcon v-if="
                       finding.opt_depts != null &&
                       finding.opt_depts
                         ?.split(';')
                         .findIndex((x) => x == dept.system_value) != -1
-                    "
-                    icon="cil-check"
-                    size="sm"
-                  />
+                    " icon="cil-check" size="sm" />
                 </td>
-                <td
-                  v-for="item in totalDate"
-                  :key="item.idx"
-                  style="min-width: 30px"
-                >
-                  <div
-                    v-if="item == finding.week_plan - 1"
-                    :style="`width: 20px; height: 20px; border: 2px dotted #64748b; background-color: ${
+                <td v-for="item in totalDate" :key="item.idx" style="min-width: 30px">
+                  <div v-if="item == finding.week_plan - 1" :style="`width: 20px; height: 20px; border: 2px dotted #64748b; background-color: ${
                       finding.status_check == 'CLOSED'
                         ? '#bbf7d0'
                         : finding.status_check == 'DELAY'
                         ? '#fee2e2'
                         : '#f3f4f6'
-                    }`"
-                  ></div>
+                    }`"></div>
 
-                  <div
-                    v-if="item == finding.week_actual - 1"
-                    class="mt-2"
-                    style="
+                  <div v-if="item == finding.week_actual - 1" class="mt-2" style="
                       width: 20px;
                       height: 20px;
                       border: 2px solid #64748b;
                       background-color: #bbf7d0;
-                    "
-                  ></div>
+                    "></div>
                 </td>
                 <td class="text-center">
-                  <img
-                    v-if="finding.evaluation_nm"
-                    :src="getImage(finding.evaluation_nm)"
-                    :alt="getImage(finding.evaluation_nm)"
-                    width="50"
-                    height="50"
-                  />
+                  <img v-if="finding.evaluation_nm" :src="getImage(finding.evaluation_nm)"
+                    :alt="getImage(finding.evaluation_nm)" width="50" height="50" />
                   <span v-else class="text-muted"> No Evaluation</span>
                 </td>
                 <td>
                   <div class="d-flex gap-2">
-                    <button
-                      v-if="finding.finding_img"
-                      class="btn btn-info btn-sm text-white w-full my-1"
-                      @click="showModalFindingImage(finding)"
-                    >
+                    <button v-if="finding.finding_img" class="btn btn-info btn-sm text-white w-full my-1"
+                      @click="showModalFindingImage(finding)">
                       Finding image
                     </button>
                     <button v-else class="btn btn-secondary btn-sm" disabled>
                       No Image
                     </button>
-                    <button
-                      :class="{
+                    <button :class="{
                         'btn btn-sm': true,
                         'btn-info text-white': finding.kaizen_file,
                         'btn-secondary': !finding.kaizen_file,
-                      }"
-                      @click="onClickDownloadKaizen(finding.kaizen_file)"
-                      :disabled="!finding.kaizen_file"
-                    >
+                      }" @click="onClickDownloadKaizen(finding.kaizen_file)" :disabled="!finding.kaizen_file">
                       {{
-                        finding.kaizen_file ? 'Download Kaizen' : 'No Kaizen'
+                      finding.kaizen_file ? 'Download Kaizen' : 'No Kaizen'
                       }}
                     </button>
-                    <button
-                      class="btn btn-info btn-sm text-white"
-                      @click="openEditFindingModal(finding, findingIndex)"
-                    >
+                    <button class="btn btn-info btn-sm text-white" @click="openEditFindingModal(finding, findingIndex)">
                       Edit
                     </button>
-                    <button
-                      class="btn btn-warning btn-sm text-white"
-                      @click="deleteFinding(finding.finding_id)"
-                    >
+                    <button class="btn btn-warning btn-sm text-white" @click="deleteFinding(finding.finding_id)">
                       Delete
                     </button>
                   </div>
                 </td>
               </tr>
 
-                <tr v-else>
-                  <td colspan="80">
-                    <div class="alert alert-danger w-full" role="alert">
-                      Data not found!
-                    </div>
-                  </td>
-                </tr>
+              <tr v-else>
+                <td colspan="80">
+                  <div class="alert alert-danger w-full" role="alert">
+                    Data not found!
+                  </div>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
       </div>
-      <Pagination
-        :totalPages="10"
-        :perPage="10"
-        :currentPage="currentPage"
-        @changePage="onPageChange"
-        :totalPage="totalPage"
-        @changeLimit="onPageChangeLimit"
-      />
+      <Pagination :totalPages="totalPage" :perPage="currentPageLimit" :currentPage="currentPage" @changePage="onPageChange"
+        :totalPage="totalPage" @changeLimit="onPageChangeLimit" />
     </div>
 
     <!-- edit modal -->
-    <CModal
-      backdrop="static"
-      size="xl"
-      :visible="editFindingModal"
-      @close="
+    <CModal backdrop="static" size="xl" :visible="editFindingModal" @close="
         () => {
           editFindingModal = false
   }
-      "
-      aria-labelledby="StaticBackdropExampleLabel"
-    >
+      " aria-labelledby="StaticBackdropExampleLabel">
       <CModalHeader>
-        <CModalTitle id="StaticBackdropExampleLabel"
-          >Update finding 4S</CModalTitle
-        >
+        <CModalTitle id="StaticBackdropExampleLabel">Update finding 4S</CModalTitle>
       </CModalHeader>
       <!-- <CModalBody>
         <div class="row">
@@ -549,44 +438,25 @@
               <!-- <VueMultiselect disabled v-model="selectedLineID" :options="getLinesOpts" optionLabel="text"
                 optionValue="id" :customLabel="customLabel">
               </VueMultiselect> -->
-              <input
-                type="text"
-                class="form-control"
-                :value="selectedLineNm"
-                disabled
-              />
+              <input type="text" class="form-control" :value="selectedLineNm" disabled />
             </div>
             <div class="mb-2">
               <label class="mb-1">Zone </label>
-              <input
-                type="text"
-                class="form-control"
-                :value="selectedZoneName"
-                disabled
-              />
+              <input type="text" class="form-control" :value="selectedZoneName" disabled />
             </div>
           </div>
           <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Freq</label>
               <select class="form-select" v-model="selectedFreqID" disabled>
-                <option
-                  v-for="freq in getFreqsOpts"
-                  :key="freq.id"
-                  :value="freq.id"
-                >
+                <option v-for="freq in getFreqsOpts" :key="freq.id" :value="freq.id">
                   {{ freq.text }}
                 </option>
               </select>
             </div>
             <div class="mb-2">
               <label class="mb-1">Kanban</label>
-              <input
-                type="text"
-                class="form-control"
-                :value="selectedKanbanNo"
-                disabled
-              />
+              <input type="text" class="form-control" :value="selectedKanbanNo" disabled />
             </div>
           </div>
         </div>
@@ -594,13 +464,7 @@
           <div class="col-md-12">
             <div class="mb-2">
               <label class="mb-1">Finding Desc</label>
-              <input
-                type="text"
-                class="form-control"
-                v-model="findingDesc"
-                placeholder="Write Finding Desc"
-                disabled
-              />
+              <input type="text" class="form-control" v-model="findingDesc" placeholder="Write Finding Desc" disabled />
             </div>
           </div>
         </div>
@@ -608,23 +472,13 @@
           <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Finding Date</label>
-              <input
-                type="date"
-                class="form-control"
-                v-model="findingDate"
-                placeholder="Select Finding Date"
-                disabled
-              />
+              <input type="date" class="form-control" v-model="findingDate" placeholder="Select Finding Date"
+                disabled />
             </div>
             <div class="mb-2">
               <label class="mb-1">Finding PIC</label>
-              <VueMultiselect
-                v-model="selectedPIC"
-                :options="picData"
-                :custom-label="customPicOptions"
-                class="vue-multi-select"
-                :disabled="true"
-              >
+              <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions"
+                class="vue-multi-select" :disabled="true">
               </VueMultiselect>
             </div>
           </div>
@@ -632,41 +486,19 @@
             <div class="mb-2">
               <label class="mb-1">Reduce Time Countermeasure (Menit)</label>
               <div class="d-flex align-items-center">
-                <input
-                  type="checkbox"
-                  id="vehicle1"
-                  name="vehicle1"
-                  value="Bike"
-                  v-model="enabledReduceTime"
-                  class="me-2"
-                  style="height: 20px; width: 20px"
-                />
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="timeCM"
-                  :disabled="!enabledReduceTime"
-                  @keypress="
+                <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" v-model="enabledReduceTime"
+                  class="me-2" style="height: 20px; width: 20px" />
+                <input type="text" class="form-control" v-model="timeCM" :disabled="!enabledReduceTime" @keypress="
                     $event.key.match(/^[\d]$/) ? '' : $event.preventDefault()
-                  "
-                />
+                  " />
               </div>
-              <small v-if="!enabledReduceTime" class="text-info"
-                >* Ceklis & isi waktu pengurangan jika ada</small
-              >
-              <small v-else class="text-success"
-                >* Abaikan jika tidak ingin di ubah</small
-              >
+              <small v-if="!enabledReduceTime" class="text-info">* Ceklis & isi waktu pengurangan jika ada</small>
+              <small v-else class="text-success">* Abaikan jika tidak ingin di ubah</small>
             </div>
             <div class="mb-2">
               <label class="mb-1">PIC Countermeasure</label>
-              <VueMultiselect
-                v-model="actualPIC"
-                :disabled="findingActionType == 'update'"
-                :options="picData"
-                :custom-label="customPicOptions"
-                class="vue-multi-select"
-              >
+              <VueMultiselect v-model="actualPIC" :disabled="findingActionType == 'update'" :options="picData"
+                :custom-label="customPicOptions" class="vue-multi-select">
               </VueMultiselect>
             </div>
           </div>
@@ -675,23 +507,14 @@
           <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Plan Countermeasure Date</label>
-              <input
-                type="date"
-                class="form-control"
-                v-model="planCMDate"
-                disabled
-              />
+              <input type="date" class="form-control" v-model="planCMDate" disabled />
             </div>
           </div>
           <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Actual Countermeasure Date</label>
-              <input
-                type="date"
-                class="form-control"
-                v-model="actualCMDate"
-                :disabled="findingActionType == 'update'"
-              />
+              <input type="date" class="form-control" v-model="actualCMDate"
+                :disabled="findingActionType == 'update'" />
             </div>
           </div>
         </div>
@@ -699,24 +522,15 @@
           <div class="col-md-12">
             <div class="mb-2">
               <label class="mb-1">Plan Countermeasure Desc</label>
-              <input
-                type="text"
-                class="form-control"
-                v-model="planCMDesc"
-                placeholder="Write Plan Countermeasure Desc"
-              />
+              <input type="text" class="form-control" v-model="planCMDesc"
+                placeholder="Write Plan Countermeasure Desc" />
             </div>
           </div>
           <div class="col-md-12 col-12">
             <div class="mb-2">
               <label class="mb-1">Department Terkait</label>
-              <treeselect
-                class=""
-                v-if="getSystemsOptDept"
-                v-model="optDepartment"
-                :multiple="true"
-                :options="getSystemsOptDept"
-              />
+              <treeselect class="" v-if="getSystemsOptDept" v-model="optDepartment" :multiple="true"
+                :options="getSystemsOptDept" />
             </div>
           </div>
         </div>
@@ -726,11 +540,7 @@
               <label class="mb-1">Perubahan Standard</label>
               <select class="form-select" v-model="optChanges">
                 <option value="null" selected>Select Standart</option>
-                <option
-                  v-for="optChange in optChangeData"
-                  :key="optChange"
-                  :value="optChange.system_value"
-                >
+                <option v-for="optChange in optChangeData" :key="optChange" :value="optChange.system_value">
                   {{ optChange.system_value }}
                 </option>
               </select>
@@ -741,52 +551,28 @@
           <div class="col-md-12">
             <div class="mb-2">
               <label class="mb-1">Evaluation</label>
-              <select
-                class="form-select"
-                v-model="evaluationName"
-                :disabled="findingActionType == 'update'"
-              >
+              <select class="form-select" v-model="evaluationName" :disabled="findingActionType == 'update'">
                 <option value="null" selected>Select Evaluation</option>
-                <option
-                  v-for="optEval in optEvaluation"
-                  :key="optEval"
-                  :value="optEval.system_value"
-                >
+                <option v-for="optEval in optEvaluation" :key="optEval" :value="optEval.system_value">
                   {{ optEval.system_value }}
                 </option>
               </select>
               <table class="table">
                 <tr>
                   <th>
-                    <img
-                      src="@/../public/tanoko/0.png"
-                      width="50"
-                      height="50"
-                    />
+                    <img src="@/../public/tanoko/0.png" width="50" height="50" />
                   </th>
                   <th>Order Part</th>
                   <th>
-                    <img
-                      src="@/../public/tanoko/1.png"
-                      width="50"
-                      height="50"
-                    />
+                    <img src="@/../public/tanoko/1.png" width="50" height="50" />
                   </th>
                   <th>Countermeasure</th>
                   <th>
-                    <img
-                      src="@/../public/tanoko/2.png"
-                      width="50"
-                      height="50"
-                    />
+                    <img src="@/../public/tanoko/2.png" width="50" height="50" />
                   </th>
                   <th>Monitor / Follow</th>
                   <th>
-                    <img
-                      src="@/../public/tanoko/3.png"
-                      width="50"
-                      height="50"
-                    />
+                    <img src="@/../public/tanoko/3.png" width="50" height="50" />
                   </th>
                   <th>Finish</th>
                 </tr>
@@ -794,11 +580,7 @@
             </div>
             <div class="mb-2">
               <label class="mb-1">Status Countermeasure</label>
-              <select
-                v-model="cmJudg"
-                class="form-select"
-                :disabled="findingActionType == 'update'"
-              >
+              <select v-model="cmJudg" class="form-select" :disabled="findingActionType == 'update'">
                 <option value="true">Sudah</option>
                 <option value="false">Belum</option>
               </select>
@@ -818,32 +600,25 @@
         </div>
       </CModalBody>
       <CModalFooter>
-        <CButton
-          color="secondary"
-          @click="
+        <CButton color="secondary" @click="
             () => {
               editFindingModal = false
             }
-          "
-        >
+          ">
           Close
         </CButton>
         <CButton color="primary" @click="updateFinding()">
           {{
-            isUpdateFindingLoading
-              ? 'Updating...'
-              : `Update
+          isUpdateFindingLoading
+          ? 'Updating...'
+          : `Update
           finding data`
           }}
         </CButton>
       </CModalFooter>
     </CModal>
     <!-- <ModalForm4sFinding :visiblee="modalFormFinding" :loadedFinding="" /> -->
-    <ModalImage
-      :img="selectedFindingImage"
-      :visible="isVisibleFindingImage"
-      @close="isVisibleFindingImage = false"
-    />
+    <ModalImage :img="selectedFindingImage" :visible="isVisibleFindingImage" @close="isVisibleFindingImage = false" />
     <ModalForm4sFinding :visible="addFindingModal" :is-input="true" :loadedFinding="null"
       @close="onCloseModalFinding($event)" />
   </div>
@@ -993,7 +768,7 @@ export default {
       selectedFindingID: null,
       currentPage: 0,
       totalPage: 0,
-      currentPageLimit: 5,
+      currentPageLimit: 10,
       selectedSubScheduleID: null,
       optEvaluation: null,
       optDeptData: null,
@@ -1046,19 +821,19 @@ export default {
       if (type == 'prev')
       {
         this.currentPage = this.currentPage - 1
-        this.getFindingsFunc()
+        this.getFindings()
       }
 
       if (type == 'next')
       {
         this.currentPage = this.currentPage + 1
-        this.getFindingsFunc()
+        this.getFindings()
       }
 
       if (type == 'fromnumber')
       {
         this.currentPage = page
-        this.getFindingsFunc()
+        this.getFindings()
       }
     },
     onPageChangeLimit(limit) {
@@ -1103,6 +878,8 @@ export default {
         group_id: this.selectedGroupIDFilter,
         start_date: this.selectedFilterStartDate,
         end_date: this.selectedFilterEndDate,
+        limit: this.currentPageLimit,
+        current_page: this.currentPage
       }
       await this.$store.dispatch(GET_4S_FINDINGS, objQuery).then((res) => {
         this.findingList = res.list
@@ -1515,10 +1292,19 @@ export default {
   background-color: white;
 }
 
+#fixCol-schedule {
+  position: sticky;
+  width: 38px;
+  top: 0px;
+  left: 37px;
+  z-index: 6;
+  background-color: white;
+}
+
 #fixCol-head-2 {
   position: sticky;
   top: 0px;
-  left: 37px;
+  left: 120px;
   z-index: 6;
   min-width: 100px;
   background-color: white;
@@ -1528,7 +1314,7 @@ export default {
   position: sticky;
   min-width: 131px;
   top: 0px;
-  left: 125px;
+  left: 190px;
   z-index: 6;
   background-color: white;
 }
@@ -1536,7 +1322,7 @@ export default {
 #fixCol-head-4 {
   position: sticky;
   top: 0px;
-  left: 250px;
+  left: 300px;
   min-width: 100px;
   z-index: 6;
   background-color: white;
@@ -1545,7 +1331,7 @@ export default {
 #fixCol-head-5 {
   position: sticky;
   top: 0px;
-  left: 350px;
+  left: 400px;
   min-width: 100px;
   z-index: 6;
   background-color: white;
@@ -1554,7 +1340,7 @@ export default {
 #fixCol-head-6 {
   position: sticky;
   top: 0px;
-  left: 450px;
+  left: 500px;
   min-width: 100px;
   z-index: 6;
   background-color: white;
@@ -1563,7 +1349,7 @@ export default {
 #fixCol-head-7 {
   position: sticky;
   top: 0px;
-  left: 550px;
+  left: 600px;
   min-width: 100px;
   z-index: 6;
   background-color: white;
@@ -1578,10 +1364,19 @@ export default {
   background-color: white;
 }
 
+#fixCol-schedule-td {
+  position: sticky;
+  top: 0px;
+  left: 35px;
+  min-width: 100px;
+  z-index: 3;
+  background-color: white;
+}
+
 #fixCol-2 {
   position: sticky;
   top: 0px;
-  left: 37px;
+  left: 120px;
   min-width: 100px;
   z-index: 3;
   background-color: white;
@@ -1591,7 +1386,7 @@ export default {
   position: sticky;
   min-width: 131px;
   top: 0px;
-  left: 125px;
+  left: 190px;
   z-index: 3;
   background-color: white;
 }
@@ -1599,7 +1394,7 @@ export default {
 #fixCol-4 {
   position: sticky;
   top: 0px;
-  left: 250px;
+  left: 300px;
   min-width: 100px;
   z-index: 3;
   background-color: white;
@@ -1608,7 +1403,7 @@ export default {
 #fixCol-5 {
   position: sticky;
   top: 0px;
-  left: 350px;
+  left: 400px;
   min-width: 100px;
   z-index: 3;
   background-color: white;
@@ -1617,7 +1412,7 @@ export default {
 #fixCol-6 {
   position: sticky;
   top: 0px;
-  left: 450px;
+  left: 500px;
   min-width: 100px;
   z-index: 3;
   background-color: white;
@@ -1626,7 +1421,7 @@ export default {
 #fixCol-7 {
   position: sticky;
   top: 0px;
-  left: 550px;
+  left: 600px;
   min-width: 100px;
   z-index: 3;
   background-color: white;
