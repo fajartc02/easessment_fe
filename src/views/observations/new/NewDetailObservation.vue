@@ -525,6 +525,7 @@
                 :visible="sub_category.is_active_modal"
                 size="xl"
                 backdrop="static"
+                @close="sub_category.is_active_modal = false"
               >
                 <CModalHeader>
                   <CModalTitle
@@ -785,9 +786,13 @@
                         color="primary"
                         class="text-white"
                         @click="addSingleFinding(finding, item)"
-                        :disabled="validationFindingMustFilled(finding)"
+                        :disabled="
+                          validationFindingMustFilled(finding) || isLoading
+                        "
                       >
-                        Save finding data</CButton
+                        {{
+                          isLoading ? 'Saving...' : 'Save finding data'
+                        }}</CButton
                       >
                     </template>
                     <template v-else>
@@ -801,7 +806,12 @@
                       color="primary"
                       class="text-white"
                       @click="
-                        updateFindingData(item.id, item.factor_id, finding)
+                        updateFindingData(
+                          item.id,
+                          item.factor_id,
+                          finding,
+                          sub_category,
+                        )
                       "
                       >Update finding data</CButton
                     >
@@ -809,7 +819,7 @@
                   <CButton
                     color="secondary"
                     class="text-white mx-2"
-                    @click="closeFindingModal(item)"
+                    @click="closeFindingModal(item, sub_category)"
                   >
                     Cancel
                   </CButton>
@@ -1277,9 +1287,10 @@ export default {
         toast.error(error)
       }
     },
-    closeFindingModal(item) {
+    closeFindingModal(item, sub_category) {
       this.resetData()
       item.is_active_modal = false
+      sub_category.is_active_modal = false
       this.getDetail()
     },
     swalConfDel() {
@@ -1389,8 +1400,9 @@ export default {
       })
       this.finding = data
     },
-    updateFindingData(categoryID, factorID, findings) {
+    updateFindingData(categoryID, factorID, findings, sub_category) {
       this.finding = findings
+      sub_category.is_active_modal = false
     },
     async uploadFindingImage(state, finding) {
       let before_path = null

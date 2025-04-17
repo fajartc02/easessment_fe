@@ -4,18 +4,18 @@
     alignment="center"
     :visible="addSignModal"
     @close="addSignModal = false"
-    size="lg"
+    size="sm"
   >
     <CModalHeader>
       <CModalTitle>Add sign</CModalTitle>
     </CModalHeader>
     <CModalBody>
-      <div style="height: 150px">
+      <div class="d-flex justify-content-center" style="height: 150px">
         <div style="width: 100px; height: 100px; border: 1px solid #eaeaea">
           <vueSignature ref="sign" :sigOption="option" :w="'100%'" :h="'100px'">
           </vueSignature>
           <button
-            class="btn btn-info btn-sm mx-2 my-3 text-white"
+            class="btn btn-info btn-sm mx-3 my-3 text-white"
             @click="clearSignature()"
           >
             Clear
