@@ -4,7 +4,11 @@
       <div class="col">
         <label>Line</label>
         <select class="form-select" v-model="filter.line_id">
-          <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
+          <option
+            v-for="(line, index) in getLinesOpts"
+            :key="index"
+            :value="line.id"
+          >
             {{ line.text }}
           </option>
         </select>
@@ -18,7 +22,11 @@
         <div class="card-body">
           <h5><u>STW</u></h5>
           <div class="row">
-            <div class="col-12 col-md-4 colcol-12 col-md-4 col-lg-4 card p-2" v-for="(item, i) in countSTW" :key="i">
+            <div
+              class="col-12 col-md-4 colcol-12 col-md-4 col-lg-4 card p-2"
+              v-for="(item, i) in countSTW"
+              :key="i"
+            >
               <h6>{{ Object.keys(item)[0].toUpperCase() }}</h6>
               {{ Object.values(item)[0] }}
             </div>
@@ -30,7 +38,11 @@
         <div class="card-body">
           <h5><u>4S</u></h5>
           <div class="row">
-            <div class="col-12 col-md-4 col-lg-4 card p-2" v-for="(item, i) in Object.keys(count4S)" :key="i">
+            <div
+              class="col-12 col-md-4 col-lg-4 card p-2"
+              v-for="(item, i) in Object.keys(count4S)"
+              :key="i"
+            >
               <h6>{{ item.toUpperCase() }}</h6>
               {{ count4S[item] }}
             </div>
@@ -42,7 +54,11 @@
         <div class="card-body">
           <h5><u>OM</u></h5>
           <div class="row">
-            <div class="col-12 col-md-4 col-lg-4 card p-2" v-for="(item, i) in Object.keys(countOM)" :key="i">
+            <div
+              class="col-12 col-md-4 col-lg-4 card p-2"
+              v-for="(item, i) in Object.keys(countOM)"
+              :key="i"
+            >
               <h6>{{ item.toUpperCase() }}</h6>
               {{ countOM[item] }}
             </div>
@@ -59,15 +75,33 @@
         <div class="d-flex flex-row justify-content-between align-items-center">
           <template v-if="isMobile">
             <div v-for="(item, i) in dailyOpts" :key="i" class="flex-col">
-              <button :class="`btn btn-sm ${item.is_active ? 'btn-primary' : 'btn-outline-primary'} rounded-circle`"
-                type="button" @click="getTodayActivities(i)">{{ item.label }} <br> {{ item.date_label.split('-')[0]
-                }}</button>
+              <button
+                :class="`btn btn-sm ${
+                  item.is_active ? 'btn-primary' : 'btn-outline-primary'
+                } rounded-circle`"
+                type="button"
+                @click="getTodayActivities(i)"
+              >
+                {{ item.label }} <br />
+                {{ item.date_label.split('-')[0] }}
+              </button>
             </div>
           </template>
           <template v-else>
-            <div v-for="(item, i) in dailyDesktopOpts" :key="i" class="flex-col">
-              <button :class="`btn btn-sm ${item.is_active ? 'btn-primary' : 'btn-outline-primary'} rounded-circle`"
-                type="button" @click="getTodayActivities(i)">{{ item.label }} <br>{{ item.date_label }}</button>
+            <div
+              v-for="(item, i) in dailyDesktopOpts"
+              :key="i"
+              class="flex-col"
+            >
+              <button
+                :class="`btn btn-sm ${
+                  item.is_active ? 'btn-primary' : 'btn-outline-primary'
+                } rounded-circle`"
+                type="button"
+                @click="getTodayActivities(i)"
+              >
+                {{ item.label }} <br />{{ item.date_label }}
+              </button>
             </div>
           </template>
         </div>
@@ -75,18 +109,27 @@
       <div class="card-header align-start overflow-auto mt-3">
         <div class="row">
           <div class="col">
-            <table style="border: none!important;">
+            <table style="border: none !important">
               <tr>
                 <td>
-                  <div class="card" style="width: 20px;height: 20px;background-color: cyan;"></div>
+                  <div
+                    class="card"
+                    style="width: 20px; height: 20px; background-color: cyan"
+                  ></div>
                 </td>
                 <td>: On Progress</td>
                 <td>
-                  <div class="card" style="width: 20px;height: 20px;background-color: #01FF4F;"></div>
+                  <div
+                    class="card"
+                    style="width: 20px; height: 20px; background-color: #01ff4f"
+                  ></div>
                 </td>
                 <td>: Done</td>
                 <td>
-                  <div class="card" style="width: 20px;height: 20px;background-color: red;"></div>
+                  <div
+                    class="card"
+                    style="width: 20px; height: 20px; background-color: red"
+                  ></div>
                 </td>
                 <td>: Delay</td>
               </tr>
@@ -100,25 +143,77 @@
         </ul>
         <div class="row">
           <template v-if="dataSTW.length > 0 && !isLoading">
-            <div v-for="(item) in dataSTW" :key="item.observation_id" class="col-12 col-md-4 col-lg-4 mt-1">
-              <div class="card p-2"
-                :style="`border-left: 10px solid ${item.color_status ? item.color_status : 'cyan'};min-height: 100px;`">
-                <div class="d-flex flex-row justify-content-between align-items-center">
+            <div
+              v-for="item in dataSTW"
+              :key="item.observation_id"
+              class="col-12 col-md-4 col-lg-4 mt-1"
+            >
+              <div
+                class="card p-2"
+                :style="`border-left: 10px solid ${
+                  item.color_status ? item.color_status : 'cyan'
+                };min-height: 100px;`"
+              >
+                <div
+                  class="d-flex flex-row justify-content-between align-items-center"
+                >
                   <div class="d-flex flex-column">
-                    {{ item.line_snm }} |
-                    {{ item.pos_nm }} |
+                    {{ item.line_snm }} | {{ item.pos_nm }} |
                     {{ item.member_nm }} |
-                    <b v-if="item.group_nm == 'RED'" class="text-danger">{{ item.group_nm }}</b>
-                    <b v-else class="text-light bg-dark" style="max-width: 70px;">{{ item.group_nm }}</b>
+                    <b v-if="item.group_nm == 'RED'" class="text-danger">{{
+                      item.group_nm
+                    }}</b>
+                    <b
+                      v-else
+                      class="text-light bg-dark"
+                      style="max-width: 70px"
+                      >{{ item.group_nm }}</b
+                    >
                   </div>
                   <div class="d-flex flex-column">
                     <template v-if="!item.actual_check_dt">
-                      <button class="btn btn-sm btn-primary"
-                        @click="$router.push(`/observation/${item.observation_id}`)">Check</button>
+                      <button
+                        v-if="!item.is_new_form"
+                        class="btn btn-sm btn-primary"
+                        @click="
+                          $router.push(`/observation/${item.observation_id}`)
+                        "
+                      >
+                        Check
+                      </button>
+                      <button
+                        v-else
+                        class="btn btn-sm btn-primary"
+                        @click="
+                          $router.push(
+                            `/new-observation/${item.observation_id}`,
+                          )
+                        "
+                      >
+                        Check
+                      </button>
                     </template>
                     <template v-else>
-                      <button class="btn btn-sm btn-success"
-                        @click="$router.push(`/observation/${item.observation_id}`)">Details</button>
+                      <button
+                        v-if="!item.is_new_form"
+                        class="btn btn-sm btn-success"
+                        @click="
+                          $router.push(`/observation/${item.observation_id}`)
+                        "
+                      >
+                        Details
+                      </button>
+                      <button
+                        v-else
+                        class="btn btn-sm btn-success"
+                        @click="
+                          $router.push(
+                            `/new-observation/${item.observation_id}`,
+                          )
+                        "
+                      >
+                        Details
+                      </button>
                     </template>
                   </div>
                 </div>
@@ -127,7 +222,12 @@
           </template>
           <template v-else-if="isLoading">
             <div class="col-12 col-md-4 col-lg-4">
-              <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
+              <CSpinner
+                component="span"
+                size="sm"
+                variant="grow"
+                aria-hidden="true"
+              />
               Loading...
             </div>
           </template>
@@ -142,20 +242,42 @@
         </ul>
         <div class="row">
           <template v-if="data4S.length > 0 && !isLoading">
-            <div v-for="(item) in data4S" :key="item.observation_id" class="col-12 col-md-4 col-lg-4">
-              <div class="card p-2"
-                :style="`border-left: 10px solid ${getColorStatus(item.plan_check_dt, item.actual_check_dt)};min-height: 100px;`">
-                <div class="d-flex flex-row justify-content-between align-items-center">
+            <div
+              v-for="item in data4S"
+              :key="item.observation_id"
+              class="col-12 col-md-4 col-lg-4"
+            >
+              <div
+                class="card p-2"
+                :style="`border-left: 10px solid ${getColorStatus(
+                  item.plan_check_dt,
+                  item.actual_check_dt,
+                )};min-height: 100px;`"
+              >
+                <div
+                  class="d-flex flex-row justify-content-between align-items-center"
+                >
                   <div class="d-flex flex-column">
-                    {{ item.line_nm }} |
-                    {{ item.area_nm }} |
+                    {{ item.line_nm }} | {{ item.area_nm }} |
                     {{ item.group_nm }} |
                     <template v-if="item.pic_nm">{{ item.pic_nm }}</template>
-                    <template v-else><i class="text-danger">Pic belum di tentukan</i></template>
+                    <template v-else
+                      ><i class="text-danger"
+                        >Pic belum di tentukan</i
+                      ></template
+                    >
                   </div>
                   <div class="d-flex flex-column">
-                    <button class="btn btn-sm btn-primary"
-                      @click="$router.push(`/4s/schedule-check/${item.main_schedule_id}/${item.sub_schedule_id}`)">Check</button>
+                    <button
+                      class="btn btn-sm btn-primary"
+                      @click="
+                        $router.push(
+                          `/4s/schedule-check/${item.main_schedule_id}/${item.sub_schedule_id}`,
+                        )
+                      "
+                    >
+                      Check
+                    </button>
                   </div>
                 </div>
               </div>
@@ -163,7 +285,12 @@
           </template>
           <template v-else-if="isLoading">
             <div class="col-12 col-md-4 col-lg-4">
-              <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
+              <CSpinner
+                component="span"
+                size="sm"
+                variant="grow"
+                aria-hidden="true"
+              />
               Loading...
             </div>
           </template>
@@ -178,21 +305,42 @@
         </ul>
         <div class="row">
           <template v-if="dataOM.length > 0 && !isLoading">
-            <div v-for="(item) in dataOM" :key="item.observation_id" class="col-12 col-md-4 col-lg-4">
-              <div class="card p-2"
-                :style="`border-left: 10px solid ${getColorStatus(item.plan_check_dt, item.actual_check_dt)};min-height: 100px;`">
-                <div class="d-flex flex-row justify-content-between align-items-center">
+            <div
+              v-for="item in dataOM"
+              :key="item.observation_id"
+              class="col-12 col-md-4 col-lg-4"
+            >
+              <div
+                class="card p-2"
+                :style="`border-left: 10px solid ${getColorStatus(
+                  item.plan_check_dt,
+                  item.actual_check_dt,
+                )};min-height: 100px;`"
+              >
+                <div
+                  class="d-flex flex-row justify-content-between align-items-center"
+                >
                   <div class="d-flex flex-column">
-                    {{ item.line_nm }} |
-                    {{ item.machine_nm }} |
-                    {{ item.item_check_nm }} |
-                    {{ item.group_nm }} |
+                    {{ item.line_nm }} | {{ item.machine_nm }} |
+                    {{ item.item_check_nm }} | {{ item.group_nm }} |
                     <template v-if="item.pic_nm">{{ item.pic_nm }}</template>
-                    <template v-else><i class="text-danger">Pic belum di tentukan</i></template>
+                    <template v-else
+                      ><i class="text-danger"
+                        >Pic belum di tentukan</i
+                      ></template
+                    >
                   </div>
                   <div class="d-flex flex-column">
-                    <button class="btn btn-sm btn-primary"
-                      @click="$router.push(`/om/schedule-detail/${item.om_main_schedule_id}/${item.om_sub_schedule_id}`)">Check</button>
+                    <button
+                      class="btn btn-sm btn-primary"
+                      @click="
+                        $router.push(
+                          `/om/schedule-detail/${item.om_main_schedule_id}/${item.om_sub_schedule_id}`,
+                        )
+                      "
+                    >
+                      Check
+                    </button>
                   </div>
                 </div>
               </div>
@@ -200,7 +348,12 @@
           </template>
           <template v-else-if="isLoading">
             <div class="col-12 col-md-4 col-lg-4">
-              <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
+              <CSpinner
+                component="span"
+                size="sm"
+                variant="grow"
+                aria-hidden="true"
+              />
               Loading...
             </div>
           </template>
@@ -213,17 +366,17 @@
   </div>
 </template>
 <script>
-import moment from 'moment';
-import NoDataContent from '@/components/card/NoDataContent.vue';
-import { toast } from 'vue3-toastify';
-import ApiService from '@/store/api.service';
-import { mapGetters } from 'vuex';
-import { GET_LINES } from '@/store/modules/line.module';
-import CustomFullLoading from '@/components/CustomFullLoading.vue';
+import moment from 'moment'
+import NoDataContent from '@/components/card/NoDataContent.vue'
+import { toast } from 'vue3-toastify'
+import ApiService from '@/store/api.service'
+import { mapGetters } from 'vuex'
+import { GET_LINES } from '@/store/modules/line.module'
+import CustomFullLoading from '@/components/CustomFullLoading.vue'
 // import CardStatusSchedules from '@/components/card/CardStatusSchedules.vue';
 
 export default {
-  name: "TodayActivity",
+  name: 'TodayActivity',
   data() {
     return {
       isLoading: false,
@@ -232,94 +385,94 @@ export default {
           label: 'S',
           is_active: false,
           date: null,
-          date_label: null
+          date_label: null,
         },
         {
           label: 'S',
           is_active: false,
           date: null,
-          date_label: null
+          date_label: null,
         },
         {
           label: 'R',
           is_active: false,
           date: null,
-          date_label: null
+          date_label: null,
         },
         {
           label: 'K',
           is_active: false,
           date: null,
-          date_label: null
+          date_label: null,
         },
         {
           label: 'J',
           is_active: false,
           date: null,
-          date_label: null
+          date_label: null,
         },
         {
           label: 'S',
           is_active: false,
           date: null,
-          date_label: null
+          date_label: null,
         },
         {
           label: 'M',
           is_active: false,
           date: null,
-          date_label: null
-        }
+          date_label: null,
+        },
       ],
       dailyDesktopOpts: [
         {
           label: 'Senin',
           is_active: false,
           date: null,
-          date_label: null
+          date_label: null,
         },
         {
           label: 'Selasa',
           is_active: false,
           date: null,
-          date_label: null
+          date_label: null,
         },
         {
           label: 'Rabu',
           is_active: false,
           date: null,
-          date_label: null
+          date_label: null,
         },
         {
           label: 'Kamis',
           is_active: false,
           date: null,
-          date_label: null
+          date_label: null,
         },
         {
           label: 'Jumat',
           is_active: false,
           date: null,
-          date_label: null
+          date_label: null,
         },
         {
           label: 'Sabtu',
           is_active: false,
           date: null,
-          date_label: null
+          date_label: null,
         },
         {
           label: 'Minggu',
           is_active: false,
           date: null,
-          date_label: null
-        }
+          date_label: null,
+        },
       ],
       containerDateOfThisWeek: [],
       windowWidth: window.innerWidth,
       filter: {
         line_id: localStorage.getItem('line_id') ?? -1,
-        date: null
+        date: null,
       },
       isMobile: false,
       dataSTW: [],
@@ -327,24 +480,24 @@ export default {
       dataOM: [],
       countSTW: [
         {
-          delay: 0
+          delay: 0,
         },
         {
-          progress: 0
+          progress: 0,
         },
         {
-          done: 0
-        }
+          done: 0,
+        },
       ],
       count4S: {
         delay: 0,
         progress: 0,
-        done: 0
+        done: 0,
       },
       countOM: {
         delay: 0,
         progress: 0,
-        done: 0
+        done: 0,
       },
       loadingCountSTW: true,
       loadingCount4S: true,
@@ -356,25 +509,25 @@ export default {
     getCountTotalSTW() {
       return {
         total: this.dataSTW.length,
-        done: this.dataSTW.filter(item => item.actual_check_dt).length
+        done: this.dataSTW.filter((item) => item.actual_check_dt).length,
       }
     },
     getCountTotal4S() {
       return {
         total: this.data4S.length,
-        done: this.data4S.filter(item => item.actual_check_dt).length
+        done: this.data4S.filter((item) => item.actual_check_dt).length,
       }
     },
     getCountTotalOM() {
       return {
         total: this.dataOM.length,
-        done: this.dataOM.filter(item => item.actual_check_dt).length
+        done: this.dataOM.filter((item) => item.actual_check_dt).length,
       }
     },
   },
   watch: {
     windowWidth() {
-      console.log(this.windowWidth);
+      console.log(this.windowWidth)
       if (this.windowWidth < 500) {
         this.isMobile = true
       } else {
@@ -390,8 +543,8 @@ export default {
         this.total4S()
         this.totalOM()
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   methods: {
     getColorStatus(planDate, actualDate) {
@@ -406,19 +559,19 @@ export default {
     },
     async ActionGetLines() {
       try {
-        await this.$store.dispatch(GET_LINES);
+        await this.$store.dispatch(GET_LINES)
       } catch (error) {
         toast.error(error.response.data.message)
       }
     },
     generateDateOfThisWeek() {
-      let thisDay = moment().startOf('week');
+      let thisDay = moment().startOf('week')
       if (moment().isoWeekday() == 7) {
-        thisDay = moment().startOf('week').subtract(1, 'weeks');
+        thisDay = moment().startOf('week').subtract(1, 'weeks')
       }
-      let today = moment().format('YYYY-MM-DD');
+      let today = moment().format('YYYY-MM-DD')
       for (let i = 0; i < 7; i++) {
-        var date = thisDay.add(1, 'days').format('YYYY-MM-DD');
+        var date = thisDay.add(1, 'days').format('YYYY-MM-DD')
         this.dailyOpts[i].date = date
         this.dailyDesktopOpts[i].date = date
         this.dailyOpts[i].date_label = moment(date).format('DD-MM')
@@ -445,13 +598,16 @@ export default {
       this.dailyOpts = mapDay
     },
     onResize() {
-      this.windowWidth = window.innerWidth;
+      this.windowWidth = window.innerWidth
     },
     async getSTWData() {
       try {
         this.isLoading = true
         ApiService.setHeader()
-        let { data } = await ApiService.query(`/operational/observation/schedule/today`, this.filter)
+        let { data } = await ApiService.query(
+          `/operational/observation/schedule/today`,
+          this.filter,
+        )
 
         this.dataSTW = data.data ?? []
         this.isLoading = false
@@ -463,9 +619,12 @@ export default {
     async get4SData() {
       try {
         this.isLoading = true
-        let { data } = await ApiService.query(`/operational/4s/sub-schedule/today`, this.filter)
+        let { data } = await ApiService.query(
+          `/operational/4s/sub-schedule/today`,
+          this.filter,
+        )
         // /operational/4s/sub-schedule/today?date=2024-04-23
-        console.log(data);
+        console.log(data)
         this.data4S = data.data ?? []
         this.isLoading = false
       } catch (error) {
@@ -476,9 +635,12 @@ export default {
     async getOMData() {
       try {
         this.isLoading = true
-        let { data } = await ApiService.query(`/operational/om/sub-schedule/today`, this.filter)
+        let { data } = await ApiService.query(
+          `/operational/om/sub-schedule/today`,
+          this.filter,
+        )
         // /operational/4s/sub-schedule/today?date=2024-04-23
-        console.log(data);
+        console.log(data)
         this.dataOM = data.data ?? []
         this.isLoading = false
       } catch (error) {
@@ -488,7 +650,14 @@ export default {
     },
     async totalSTW() {
       try {
-        let { data } = await ApiService.query(`/operational/observation/schedule/count`, { line_id: this.filter.line_id, month: moment(this.filter.date).format('M'), year: moment(this.filter.date).format('YYYY') })
+        let { data } = await ApiService.query(
+          `/operational/observation/schedule/count`,
+          {
+            line_id: this.filter.line_id,
+            month: moment(this.filter.date).format('M'),
+            year: moment(this.filter.date).format('YYYY'),
+          },
+        )
         this.countSTW = data.data
       } catch (error) {
         toast.error(error.response.data.message)
@@ -497,7 +666,14 @@ export default {
     },
     async total4S() {
       try {
-        let { data } = await ApiService.query(`/operational/4s/sub-schedule/count`, { line_id: this.filter.line_id, month: moment(this.filter.date).format('M'), year: moment(this.filter.date).format('YYYY') })
+        let { data } = await ApiService.query(
+          `/operational/4s/sub-schedule/count`,
+          {
+            line_id: this.filter.line_id,
+            month: moment(this.filter.date).format('M'),
+            year: moment(this.filter.date).format('YYYY'),
+          },
+        )
         this.count4S = data.data
       } catch (error) {
         toast.error(error.response.data.message)
@@ -506,13 +682,20 @@ export default {
     },
     async totalOM() {
       try {
-        let { data } = await ApiService.query(`/operational/om/sub-schedule/count`, { line_id: this.filter.line_id, month: moment(this.filter.date).format('M'), year: moment(this.filter.date).format('YYYY') })
+        let { data } = await ApiService.query(
+          `/operational/om/sub-schedule/count`,
+          {
+            line_id: this.filter.line_id,
+            month: moment(this.filter.date).format('M'),
+            year: moment(this.filter.date).format('YYYY'),
+          },
+        )
         this.countOM = data.data
       } catch (error) {
         toast.error(error.response.data.message)
       }
       this.loadingCountOM = false
-    }
+    },
   },
   async mounted() {
     this.isLoading = true
@@ -530,13 +713,13 @@ export default {
     this.totalOM()
   },
   beforeUnmount() {
-    window.removeEventListener('resize', this.onResize);
+    window.removeEventListener('resize', this.onResize)
   },
   components: {
     NoDataContent,
     CustomFullLoading,
     // CardStatusSchedules
-  }
+  },
 }
 </script>
 <style></style>
