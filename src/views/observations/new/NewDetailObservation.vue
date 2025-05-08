@@ -332,22 +332,6 @@
                       Stop
                     </button>
                   </div>
-                  <!-- <div>
-                    <input type="number" :disabled="item.is_already_check" v-model="item.stw_ct4"
-                      class="form-control text-center" style="width: 70px" placeholder="CT4" />
-                    <button v-if="!intervalAutoCount" class="btn btn-sm btn-primary w-100"
-                      @click="toggleTimer(item, true, 'stw_ct4')">Start</button>
-                    <button v-if="keyActiveTimer === 'stw_ct4'" class="btn btn-sm btn-danger w-100"
-                      @click="toggleTimer(item, false)">Stop</button>
-                  </div>
-                  <div>
-                    <input type="number" :disabled="item.is_already_check" v-model="item.stw_ct5"
-                      class="form-control text-center" style="width: 70px" placeholder="CT5" />
-                    <button v-if="!intervalAutoCount" class="btn btn-sm btn-primary w-100"
-                      @click="toggleTimer(item, true, 'stw_ct5')">Start</button>
-                    <button v-if="keyActiveTimer === 'stw_ct5'" class="btn btn-sm btn-danger w-100"
-                      @click="toggleTimer(item, false)">Stop</button>
-                  </div> -->
                   <div v-if="item.stw_ct3">
                     <div class="row">
                       <div class="col-12">
@@ -435,6 +419,7 @@
                 v-model="sub_category.judgment_id"
                 :disabled="!isHeaderAreSubmitted"
               >
+                <!-- sub_category.is_already_check -->
                 <option value="false">Select Judgment</option>
                 <option
                   v-for="judg in judgments"
@@ -493,10 +478,10 @@
               v-if="
                 sub_category.is_already_check &&
                 judgments.find((judg) => judg.id == sub_category.judgment_id)
-                  ?.is_abnormal &&
-                sub_category.is_already_check
+                  ?.is_abnormal
               "
             >
+              <!-- {{ JSON.stringify(sub_category.is_already_check) }} -->
               <div v-if="sub_category.findings.length == 0">
                 <button
                   class="btn btn-info"
@@ -830,12 +815,14 @@
               <i class="text-danger">No Finding</i>
             </td>
             <td class="text-center">
-              <div v-if="item.findings[0]?.finding_img">
+              <!-- item.sub_categories -->
+              <!-- {{ JSON.stringify(sub_category.findings[0]?.finding_img) }} -->
+              <div v-if="sub_category.findings[0]?.finding_img">
                 <img
-                  :src="item.findings[0]?.finding_img"
+                  :src="sub_category.findings[0]?.finding_img"
                   alt="image"
                   height="100"
-                  width="200"
+                  width="100"
                   @click="
                     () => {
                       item.is_active_image = true
@@ -854,7 +841,7 @@
                   <CModalBody>
                     <img
                       class="w-100"
-                      :src="item.findings[0].finding_img"
+                      :src="sub_category.findings[0]?.finding_img"
                       alt="image"
                       @click="
                         () => {
@@ -1565,7 +1552,6 @@ export default {
 
         return itm
       })
-
       this.categories = mapCategory
       await this.getJudgments()
       await this.getFactors()
