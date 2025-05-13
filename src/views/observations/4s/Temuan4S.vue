@@ -5,41 +5,84 @@
         <div class="row d-flex align-items-center">
           <div class="col">
             <label>Start date</label>
-            <input type="date" class="form-control" v-model="selectedFilterStartDate" @change="addFilter()" />
+            <input
+              type="date"
+              class="form-control"
+              v-model="selectedFilterStartDate"
+              @change="addFilter()"
+            />
           </div>
           <div class="col">
             <label>End date</label>
-            <input type="date" class="form-control" v-model="selectedFilterEndDate" @change="addFilter()" />
+            <input
+              type="date"
+              class="form-control"
+              v-model="selectedFilterEndDate"
+              @change="addFilter()"
+            />
           </div>
           <div class="col">
             <label>Line</label>
-            <select class="form-select" v-model="selectedLineIDFilter" @change="addFilter()">
-              <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
+            <select
+              class="form-select"
+              v-model="selectedLineIDFilter"
+              @change="addFilter()"
+            >
+              <option
+                v-for="(line, index) in getLinesOpts"
+                :key="index"
+                :value="line.id"
+              >
                 {{ line.text }}
               </option>
             </select>
           </div>
           <div class="col">
             <label>Shift / group</label>
-            <select class="form-select" v-model="selectedGroupIDFilter" @change="addFilter()">
-              <option v-for="group in getGroupsOpts" :key="group.id" :value="group.id">
+            <select
+              class="form-select"
+              v-model="selectedGroupIDFilter"
+              @change="addFilter()"
+            >
+              <option
+                v-for="group in getGroupsOpts"
+                :key="group.id"
+                :value="group.id"
+              >
                 {{ group.text }}
               </option>
             </select>
           </div>
           <div class="col">
             <label>Zona</label>
-            <Select2 class="form-control" v-model="selectedZoneIDFilter" :options="getZoneOpts" @select="addFilter()" />
+            <Select2
+              class="form-control"
+              v-model="selectedZoneIDFilter"
+              :options="getZoneOpts"
+              @select="addFilter()"
+            />
           </div>
           <div class="col">
             <label>Kanban</label>
-            <Select2 class="form-control" v-model="selectedKanbanIDFilter" :options="getKanbansOpts"
-              @select="addFilter()" />
+            <Select2
+              class="form-control"
+              v-model="selectedKanbanIDFilter"
+              :options="getKanbansOpts"
+              @select="addFilter()"
+            />
           </div>
           <div class="col">
             <label>Freq</label>
-            <select class="form-select" v-model="selectedFreqIDFilter" @change="addFilter()">
-              <option v-for="freq in getFreqsOpts" :key="freq.id" :value="freq.id">
+            <select
+              class="form-select"
+              v-model="selectedFreqIDFilter"
+              @change="addFilter()"
+            >
+              <option
+                v-for="freq in getFreqsOpts"
+                :key="freq.id"
+                :value="freq.id"
+              >
                 {{ freq.text }}
               </option>
             </select>
@@ -51,7 +94,9 @@
           </div>
         </div>
       </div>
-      <div class="card-header d-flex justify-content-between align-items-center">
+      <div
+        class="card-header d-flex justify-content-between align-items-center"
+      >
         <h5>List temuan</h5>
         <div class="d-flex align-items-center justify-content-center">
           <table class="table">
@@ -78,25 +123,32 @@
         <div class="d-flex align-items-center">
           <div class="mx-2 d-flex align-items-center">
             <div class="d-flex align-items-center">
-              <div style="
+              <div
+                style="
                   background-color: transparent;
                   width: 20px;
                   height: 20px;
                   border: 2px dotted black;
-                "></div>
+                "
+              ></div>
               <span class="mx-2">Plan</span>
             </div>
             <div class="d-flex align-items-center">
-              <div style="
+              <div
+                style="
                   background-color: transparent;
                   width: 20px;
                   height: 20px;
                   border: 2px solid black;
-                "></div>
+                "
+              ></div>
               <span class="mx-2">Actual</span>
             </div>
           </div>
-          <button class="btn btn-info text-white mx-2" @click="openAddFindingModal()">
+          <button
+            class="btn btn-info text-white mx-2"
+            @click="openAddFindingModal()"
+          >
             Add Finding
           </button>
         </div>
@@ -114,6 +166,7 @@
                 <th id="fixCol-head-5" rowspan="2">Freq 4S</th>
                 <th id="fixCol-head-6" rowspan="2">Date</th>
                 <th id="fixCol-head-7" rowspan="2">Problem</th>
+                <th class="fix-col-parent" rowspan="2">Pic</th>
                 <th class="fix-col-parent" colspan="2">Reduce Time</th>
                 <th class="fix-col-parent" :colspan="changeOpts.length">
                   Perubahan
@@ -199,17 +252,28 @@
               <tr v-if="isLoading">
                 <td colspan="10" class="p-0" style="height: 200px">
                   <div class="vl-parent p-0" style="height: 100%">
-                    <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false"
-                      :on-cancel="onCancel" />
+                    <loading
+                      v-model:active="isLoading"
+                      :can-cancel="true"
+                      :is-full-page="false"
+                      :on-cancel="onCancel"
+                    />
                   </div>
                 </td>
               </tr>
 
-              <tr v-else-if="!isLoading && findingList?.length > 0" v-for="(finding, findingIndex) in findingList"
-                :key="finding">
+              <tr
+                v-else-if="!isLoading && findingList?.length > 0"
+                v-for="(finding, findingIndex) in findingList"
+                :key="finding"
+              >
                 <td id="fixCol-1">{{ findingIndex + 1 }}</td>
                 <td id="fixCol-schedule-td" class="text-center">
-                  <CIcon v-if="finding.sub_schedule_id" icon="cil-check" size="sm" />
+                  <CIcon
+                    v-if="finding.sub_schedule_id"
+                    icon="cil-check"
+                    size="sm"
+                  />
                 </td>
                 <td id="fixCol-2">{{ finding.line_nm }}</td>
                 <td id="fixCol-3" class="text-center">{{ finding.zone_nm }}</td>
@@ -219,71 +283,117 @@
                 <td id="fixCol-5" class="text-center">{{ finding.freq_nm }}</td>
                 <td id="fixCol-6">{{ formatDate(finding.plan_cm_date) }}</td>
                 <td id="fixCol-7">{{ finding.finding_desc }}</td>
+                <td class="text-center">{{ finding.finding_pic_nm }}</td>
                 <td class="text-center">
                   {{ finding.time_cm }}
                 </td>
                 <td class="text-center">
-                  <CIcon v-if="finding.time_yokoten" icon="cil-check" size="sm" />
+                  <CIcon
+                    v-if="finding.time_yokoten"
+                    icon="cil-check"
+                    size="sm"
+                  />
                 </td>
-                <td class="text-center" v-for="optChange in changeOpts" :key="optChange">
-                  <CIcon v-if="
+                <td
+                  class="text-center"
+                  v-for="optChange in changeOpts"
+                  :key="optChange"
+                >
+                  <CIcon
+                    v-if="
                       finding.opt_changes != null &&
                       finding.opt_changes
                         ?.split(';')
                         .findIndex((x) => x == optChange.system_value) != -1
-                    " icon="cil-check" size="sm" />
+                    "
+                    icon="cil-check"
+                    size="sm"
+                  />
                 </td>
                 <td class="text-center" v-for="dept in deptOpts" :key="dept">
-                  <CIcon v-if="
+                  <CIcon
+                    v-if="
                       finding.opt_depts != null &&
                       finding.opt_depts
                         ?.split(';')
                         .findIndex((x) => x == dept.system_value) != -1
-                    " icon="cil-check" size="sm" />
+                    "
+                    icon="cil-check"
+                    size="sm"
+                  />
                 </td>
-                <td v-for="item in totalDate" :key="item.idx" style="min-width: 30px">
-                  <div v-if="item == finding.week_plan - 1" :style="`width: 20px; height: 20px; border: 2px dotted #64748b; background-color: ${
+                <td
+                  v-for="item in totalDate"
+                  :key="item.idx"
+                  style="min-width: 30px"
+                >
+                  <div
+                    v-if="item == finding.week_plan - 1"
+                    :style="`width: 20px; height: 20px; border: 2px dotted #64748b; background-color: ${
                       finding.status_check == 'CLOSED'
                         ? '#bbf7d0'
                         : finding.status_check == 'DELAY'
                         ? '#fee2e2'
                         : '#f3f4f6'
-                    }`"></div>
+                    }`"
+                  ></div>
 
-                  <div v-if="item == finding.week_actual - 1" class="mt-2" style="
+                  <div
+                    v-if="item == finding.week_actual - 1"
+                    class="mt-2"
+                    style="
                       width: 20px;
                       height: 20px;
                       border: 2px solid #64748b;
                       background-color: #bbf7d0;
-                    "></div>
+                    "
+                  ></div>
                 </td>
                 <td class="text-center">
-                  <img v-if="finding.evaluation_nm" :src="getImage(finding.evaluation_nm)"
-                    :alt="getImage(finding.evaluation_nm)" width="50" height="50" />
+                  <img
+                    v-if="finding.evaluation_nm"
+                    :src="getImage(finding.evaluation_nm)"
+                    :alt="getImage(finding.evaluation_nm)"
+                    width="50"
+                    height="50"
+                  />
                   <span v-else class="text-muted"> No Evaluation</span>
                 </td>
                 <td>
                   <div class="d-flex gap-2">
-                    <button v-if="finding.finding_img" class="btn btn-info btn-sm text-white w-full my-1"
-                      @click="showModalFindingImage(finding)">
+                    <button
+                      v-if="finding.finding_img"
+                      class="btn btn-info btn-sm text-white w-full my-1"
+                      @click="showModalFindingImage(finding)"
+                    >
                       Finding image
                     </button>
                     <button v-else class="btn btn-secondary btn-sm" disabled>
                       No Image
                     </button>
-                    <button :class="{
+                    <button
+                      :class="{
                         'btn btn-sm': true,
                         'btn-info text-white': finding.kaizen_file,
                         'btn-secondary': !finding.kaizen_file,
-                      }" @click="onClickDownloadKaizen(finding.kaizen_file)" :disabled="!finding.kaizen_file">
+                      }"
+                      @click="onClickDownloadKaizen(finding.kaizen_file)"
+                      :disabled="!finding.kaizen_file"
+                    >
                       {{
-                      finding.kaizen_file ? 'Download Kaizen' : 'No Kaizen'
+                        finding.kaizen_file ? 'Download Kaizen' : 'No Kaizen'
                       }}
                     </button>
-                    <button class="btn btn-info btn-sm text-white" @click="openEditFindingModal(finding, findingIndex)">
+                    <button
+                      class="btn btn-info btn-sm text-white"
+                      @click="openEditFindingModal(finding, findingIndex)"
+                    >
                       Edit
                     </button>
-                    <button class="btn btn-warning btn-sm text-white" @click="deleteFinding(finding.finding_id)">
+                    <button
+                      class="btn btn-warning btn-sm text-white"
+                      @click="deleteFinding(finding.finding_id)"
+                    >
                       Delete
                     </button>
                   </div>
@@ -301,18 +411,32 @@
           </table>
         </div>
       </div>
-      <Pagination :totalPages="totalPage" :perPage="currentPageLimit" :currentPage="currentPage" @changePage="onPageChange"
-        :totalPage="totalPage" @changeLimit="onPageChangeLimit" />
+      <Pagination
+        :totalPages="totalPage"
+        :perPage="currentPageLimit"
+        :currentPage="currentPage"
+        @changePage="onPageChange"
+        :totalPage="totalPage"
+        @changeLimit="onPageChangeLimit"
+      />
     </div>
 
     <!-- edit modal -->
-    <CModal backdrop="static" size="xl" :visible="editFindingModal" @close="
+    <CModal
+      backdrop="static"
+      size="xl"
+      :visible="editFindingModal"
+      @close="
         () => {
           editFindingModal = false
-  }
-      " aria-labelledby="StaticBackdropExampleLabel">
+        }
+      "
+      aria-labelledby="StaticBackdropExampleLabel"
+    >
       <CModalHeader>
-        <CModalTitle id="StaticBackdropExampleLabel">Update finding 4S</CModalTitle>
+        <CModalTitle id="StaticBackdropExampleLabel"
+          >Update finding 4S</CModalTitle
+        >
       </CModalHeader>
       <!-- <CModalBody>
         <div class="row">
@@ -438,25 +562,44 @@
               <!-- <VueMultiselect disabled v-model="selectedLineID" :options="getLinesOpts" optionLabel="text"
                 optionValue="id" :customLabel="customLabel">
               </VueMultiselect> -->
-              <input type="text" class="form-control" :value="selectedLineNm" disabled />
+              <input
+                type="text"
+                class="form-control"
+                :value="selectedLineNm"
+                disabled
+              />
             </div>
             <div class="mb-2">
               <label class="mb-1">Zone </label>
-              <input type="text" class="form-control" :value="selectedZoneName" disabled />
+              <input
+                type="text"
+                class="form-control"
+                :value="selectedZoneName"
+                disabled
+              />
             </div>
           </div>
           <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Freq</label>
               <select class="form-select" v-model="selectedFreqID" disabled>
-                <option v-for="freq in getFreqsOpts" :key="freq.id" :value="freq.id">
+                <option
+                  v-for="freq in getFreqsOpts"
+                  :key="freq.id"
+                  :value="freq.id"
+                >
                   {{ freq.text }}
                 </option>
               </select>
             </div>
             <div class="mb-2">
               <label class="mb-1">Kanban</label>
-              <input type="text" class="form-control" :value="selectedKanbanNo" disabled />
+              <input
+                type="text"
+                class="form-control"
+                :value="selectedKanbanNo"
+                disabled
+              />
             </div>
           </div>
         </div>
@@ -464,7 +607,13 @@
           <div class="col-md-12">
             <div class="mb-2">
               <label class="mb-1">Finding Desc</label>
-              <input type="text" class="form-control" v-model="findingDesc" placeholder="Write Finding Desc" disabled />
+              <input
+                type="text"
+                class="form-control"
+                v-model="findingDesc"
+                placeholder="Write Finding Desc"
+                disabled
+              />
             </div>
           </div>
         </div>
@@ -472,13 +621,23 @@
           <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Finding Date</label>
-              <input type="date" class="form-control" v-model="findingDate" placeholder="Select Finding Date"
-                disabled />
+              <input
+                type="date"
+                class="form-control"
+                v-model="findingDate"
+                placeholder="Select Finding Date"
+                disabled
+              />
             </div>
             <div class="mb-2">
               <label class="mb-1">Finding PIC</label>
-              <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions"
-                class="vue-multi-select" :disabled="true">
+              <VueMultiselect
+                v-model="selectedPIC"
+                :options="picData"
+                :custom-label="customPicOptions"
+                class="vue-multi-select"
+                :disabled="true"
+              >
               </VueMultiselect>
             </div>
           </div>
@@ -486,19 +645,41 @@
             <div class="mb-2">
               <label class="mb-1">Reduce Time Countermeasure (Menit)</label>
               <div class="d-flex align-items-center">
-                <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" v-model="enabledReduceTime"
-                  class="me-2" style="height: 20px; width: 20px" />
-                <input type="text" class="form-control" v-model="timeCM" :disabled="!enabledReduceTime" @keypress="
+                <input
+                  type="checkbox"
+                  id="vehicle1"
+                  name="vehicle1"
+                  value="Bike"
+                  v-model="enabledReduceTime"
+                  class="me-2"
+                  style="height: 20px; width: 20px"
+                />
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="timeCM"
+                  :disabled="!enabledReduceTime"
+                  @keypress="
                     $event.key.match(/^[\d]$/) ? '' : $event.preventDefault()
-                  " />
+                  "
+                />
               </div>
-              <small v-if="!enabledReduceTime" class="text-info">* Ceklis & isi waktu pengurangan jika ada</small>
-              <small v-else class="text-success">* Abaikan jika tidak ingin di ubah</small>
+              <small v-if="!enabledReduceTime" class="text-info"
+                >* Ceklis & isi waktu pengurangan jika ada</small
+              >
+              <small v-else class="text-success"
+                >* Abaikan jika tidak ingin di ubah</small
+              >
             </div>
             <div class="mb-2">
               <label class="mb-1">PIC Countermeasure</label>
-              <VueMultiselect v-model="actualPIC" :disabled="findingActionType == 'update'" :options="picData"
-                :custom-label="customPicOptions" class="vue-multi-select">
+              <VueMultiselect
+                v-model="actualPIC"
+                :disabled="findingActionType == 'update'"
+                :options="picData"
+                :custom-label="customPicOptions"
+                class="vue-multi-select"
+              >
               </VueMultiselect>
             </div>
           </div>
@@ -507,14 +688,23 @@
           <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Plan Countermeasure Date</label>
-              <input type="date" class="form-control" v-model="planCMDate" disabled />
+              <input
+                type="date"
+                class="form-control"
+                v-model="planCMDate"
+                disabled
+              />
             </div>
           </div>
           <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Actual Countermeasure Date</label>
-              <input type="date" class="form-control" v-model="actualCMDate"
-                :disabled="findingActionType == 'update'" />
+              <input
+                type="date"
+                class="form-control"
+                v-model="actualCMDate"
+                :disabled="findingActionType == 'update'"
+              />
             </div>
           </div>
         </div>
@@ -522,15 +712,24 @@
           <div class="col-md-12">
             <div class="mb-2">
               <label class="mb-1">Plan Countermeasure Desc</label>
-              <input type="text" class="form-control" v-model="planCMDesc"
-                placeholder="Write Plan Countermeasure Desc" />
+              <input
+                type="text"
+                class="form-control"
+                v-model="planCMDesc"
+                placeholder="Write Plan Countermeasure Desc"
+              />
             </div>
           </div>
           <div class="col-md-12 col-12">
             <div class="mb-2">
               <label class="mb-1">Department Terkait</label>
-              <treeselect class="" v-if="getSystemsOptDept" v-model="optDepartment" :multiple="true"
-                :options="getSystemsOptDept" />
+              <treeselect
+                class=""
+                v-if="getSystemsOptDept"
+                v-model="optDepartment"
+                :multiple="true"
+                :options="getSystemsOptDept"
+              />
             </div>
           </div>
         </div>
@@ -540,7 +739,11 @@
               <label class="mb-1">Perubahan Standard</label>
               <select class="form-select" v-model="optChanges">
                 <option value="null" selected>Select Standart</option>
-                <option v-for="optChange in optChangeData" :key="optChange" :value="optChange.system_value">
+                <option
+                  v-for="optChange in optChangeData"
+                  :key="optChange"
+                  :value="optChange.system_value"
+                >
                   {{ optChange.system_value }}
                 </option>
               </select>
@@ -551,28 +754,52 @@
           <div class="col-md-12">
             <div class="mb-2">
               <label class="mb-1">Evaluation</label>
-              <select class="form-select" v-model="evaluationName" :disabled="findingActionType == 'update'">
+              <select
+                class="form-select"
+                v-model="evaluationName"
+                :disabled="findingActionType == 'update'"
+              >
                 <option value="null" selected>Select Evaluation</option>
-                <option v-for="optEval in optEvaluation" :key="optEval" :value="optEval.system_value">
+                <option
+                  v-for="optEval in optEvaluation"
+                  :key="optEval"
+                  :value="optEval.system_value"
+                >
                   {{ optEval.system_value }}
                 </option>
               </select>
               <table class="table">
                 <tr>
                   <th>
-                    <img src="@/../public/tanoko/0.png" width="50" height="50" />
+                    <img
+                      src="@/../public/tanoko/0.png"
+                      width="50"
+                      height="50"
+                    />
                   </th>
                   <th>Order Part</th>
                   <th>
-                    <img src="@/../public/tanoko/1.png" width="50" height="50" />
+                    <img
+                      src="@/../public/tanoko/1.png"
+                      width="50"
+                      height="50"
+                    />
                   </th>
                   <th>Countermeasure</th>
                   <th>
-                    <img src="@/../public/tanoko/2.png" width="50" height="50" />
+                    <img
+                      src="@/../public/tanoko/2.png"
+                      width="50"
+                      height="50"
+                    />
                   </th>
                   <th>Monitor / Follow</th>
                   <th>
-                    <img src="@/../public/tanoko/3.png" width="50" height="50" />
+                    <img
+                      src="@/../public/tanoko/3.png"
+                      width="50"
+                      height="50"
+                    />
                   </th>
                   <th>Finish</th>
                 </tr>
@@ -580,7 +807,11 @@
             </div>
             <div class="mb-2">
               <label class="mb-1">Status Countermeasure</label>
-              <select v-model="cmJudg" class="form-select" :disabled="findingActionType == 'update'">
+              <select
+                v-model="cmJudg"
+                class="form-select"
+                :disabled="findingActionType == 'update'"
+              >
                 <option value="true">Sudah</option>
                 <option value="false">Belum</option>
               </select>
@@ -600,27 +831,38 @@
         </div>
       </CModalBody>
       <CModalFooter>
-        <CButton color="secondary" @click="
+        <CButton
+          color="secondary"
+          @click="
             () => {
               editFindingModal = false
             }
-          ">
+          "
+        >
           Close
         </CButton>
         <CButton color="primary" @click="updateFinding()">
           {{
-          isUpdateFindingLoading
-          ? 'Updating...'
-          : `Update
+            isUpdateFindingLoading
+              ? 'Updating...'
+              : `Update
           finding data`
           }}
         </CButton>
       </CModalFooter>
     </CModal>
     <!-- <ModalForm4sFinding :visiblee="modalFormFinding" :loadedFinding="" /> -->
-    <ModalImage :img="selectedFindingImage" :visible="isVisibleFindingImage" @close="isVisibleFindingImage = false" />
-    <ModalForm4sFinding :visible="addFindingModal" :is-input="true" :loadedFinding="null"
-      @close="onCloseModalFinding($event)" />
+    <ModalImage
+      :img="selectedFindingImage"
+      :visible="isVisibleFindingImage"
+      @close="isVisibleFindingImage = false"
+    />
+    <ModalForm4sFinding
+      :visible="addFindingModal"
+      :is-input="true"
+      :loadedFinding="null"
+      @close="onCloseModalFinding($event)"
+    />
   </div>
 </template>
 
@@ -805,7 +1047,7 @@ export default {
         }`
       }
     },
-    zoneGetID: function  () {
+    zoneGetID: function () {
       this.getFindings()
     },
   },
@@ -818,20 +1060,17 @@ export default {
       return `${value.text}`
     },
     onPageChange(page, type) {
-      if (type == 'prev')
-      {
+      if (type == 'prev') {
         this.currentPage = this.currentPage - 1
         this.getFindings()
       }
 
-      if (type == 'next')
-      {
+      if (type == 'next') {
         this.currentPage = this.currentPage + 1
         this.getFindings()
       }
 
-      if (type == 'fromnumber')
-      {
+      if (type == 'fromnumber') {
         this.currentPage = page
         this.getFindings()
       }
@@ -846,8 +1085,7 @@ export default {
       }`
     },
     async getSystem() {
-      try
-      {
+      try {
         ApiService.setHeader()
         const changeOpts = await ApiService.get(
           `master/systems/get/4S_OPT_CHANGE`,
@@ -859,8 +1097,7 @@ export default {
         this.changeOpts = changeOpts.data.data
         this.deptOpts = depts.data.data
         this.evaluationOpts = evaluation.data.data
-      } catch (error)
-      {
+      } catch (error) {
         toast.error(error.response.data.message, {
           autoClose: 1000,
         })
@@ -879,7 +1116,7 @@ export default {
         start_date: this.selectedFilterStartDate,
         end_date: this.selectedFilterEndDate,
         limit: this.currentPageLimit,
-        current_page: this.currentPage
+        current_page: this.currentPage,
       }
       await this.$store.dispatch(GET_4S_FINDINGS, objQuery).then((res) => {
         this.findingList = res.list
@@ -888,12 +1125,10 @@ export default {
       })
     },
     openAddFindingModal() {
-      this.addFindingModal = true;
-
+      this.addFindingModal = true
     },
     openEditFindingModal(finding) {
       console.log(finding)
-
 
       const data = finding
       this.selectedFindingID = finding.finding_id
@@ -931,11 +1166,9 @@ export default {
         data.actual_cm_date != null ? data.actual_cm_date.split(' ')[0] : null // formating form yyy-mm-dd HH:mm:ss
       this.evaluationName = data.evaluation_nm
       this.selectedSubScheduleID = data.sub_schedule_id
-      if (data.time_cm)
-      {
+      if (data.time_cm) {
         this.enabledReduceTime = true
-      } else
-      {
+      } else {
         this.enabledReduceTime = false
       }
       this.editFindingModal = true
@@ -967,16 +1200,14 @@ export default {
         `operational/4s/finding/edit/${this.selectedFindingID}`,
         findingData,
       )
-      if (add.data.message == 'Success to edit 4s finding')
-      {
+      if (add.data.message == 'Success to edit 4s finding') {
         toast.success('Success edit data', {
           autoClose: 700,
         })
         this.editFindingModal = false
         this.isUpdateFindingLoading = false
         await this.getFindings()
-      } else
-      {
+      } else {
         toast.error('Failed to edit data', {
           autoClose: 700,
         })
@@ -993,27 +1224,23 @@ export default {
         confirmButtonText: 'Sure',
         denyButtonText: `No`,
       }).then((result) => {
-        if (result.isConfirmed)
-        {
+        if (result.isConfirmed) {
           ApiService.setHeader()
           const deleteData = ApiService.delete(
             `operational/4s/finding/delete/${findingID}`,
           )
 
-          if (deleteData)
-          {
+          if (deleteData) {
             toast.success('Success to delete data', {
               autoClose: 700,
             })
             this.getFindings()
-          } else
-          {
+          } else {
             toast.error('Failed edit data', {
               autoClose: 700,
             })
           }
-        } else if (result.isDenied)
-        {
+        } else if (result.isDenied) {
           Swal.fire('Canceled', '', 'info')
         }
       })
@@ -1031,12 +1258,10 @@ export default {
     },
 
     async getUsers() {
-      try
-      {
+      try {
         await this.$store.dispatch(GET_USERS)
         this.mapUsersData()
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -1051,51 +1276,41 @@ export default {
       })
     },
     async getLines() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_LINES)
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getGroup() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_GROUP)
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getZone() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_ZONES, { line_id: this.selectedLineIDFilter })
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getKanban() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_KANBANS)
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
     },
     async getFreq() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_FREQS)
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -1104,13 +1319,11 @@ export default {
       let objQuery = {
         system_type: '4S_EVALUATION',
       }
-      try
-      {
+      try {
         this.$store.dispatch(GET_SYSTEMS, objQuery).then((res) => {
           this.optEvaluation = res
         })
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -1119,13 +1332,11 @@ export default {
       let objQuery = {
         system_type: '4S_OPT_CHANGE',
       }
-      try
-      {
+      try {
         this.$store.dispatch(GET_SYSTEMS, objQuery).then((res) => {
           this.optChangeData = res
         })
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -1135,13 +1346,11 @@ export default {
       let objQuery = {
         system_type: '4S_OPT_DEPT',
       }
-      try
-      {
+      try {
         this.$store.dispatch(GET_SYSTEMS, objQuery).then((res) => {
           this.optDeptData = res
         })
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
@@ -1153,8 +1362,7 @@ export default {
       var lastDay = new Date(year, month, 0)
       let container = []
       this.containerDate = []
-      for (let i = 1; i <= lastDay.getDate(); i++)
-      {
+      for (let i = 1; i <= lastDay.getDate(); i++) {
         let setDt = new Date(selectedMonth).setDate(i)
         let newDate = new Date(setDt)
         container.push(newDate.getDate())
@@ -1182,10 +1390,9 @@ export default {
       return moment(date).format('DD/MM/YYYY')
     },
     onCloseModalFinding(e) {
-      this.addFindingModal = false;
-      if (e.refresh)
-      {
-        this.getFindings();
+      this.addFindingModal = false
+      if (e.refresh) {
+        this.getFindings()
       }
     },
   },
@@ -1198,8 +1405,7 @@ export default {
     this.selectedFilterStartDate = `${year}-01-01`
     this.selectedFilterEndDate = `${year}-12-30`
 
-    if (localStorage.getItem('line_id'))
-    {
+    if (localStorage.getItem('line_id')) {
       this.selectedLineIDFilter = localStorage.getItem('line_id')
     }
     await this.getSystem()
@@ -1443,9 +1649,9 @@ export default {
 
 /* highlight on hover */
 
-.multiselect--disabled>.multiselect__tags,
-.multiselect--disabled>.multiselect__tags>.multiselect__single,
-.multiselect--disabled>.multiselect__select {
+.multiselect--disabled > .multiselect__tags,
+.multiselect--disabled > .multiselect__tags > .multiselect__single,
+.multiselect--disabled > .multiselect__select {
   background: #d8dbe0 !important;
 }
 </style>
