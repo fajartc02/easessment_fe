@@ -6,11 +6,19 @@
         <div class="d-flex col-5">
           <CInputGroup>
             <CInputGroupText>Line</CInputGroupText>
-            <Select2 v-model="filter.line_id" class="form-control" :options="getLinesOpts" />
+            <Select2
+              v-model="filter.line_id"
+              class="form-control"
+              :options="getLinesOpts"
+            />
           </CInputGroup>
           <CInputGroup class="mx-2">
             <CInputGroupText>Month</CInputGroupText>
-            <input v-model="filter.selectedMonth" class="form-control" type="month" />
+            <input
+              v-model="filter.selectedMonth"
+              class="form-control"
+              type="month"
+            />
           </CInputGroup>
         </div>
       </div>
@@ -32,27 +40,41 @@
         <tr v-if="isLoading">
           <td colspan="10" class="p-0" style="height: 200px">
             <div class="vl-parent p-0" style="height: 100%">
-              <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false" :on-cancel="onCancel" />
+              <loading
+                v-model:active="isLoading"
+                :can-cancel="true"
+                :is-full-page="false"
+                :on-cancel="onCancel"
+              />
             </div>
           </td>
         </tr>
-        <tr v-else-if="observationSchedule.length > 0" v-for="(obaservation, i) in observationSchedule"
-          :key="obaservation.uuid">
+        <tr
+          v-else-if="observationSchedule.length > 0"
+          v-for="(obaservation, i) in observationSchedule"
+          :key="obaservation.uuid"
+        >
           <td>{{ i + 1 }}</td>
           <td>{{ obaservation.line_nm }}</td>
           <td>{{ obaservation.pos_nm }}</td>
           <td>{{ obaservation.job_type_nm }}</td>
           <td v-if="obaservation.checkers.length > 0">
-            <button v-for="checker in obaservation.checkers" :key="checker.id"
-              class="btn btn-warning text-black disabled">
+            <button
+              v-for="checker in obaservation.checkers"
+              :key="checker.id"
+              class="btn btn-warning text-black disabled"
+            >
               {{ checker.checker_nm }}
             </button>
           </td>
           <td>{{ obaservation.member_nm }}</td>
           <td>{{ obaservation.job_nm }}</td>
           <td>{{ `${obaservation.plan_check_dt}` }}</td>
-          <td :class="`${obaservation.actual_check_dt}` == 'null' ? 'bg-danger' : ''
-            ">
+          <td
+            :class="
+              `${obaservation.actual_check_dt}` == 'null' ? 'bg-danger' : ''
+            "
+          >
             {{
               `${obaservation.actual_check_dt}` != 'null'
                 ? `${obaservation.actual_check_dt}`
@@ -60,7 +82,10 @@
             }}
           </td>
           <td>
-            <button class="btn btn-info btn-sm" @click="details(obaservation.id)">
+            <button
+              class="btn btn-info btn-sm"
+              @click="details(obaservation.id, obaservation)"
+            >
               detail
             </button>
           </td>
@@ -87,8 +112,12 @@
         </div>
         <div class="col"></div>
         <div class="col-xl-3" v-if="filter.total_data > 0">
-          <CustPagination :totalItems="filter.total_data" :items-per-page="filter.limit"
-            :current-page="filter.current_page" @page-changed="handlePageChange" />
+          <CustPagination
+            :totalItems="filter.total_data"
+            :items-per-page="filter.limit"
+            :current-page="filter.current_page"
+            @page-changed="handlePageChange"
+          />
         </div>
       </div>
     </div>
@@ -158,15 +187,15 @@ export default {
       deep: true,
       handler() {
         this.getObservations()
-      }
-    }
+      },
+    },
   },
   computed: {
     ...mapGetters(['observationSchedule', 'getLinesOpts']),
   },
   methods: {
     handlePageChange(page) {
-      this.filter.current_page = page;
+      this.filter.current_page = page
       // this.getObservations()
     },
     async getLines() {
@@ -194,8 +223,13 @@ export default {
           }
         })
     },
-    details(id) {
-      this.$router.push(`/observation/${id}`)
+    details(id, observationData) {
+      const isNewForm = observationData?.is_new_form
+      if (isNewForm) {
+        this.$router.push(`/new-observation/${id}`)
+      } else {
+        this.$router.push(`/observation/${id}`)
+      }
     },
   },
   async mounted() {

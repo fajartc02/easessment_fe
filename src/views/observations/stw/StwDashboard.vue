@@ -1100,7 +1100,6 @@ export default {
         })
     },
     detailSchedule(obser) {
-      console.log(obser)
       if (obser.is_new_form) {
         this.$router.push(`/new-observation/${obser.observation_id}`)
       } else {

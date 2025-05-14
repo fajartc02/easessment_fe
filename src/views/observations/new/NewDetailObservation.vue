@@ -1,5 +1,5 @@
 <template>
-  <Loading :active="isLoading" :can-cancel="true" :is-full-page="false" />
+  <Loading :active="isLoading" :can-cancel="true" :is-full-page="true" />
   <div class="card">
     <div class="card-body" v-if="observation">
       <CInputGroup class="mb-3">
@@ -414,21 +414,39 @@
                   </div>
                 </div>
               </div>
-              <CFormSelect
-                v-else
-                v-model="sub_category.judgment_id"
-                :disabled="!isHeaderAreSubmitted"
-              >
-                <!-- sub_category.is_already_check -->
-                <option value="false">Select Judgment</option>
-                <option
-                  v-for="judg in judgments"
-                  :key="judg.id"
-                  :value="judg.id"
+              <template v-else>
+                <CFormSelect
+                  v-if="!sub_category.is_already_check"
+                  v-model="sub_category.judgment_id"
+                  :disabled="!isHeaderAreSubmitted"
                 >
-                  {{ judg.text }}
-                </option>
-              </CFormSelect>
+                  <option value="false">Select Judgment</option>
+                  <option
+                    v-for="judg in judgments"
+                    :key="judg.id"
+                    :value="judg.id"
+                  >
+                    {{ judg.text }}
+                  </option>
+                </CFormSelect>
+                <!-- condition when previously already submit, for auto update if any changes -->
+                <CFormSelect
+                  v-else
+                  v-model="sub_category.judgment_id"
+                  @change="updateCheckCategory(sub_category, item)"
+                  :disabled="!isHeaderAreSubmitted"
+                >
+                  <!-- sub_category.is_already_check -->
+                  <option value="false">Select Judgment</option>
+                  <option
+                    v-for="judg in judgments"
+                    :key="judg.id"
+                    :value="judg.id"
+                  >
+                    {{ judg.text }}
+                  </option>
+                </CFormSelect>
+              </template>
             </td>
             <!-- Start::UPDATE SAVE CHECK -->
             <td class="text-center">
@@ -485,6 +503,7 @@
               <div v-if="sub_category.findings.length == 0">
                 <button
                   class="btn btn-info"
+                  :disabled="isLoading"
                   @click="
                     () => {
                       resetData()
@@ -496,7 +515,7 @@
                     }
                   "
                 >
-                  Add findings
+                  {{ isLoading ? 'Loading...' : 'Add Finding' }}
                 </button>
               </div>
               <div class="text-center" v-else>
@@ -1231,27 +1250,29 @@ export default {
     async updateCheckCategory(item, category) {
       try {
         this.isLoading = true
-        console.log(category, 'category')
-        console.log(item, 'item')
-        let checkedData = {
-          observation_id: this.$route.params.id,
-          category_id: category?.uuid,
-          sub_category_id: item?.sub_category_id,
-          judgment_id: item.judgment_id,
-          stw_ct1: item.stw_ct1,
-          stw_ct2: item.stw_ct2,
-          stw_ct3: item.stw_ct3,
-          stw_ct4: item.stw_ct4,
-          stw_ct5: item.stw_ct5,
-          obs_result_id: item.obs_result_id,
-        }
-        await this.$store.dispatch(UPDATE_OBSERVATION_CATEGORY, checkedData)
-        this.isLoading = false
-        await this.getDetail()
-        await this.getCategories()
-        toast.success('Success to save data', {
-          autoClose: 1000,
-        })
+        setTimeout(async () => {
+          const judgmentID = item?.judgment_id
+          let checkedData = {
+            observation_id: this.$route.params.id,
+            category_id: category?.uuid,
+            sub_category_id: item?.sub_category_id,
+            judgment_id: judgmentID,
+            stw_ct1: item.stw_ct1,
+            stw_ct2: item.stw_ct2,
+            stw_ct3: item.stw_ct3,
+            stw_ct4: item.stw_ct4,
+            stw_ct5: item.stw_ct5,
+            obs_result_id: item.obs_result_id,
+          }
+          console.log(checkedData, 'judgmentID')
+          await this.$store.dispatch(UPDATE_OBSERVATION_CATEGORY, checkedData)
+          this.isLoading = false
+          await this.getDetail()
+          await this.getCategories()
+          toast.success('Success to save data', {
+            autoClose: 1000,
+          })
+        }, 1000)
       } catch (error) {
         this.isLoading = false
         console.log(error)
