@@ -4,20 +4,36 @@
       <h4>Master Kanban 4S</h4>
     </div>
     <div class="flex-column">
-      <button class="btn btn-primary" @click="() => { isAddModal = true }">Add Kanban</button>
-      <CModal backdrop="static" size="xl" :visible="isAddModal" @close="() => {
-        isAddModal = false
-        this.newKanban = {
-          line_id: null,
-          zone_id: null,
-          freq_id: null,
-          kanban_no: null,
-          area_nm: null,
-          dest: null,
-          kanban_imgs: []
-        }
-        selectedImages = []
-      }">
+      <button
+        class="btn btn-primary"
+        @click="
+          () => {
+            isAddModal = true
+          }
+        "
+      >
+        Add Kanban
+      </button>
+      <CModal
+        backdrop="static"
+        size="xl"
+        :visible="isAddModal"
+        @close="
+          () => {
+            isAddModal = false
+            this.newKanban = {
+              line_id: null,
+              zone_id: null,
+              freq_id: null,
+              kanban_no: null,
+              area_nm: null,
+              dest: null,
+              kanban_imgs: [],
+            }
+            selectedImages = []
+          }
+        "
+      >
         <CModalHeader>
           <CModalTitle>Add Kanban</CModalTitle>
         </CModalHeader>
@@ -26,7 +42,11 @@
             <div class="col">
               <label>Line</label>
               <select class="form-select" v-model="newKanban.line_id">
-                <option v-for="(line, index) in getLinesOptsWithoutAll" :key="index" :value="line.id">
+                <option
+                  v-for="(line, index) in getLinesOptsWithoutAll"
+                  :key="index"
+                  :value="line.id"
+                >
                   {{ line.text }}
                 </option>
               </select>
@@ -35,43 +55,104 @@
           <div class="row">
             <div class="col">
               <label>Zone</label>
-              <select v-if="getZoneOptsWithoutAll.length > 0" class="form-select" v-model="newKanban.zone_id"
-                      :disabled="!newKanban.line_id">
-                <option v-for="(line, index) in getZoneOptsWithoutAll" :key="index" :value="line.id">
+              <select
+                v-if="getZoneOptsWithoutAll.length > 0"
+                class="form-select"
+                v-model="newKanban.zone_id"
+                :disabled="!newKanban.line_id"
+              >
+                <option
+                  v-for="(line, index) in getZoneOptsWithoutAll"
+                  :key="index"
+                  :value="line.id"
+                >
                   {{ line.text }}
                 </option>
               </select>
               <div v-else>
-                <input class="form-control" type="text" value="Tidak ada zone" disabled>
+                <input
+                  class="form-control"
+                  type="text"
+                  value="Tidak ada zone"
+                  disabled
+                />
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col">
+              <label>Shift</label>
+              <select
+                v-if="getGroupsOptsWithoutAll.length > 0"
+                class="form-select"
+                v-model="newKanban.group_id"
+                :disabled="!newKanban.zone_id"
+              >
+                <option
+                  v-for="(grp, index) in getGroupsOptsWithoutAll"
+                  :key="index"
+                  :value="grp.id"
+                >
+                  {{ grp.text }}
+                </option>
+              </select>
+              <div v-else>
+                <input
+                  class="form-control"
+                  type="text"
+                  value="Tidak ada shift"
+                  disabled
+                />
+              </div>
+            </div>
+            <div class="col">
               <label>Periodic</label>
-              <select v-if="getFreqsOptsWithoutAll.length > 0" class="form-select" v-model="newKanban.freq_id"
-                      :disabled="!newKanban.zone_id">
-                <option v-for="(line, index) in getFreqsOptsWithoutAll" :key="index" :value="line.id">
+              <select
+                v-if="getFreqsOptsWithoutAll.length > 0"
+                class="form-select"
+                v-model="newKanban.freq_id"
+                :disabled="!newKanban.zone_id"
+              >
+                <option
+                  v-for="(line, index) in getFreqsOptsWithoutAll"
+                  :key="index"
+                  :value="line.id"
+                >
                   {{ line.text }}
                 </option>
               </select>
               <div v-else>
-                <input class="form-control" type="text" value="Tidak ada zone" disabled>
+                <input
+                  class="form-control"
+                  type="text"
+                  value="Tidak ada zone"
+                  disabled
+                />
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col">
               <label>Kanban No.</label>
-              <input class="form-control" type="text" v-model="newKanban.kanban_no" :disabled="!newKanban.freq_id"
-                     placeholder="Masukan nomer kanban">
+              <input
+                class="form-control"
+                type="text"
+                v-model="newKanban.kanban_no"
+                :disabled="!newKanban.freq_id"
+                placeholder="Masukan nomer kanban"
+              />
             </div>
           </div>
           <div class="row">
             <div class="col">
               <label>Area</label>
-              <input class="form-control" type="text" v-model="newKanban.area_nm" :disabled="!newKanban.kanban_no"
-                     placeholder="Masukan Area">
+              <input
+                class="form-control"
+                type="text"
+                v-model="newKanban.area_nm"
+                :disabled="!newKanban.kanban_no"
+                placeholder="Masukan Area"
+              />
             </div>
           </div>
           <!-- <div class="row">
@@ -96,12 +177,15 @@
         <CModalFooter>
           <button class="btn btn-sm btn-primary" @click="storeNewKanban">
             <template v-if="isLoading">
-              <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
+              <CSpinner
+                component="span"
+                size="sm"
+                variant="grow"
+                aria-hidden="true"
+              />
               Loading...
             </template>
-            <template v-else>
-              Submit
-            </template>
+            <template v-else> Submit </template>
           </button>
         </CModalFooter>
       </CModal>
@@ -112,16 +196,32 @@
       <div class="row">
         <div class="col">
           <label>Line</label>
-          <select class="form-select" v-model="filter.line_id" @change="changesLine">
-            <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
+          <select
+            class="form-select"
+            v-model="filter.line_id"
+            @change="changesLine"
+          >
+            <option
+              v-for="(line, index) in getLinesOpts"
+              :key="index"
+              :value="line.id"
+            >
               {{ line.text }}
             </option>
           </select>
         </div>
         <div class="col">
           <label>Zone</label>
-          <select class="form-select" v-model="filter.zone_id" :disabled="filter.line_id == -1">
-            <option v-for="(zone, index) in getZoneOpts" :key="index" :value="zone.id">
+          <select
+            class="form-select"
+            v-model="filter.zone_id"
+            :disabled="filter.line_id == -1"
+          >
+            <option
+              v-for="(zone, index) in getZoneOpts"
+              :key="index"
+              :value="zone.id"
+            >
               {{ zone.text }}
             </option>
           </select>
@@ -129,7 +229,11 @@
         <div class="col">
           <label>Frequency</label>
           <select class="form-select" v-model="filter.freq_id">
-            <option v-for="(freq, index) in getFreqsOpts" :key="index" :value="freq.id">
+            <option
+              v-for="(freq, index) in getFreqsOpts"
+              :key="index"
+              :value="freq.id"
+            >
               {{ freq.text }}
             </option>
           </select>
@@ -154,34 +258,41 @@
         </div>
         <div class="col"></div>
         <div class="col-xl-3" v-if="filter.total_data > 1">
-          <CustPagination :totalItems="filter.total_data" :items-per-page="filter.limit"
-                          :current-page="filter.current_page" @page-changed="handlePageChange" />
+          <CustPagination
+            :totalItems="filter.total_data"
+            :items-per-page="filter.limit"
+            :current-page="filter.current_page"
+            @page-changed="handlePageChange"
+          />
         </div>
       </div>
     </div>
   </div>
-  <ModalHistory4sItemCheck :selected-item-check="selectedHistoryItemCheck"
-                           :visible="isVisibleModalHistory"
-                           @close="onCloseHistoryItemCheck" />
+  <ModalHistory4sItemCheck
+    :selected-item-check="selectedHistoryItemCheck"
+    :visible="isVisibleModalHistory"
+    @close="onCloseHistoryItemCheck"
+  />
 </template>
 
 
 <script>
-import { mapGetters } from "vuex";
-import { GET_LINES } from "@/store/modules/line.module";
-import { GET_ZONES } from "@/store/modules/zone.module";
-import { GET_KANBANS, POST_KANBAN } from "@/store/modules/kanban.module";
-import { GET_FREQS } from "@/store/modules/freq.module";
+import { mapGetters } from 'vuex'
+import { GET_LINES } from '@/store/modules/line.module'
+import { GET_ZONES } from '@/store/modules/zone.module'
+import { GET_KANBANS, POST_KANBAN } from '@/store/modules/kanban.module'
+import { GET_FREQS } from '@/store/modules/freq.module'
+import { GET_GROUP } from '@/store/modules/group.module'
 
-import CustPagination from "@/components/pagination/CustPagination.vue";
-import TableKanban4s from "@/components/table/TableKanban4s.vue";
+import CustPagination from '@/components/pagination/CustPagination.vue'
+import TableKanban4s from '@/components/table/TableKanban4s.vue'
 
-import FnRequireFullFillInput from "@/functions/FnRequireFullFillInput";
-import { toast } from "vue3-toastify";
-import ModalHistory4sItemCheck from "@/components/4s/ModalHistory4sItemCheck.vue";
+import FnRequireFullFillInput from '@/functions/FnRequireFullFillInput'
+import { toast } from 'vue3-toastify'
+import ModalHistory4sItemCheck from '@/components/4s/ModalHistory4sItemCheck.vue'
 
 export default {
-  name: "Kanban4s",
+  name: 'Kanban4s',
   data() {
     return {
       filter: {
@@ -190,7 +301,8 @@ export default {
         limit: 10,
         total_data: 1,
         current_page: 1,
-        freq_id: -1
+        freq_id: -1,
+        group_id: -1,
       },
       isAddModal: false,
       newKanban: {
@@ -200,213 +312,229 @@ export default {
         kanban_no: null,
         area_nm: null,
         dest: null,
-        kanban_imgs: []
+        kanban_imgs: [],
       },
       selectedImages: [],
       isLoading: false,
       isVisibleModalHistory: false,
-      selectedHistoryItemCheck: null
-    };
+      selectedHistoryItemCheck: null,
+    }
   },
   computed: {
     ...mapGetters([
-      "getLinesOpts",
-      "getZoneOpts",
-      "getPagination",
-      "getFreqsOpts",
-      "getLinesOptsWithoutAll",
-      "getZoneOptsWithoutAll",
-      "getFreqsOptsWithoutAll"
+      'getLinesOpts',
+      'getZoneOpts',
+      'getPagination',
+      'getFreqsOpts',
+      'getLinesOptsWithoutAll',
+      'getZoneOptsWithoutAll',
+      'getFreqsOptsWithoutAll',
+      'getGroupsOptsWithoutAll',
     ]),
     getLineName() {
-      let line = this.getLinesOptsWithoutAll.find(line => line.id == this.newKanban.line_id);
-      return line.text;
-    }
+      let line = this.getLinesOptsWithoutAll.find(
+        (line) => line.id == this.newKanban.line_id,
+      )
+      return line.text
+    },
   },
   watch: {
     getPagination: {
       handler() {
-        console.log("paginated chnged");
+        console.log('paginated chnged')
         this.filter = {
           ...this.filter,
           limit: this.getPagination.limit,
           total_data: this.getPagination.total_data,
-          current_page: this.getPagination.current_page
-        };
+          current_page: this.getPagination.current_page,
+        }
       },
-      deep: true
+      deep: true,
     },
     filter: {
       handler() {
-        console.log("called");
+        console.log('called')
         this.$nextTick(() => {
-          this.$store.dispatch(GET_KANBANS, this.filter);
-        });
+          this.$store.dispatch(GET_KANBANS, this.filter)
+        })
       },
-      deep: true
+      deep: true,
     },
-    ["filter.line_id"]: function() {
+    ['filter.line_id']: function () {
       // this.changesLine()
     },
     newKanban: {
       handler() {
         if (this.newKanban.line_id) {
-          this.$store.dispatch(GET_ZONES, { line_id: this.newKanban.line_id, isPaginate: false });
+          this.$store.dispatch(GET_ZONES, {
+            line_id: this.newKanban.line_id,
+            isPaginate: false,
+          })
         }
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   methods: {
+    async getGroups() {
+      try {
+        await this.$store.dispatch(GET_GROUP)
+      } catch (error) {
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
+      }
+    },
     async getLines() {
       try {
-        this.$store.dispatch(GET_LINES);
+        this.$store.dispatch(GET_LINES)
       } catch (error) {
-        if (error.response.status == 401) this.$router.push("/login");
-        console.log(error);
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
       }
     },
     changesLine() {
       if (this.filter.selectedLine != -1) {
-        this.getZones();
+        this.getZones()
       } else {
-        this.filter.selectedZone = -1;
+        this.filter.selectedZone = -1
       }
     },
     async getZones() {
       try {
-        this.$store.dispatch(GET_ZONES, { line_id: this.filter.line_id });
+        this.$store.dispatch(GET_ZONES, { line_id: this.filter.line_id })
       } catch (error) {
-        if (error.response.status == 401) this.$router.push("/login");
-        console.log(error);
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
       }
     },
     async fetchFreqs() {
       try {
-        this.$store.dispatch(GET_FREQS);
+        this.$store.dispatch(GET_FREQS)
       } catch (error) {
-        if (error.response.status == 401) this.$router.push("/login");
-        console.log(error);
+        if (error.response.status == 401) this.$router.push('/login')
+        console.log(error)
       }
     },
     async storeNewKanban() {
       try {
-        this.isLoading = true;
-        this.newKanban.dest = `KANBAN_${this.getLineName}_${this.newKanban.kanban_no}`;
-        const isInputFullFill = FnRequireFullFillInput(this.newKanban);
+        this.isLoading = true
+        this.newKanban.dest = `KANBAN_${this.getLineName}_${this.newKanban.kanban_no}`
+        const isInputFullFill = FnRequireFullFillInput(this.newKanban)
         if (isInputFullFill) {
-          delete this.newKanban.line_id;
-          let newFormKanbanData = new FormData();
+          delete this.newKanban.line_id
+          let newFormKanbanData = new FormData()
           for (const key in this.newKanban) {
-            const element = this.newKanban[key];
+            const element = this.newKanban[key]
             if (Array.isArray(this.newKanban[key])) {
               this.newKanban.kanban_imgs.forEach((item) => {
-                newFormKanbanData.append(`kanban_imgs`, item);
-              });
+                newFormKanbanData.append(`kanban_imgs`, item)
+              })
             } else {
-              newFormKanbanData.append(key, element);
+              newFormKanbanData.append(key, element)
             }
           }
-          await this.$store.dispatch(POST_KANBAN, newFormKanbanData);
-          this.isLoading = false;
-          this.isAddModal = false;
+          await this.$store.dispatch(POST_KANBAN, newFormKanbanData)
+          this.isLoading = false
+          this.isAddModal = false
           this.newKanban = {
             line_id: null,
+            group_id: null,
             zone_id: null,
             freq_id: null,
             kanban_no: null,
             area_nm: null,
             dest: null,
-            kanban_imgs: []
-          };
-          this.selectedImages = [];
+            kanban_imgs: [],
+          }
+          this.selectedImages = []
         } else {
-          toast.info("Lengkapi input terlebih dahulu", {
-            autoClose: 1000
-          });
+          toast.info('Lengkapi input terlebih dahulu', {
+            autoClose: 1000,
+          })
           // alert("Lengkapi input terlebih dahulu")
-          this.isLoading = false;
+          this.isLoading = false
         }
       } catch (error) {
-        this.isLoading = false;
-        alert(error.response.data.message);
+        this.isLoading = false
+        alert(error.response.data.message)
         // if (error.response.status == 401) this.$router.push('/login')
-        console.log(error);
+        console.log(error)
       }
     },
     handlePageChange(page) {
-      console.log("page changes");
-      this.filter.current_page = page;
-      this.$store.dispatch(GET_KANBANS, this.filter);
+      console.log('page changes')
+      this.filter.current_page = page
+      this.$store.dispatch(GET_KANBANS, this.filter)
     },
     handleFileInputChange(event) {
-      const files = event.target.files;
+      const files = event.target.files
       for (let i = 0; i < files.length; i++) {
         if (this.selectedImages.length < 4) {
-          this.newKanban.kanban_imgs.push(files[i]);
-          const reader = new FileReader();
+          this.newKanban.kanban_imgs.push(files[i])
+          const reader = new FileReader()
           reader.onload = (e) => {
-            this.selectedImages.push({ url: e.target.result, file: files[i] });
-          };
-          reader.readAsDataURL(files[i]);
+            this.selectedImages.push({ url: e.target.result, file: files[i] })
+          }
+          reader.readAsDataURL(files[i])
         }
       }
     },
     removeImage(index) {
-      this.newKanban.kanban_imgs.splice(index, 1);
-      this.selectedImages.splice(index, 1);
+      this.newKanban.kanban_imgs.splice(index, 1)
+      this.selectedImages.splice(index, 1)
     },
     onCloseHistoryItemCheck() {
-      this.isVisibleModalHistory = false;
-      this.selectedHistoryItemCheck = null;
+      this.isVisibleModalHistory = false
+      this.selectedHistoryItemCheck = null
 
-      this.emitter.emit("toggleModalItemCheckEdit", {
+      this.emitter.emit('toggleModalItemCheckEdit', {
         visible: true,
-        kanban_id: null
-      });
-    }
+        kanban_id: null,
+      })
+    },
   },
   async mounted() {
-    const initialFilter = {};
-    if (localStorage.getItem("line_id")) {
-      initialFilter.line_id = localStorage.getItem("line_id");
+    const initialFilter = {}
+    if (localStorage.getItem('line_id')) {
+      initialFilter.line_id = localStorage.getItem('line_id')
     }
 
-    initialFilter.current_page = this.getPagination.current_page;
-    initialFilter.limit = this.getPagination.limit;
-    initialFilter.total_data = this.getPagination.total_data;
+    initialFilter.current_page = this.getPagination.current_page
+    initialFilter.limit = this.getPagination.limit
+    initialFilter.total_data = this.getPagination.total_data
 
     this.filter = {
-      ...initialFilter
-    };
+      ...initialFilter,
+    }
 
-    this.isLoading = true;
-    await this.getLines();
-    await this.getZones();
-    await this.fetchFreqs();
+    this.isLoading = true
+    await this.getGroups()
+    await this.getLines()
+    await this.getZones()
+    await this.fetchFreqs()
     //await this.$store.dispatch(GET_KANBANS, this.filter);
-    this.isLoading = false;
+    this.isLoading = false
 
     // eslint-disable-next-line no-unused-vars
-    const self = this;
+    const self = this
 
-    this.emitter.on("toggleModalHistory", (val) => {
-      this.isVisibleModalHistory = val.visible;
-      this.selectedHistoryItemCheck = val.selectedItem;
+    this.emitter.on('toggleModalHistory', (val) => {
+      this.isVisibleModalHistory = val.visible
+      this.selectedHistoryItemCheck = val.selectedItem
 
       if (val.visible) {
-        self.emitter.emit("toggleModalItemCheckEdit", {
+        self.emitter.emit('toggleModalItemCheckEdit', {
           visible: false,
-          kanban_id: val.selectedItem.kanban_id
-        });
+          kanban_id: val.selectedItem.kanban_id,
+        })
       }
-    });
+    })
   },
   components: {
     ModalHistory4sItemCheck,
     TableKanban4s,
-    CustPagination
-  }
-};
+    CustPagination,
+  },
+}
 </script>
 @/functions/FnRequireFullFillInput

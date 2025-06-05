@@ -859,6 +859,7 @@ export default {
 
           if (this.$refs.finding_image) {
             try {
+              // event nya akan di pisahkan untuk upload
               const formData = new FormData()
               formData.append('finding_id', finding_id)
               formData.append('dest', 'finding4s')
