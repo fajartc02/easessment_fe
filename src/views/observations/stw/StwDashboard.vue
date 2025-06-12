@@ -210,7 +210,7 @@
                   "
                 >
                   <td colspan="5">
-                    <h5>Sign TL 1</h5>
+                    <h5>Sign TL</h5>
                   </td>
                   <td
                     v-for="date in containerDate"
@@ -270,7 +270,7 @@
                     </template>
                   </td>
                 </tr>
-                <tr
+                <!-- <tr
                   style="
                     position: sticky;
                     bottom: 80px;
@@ -295,8 +295,6 @@
                         )
                       "
                     >
-                      <!-- make condition for switch if sign in this date is available -->
-
                       <CButton
                         v-if="
                           !signObservationsTL_2.find(
@@ -338,7 +336,7 @@
                       />
                     </template>
                   </td>
-                </tr>
+                </tr> -->
                 <tr
                   style="
                     position: sticky;
@@ -571,7 +569,7 @@
                   v-if="observationScheduleRedShift?.length > 0"
                 >
                   <td colspan="5">
-                    <h5>Sign TL 1</h5>
+                    <h5>Sign TL</h5>
                   </td>
                   <td
                     v-for="date in containerDate"
@@ -591,7 +589,7 @@
 
                       <CButton
                         v-if="
-                          !signObservationsTL_1.find(
+                          !signObservationsTL_1_RED.find(
                             (obserChild) =>
                               obserChild.date_idx == date.idx &&
                               obserChild.role_sign_sys == 'TL_1' &&
@@ -612,7 +610,7 @@
                       <img
                         v-else
                         :src="
-                          signObservationsTL_1.find(
+                          signObservationsTL_1_RED.find(
                             (obserChild) =>
                               obserChild.date_idx == date.idx &&
                               obserChild.role_sign_sys == 'TL_1' &&
@@ -626,7 +624,7 @@
                     </template>
                   </td>
                 </tr>
-                <tr
+                <!-- <tr
                   style="
                     position: sticky;
                     bottom: 80px;
@@ -644,18 +642,16 @@
                   >
                     <template
                       v-if="
-                        observationSchedule.find((obserChild) =>
+                        observationScheduleRedShift.find((obserChild) =>
                           obserChild.children.find(
                             (childObser) => childObser.idxdate == date.idx,
                           ),
                         )
                       "
                     >
-                      <!-- make condition for switch if sign in this date is available -->
-
                       <CButton
                         v-if="
-                          !signObservationsTL_2.find(
+                          !signObservationsTL_2_RED.find(
                             (obserChild) =>
                               obserChild.date_idx == date.idx &&
                               obserChild.role_sign_sys == 'TL_2' &&
@@ -676,7 +672,7 @@
                       <img
                         v-else
                         :src="
-                          signObservationsTL_2.find(
+                          signObservationsTL_2_RED.find(
                             (obserChild) =>
                               obserChild.date_idx == date.idx &&
                               obserChild.role_sign_sys == 'TL_2' &&
@@ -689,7 +685,7 @@
                       />
                     </template>
                   </td>
-                </tr>
+                </tr> -->
                 <tr
                   style="
                     position: sticky;
@@ -708,7 +704,7 @@
                   >
                     <template
                       v-if="
-                        observationSchedule.find((obserChild) =>
+                        observationScheduleRedShift.find((obserChild) =>
                           obserChild.children.find(
                             (childObser) => childObser.idxdate == date.idx,
                           ),
@@ -719,7 +715,7 @@
 
                       <CButton
                         v-if="
-                          !signObservationsGL.find(
+                          !signObservationsGL_RED.find(
                             (obserChild) =>
                               obserChild.date_idx == date.idx &&
                               obserChild.role_sign_sys == 'GL' &&
@@ -740,7 +736,7 @@
                       <img
                         v-else
                         :src="
-                          signObservationsGL.find(
+                          signObservationsGL_RED.find(
                             (obserChild) =>
                               obserChild.date_idx == date.idx &&
                               obserChild.role_sign_sys == 'GL' &&
@@ -772,7 +768,7 @@
                   >
                     <template
                       v-if="
-                        observationSchedule.find((obserChild) =>
+                        observationScheduleRedShift.find((obserChild) =>
                           obserChild.children.find(
                             (childObser) => childObser.idxdate == date.idx,
                           ),
@@ -783,7 +779,7 @@
 
                       <CButton
                         v-if="
-                          !signObservationsSH.find(
+                          !signObservationsSH_RED.find(
                             (obserChild) =>
                               obserChild.date_idx == date.idx &&
                               obserChild.role_sign_sys == 'SH' &&
@@ -804,7 +800,7 @@
                       <img
                         v-else
                         :src="
-                          signObservationsSH.find(
+                          signObservationsSH_RED.find(
                             (obserChild) =>
                               obserChild.date_idx == date.idx &&
                               obserChild.role_sign_sys == 'SH' &&
@@ -915,9 +911,13 @@ export default {
       addSignModal: false,
       isUploadSignLoading: false,
       signObservationsTL_1: [],
+      signObservationsTL_1_RED: [],
       signObservationsTL_2: [],
+      signObservationsTL_2_RED: [],
       signObservationsGL: [],
+      signObservationsGL_RED: [],
       signObservationsSH: [],
+      signObservationsSH_RED: [],
     }
   },
   computed: {
@@ -952,7 +952,7 @@ export default {
           `/operational/observation/sign`,
           this.signForm,
         )
-        console.log(addSign, 'addSign')
+        // console.log(addSign, 'addSign')
         if (addSign.data.message == 'Success to add sign') {
           this.isUploadSignLoading = false
           this.closeSignModal(true)
@@ -960,9 +960,13 @@ export default {
             autoClose: 1000,
           })
           this.getSignature('TL_1', 'signObservationsTL_1')
+          this.getSignature('TL_1', 'signObservationsTL_1_RED')
           this.getSignature('TL_2', 'signObservationsTL_2')
+          this.getSignature('TL_2', 'signObservationsTL_2_RED')
           this.getSignature('GL', 'signObservationsGL')
+          this.getSignature('GL', 'signObservationsGL_RED')
           this.getSignature('SH', 'signObservationsSH')
+          this.getSignature('SH', 'signObservationsSH_RED')
         }
       } catch (error) {
         toast.error('error to add toast')
@@ -1014,9 +1018,13 @@ export default {
         this.getObsSchedule()
         this.getObsScheduleRedShift()
         this.getSignature('TL_1', 'signObservationsTL_1')
+        this.getSignature('TL_1', 'signObservationsTL_1_RED')
         this.getSignature('TL_2', 'signObservationsTL_2')
+        this.getSignature('TL_2', 'signObservationsTL_2_RED')
         this.getSignature('GL', 'signObservationsGL')
+        this.getSignature('GL', 'signObservationsGL_RED')
         this.getSignature('SH', 'signObservationsSH')
+        this.getSignature('SH', 'signObservationsSH_RED')
       }
     },
     onPageChange(page) {
@@ -1122,9 +1130,13 @@ export default {
     // await this.getObsScheduleRedShift()
     this.searchData()
     this.getSignature('TL_1', 'signObservationsTL_1')
+    this.getSignature('TL_1', 'signObservationsTL_1_RED')
     this.getSignature('TL_2', 'signObservationsTL_2')
+    this.getSignature('TL_2', 'signObservationsTL_2_RED')
     this.getSignature('GL', 'signObservationsGL')
+    this.getSignature('GL', 'signObservationsGL_RED')
     this.getSignature('SH', 'signObservationsSH')
+    this.getSignature('SH', 'signObservationsSH_RED')
   },
   updated() {
     if (this.$route.query.line) {
