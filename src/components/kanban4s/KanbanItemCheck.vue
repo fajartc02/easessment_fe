@@ -6,8 +6,10 @@
         <CModalTitle>SOP</CModalTitle>
       </CModalHeader>
       <CModalBody>
-        <vue-pdf-embed v-if="getKanbanDetail?.sop_file" :source="getKanbanDetail?.sop_file"
-          @loaded="handleDocumentRender" />
+        <vue-pdf-embed v-if="getKanbanDetail?.sop_file && getKanbanDetail?.sop_file.includes('.pdf')"
+          :source="getKanbanDetail?.sop_file" @loaded="handleDocumentRender" />
+        <img v-else-if="getKanbanDetail?.sop_file && !getKanbanDetail?.sop_file.includes('.pdf')"
+          :src="getKanbanDetail?.sop_file" width="100" alt="Sop" />
         <small class="text-sm text-muted">*mohon tunggu pdf sedang di muat</small>
       </CModalBody>
     </CModal>
@@ -23,6 +25,7 @@
                 <th>
                   {{ getKanbanDetail.freq_nm }}
                 </th>
+                <th></th>
               </tr>
               <tr>
                 <th>
@@ -40,6 +43,9 @@
                 <th>
                   SOP
                 </th>
+                <th>
+                  Revisi Ke
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -55,6 +61,7 @@
                   }">Lihat SOP</button>
                   <span v-else>SOP Not Found</span>
                 </td>
+                <td>{{ getKanbanDetail.total_revision }}</td>
               </tr>
             </tbody>
           </table>

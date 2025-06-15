@@ -50,6 +50,7 @@ import {
   cilEuro,
   cilGlobeAlt,
   cilGrid,
+  cilGraph,
   cilFile,
   cilJustifyCenter,
   cilLaptop,
@@ -104,6 +105,7 @@ export const iconsSet = Object.assign({}, {
   cilX,
   cilVideo,
   cilAvTimer,
+  cilGraph,
 
   cilArrowBottom,
   cilArrowRight,

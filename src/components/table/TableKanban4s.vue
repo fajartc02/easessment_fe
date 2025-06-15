@@ -37,25 +37,18 @@
             {{ kanban.freq_nm }}
           </td>
           <td class="text-center">
-            <button
-              class="btn btn-sm btn-primary"
-              @click="
-                () => {
-                  kanban.status = true
-                }
-              "
-            >
+            <button class="btn btn-sm btn-primary" @click="
+              () => {
+                kanban.status = true
+              }
+            ">
               Kanban
             </button>
-            <CModal
-              :visible="kanban.status"
-              @close="
-                () => {
-                  kanban.status = false
-                }
-              "
-              size="lg"
-            >
+            <CModal :visible="kanban.status" @close="
+              () => {
+                kanban.status = false
+              }
+            " size="lg">
               <CModalBody>
                 <KanbanItemCheck :kanban_id="kanban.kanban_id" />
               </CModalBody>
@@ -63,23 +56,17 @@
           </td>
 
           <td class="text-center">
-            <button
-              class="btn btn-sm btn-warning"
-              @click="
-                () => {
-                  isVisibleModalEdit = true
-                  selectedKanban = kanban
-                }
-              "
-            >
+            <button class="btn btn-sm btn-warning" @click="
+              () => {
+                isVisibleModalEdit = true
+                selectedKanban = kanban
+              }
+            ">
               Edit
             </button>
           </td>
           <td class="text-center">
-            <button
-              class="btn btn-sm btn-danger"
-              @click="ActionDeleteKanban(kanban.kanban_id)"
-            >
+            <button class="btn btn-sm btn-danger" @click="ActionDeleteKanban(kanban.kanban_id)">
               Delete
             </button>
           </td>
@@ -88,12 +75,7 @@
       <template v-else-if="isLoading && getKanbansWithStatusModal?.length != 0">
         <tr>
           <td class="text-center" colspan="9">
-            <CSpinner
-              component="span"
-              size="sm"
-              variant="grow"
-              aria-hidden="true"
-            />
+            <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
             Loading Kanban ...
           </td>
         </tr>
@@ -103,26 +85,17 @@
       </template>
     </tbody>
   </table>
-  <CModal
-    backdrop="static"
-    :visible="isVisibleModalEdit"
-    @close="
-      () => {
-        isVisibleModalEdit = false
-        selectedKanban = null
-      }
-    "
-    clos
-    size="xl"
-  >
+  <CModal backdrop="static" :visible="isVisibleModalEdit" @close="
+    () => {
+      isVisibleModalEdit = false
+      selectedKanban = null
+    }
+  " clos size="xl">
     <CModalHeader>
       <CModalTitle>Edit Kanban</CModalTitle>
     </CModalHeader>
     <CModalBody>
-      <KanbanItemCheckEdit
-        v-if="selectedKanban"
-        :kanban_id="selectedKanban.kanban_id"
-      />
+      <KanbanItemCheckEdit v-if="selectedKanban" :kanban_id="selectedKanban.kanban_id" />
     </CModalBody>
   </CModal>
 </template>

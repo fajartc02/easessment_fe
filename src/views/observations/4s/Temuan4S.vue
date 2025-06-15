@@ -5,84 +5,41 @@
         <div class="row d-flex align-items-center">
           <div class="col">
             <label>Start date</label>
-            <input
-              type="date"
-              class="form-control"
-              v-model="selectedFilterStartDate"
-              @change="addFilter()"
-            />
+            <input type="date" class="form-control" v-model="selectedFilterStartDate" @change="addFilter()" />
           </div>
           <div class="col">
             <label>End date</label>
-            <input
-              type="date"
-              class="form-control"
-              v-model="selectedFilterEndDate"
-              @change="addFilter()"
-            />
+            <input type="date" class="form-control" v-model="selectedFilterEndDate" @change="addFilter()" />
           </div>
           <div class="col">
             <label>Line</label>
-            <select
-              class="form-select"
-              v-model="selectedLineIDFilter"
-              @change="addFilter()"
-            >
-              <option
-                v-for="(line, index) in getLinesOpts"
-                :key="index"
-                :value="line.id"
-              >
+            <select class="form-select" v-model="selectedLineIDFilter" @change="addFilter()">
+              <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
                 {{ line.text }}
               </option>
             </select>
           </div>
           <div class="col">
             <label>Shift / group</label>
-            <select
-              class="form-select"
-              v-model="selectedGroupIDFilter"
-              @change="addFilter()"
-            >
-              <option
-                v-for="group in getGroupsOpts"
-                :key="group.id"
-                :value="group.id"
-              >
+            <select class="form-select" v-model="selectedGroupIDFilter" @change="addFilter()">
+              <option v-for="group in getGroupsOpts" :key="group.id" :value="group.id">
                 {{ group.text }}
               </option>
             </select>
           </div>
           <div class="col">
             <label>Zona</label>
-            <Select2
-              class="form-control"
-              v-model="selectedZoneIDFilter"
-              :options="getZoneOpts"
-              @select="addFilter()"
-            />
+            <Select2 class="form-control" v-model="selectedZoneIDFilter" :options="getZoneOpts" @select="addFilter()" />
           </div>
           <div class="col">
             <label>Kanban</label>
-            <Select2
-              class="form-control"
-              v-model="selectedKanbanIDFilter"
-              :options="getKanbansOpts"
-              @select="addFilter()"
-            />
+            <Select2 class="form-control" v-model="selectedKanbanIDFilter" :options="getKanbansOpts"
+              @select="addFilter()" />
           </div>
           <div class="col">
             <label>Freq</label>
-            <select
-              class="form-select"
-              v-model="selectedFreqIDFilter"
-              @change="addFilter()"
-            >
-              <option
-                v-for="freq in getFreqsOpts"
-                :key="freq.id"
-                :value="freq.id"
-              >
+            <select class="form-select" v-model="selectedFreqIDFilter" @change="addFilter()">
+              <option v-for="freq in getFreqsOpts" :key="freq.id" :value="freq.id">
                 {{ freq.text }}
               </option>
             </select>
@@ -94,9 +51,7 @@
           </div>
         </div>
       </div>
-      <div
-        class="card-header d-flex justify-content-between align-items-center"
-      >
+      <div class="card-header d-flex justify-content-between align-items-center">
         <h5>List temuan</h5>
         <div class="d-flex align-items-center justify-content-center">
           <table class="table">
@@ -123,32 +78,25 @@
         <div class="d-flex align-items-center">
           <div class="mx-2 d-flex align-items-center">
             <div class="d-flex align-items-center">
-              <div
-                style="
+              <div style="
                   background-color: transparent;
                   width: 20px;
                   height: 20px;
                   border: 2px dotted black;
-                "
-              ></div>
+                "></div>
               <span class="mx-2">Plan</span>
             </div>
             <div class="d-flex align-items-center">
-              <div
-                style="
+              <div style="
                   background-color: transparent;
                   width: 20px;
                   height: 20px;
                   border: 2px solid black;
-                "
-              ></div>
+                "></div>
               <span class="mx-2">Actual</span>
             </div>
           </div>
-          <button
-            class="btn btn-info text-white mx-2"
-            @click="openAddFindingModal()"
-          >
+          <button class="btn btn-info text-white mx-2" @click="openAddFindingModal()">
             Add Finding
           </button>
         </div>
@@ -159,7 +107,9 @@
             <thead class="text-center">
               <tr>
                 <th id="fixCol-head-1" rowspan="2">No</th>
-                <th id="fixCol-schedule" rowspan="2">Is Schedule</th>
+                <th id="fixCol-schedule" rowspan="2">
+                  Status
+                </th>
                 <th id="fixCol-head-2" rowspan="2">Line</th>
                 <th id="fixCol-head-3" rowspan="2">Zone</th>
                 <th id="fixCol-head-4" rowspan="2">No Kanban</th>
@@ -252,28 +202,42 @@
               <tr v-if="isLoading">
                 <td colspan="10" class="p-0" style="height: 200px">
                   <div class="vl-parent p-0" style="height: 100%">
-                    <loading
-                      v-model:active="isLoading"
-                      :can-cancel="true"
-                      :is-full-page="false"
-                      :on-cancel="onCancel"
-                    />
+                    <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false"
+                      :on-cancel="onCancel" />
                   </div>
                 </td>
               </tr>
 
-              <tr
-                v-else-if="!isLoading && findingList?.length > 0"
-                v-for="(finding, findingIndex) in findingList"
-                :key="finding"
-              >
-                <td id="fixCol-1">{{ findingIndex + 1 }}</td>
-                <td id="fixCol-schedule-td" class="text-center">
-                  <CIcon
-                    v-if="finding.sub_schedule_id"
-                    icon="cil-check"
-                    size="sm"
-                  />
+              <tr v-else-if="!isLoading && findingList?.length > 0" v-for="(finding, findingIndex) in findingList"
+                :key="finding">
+                <td id="fixCol-1">
+                  {{ findingIndex + 1 }}
+                </td>
+                <td id="fixCol-schedule-td" class="text-left">
+                  <div v-if="finding.sub_schedule_id">
+                    <div class="btn m-1 rounded-pill align-items-center justify-content-center p-1 text-center"
+                      style="background: green;height: 15px;width: 15px">
+                    </div>
+                    <label style="font-size: 9px">Schedule</label>
+                  </div>
+                  <div v-if="!finding.sub_schedule_id">
+                    <div class="btn m-1 rounded-pill align-items-center justify-content-center p-1 text-center"
+                      style="background: red;height: 15px;width: 15px">
+                    </div>
+                    <label style="font-size: 9px">Temuan</label>
+                  </div>
+                  <div v-if="finding.is_need_improvement">
+                    <div class="btn m-1 rounded-pill align-items-center justify-content-center p-1 text-center"
+                      style="background: cyan;height: 15px;width: 15px">
+                    </div>
+                    <label style="font-size: 9px">Kaizen</label>
+                  </div>
+                  <div v-if="finding.is_change_sop">
+                    <div class="btn m-1 rounded-pill align-items-center justify-content-center p-1 text-center"
+                      style="background: black;height: 15px;width: 15px">
+                    </div>
+                    <label style="font-size: 9px">Revisi SOP</label>
+                  </div>
                 </td>
                 <td id="fixCol-2">{{ finding.line_nm }}</td>
                 <td id="fixCol-3" class="text-center">{{ finding.zone_nm }}</td>
@@ -288,112 +252,72 @@
                   {{ finding.time_cm }}
                 </td>
                 <td class="text-center">
-                  <CIcon
-                    v-if="finding.time_yokoten"
-                    icon="cil-check"
-                    size="sm"
-                  />
+                  <CIcon v-if="finding.time_yokoten" icon="cil-check" size="sm" />
                 </td>
-                <td
-                  class="text-center"
-                  v-for="optChange in changeOpts"
-                  :key="optChange"
-                >
-                  <CIcon
-                    v-if="
-                      finding.opt_changes != null &&
-                      finding.opt_changes
-                        ?.split(';')
-                        .findIndex((x) => x == optChange.system_value) != -1
-                    "
-                    icon="cil-check"
-                    size="sm"
-                  />
+                <td class="text-center" v-for="optChange in changeOpts" :key="optChange">
+                  <CIcon v-if="
+                    finding.opt_changes != null &&
+                    finding.opt_changes
+                      ?.split(';')
+                      .findIndex((x) => x == optChange.system_value) != -1
+                  " icon="cil-check" size="sm" />
                 </td>
                 <td class="text-center" v-for="dept in deptOpts" :key="dept">
-                  <CIcon
-                    v-if="
-                      finding.opt_depts != null &&
-                      finding.opt_depts
-                        ?.split(';')
-                        .findIndex((x) => x == dept.system_value) != -1
-                    "
-                    icon="cil-check"
-                    size="sm"
-                  />
+                  <CIcon v-if="
+                    finding.opt_depts != null &&
+                    finding.opt_depts
+                      ?.split(';')
+                      .findIndex((x) => x == dept.system_value) != -1
+                  " icon="cil-check" size="sm" />
                 </td>
-                <td
-                  v-for="item in totalDate"
-                  :key="item.idx"
-                  style="min-width: 30px"
-                >
-                  <div
-                    v-if="item == finding.week_plan - 1"
-                    :style="`width: 20px; height: 20px; border: 2px dotted #64748b; background-color: ${
-                      finding.status_check == 'CLOSED'
-                        ? '#bbf7d0'
-                        : finding.status_check == 'DELAY'
-                        ? '#fee2e2'
-                        : '#f3f4f6'
-                    }`"
-                  ></div>
+                <td v-for="item in totalDate" :key="item.idx" style="min-width: 30px">
+                  <div v-if="item == finding.week_plan - 1" :style="`width: 20px; height: 20px; border: 2px dotted #64748b; background-color: ${finding.status_check == 'CLOSED'
+                    ? '#bbf7d0'
+                    : finding.status_check == 'DELAY'
+                      ? '#fee2e2'
+                      : '#f3f4f6'
+                    }`"></div>
 
-                  <div
-                    v-if="item == finding.week_actual - 1"
-                    class="mt-2"
-                    style="
+                  <div v-if="item == finding.week_actual - 1" class="mt-2" style="
                       width: 20px;
                       height: 20px;
                       border: 2px solid #64748b;
                       background-color: #bbf7d0;
-                    "
-                  ></div>
+                    "></div>
                 </td>
                 <td class="text-center">
-                  <img
-                    v-if="finding.evaluation_nm"
-                    :src="getImage(finding.evaluation_nm)"
-                    :alt="getImage(finding.evaluation_nm)"
-                    width="50"
-                    height="50"
-                  />
+                  <img v-if="finding.evaluation_nm" :src="getImage(finding.evaluation_nm)"
+                    :alt="getImage(finding.evaluation_nm)" width="50" height="50" />
                   <span v-else class="text-muted"> No Evaluation</span>
                 </td>
                 <td>
                   <div class="d-flex gap-2">
-                    <button
-                      v-if="finding.finding_img"
-                      class="btn btn-info btn-sm text-white w-full my-1"
-                      @click="showModalFindingImage(finding)"
-                    >
+                    <button v-if="finding.finding_img" class="btn btn-info btn-sm text-white w-full my-1"
+                      @click="showModalFindingImage(finding)">
                       Finding image
                     </button>
                     <button v-else class="btn btn-secondary btn-sm" disabled>
                       No Image
                     </button>
-                    <button
-                      :class="{
-                        'btn btn-sm': true,
-                        'btn-info text-white': finding.kaizen_file,
-                        'btn-secondary': !finding.kaizen_file,
-                      }"
-                      @click="onClickDownloadKaizen(finding.kaizen_file)"
-                      :disabled="!finding.kaizen_file"
-                    >
+                    <div v-if="finding.is_change_sop">
+                      <button class="btn btn-info btn-sm"
+                        @click="showSopModal(finding?.sop_file_before, finding?.sop_file_after)">
+                        File SOP
+                      </button>
+                    </div>
+                    <button :class="{
+                      'btn btn-sm': true,
+                      'btn-info text-white': finding.kaizen_file,
+                      'btn-secondary': !finding.kaizen_file,
+                    }" @click="onClickDownloadKaizen(finding.kaizen_file)" :disabled="!finding.kaizen_file">
                       {{
                         finding.kaizen_file ? 'Download Kaizen' : 'No Kaizen'
                       }}
                     </button>
-                    <button
-                      class="btn btn-info btn-sm text-white"
-                      @click="openEditFindingModal(finding, findingIndex)"
-                    >
+                    <button class="btn btn-info btn-sm text-white" @click="openEditFindingModal(finding, findingIndex)">
                       Edit
                     </button>
-                    <button
-                      class="btn btn-warning btn-sm text-white"
-                      @click="deleteFinding(finding.finding_id)"
-                    >
+                    <button class="btn btn-warning btn-sm text-white" @click="deleteFinding(finding.finding_id)">
                       Delete
                     </button>
                   </div>
@@ -411,32 +335,18 @@
           </table>
         </div>
       </div>
-      <Pagination
-        :totalPages="totalPage"
-        :perPage="currentPageLimit"
-        :currentPage="currentPage"
-        @changePage="onPageChange"
-        :totalPage="totalPage"
-        @changeLimit="onPageChangeLimit"
-      />
+      <Pagination :totalPages="totalPage" :perPage="currentPageLimit" :currentPage="currentPage"
+        @changePage="onPageChange" :totalPage="totalPage" @changeLimit="onPageChangeLimit" />
     </div>
 
     <!-- edit modal -->
-    <CModal
-      backdrop="static"
-      size="xl"
-      :visible="editFindingModal"
-      @close="
-        () => {
-          editFindingModal = false
-        }
-      "
-      aria-labelledby="StaticBackdropExampleLabel"
-    >
+    <CModal backdrop="static" size="xl" :visible="editFindingModal" @close="
+      () => {
+        editFindingModal = false
+      }
+    " aria-labelledby="StaticBackdropExampleLabel">
       <CModalHeader>
-        <CModalTitle id="StaticBackdropExampleLabel"
-          >Update finding 4S</CModalTitle
-        >
+        <CModalTitle id="StaticBackdropExampleLabel">Update finding 4S</CModalTitle>
       </CModalHeader>
       <!-- <CModalBody>
         <div class="row">
@@ -562,44 +472,25 @@
               <!-- <VueMultiselect disabled v-model="selectedLineID" :options="getLinesOpts" optionLabel="text"
                 optionValue="id" :customLabel="customLabel">
               </VueMultiselect> -->
-              <input
-                type="text"
-                class="form-control"
-                :value="selectedLineNm"
-                disabled
-              />
+              <input type="text" class="form-control" :value="selectedLineNm" disabled />
             </div>
             <div class="mb-2">
               <label class="mb-1">Zone </label>
-              <input
-                type="text"
-                class="form-control"
-                :value="selectedZoneName"
-                disabled
-              />
+              <input type="text" class="form-control" :value="selectedZoneName" disabled />
             </div>
           </div>
           <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Freq</label>
               <select class="form-select" v-model="selectedFreqID" disabled>
-                <option
-                  v-for="freq in getFreqsOpts"
-                  :key="freq.id"
-                  :value="freq.id"
-                >
+                <option v-for="freq in getFreqsOpts" :key="freq.id" :value="freq.id">
                   {{ freq.text }}
                 </option>
               </select>
             </div>
             <div class="mb-2">
               <label class="mb-1">Kanban</label>
-              <input
-                type="text"
-                class="form-control"
-                :value="selectedKanbanNo"
-                disabled
-              />
+              <input type="text" class="form-control" :value="selectedKanbanNo" disabled />
             </div>
           </div>
         </div>
@@ -607,13 +498,7 @@
           <div class="col-md-12">
             <div class="mb-2">
               <label class="mb-1">Finding Desc</label>
-              <input
-                type="text"
-                class="form-control"
-                v-model="findingDesc"
-                placeholder="Write Finding Desc"
-                disabled
-              />
+              <input type="text" class="form-control" v-model="findingDesc" placeholder="Write Finding Desc" disabled />
             </div>
           </div>
         </div>
@@ -621,23 +506,13 @@
           <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Finding Date</label>
-              <input
-                type="date"
-                class="form-control"
-                v-model="findingDate"
-                placeholder="Select Finding Date"
-                disabled
-              />
+              <input type="date" class="form-control" v-model="findingDate" placeholder="Select Finding Date"
+                disabled />
             </div>
             <div class="mb-2">
               <label class="mb-1">Finding PIC</label>
-              <VueMultiselect
-                v-model="selectedPIC"
-                :options="picData"
-                :custom-label="customPicOptions"
-                class="vue-multi-select"
-                :disabled="true"
-              >
+              <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions"
+                class="vue-multi-select" :disabled="true">
               </VueMultiselect>
             </div>
           </div>
@@ -645,41 +520,19 @@
             <div class="mb-2">
               <label class="mb-1">Reduce Time Countermeasure (Menit)</label>
               <div class="d-flex align-items-center">
-                <input
-                  type="checkbox"
-                  id="vehicle1"
-                  name="vehicle1"
-                  value="Bike"
-                  v-model="enabledReduceTime"
-                  class="me-2"
-                  style="height: 20px; width: 20px"
-                />
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="timeCM"
-                  :disabled="!enabledReduceTime"
-                  @keypress="
-                    $event.key.match(/^[\d]$/) ? '' : $event.preventDefault()
-                  "
-                />
+                <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" v-model="enabledReduceTime"
+                  class="me-2" style="height: 20px; width: 20px" />
+                <input type="text" class="form-control" v-model="timeCM" :disabled="!enabledReduceTime" @keypress="
+                  $event.key.match(/^[\d]$/) ? '' : $event.preventDefault()
+                  " />
               </div>
-              <small v-if="!enabledReduceTime" class="text-info"
-                >* Ceklis & isi waktu pengurangan jika ada</small
-              >
-              <small v-else class="text-success"
-                >* Abaikan jika tidak ingin di ubah</small
-              >
+              <small v-if="!enabledReduceTime" class="text-info">* Ceklis & isi waktu pengurangan jika ada</small>
+              <small v-else class="text-success">* Abaikan jika tidak ingin di ubah</small>
             </div>
             <div class="mb-2">
               <label class="mb-1">PIC Countermeasure</label>
-              <VueMultiselect
-                v-model="actualPIC"
-                :disabled="findingActionType == 'update'"
-                :options="picData"
-                :custom-label="customPicOptions"
-                class="vue-multi-select"
-              >
+              <VueMultiselect v-model="actualPIC" :disabled="findingActionType == 'update'" :options="picData"
+                :custom-label="customPicOptions" class="vue-multi-select">
               </VueMultiselect>
             </div>
           </div>
@@ -688,23 +541,14 @@
           <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Plan Countermeasure Date</label>
-              <input
-                type="date"
-                class="form-control"
-                v-model="planCMDate"
-                disabled
-              />
+              <input type="date" class="form-control" v-model="planCMDate" disabled />
             </div>
           </div>
           <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Actual Countermeasure Date</label>
-              <input
-                type="date"
-                class="form-control"
-                v-model="actualCMDate"
-                :disabled="findingActionType == 'update'"
-              />
+              <input type="date" class="form-control" v-model="actualCMDate"
+                :disabled="findingActionType == 'update'" />
             </div>
           </div>
         </div>
@@ -712,24 +556,15 @@
           <div class="col-md-12">
             <div class="mb-2">
               <label class="mb-1">Plan Countermeasure Desc</label>
-              <input
-                type="text"
-                class="form-control"
-                v-model="planCMDesc"
-                placeholder="Write Plan Countermeasure Desc"
-              />
+              <input type="text" class="form-control" v-model="planCMDesc"
+                placeholder="Write Plan Countermeasure Desc" />
             </div>
           </div>
           <div class="col-md-12 col-12">
             <div class="mb-2">
               <label class="mb-1">Department Terkait</label>
-              <treeselect
-                class=""
-                v-if="getSystemsOptDept"
-                v-model="optDepartment"
-                :multiple="true"
-                :options="getSystemsOptDept"
-              />
+              <treeselect class="" v-if="getSystemsOptDept" v-model="optDepartment" :multiple="true"
+                :options="getSystemsOptDept" />
             </div>
           </div>
         </div>
@@ -739,14 +574,30 @@
               <label class="mb-1">Perubahan Standard</label>
               <select class="form-select" v-model="optChanges">
                 <option value="null" selected>Select Standart</option>
-                <option
-                  v-for="optChange in optChangeData"
-                  :key="optChange"
-                  :value="optChange.system_value"
-                >
+                <option v-for="optChange in optChangeData" :key="optChange" :value="optChange.system_value">
                   {{ optChange.system_value }}
                 </option>
               </select>
+            </div>
+          </div>
+          <div class="col-12 col-md-12">
+            <div class="mb-2">
+              <div class="card p-2">
+                <label>Apakah ada perubahan SOP?</label>
+                <CFormSwitch v-model="is_change_sop" />
+                <div v-if="is_change_sop">
+                  <input ref="kanban_sop" class="form-control" type="file" @change="onChangeSopFile($event)">
+                  <button class="btn btn-sm btn-success" @click="uploadSopFile">Upload SOP</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-12">
+            <div class="mb-2">
+              <div class="card p-2">
+                <label>Apakah ada Improvement?</label>
+                <CFormSwitch v-model="is_need_improvement" />
+              </div>
             </div>
           </div>
         </div>
@@ -754,52 +605,28 @@
           <div class="col-md-12">
             <div class="mb-2">
               <label class="mb-1">Evaluation</label>
-              <select
-                class="form-select"
-                v-model="evaluationName"
-                :disabled="findingActionType == 'update'"
-              >
+              <select class="form-select" v-model="evaluationName" :disabled="findingActionType == 'update'">
                 <option value="null" selected>Select Evaluation</option>
-                <option
-                  v-for="optEval in optEvaluation"
-                  :key="optEval"
-                  :value="optEval.system_value"
-                >
+                <option v-for="optEval in optEvaluation" :key="optEval" :value="optEval.system_value">
                   {{ optEval.system_value }}
                 </option>
               </select>
               <table class="table">
                 <tr>
                   <th>
-                    <img
-                      src="@/../public/tanoko/0.png"
-                      width="50"
-                      height="50"
-                    />
+                    <img src="@/../public/tanoko/0.png" width="50" height="50" />
                   </th>
                   <th>Order Part</th>
                   <th>
-                    <img
-                      src="@/../public/tanoko/1.png"
-                      width="50"
-                      height="50"
-                    />
+                    <img src="@/../public/tanoko/1.png" width="50" height="50" />
                   </th>
                   <th>Countermeasure</th>
                   <th>
-                    <img
-                      src="@/../public/tanoko/2.png"
-                      width="50"
-                      height="50"
-                    />
+                    <img src="@/../public/tanoko/2.png" width="50" height="50" />
                   </th>
                   <th>Monitor / Follow</th>
                   <th>
-                    <img
-                      src="@/../public/tanoko/3.png"
-                      width="50"
-                      height="50"
-                    />
+                    <img src="@/../public/tanoko/3.png" width="50" height="50" />
                   </th>
                   <th>Finish</th>
                 </tr>
@@ -807,11 +634,7 @@
             </div>
             <div class="mb-2">
               <label class="mb-1">Status Countermeasure</label>
-              <select
-                v-model="cmJudg"
-                class="form-select"
-                :disabled="findingActionType == 'update'"
-              >
+              <select v-model="cmJudg" class="form-select" :disabled="findingActionType == 'update'">
                 <option value="true">Sudah</option>
                 <option value="false">Belum</option>
               </select>
@@ -831,14 +654,11 @@
         </div>
       </CModalBody>
       <CModalFooter>
-        <CButton
-          color="secondary"
-          @click="
-            () => {
-              editFindingModal = false
-            }
-          "
-        >
+        <CButton color="secondary" @click="
+          () => {
+            editFindingModal = false
+          }
+        ">
           Close
         </CButton>
         <CButton color="primary" @click="updateFinding()">
@@ -851,18 +671,44 @@
         </CButton>
       </CModalFooter>
     </CModal>
+    <!-- sop modal -->
+    <CModal backdrop="static" fullscreen :visible="isSopModal" @close="
+      () => {
+        isSopModal = false
+      }
+    ">
+      <CModalHeader>
+        <CModalTitle>Perubahan SOP</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <table class="table table-bordered">
+          <tr>
+            <th class="text-center" style="font-size: 30px">Before</th>
+          </tr>
+          <tr>
+            <td class="text-center">
+              <img v-if="sopBefore && !sopBefore.includes('.pdf')" :src="sopBefore" width="400" alt="Sop" />
+              <vue-pdf-embed v-else-if="sopBefore && sopBefore.includes('.pdf')" :source="sopBefore" />
+              <h3 v-else>No SOP</h3>
+            </td>
+          </tr>
+          <tr>
+            <th class="text-center" style="font-size: 30px">After</th>
+          </tr>
+          <tr>
+            <td class="text-center"><img v-if="sopAfter && !sopAfter.includes('.pdf')" :src="sopAfter" width="400"
+                alt="Sop" />
+              <vue-pdf-embed v-else-if="sopAfter && sopAfter.includes('.pdf')" :source="sopAfter" />
+              <h3 v-else>No SOP</h3>
+            </td>
+          </tr>
+        </table>
+      </CModalBody>
+    </CModal>
     <!-- <ModalForm4sFinding :visiblee="modalFormFinding" :loadedFinding="" /> -->
-    <ModalImage
-      :img="selectedFindingImage"
-      :visible="isVisibleFindingImage"
-      @close="isVisibleFindingImage = false"
-    />
-    <ModalForm4sFinding
-      :visible="addFindingModal"
-      :is-input="true"
-      :loadedFinding="null"
-      @close="onCloseModalFinding($event)"
-    />
+    <ModalImage :img="selectedFindingImage" :visible="isVisibleFindingImage" @close="isVisibleFindingImage = false" />
+    <ModalForm4sFinding :visible="addFindingModal" :is-input="true" :loadedFinding="null"
+      @close="onCloseModalFinding($event)" />
   </div>
 </template>
 
@@ -890,6 +736,8 @@ import Treeselect from 'vue3-treeselect'
 import ModalForm4sFinding from '@/components/4s/ModalForm4sFinding.vue'
 import ModalImage from '@/components/ModalImage.vue'
 
+import VuePdfEmbed from 'vue-pdf-embed'
+
 export default {
   name: 'Temuan4S',
   // eslint-disable-next-line vue/no-unused-components
@@ -900,6 +748,7 @@ export default {
     Treeselect,
     ModalForm4sFinding,
     ModalImage,
+    VuePdfEmbed
   },
   data() {
     return {
@@ -1017,6 +866,12 @@ export default {
       selectedFindingImage: null,
       isVisibleFindingImage: false,
       addFindingModal: false,
+      is_change_sop: false,
+      is_need_improvement: false,
+      kanban_sop: null,
+      isSopModal: false,
+      sopBefore: null,
+      sopAfter: null,
     }
   },
   computed: {
@@ -1042,9 +897,8 @@ export default {
       if (this.selectedMonth) {
         this.generateDate()
         let idx = this.idxMonth.indexOf(this.selectedMonth.split('-')[1])
-        this.yearMonth = `${this.monthStr[idx]} ${
-          this.selectedMonth.split('-')[0]
-        }`
+        this.yearMonth = `${this.monthStr[idx]} ${this.selectedMonth.split('-')[0]
+          }`
       }
     },
     zoneGetID: function () {
@@ -1056,6 +910,45 @@ export default {
     console.log('zones', this.getZoneOpts)
   },
   methods: {
+    showSopModal(sopBefore, sopAfter) {
+      this.sopBefore = sopBefore
+      this.sopAfter = sopAfter
+      this.isSopModal = true
+    },
+    onChangeSopFile(event) {
+      this.kanban_sop = event.target.files[0]
+    },
+    async uploadSopFile() {
+      try {
+        const formData = new FormData()
+        formData.append('dest', 'kanban-sop')
+        formData.append('kanban_id', this.selectedKanbanID)
+        formData.append('sop_file', this.kanban_sop)
+        formData.append('finding_4s_id', this.selectedFindingID)
+
+        const upload = await ApiService.post(
+          `/master/kanbans/upload-sop?dest=kanban-sop`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+              'Content-Type': 'multipart/form-data',
+            },
+          },
+        )
+
+        if (upload.data.data) {
+          toast.success('Susccessfully Upload SOP', {
+            autoClose: 1000,
+          })
+        }
+      } catch (error) {
+        toast.error(JSON.stringify(error.message))
+        setTimeout(() => {
+          toast.remove()
+        }, 2000)
+      }
+    },
     customLabel(value) {
       return `${value.text}`
     },
@@ -1080,9 +973,8 @@ export default {
       this.getFindings()
     },
     getImage(eval_nm) {
-      return `./tanoko/${
-        this.evaluationOpts.findIndex((x) => x.system_value == eval_nm) + '.png'
-      }`
+      return `./tanoko/${this.evaluationOpts.findIndex((x) => x.system_value == eval_nm) + '.png'
+        }`
     },
     async getSystem() {
       try {
@@ -1143,9 +1035,9 @@ export default {
       this.selectedPIC =
         data.finding_pic_id != null
           ? {
-              pic_name: data.finding_pic_nm,
-              pic_id: data.finding_pic_id,
-            }
+            pic_name: data.finding_pic_nm,
+            pic_id: data.finding_pic_id,
+          }
           : null
       this.findingDate = data.finding_date
       this.findingDesc = data.finding_desc
@@ -1154,6 +1046,8 @@ export default {
       this.timeCM = data.time_cm
       this.timeYokoten = data.time_yokoten
       this.optChanges = data.opt_changes
+      this.is_change_sop = data.is_change_sop
+      this.is_need_improvement = data.is_need_improvement
       // this.optDepartment = data.opt_depts
       this.optDepartment =
         data.opt_depts != null ? data.opt_depts.split(';') : null
@@ -1194,6 +1088,8 @@ export default {
         actual_pic_id: this.actualPIC != null ? this.actualPIC.pic_id : null,
         actual_cm_date: this.actualCMDate,
         evaluation_nm: this.evaluationName,
+        is_change_sop: this.is_change_sop,
+        is_need_improvement: this.is_need_improvement,
       }
 
       const add = await ApiService.put(
@@ -1250,11 +1146,11 @@ export default {
       await this.getFindings()
     },
     resetFilter() {
-      ;(this.selectedLineIDFilter = ' -1'),
+      ; (this.selectedLineIDFilter = ' -1'),
         (this.selectedFreqIDFilter = '-1'),
         (this.selectedGroupIDFilter = '-1'),
         (this.selectedZoneIDFilter = '-1')
-      ;(this.selectedKanbanIDFilter = '-1'), this.getFindings()
+        ; (this.selectedKanbanIDFilter = '-1'), this.getFindings()
     },
 
     async getUsers() {
@@ -1649,9 +1545,9 @@ export default {
 
 /* highlight on hover */
 
-.multiselect--disabled > .multiselect__tags,
-.multiselect--disabled > .multiselect__tags > .multiselect__single,
-.multiselect--disabled > .multiselect__select {
+.multiselect--disabled>.multiselect__tags,
+.multiselect--disabled>.multiselect__tags>.multiselect__single,
+.multiselect--disabled>.multiselect__select {
   background: #d8dbe0 !important;
 }
 </style>

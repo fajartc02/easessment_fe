@@ -2,11 +2,7 @@
   <template v-if="getKanbanDetail && !isLoading">
     <div class="row">
       <div class="col">
-        <button
-          v-if="!isEditKanban"
-          class="btn btn-sm btn-warning"
-          @click="isEditKanban = true"
-        >
+        <button v-if="!isEditKanban" class="btn btn-sm btn-warning" @click="isEditKanban = true">
           Edit Kanban
         </button>
         <button v-else class="btn btn-sm btn-success" @click="ActionEditKanban">
@@ -23,6 +19,7 @@
                 {{ getKanbanDetail.freq_nm }}
               </th>
               <th rowspan="2">SOP</th>
+              <th rowspan="2">Revisi Ke</th>
             </tr>
             <tr>
               <th>No Kanban</th>
@@ -40,14 +37,15 @@
               <td>{{ getKanbanDetail.zone_nm }}</td>
               <td>{{ getKanbanDetail.group_nm }}</td>
               <td>
-                <img
-                  v-if="getKanbanDetail?.sop_file"
-                  :src="getKanbanDetail?.sop_file"
-                  width="100"
-                  alt="Sop"
-                />
-                <span v-else>"changes this to Visual SOP"</span>
+                <img v-if="getKanbanDetail?.sop_file && !getKanbanDetail?.sop_file.includes('.pdf')"
+                  :src="getKanbanDetail?.sop_file" width="100" alt="Sop" />
+                <vue-pdf-embed v-else-if="getKanbanDetail?.sop_file && getKanbanDetail?.sop_file.includes('.pdf')"
+                  :source="getKanbanDetail?.sop_file" width="400" />
+                <span v-else>No SOP</span>
                 <!-- handling file upload SOP -->
+              </td>
+              <td>
+                {{ getKanbanDetail.total_revision }}
               </td>
             </tr>
           </tbody>
@@ -60,11 +58,7 @@
               <th colspan="3">
                 4S Kanban
                 <CFormSelect v-model="getKanbanDetail.line_id">
-                  <option
-                    v-for="line in getLinesOptsWithoutAll"
-                    :key="line.id"
-                    :value="line.id"
-                  >
+                  <option v-for="line in getLinesOptsWithoutAll" :key="line.id" :value="line.id">
                     {{ line.text }}
                   </option>
                 </CFormSelect>
@@ -73,11 +67,7 @@
               <th colspan="2">
                 Periodic
                 <CFormSelect v-model="getKanbanDetail.freq_id">
-                  <option
-                    v-for="freq in getFreqsOptsWithoutAll"
-                    :key="freq.id"
-                    :value="freq.id"
-                  >
+                  <option v-for="freq in getFreqsOptsWithoutAll" :key="freq.id" :value="freq.id">
                     {{ freq.text }}
                   </option>
                 </CFormSelect>
@@ -95,49 +85,28 @@
           <tbody>
             <tr>
               <td>
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="getKanbanDetail.kanban_no"
-                />
+                <input type="text" class="form-control" v-model="getKanbanDetail.kanban_no" />
               </td>
               <td>
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="getKanbanDetail.area_nm"
-                />
+                <input type="text" class="form-control" v-model="getKanbanDetail.area_nm" />
               </td>
               <td>{{ totalItemCheckTime }}</td>
               <td>
                 <CFormSelect v-model="getKanbanDetail.zone_id">
-                  <option
-                    v-for="zone in getZoneOptsWithoutAll"
-                    :key="zone.id"
-                    :value="zone.id"
-                  >
+                  <option v-for="zone in getZoneOptsWithoutAll" :key="zone.id" :value="zone.id">
                     {{ zone.text }}
                   </option>
                 </CFormSelect>
               </td>
               <td>
                 <CFormSelect v-model="getKanbanDetail.group_id">
-                  <option
-                    v-for="group in getGroupsOptsWithoutAll"
-                    :key="group.id"
-                    :value="group.id"
-                  >
+                  <option v-for="group in getGroupsOptsWithoutAll" :key="group.id" :value="group.id">
                     {{ group.text }}
                   </option>
                 </CFormSelect>
               </td>
               <td>
-                <input
-                  ref="kanban_sop"
-                  type="file"
-                  class="form-control"
-                  @change="onChangeSopFile($event)"
-                />
+                <input ref="kanban_sop" type="file" class="form-control" @change="onChangeSopFile($event)" />
               </td>
             </tr>
           </tbody>
@@ -163,11 +132,8 @@
           <tbody>
             <!-- Start: EDIT ITEMCHECK -->
             <template v-if="getItemchecksWithEditableStatus">
-              <tr
-                v-for="itemcheck in getItemchecksWithEditableStatus"
-                :key="itemcheck.item_check_kanban_id"
-                class="tr-centered"
-              >
+              <tr v-for="itemcheck in getItemchecksWithEditableStatus" :key="itemcheck.item_check_kanban_id"
+                class="tr-centered">
                 <template v-if="!itemcheck.is_edit">
                   <td>{{ itemcheck.no }}</td>
                   <td>{{ itemcheck.item_check_nm }}</td>
@@ -176,11 +142,7 @@
                   <td>{{ itemcheck.control_point }}</td>
                   <td>
                     <div class="row" v-if="itemcheck.ilustration_imgs">
-                      <div
-                        v-for="itemcheckImg in itemcheck.ilustration_imgs"
-                        :key="itemcheckImg.path"
-                        class="col-4"
-                      >
+                      <div v-for="itemcheckImg in itemcheck.ilustration_imgs" :key="itemcheckImg.path" class="col-4">
                         <img :src="itemcheckImg.img" width="90" />
                       </div>
                     </div>
@@ -189,14 +151,11 @@
                     </template>
                   </td>
                   <td>
-                    <button
-                      class="btn btn-sm btn-warning"
-                      @click="
-                        () => {
-                          itemcheck.is_edit = true
-                        }
-                      "
-                    >
+                    <button class="btn btn-sm btn-warning" @click="
+                      () => {
+                        itemcheck.is_edit = true
+                      }
+                    ">
                       Edit
                     </button>
                   </td>
@@ -204,60 +163,28 @@
                 <template v-else>
                   <td>{{ itemcheck.no }}</td>
                   <td>
-                    <input
-                      type="text"
-                      class="form-control"
-                      v-model="itemcheck.item_check_nm"
-                    />
+                    <input type="text" class="form-control" v-model="itemcheck.item_check_nm" />
                   </td>
                   <td>
-                    <input
-                      type="number"
-                      class="form-control"
-                      v-model="itemcheck.standart_time"
-                    />
+                    <input type="number" class="form-control" v-model="itemcheck.standart_time" />
                   </td>
                   <td>
-                    <input
-                      type="text"
-                      class="form-control"
-                      v-model="itemcheck.method"
-                    />
+                    <input type="text" class="form-control" v-model="itemcheck.method" />
                   </td>
                   <td>
-                    <input
-                      type="text"
-                      class="form-control"
-                      v-model="itemcheck.control_point"
-                    />
+                    <input type="text" class="form-control" v-model="itemcheck.control_point" />
                   </td>
                   <td>
-                    <input
-                      class="form-control"
-                      type="file"
-                      name="ilustration_imgs[]"
-                      @change="handleFileInputChange"
-                      multiple
-                    />
+                    <input class="form-control" type="file" name="ilustration_imgs[]" @change="handleFileInputChange"
+                      multiple />
                     <table v-if="itemcheck.ilustration_imgs">
-                      <tr
-                        v-for="(image, index) in itemcheck.ilustration_imgs"
-                        :key="index"
-                      >
+                      <tr v-for="(image, index) in itemcheck.ilustration_imgs" :key="index">
                         <td>
-                          <img
-                            v-if="!image.is_deleted"
-                            :src="image.img"
-                            alt="Selected Image"
-                            width="100"
-                          />
+                          <img v-if="!image.is_deleted" :src="image.img" alt="Selected Image" width="100" />
                         </td>
                         <td>
-                          <button
-                            v-if="!image.is_deleted"
-                            class="btn btn-sm btn-sm btn-danger"
-                            @click="removeImage(index, itemcheck)"
-                          >
+                          <button v-if="!image.is_deleted" class="btn btn-sm btn-sm btn-danger"
+                            @click="removeImage(index, itemcheck)">
                             Remove
                           </button>
                         </td>
@@ -265,39 +192,29 @@
                     </table>
                   </td>
                   <td>
-                    <button
-                      class="btn btn-sm btn-success"
-                      @click="
-                        () => {
-                          itemcheck.is_edit = false
-                          ActionUpdateItemCheck(itemcheck)
-                        }
-                      "
-                    >
+                    <button class="btn btn-sm btn-success" @click="
+                      () => {
+                        itemcheck.is_edit = false
+                        ActionUpdateItemCheck(itemcheck)
+                      }
+                    ">
                       Save
                     </button>
                   </td>
                 </template>
                 <td>
-                  <button
-                    class="btn btn-sm btn-danger"
-                    @click="
-                      ActionDeleteItemCheck(itemcheck.item_check_kanban_id)
-                    "
-                  >
+                  <button class="btn btn-sm btn-danger" @click="
+                    ActionDeleteItemCheck(itemcheck.item_check_kanban_id)
+                    ">
                     Delete
                   </button>
                 </td>
                 <td>
-                  <button
-                    :class="{
-                      'btn btn-sm': true,
-                      'btn-primary': itemcheck.total_history > 0,
-                      'btn-secondary': itemcheck.total_history === 0,
-                    }"
-                    :disabled="itemcheck.total_history === 0"
-                    @click="onClickHistoryItemCheck(itemcheck)"
-                  >
+                  <button :class="{
+                    'btn btn-sm': true,
+                    'btn-primary': itemcheck.total_history > 0,
+                    'btn-secondary': itemcheck.total_history === 0,
+                  }" :disabled="itemcheck.total_history === 0" @click="onClickHistoryItemCheck(itemcheck)">
                     History
                   </button>
                 </td>
@@ -311,45 +228,23 @@
             <tr v-if="isAddItemCheck">
               <td></td>
               <td>
-                <input
-                  class="form-control"
-                  type="text"
-                  placeholder="Masukan itemcheck"
-                  v-model="newItemcheck.item_check_nm"
-                />
+                <input class="form-control" type="text" placeholder="Masukan itemcheck"
+                  v-model="newItemcheck.item_check_nm" />
               </td>
               <td>
-                <input
-                  class="form-control"
-                  type="number"
-                  placeholder="Masukan Waktu"
-                  v-model="newItemcheck.standart_time"
-                />
+                <input class="form-control" type="number" placeholder="Masukan Waktu"
+                  v-model="newItemcheck.standart_time" />
               </td>
               <td>
-                <input
-                  class="form-control"
-                  type="text"
-                  placeholder="Masukan Waktu"
-                  v-model="newItemcheck.method"
-                />
+                <input class="form-control" type="text" placeholder="Masukan Waktu" v-model="newItemcheck.method" />
               </td>
               <td>
-                <input
-                  class="form-control"
-                  type="text"
-                  placeholder="Masukan Waktu"
-                  v-model="newItemcheck.control_point"
-                />
+                <input class="form-control" type="text" placeholder="Masukan Waktu"
+                  v-model="newItemcheck.control_point" />
               </td>
               <td>
-                <input
-                  class="form-control"
-                  type="file"
-                  name="ilustration_imgs[]"
-                  @change="handleFileInputChange"
-                  multiple
-                />
+                <input class="form-control" type="file" name="ilustration_imgs[]" @change="handleFileInputChange"
+                  multiple />
 
                 <table v-if="selectedImages.length > 0">
                   <tr v-for="(image, index) in selectedImages" :key="index">
@@ -357,10 +252,7 @@
                       <img :src="image.url" alt="Selected Image" width="100" />
                     </td>
                     <td>
-                      <button
-                        class="btn btn-sm btn-sm btn-danger"
-                        @click="removeImage(index)"
-                      >
+                      <button class="btn btn-sm btn-sm btn-danger" @click="removeImage(index)">
                         Remove
                       </button>
                     </td>
@@ -368,18 +260,12 @@
                 </table>
               </td>
               <td>
-                <button
-                  class="btn btn-sm btn-success"
-                  @click="ActionAddItemCheck"
-                >
+                <button class="btn btn-sm btn-success" @click="ActionAddItemCheck">
                   Save
                 </button>
               </td>
               <td>
-                <button
-                  class="btn btn-sm btn-warning"
-                  @click="cancelAddItemcheck"
-                >
+                <button class="btn btn-sm btn-warning" @click="cancelAddItemcheck">
                   Cancel
                 </button>
               </td>
@@ -387,14 +273,11 @@
             <!-- End: ADD ITEMCHECK -->
             <tr>
               <td colspan="8">
-                <button
-                  class="btn btn-sm btn-primary mx-auto"
-                  @click="
-                    () => {
-                      isAddItemCheck = true
-                    }
-                  "
-                >
+                <button class="btn btn-sm btn-primary mx-auto" @click="
+                  () => {
+                    isAddItemCheck = true
+                  }
+                ">
                   Add Item Check
                 </button>
               </td>
@@ -429,6 +312,8 @@ import { GET_GROUP } from '@/store/modules/group.module'
 import Swal from 'sweetalert2'
 import ApiService from '@/store/api.service'
 import { toast } from 'vue3-toastify'
+
+import VuePdfEmbed from 'vue-pdf-embed'
 
 export default {
   name: 'KanbanItemCheckEdit',
@@ -739,6 +624,7 @@ export default {
   },
   components: {
     NoDataTable,
+    VuePdfEmbed
   },
   mounted() {
     this.preEditKanban()
