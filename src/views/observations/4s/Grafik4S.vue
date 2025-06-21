@@ -50,7 +50,7 @@
                     selectedLineID = detailGraph
                     clickHandler(event, chartContext, config)
                   }
-                    "></apexchart>
+                  "></apexchart>
                 </div>
                 <div class="text-center mt-1">{{ detailGraph.line_nm }}</div>
               </div>
@@ -321,7 +321,7 @@ export default {
       await ApiService.setHeader()
       await ApiService.query('operational/4s/overall', objQuery)
         .then((res) => {
-          this.overallGraphData = res.data.data
+          this.overallGraphData = res?.data?.data
         })
         .catch((err) => {
           console.log(err)

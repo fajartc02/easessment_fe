@@ -245,7 +245,7 @@
                   {{ finding.kanban_no }}
                 </td>
                 <td id="fixCol-5" class="text-center">{{ finding.freq_nm }}</td>
-                <td id="fixCol-6">{{ formatDate(finding.plan_cm_date) }}</td>
+                <td id="fixCol-6">{{ formatDate(finding.finding_date) }}</td>
                 <td id="fixCol-7">{{ finding.finding_desc }}</td>
                 <td class="text-center">{{ finding.finding_pic_nm }}</td>
                 <td class="text-center">
@@ -299,19 +299,31 @@
                     <button v-else class="btn btn-secondary btn-sm" disabled>
                       No Image
                     </button>
-                    <div v-if="finding.is_change_sop">
-                      <button class="btn btn-info btn-sm"
-                        @click="showSopModal(finding?.sop_file_before, finding?.sop_file_after)">
+                    <div>
+                      <button
+                        :class="`btn text-light ${(finding.sop_file_before || finding.sop_file_after) ? 'btn-info' : 'btn-secondary'} btn-sm`"
+                        @click="showSopModal(finding?.sop_file_before, finding?.sop_file_after)"
+                        :disabled="(!finding.sop_file_before && !finding.sop_file_after)">
                         File SOP
                       </button>
                     </div>
-                    <button :class="{
+                    <!-- <button :class="{
                       'btn btn-sm': true,
                       'btn-info text-white': finding.kaizen_file,
                       'btn-secondary': !finding.kaizen_file,
                     }" @click="onClickDownloadKaizen(finding.kaizen_file)" :disabled="!finding.kaizen_file">
                       {{
                         finding.kaizen_file ? 'Download Kaizen' : 'No Kaizen'
+                      }}
+                    </button> -->
+                    <!-- isKaizenModal -->
+                    <button :class="{
+                      'btn btn-sm': true,
+                      'btn-info text-white': finding.kaizen_file,
+                      'btn-secondary': !finding.kaizen_file,
+                    }" @click="showKaizenModal(finding.kaizen_file)" :disabled="!finding.kaizen_file">
+                      {{
+                        finding.kaizen_file ? 'Kaizen Report' : 'No Kaizen'
                       }}
                     </button>
                     <button class="btn btn-info btn-sm text-white" @click="openEditFindingModal(finding, findingIndex)">
@@ -585,9 +597,19 @@
               <div class="card p-2">
                 <label>Apakah ada perubahan SOP?</label>
                 <CFormSwitch v-model="is_change_sop" />
-                <div v-if="is_change_sop">
+                <!-- <div v-if="is_change_sop">
                   <input ref="kanban_sop" class="form-control" type="file" @change="onChangeSopFile($event)">
                   <button class="btn btn-sm btn-success" @click="uploadSopFile">Upload SOP</button>
+                </div> -->
+                <div v-if="is_change_sop" class="col-12 col-md-12">
+                  <CInputGroup class="mb-3">
+                    <CInputGroupText>SOP</CInputGroupText>
+                    <CFormInput aria-label="Input your kaizen file" ref="kanban_sop" class="form-control" type="file"
+                      @change="onChangeSopFile($event)" />
+                    <CInputGroupText class="p-0">
+                      <button class="btn btn-sm btn-success" @click="uploadSopFile()">Upload SOP</button>
+                    </CInputGroupText>
+                  </CInputGroup>
                 </div>
               </div>
             </div>
@@ -597,6 +619,19 @@
               <div class="card p-2">
                 <label>Apakah ada Improvement?</label>
                 <CFormSwitch v-model="is_need_improvement" />
+                <div v-if="is_need_improvement" class="row">
+                  <div class="col-12 col-md-12">
+                    <CInputGroup class="mb-3">
+                      <CInputGroupText>Kaizen File</CInputGroupText>
+                      <CFormInput @change="onChangeKaizenFile($event)" ref="kaizen_file"
+                        aria-label="Input your kaizen file" type="file" />
+                      <CInputGroupText class="p-0">
+                        <button class="btn btn-sm btn-success" @click="uploadKaizen(selectedFindingID)">Upload
+                          Kaizen</button>
+                      </CInputGroupText>
+                    </CInputGroup>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -652,6 +687,7 @@
             </div>
           </div>
         </div>
+
       </CModalBody>
       <CModalFooter>
         <CButton color="secondary" @click="
@@ -671,7 +707,7 @@
         </CButton>
       </CModalFooter>
     </CModal>
-    <!-- sop modal -->
+    <!-- SOP Modal -->
     <CModal backdrop="static" fullscreen :visible="isSopModal" @close="
       () => {
         isSopModal = false
@@ -705,8 +741,31 @@
         </table>
       </CModalBody>
     </CModal>
+
+    <!-- Kaizen Modal -->
+    <CModal backdrop="static" fullscreen :visible="isKaizenModal" @close="
+      () => {
+        isKaizenModal = false
+      }
+    ">
+      <CModalHeader>
+        <CModalTitle>Kaizen Report</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <table class="table table-bordered">
+          <tr>
+            <td class="text-center">
+              <img v-if="kaizenFile && !kaizenFile.includes('.pdf')" :src="kaizenFile" width="400" alt="KZ" />
+              <vue-pdf-embed v-else-if="kaizenFile && kaizenFile.includes('.pdf')" :source="kaizenFile" />
+              <h3 v-else>No Kaizen</h3>
+            </td>
+          </tr>
+        </table>
+      </CModalBody>
+    </CModal>
     <!-- <ModalForm4sFinding :visiblee="modalFormFinding" :loadedFinding="" /> -->
     <ModalImage :img="selectedFindingImage" :visible="isVisibleFindingImage" @close="isVisibleFindingImage = false" />
+    <!-- v-if="addFindingModal" -->
     <ModalForm4sFinding :visible="addFindingModal" :is-input="true" :loadedFinding="null"
       @close="onCloseModalFinding($event)" />
   </div>
@@ -872,6 +931,8 @@ export default {
       isSopModal: false,
       sopBefore: null,
       sopAfter: null,
+      kaizenFile: null,
+      isKaizenModal: false,
     }
   },
   computed: {
@@ -910,13 +971,44 @@ export default {
     console.log('zones', this.getZoneOpts)
   },
   methods: {
+    async uploadKaizen(finding_id, kaizen_file = null) {
+      if (!kaizen_file && !this.kaizenFile) {
+        toast.info('Please select file')
+        return
+      }
+
+      try {
+        const formData = new FormData()
+        formData.append('finding_id', finding_id)
+        formData.append('dest', '4s-finding-kaizen')
+        formData.append(
+          'kaizen_file',
+          kaizen_file ? kaizen_file : this.kaizenFile,
+        )
+        console.log(formData, 'form data');
+        console.log(this.kaizenFile);
+        await ApiService.post(
+          `/operational/4s/finding/upload-kaizen?dest=4s-finding-kaizen`,
+          formData,
+        )
+      } catch (e) {
+        console.log('uploadKaizen', e)
+      }
+    },
     showSopModal(sopBefore, sopAfter) {
       this.sopBefore = sopBefore
       this.sopAfter = sopAfter
       this.isSopModal = true
     },
+    showKaizenModal(kaizenFile) {
+      this.kaizenFile = kaizenFile
+      this.isKaizenModal = true
+    },
     onChangeSopFile(event) {
       this.kanban_sop = event.target.files[0]
+    },
+    onChangeKaizenFile(event) {
+      this.kaizenFile = event.target.files[0]
     },
     async uploadSopFile() {
       try {
@@ -999,6 +1091,10 @@ export default {
       this.$router.push(`/4s/schedule-check/${mainScheduleID}/${subScheduleID}`)
     },
     async getFindings() {
+      console.log(this.currentPageLimit, 'LIMIT');
+      if (this.currentPageLimit == -1) {
+        this.currentPageLimit = 100000
+      }
       let objQuery = {
         line_id: this.selectedLineIDFilter,
         kanban_id: this.selectedKanbanIDFilter,
@@ -1316,6 +1412,31 @@ export default {
     await this.getEvaluation()
     await this.getOptChangeSystem()
     this.isLoading = false
+    // TRY OPTIMIZING
+    // try {
+    //   // 1. Get things that are required before others
+    //   await Promise.all([
+    //     this.getLines(),
+    //     this.getSystem(),
+    //   ])
+
+    //   // 2. Then things that depend on lines or system
+    //   await Promise.all([
+    //     this.getZone(),
+    //     this.getOptDeptSystem(),
+    //     this.getGroup(),
+    //     this.getKanban(),
+    //     this.getFreq(),
+    //     this.getUsers(),
+    //     this.getFindings(),
+    //     this.getEvaluation(),
+    //     this.getOptChangeSystem(),
+    //   ])
+    // } catch (e) {
+    //   console.error('Load error:', e)
+    // } finally {
+    //   this.isLoading = false
+    // }
   },
 }
 </script>

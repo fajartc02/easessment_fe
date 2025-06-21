@@ -41,7 +41,7 @@
                     $emit('emit-lineID', detailGraph)
                     clickHandler(event, chartContext, config)
                   }
-                    "></apexchart>
+                  "></apexchart>
                 </div>
                 <div class="text-center mt-1">{{ detailGraph.line_nm }}</div>
               </div>
@@ -374,11 +374,11 @@ export default {
       await ApiService.setHeader()
       await ApiService.query('operational/om/overall', objQuery)
         .then((res) => {
-          let mapDataOverall = res.data.data.map(item => {
+          let mapDataOverall = res?.data?.data.map(item => {
             return item.data[0]
           })
           this.overallData = mapDataOverall
-          this.overallGraphData = res.data.data
+          this.overallGraphData = res?.data?.data
         })
         .catch((err) => {
           console.log(err)

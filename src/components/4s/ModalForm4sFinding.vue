@@ -1,21 +1,11 @@
 <template>
   <div class="position-relative">
-    <CModal
-      backdrop="static"
-      size="xl"
-      :visible="visible"
-      @close="closeModal()"
-      aria-labelledby="StaticBackdropExampleLabel"
-    >
+    <CModal backdrop="static" size="xl" :visible="visible" @close="closeModal()"
+      aria-labelledby="StaticBackdropExampleLabel">
       <CModalHeader>
         <CModalTitle id="StaticBackdropExampleLabel">{{ title }}</CModalTitle>
       </CModalHeader>
-      <CForm
-        class="needs-validation"
-        @submit="handleSubmit"
-        novalidate
-        :validated="isFromFindingValidate"
-      >
+      <CForm class="needs-validation" @submit="handleSubmit" novalidate :validated="isFromFindingValidate">
         <CModalBody>
           <div class="row">
             <!-- #region if want to use direct kanban without parent query -->
@@ -44,22 +34,15 @@
               <div class="mb-2">
                 <label class="mb-1">Line</label>
                 <select class="form-select" v-model="mainForm.line_id" required>
-                  <option
-                    v-for="line in getLinesOptsWithoutAll"
-                    :key="line.id"
-                    :value="line.id"
-                  >
+                  <option v-for="line in getLinesOptsWithoutAll" :key="line.id" :value="line.id">
                     {{ line.text }}
                   </option>
                 </select>
               </div>
               <div class="mb-2" :class="{ invalid: showErrorKanban }">
                 <label class="mb-1">Kanban</label>
-                <treeselect
-                  v-model="form.kanban_id"
-                  :options="getKanbansOptsTreeselect"
-                  :disabled="!mainForm.zone_id"
-                />
+                <treeselect v-model="form.kanban_id" :options="getKanbansOptsTreeselect"
+                  :disabled="!mainForm.zone_id" />
               </div>
             </div>
             <div class="col-md-6">
@@ -73,39 +56,22 @@
               </div> -->
               <div class="mb-2" :class="{ invalid: showErrorZone }">
                 <label class="mb-1">Zone</label>
-                <select
-                  class="form-select"
-                  v-model="mainForm.zone_id"
-                  required
-                  :disabled="!mainForm.line_id"
-                >
-                  <option
-                    v-for="zone in getZoneOptsWithoutAll"
-                    :key="zone.id"
-                    :value="zone.id"
-                  >
+                <select class="form-select" v-model="mainForm.zone_id" required :disabled="!mainForm.line_id">
+                  <option v-for="zone in getZoneOptsWithoutAll" :key="zone.id" :value="zone.id">
                     {{ zone.text }}
                   </option>
                 </select>
               </div>
               <div class="mb-2">
                 <label class="mb-1">Freq</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  :value="selectedKanban?.freq_nm"
-                  disabled
-                />
+                <input type="text" class="form-control" :value="selectedKanban?.freq_nm" disabled />
               </div>
             </div>
             <div class="col-md-12">
               <div class="mb-2" :class="{ invalid: showErrorKanban }">
                 <label class="mb-1">Item Check Kanban</label>
-                <treeselect
-                  v-model="mainForm.item_check_kanban_id"
-                  :options="getItemchecksOptsTreeselect"
-                  :disabled="!form.kanban_id"
-                />
+                <treeselect v-model="mainForm.item_check_kanban_id" :options="getItemchecksOptsTreeselect"
+                  :disabled="!form.kanban_id" />
               </div>
             </div>
           </div>
@@ -113,13 +79,8 @@
             <div class="col-md-12">
               <div class="mb-2">
                 <label class="mb-1">Finding Desc</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="form.finding_desc"
-                  placeholder="Write Finding Desc"
-                  :required="!isEdit"
-                />
+                <input type="text" class="form-control" v-model="form.finding_desc" placeholder="Write Finding Desc"
+                  :required="!isEdit" />
               </div>
             </div>
           </div>
@@ -127,25 +88,15 @@
             <div class="col-md-6">
               <div class="mb-2">
                 <label class="mb-1">Finding Date</label>
-                <input
-                  type="date"
-                  class="form-control"
-                  v-model="form.finding_date"
-                  placeholder="Select Finding Date"
-                  :required="!isEdit"
-                />
+                <input type="date" class="form-control" v-model="form.finding_date" placeholder="Select Finding Date"
+                  :required="!isEdit" />
               </div>
               <div class="mb-2" :class="{ invalid: showErrorFindingPic }">
                 <label class="mb-1" style="margin-top: 1.5em">
                   Finding PIC
                 </label>
-                <VueMultiselect
-                  v-model="form.finding_pic"
-                  :options="picData"
-                  :custom-label="customPicOptions"
-                  class="vue-multi-select"
-                  @close="closeSelectFindingPic"
-                >
+                <VueMultiselect v-model="form.finding_pic" :options="picData" :custom-label="customPicOptions"
+                  class="vue-multi-select" @close="closeSelectFindingPic">
                 </VueMultiselect>
               </div>
             </div>
@@ -153,41 +104,20 @@
               <div class="mb-2">
                 <label class="mb-1">Reduce Time Countermeasure (Menit)</label>
                 <div class="d-flex align-items-center">
-                  <input
-                    type="checkbox"
-                    id="vehicle1"
-                    name="vehicle1"
-                    value="Bike"
-                    v-model="enabledReduceTime"
-                    class="me-2"
-                    style="height: 20px; width: 20px"
-                  />
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="form.time_cm"
-                    :disabled="!enabledReduceTime"
+                  <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" v-model="enabledReduceTime"
+                    class="me-2" style="height: 20px; width: 20px" />
+                  <input type="text" class="form-control" v-model="form.time_cm" :disabled="!enabledReduceTime"
                     @keypress="
                       $event.key.match(/^[\d]$/) ? '' : $event.preventDefault()
-                    "
-                  />
+                      " />
                 </div>
-                <small v-if="!enabledReduceTime" class="text-info"
-                  >* Ceklis & isi waktu pengurangan jika ada</small
-                >
-                <small v-else class="text-success"
-                  >* Abaikan jika tidak ingin di ubah</small
-                >
+                <small v-if="!enabledReduceTime" class="text-info">* Ceklis & isi waktu pengurangan jika ada</small>
+                <small v-else class="text-success">* Abaikan jika tidak ingin di ubah</small>
               </div>
               <div class="mb-2" :class="{ invalid: showErrorActualPic }">
                 <label class="mb-1">PIC Countermeasure</label>
-                <VueMultiselect
-                  v-model="form.actual_pic"
-                  :options="picData"
-                  :custom-label="customPicOptions"
-                  class="vue-multi-select"
-                  @close="closeSelectActualPic"
-                >
+                <VueMultiselect v-model="form.actual_pic" :options="picData" :custom-label="customPicOptions"
+                  class="vue-multi-select" @close="closeSelectActualPic">
                 </VueMultiselect>
               </div>
             </div>
@@ -196,23 +126,13 @@
             <div class="col-md-6">
               <div class="mb-2">
                 <label class="mb-1">Plan Countermeasure Date</label>
-                <input
-                  type="date"
-                  class="form-control"
-                  v-model="form.plan_cm_date"
-                  :required="!isEdit"
-                />
+                <input type="date" class="form-control" v-model="form.plan_cm_date" :required="!isEdit" />
               </div>
             </div>
             <div class="col-md-6">
               <div class="mb-2">
                 <label class="mb-1">Actual Countermeasure Date</label>
-                <input
-                  type="date"
-                  class="form-control"
-                  v-model="form.actual_cm_date"
-                  :disabled="!isEdit"
-                />
+                <input type="date" class="form-control" v-model="form.actual_cm_date" :disabled="!isEdit" />
               </div>
             </div>
           </div>
@@ -220,12 +140,8 @@
             <div class="col-md-12">
               <div class="mb-2">
                 <label class="mb-1">Plan Countermeasure Desc</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="form.plan_cm_desc"
-                  placeholder="Write Plan Countermeasure Desc"
-                />
+                <input type="text" class="form-control" v-model="form.plan_cm_desc"
+                  placeholder="Write Plan Countermeasure Desc" />
               </div>
             </div>
           </div>
@@ -233,12 +149,7 @@
             <div class="col-12 col-md-12">
               <div class="mb-2">
                 <label class="mb-1">Department Terkait</label>
-                <treeselect
-                  class=""
-                  v-model="form.opt_department"
-                  :multiple="true"
-                  :options="getSystemsOptDept"
-                />
+                <treeselect class="" v-model="form.opt_department" :multiple="true" :options="getSystemsOptDept" />
               </div>
             </div>
             <div class="col-12 col-md-12">
@@ -246,11 +157,7 @@
                 <label class="mb-1">Perubahan Standart</label>
                 <select class="form-select" v-model="form.opt_changes">
                   <option value="null" selected>Select Standart</option>
-                  <option
-                    v-for="optChange in optChangeData"
-                    :key="optChange"
-                    :value="optChange.system_value"
-                  >
+                  <option v-for="optChange in optChangeData" :key="optChange" :value="optChange.system_value">
                     {{ optChange.system_value }}
                   </option>
                 </select>
@@ -278,46 +185,26 @@
               <label class="mb-1">Evaluation</label>
               <select class="form-select" v-model="form.evaluation_name">
                 <option value="null" selected>Select Evaluation</option>
-                <option
-                  v-for="optEval in optEvaluation"
-                  :key="optEval"
-                  :value="optEval.system_value"
-                >
+                <option v-for="optEval in optEvaluation" :key="optEval" :value="optEval.system_value">
                   {{ optEval.system_value }}
                 </option>
               </select>
               <table class="table">
                 <tr>
                   <th>
-                    <img
-                      src="@/../public/tanoko/0.png"
-                      width="50"
-                      height="50"
-                    />
+                    <img src="@/../public/tanoko/0.png" width="50" height="50" />
                   </th>
                   <th>Order Part</th>
                   <th>
-                    <img
-                      src="@/../public/tanoko/1.png"
-                      width="50"
-                      height="50"
-                    />
+                    <img src="@/../public/tanoko/1.png" width="50" height="50" />
                   </th>
                   <th>Countermeasure</th>
                   <th>
-                    <img
-                      src="@/../public/tanoko/2.png"
-                      width="50"
-                      height="50"
-                    />
+                    <img src="@/../public/tanoko/2.png" width="50" height="50" />
                   </th>
                   <th>Monitor / Follow</th>
                   <th>
-                    <img
-                      src="@/../public/tanoko/3.png"
-                      width="50"
-                      height="50"
-                    />
+                    <img src="@/../public/tanoko/3.png" width="50" height="50" />
                   </th>
                   <th>Finish</th>
                 </tr>
@@ -860,11 +747,11 @@ export default {
     this.getLines()
     this.getZone()
     this.getFreq()
-    this.getKanban()
+    // this.getKanban()
     this.getOptChangeSystem()
     this.getOptDeptSystem()
     this.getEvaluation()
-    this.getItemCheckKanbans()
+    // this.getItemCheckKanbans()
   },
 }
 </script>
