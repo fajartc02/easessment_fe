@@ -23,7 +23,7 @@
     <template #toggler="{ id, on }">
       <!-- {{ child.is_wajik }} - finding:{{ child.is_finding }} -->
       <!-- add disabled if reschdule activities -->
-      <CButton :aria-describedby="id" v-on="on" v-if="child" class="mt-1" :color="`${(child.job_type_nm == 'Type 1' ||
+      <CButton data-bs-toggle="tooltip" :aria-describedby="id" v-on="on" v-if="child" class="mt-1" :color="`${(child.job_type_nm == 'Type 1' ||
         child.job_type_nm == 'Type 2') && !child.is_wajik
         ? 'dark rounded-circle'
         : 'dark rounded'
@@ -52,8 +52,6 @@
   </CTooltip>
 </template>
 <script>
-
-
 export default {
   name: "TooltipStwSchedule",
   props: {
@@ -61,7 +59,7 @@ export default {
     child: Object,
     currentDate: String,
     customTooltipStyle: Object
-  }
+  },
 }
 </script>
 <style></style>
