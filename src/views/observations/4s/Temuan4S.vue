@@ -292,39 +292,37 @@
                 </td>
                 <td>
                   <div class="d-flex gap-2">
-                    <button v-if="finding.finding_img" class="btn btn-info btn-sm text-white w-full my-1"
+                    <button v-if="finding.finding_img" class="btn btn-info btn-sm text-white w-full"
                       @click="showModalFindingImage(finding)">
                       Finding image
                     </button>
                     <button v-else class="btn btn-secondary btn-sm" disabled>
                       No Image
                     </button>
+                    <!-- isCmImage -->
+                    <button :class="{
+                      'btn btn-sm': true,
+                      'btn-info text-white': finding.cm_image,
+                      'btn-secondary text-white': !finding.cm_image,
+                    }" @click="showKaizenModal(finding.cm_image)" :disabled="!finding.cm_image">
+                      C/M Image
+                    </button>
                     <div>
                       <button
-                        :class="`btn text-light ${(finding.sop_file_before || finding.sop_file_after) ? 'btn-info' : 'btn-secondary'} btn-sm`"
+                        :class="`btn text-light h-100 ${(finding.sop_file_before || finding.sop_file_after) ? 'btn-info' : 'btn-secondary'} btn-sm`"
                         @click="showSopModal(finding?.sop_file_before, finding?.sop_file_after)"
                         :disabled="(!finding.sop_file_before && !finding.sop_file_after)">
                         File SOP
                       </button>
                     </div>
-                    <!-- <button :class="{
-                      'btn btn-sm': true,
-                      'btn-info text-white': finding.kaizen_file,
-                      'btn-secondary': !finding.kaizen_file,
-                    }" @click="onClickDownloadKaizen(finding.kaizen_file)" :disabled="!finding.kaizen_file">
-                      {{
-                        finding.kaizen_file ? 'Download Kaizen' : 'No Kaizen'
-                      }}
-                    </button> -->
+
                     <!-- isKaizenModal -->
                     <button :class="{
                       'btn btn-sm': true,
                       'btn-info text-white': finding.kaizen_file,
-                      'btn-secondary': !finding.kaizen_file,
+                      'btn-secondary text-white': !finding.kaizen_file,
                     }" @click="showKaizenModal(finding.kaizen_file)" :disabled="!finding.kaizen_file">
-                      {{
-                        finding.kaizen_file ? 'Kaizen Report' : 'No Kaizen'
-                      }}
+                      Kaizen Report
                     </button>
                     <button class="btn btn-info btn-sm text-white" @click="openEditFindingModal(finding, findingIndex)">
                       Edit
@@ -622,6 +620,17 @@
                 <div v-if="is_need_improvement" class="row">
                   <div class="col-12 col-md-12">
                     <CInputGroup class="mb-3">
+                      <CInputGroupText>C/M Image</CInputGroupText>
+                      <CFormInput @change="onChangeCmImage($event)" ref="cm_image" aria-label="Input your kaizen file"
+                        type="file" />
+                      <CInputGroupText class="p-0">
+                        <button class="btn btn-sm btn-success" @click="uploadCmImage(selectedFindingID)">Upload
+                          Image</button>
+                      </CInputGroupText>
+                    </CInputGroup>
+                  </div>
+                  <div class="col-12 col-md-12">
+                    <CInputGroup class="mb-3">
                       <CInputGroupText>Kaizen File</CInputGroupText>
                       <CFormInput @change="onChangeKaizenFile($event)" ref="kaizen_file"
                         aria-label="Input your kaizen file" type="file" />
@@ -743,7 +752,7 @@
     </CModal>
 
     <!-- Kaizen Modal -->
-    <CModal backdrop="static" fullscreen :visible="isKaizenModal" @close="
+    <CModal backdrop="static" size="xl" :visible="isKaizenModal" @close="
       () => {
         isKaizenModal = false
       }
@@ -932,6 +941,7 @@ export default {
       sopBefore: null,
       sopAfter: null,
       kaizenFile: null,
+      cmImage: null,
       isKaizenModal: false,
     }
   },
@@ -985,10 +995,31 @@ export default {
           'kaizen_file',
           kaizen_file ? kaizen_file : this.kaizenFile,
         )
-        console.log(formData, 'form data');
-        console.log(this.kaizenFile);
+
         await ApiService.post(
           `/operational/4s/finding/upload-kaizen?dest=4s-finding-kaizen`,
+          formData,
+        )
+      } catch (e) {
+        console.log('uploadKaizen', e)
+      }
+    },
+    async uploadCmImage(finding_id) {
+      if (!this.cmImage) {
+        toast.info('Please select file')
+        return
+      }
+
+      try {
+        const formData = new FormData()
+        formData.append('finding_id', finding_id)
+        formData.append('dest', '4s-finding-kaizen')
+        formData.append(
+          'cm_image',
+          this.cmImage,
+        )
+        await ApiService.post(
+          `/operational/4s/finding/upload-cm-image?dest=4s-finding-kaizen`,
           formData,
         )
       } catch (e) {
@@ -1009,6 +1040,9 @@ export default {
     },
     onChangeKaizenFile(event) {
       this.kaizenFile = event.target.files[0]
+    },
+    onChangeCmImage(event) {
+      this.cmImage = event.target.files[0]
     },
     async uploadSopFile() {
       try {
