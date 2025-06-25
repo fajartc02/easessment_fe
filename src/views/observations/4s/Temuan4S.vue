@@ -982,8 +982,10 @@ export default {
   },
   methods: {
     async uploadKaizen(finding_id, kaizen_file = null) {
+      this.isLoading = true
       if (!kaizen_file && !this.kaizenFile) {
         toast.info('Please select file')
+        this.isLoading = false
         return
       }
 
@@ -1000,13 +1002,23 @@ export default {
           `/operational/4s/finding/upload-kaizen?dest=4s-finding-kaizen`,
           formData,
         )
+        this.isLoading = false
+        toast.success('Susccessfully Upload Kaizen', {
+          autoClose: 1000,
+        })
       } catch (e) {
+        this.isLoading = false
         console.log('uploadKaizen', e)
+        toast.error('Failed to upload Kaizen', {
+          autoClose: 1000,
+        })
       }
     },
     async uploadCmImage(finding_id) {
+      this.isLoading = true
       if (!this.cmImage) {
         toast.info('Please select file')
+        this.isLoading = false
         return
       }
 
@@ -1022,8 +1034,14 @@ export default {
           `/operational/4s/finding/upload-cm-image?dest=4s-finding-kaizen`,
           formData,
         )
+        this.isLoading = false
+        toast.success('Susccessfully Upload CM Image', {
+          autoClose: 1000,
+        })
       } catch (e) {
+        this.isLoading = false
         console.log('uploadKaizen', e)
+        toast.error(JSON.stringify(e.message))
       }
     },
     showSopModal(sopBefore, sopAfter) {
@@ -1046,13 +1064,19 @@ export default {
     },
     async uploadSopFile() {
       try {
+        this.isLoading = true
+        if (!this.kanban_sop) {
+          toast.info('Please select file')
+          this.isLoading = false
+          return
+        }
         const formData = new FormData()
         formData.append('dest', 'kanban-sop')
         formData.append('kanban_id', this.selectedKanbanID)
         formData.append('sop_file', this.kanban_sop)
         formData.append('finding_4s_id', this.selectedFindingID)
 
-        const upload = await ApiService.post(
+        await ApiService.post(
           `/master/kanbans/upload-sop?dest=kanban-sop`,
           formData,
           {
@@ -1063,12 +1087,12 @@ export default {
           },
         )
 
-        if (upload.data.data) {
-          toast.success('Susccessfully Upload SOP', {
-            autoClose: 1000,
-          })
-        }
+        toast.success('Susccessfully Upload SOP', {
+          autoClose: 1000,
+        })
+        this.isLoading = false
       } catch (error) {
+        this.isLoading = false
         toast.error(JSON.stringify(error.message))
         setTimeout(() => {
           toast.remove()
