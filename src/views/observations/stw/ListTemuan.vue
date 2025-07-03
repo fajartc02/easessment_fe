@@ -230,12 +230,15 @@
                   {{ formatTheDate(finding.finding_date) }}
                 </td>
                 <td id="fixCol-5" class="px-2 text-start">
-                  {{ finding.job_no }}
-                </td>
-                <td id="fixCol-5" class="px-2 text-start">
-                  {{ finding.finding_location }}
+                  {{ finding.group_nm }}
                 </td>
                 <td id="fixCol-6" class="px-2 text-start">
+                  {{ finding.job_no }}
+                </td>
+                <td id="fixCol-7" class="px-2 text-start">
+                  {{ finding.finding_location }}
+                </td>
+                <td id="fixCol-8" class="px-2 text-start">
                   <template
                     v-if="
                       `${finding?.finding_desc}`.length > 30 && !finding.is_open
