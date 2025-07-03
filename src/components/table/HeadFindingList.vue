@@ -5,8 +5,10 @@
       <th id="fixCol-head-2" rowspan="3" width="120">Line name</th>
       <th id="fixCol-head-3" rowspan="3">Source</th>
       <th id="fixCol-head-4" rowspan="3" width="120">Tanggal</th>
-      <th id="fixCol-head-5" rowspan="3" width="180">Pos</th>
-      <th id="fixCol-head-6" rowspan="3" width="120">Temuan prob</th>
+      <th id="fixCol-head-5" rowspan="3" width="120">Shift</th>
+      <th id="fixCol-head-6" rowspan="3" width="180">SOP No</th>
+      <th id="fixCol-head-7" rowspan="3" width="180">Pos</th>
+      <th id="fixCol-head-8" rowspan="3" width="120">Temuan prob</th>
       <th rowspan="3" width="120">Rencana perbaikan</th>
       <th rowspan="3">priority</th>
       <th>Stop 6</th>
