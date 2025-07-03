@@ -12,6 +12,7 @@
     <CModalBody>
       <div class="d-flex justify-content-center" style="height: 150px">
         <div style="width: 100px; height: 100px; border: 1px solid #eaeaea">
+          
           <vueSignature ref="sign" :sigOption="option" :w="'100%'" :h="'100px'">
           </vueSignature>
           <button
@@ -37,6 +38,74 @@
       </CButton>
     </CModalFooter>
   </CModal>
+ <CModal
+  backdrop="static"
+  alignment="center"
+  :visible="editSignModal"
+  @close="editSignModal = false"
+  size="sm"
+>
+  <CModalHeader>
+    <CModalTitle>Edit sign</CModalTitle>
+  </CModalHeader>
+<CModalBody>
+  <div class="d-flex justify-content-center">
+    <table class="table table-borderless mb-10 text-center ">
+      <thead>
+        <tr>
+          <th>Before</th>
+          <th>After</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="gap-10">
+          <!-- Signature Lama -->
+          <td style="width: 120px; height: 120px; border: 1px dashed #ccc;">
+            <div
+              v-if="signForm.sign"
+              style="width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; margin: auto"
+            >
+              <img
+                :src="signForm.sign"
+                alt="Old Signature"
+                style="max-width: 100%; max-height: 100%"
+              />
+            </div>
+            <div v-else style="height: 100px; line-height: 100px;">No Sign</div>
+          </td>
+
+          <!-- Signature Baru -->
+          <td style="width: 120px; height: 120px; border: 1px solid #eaeaea; position: relative;">
+            <vueSignature ref="sign" :sigOption="option" :w="'100%'" :h="'100px'"></vueSignature>
+            <button
+              class="btn btn-info btn-sm text-white mt-1 justify-center"
+              @click="clearSignature"
+              style="position: absolute; bottom: -25px; left: 10"
+            >
+              Clear
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</CModalBody>
+
+  <CModalFooter>
+    <CButton
+      color="success"
+      class="text-white"
+      :disabled="isUploadSignLoading"
+      @click="updateSign"
+    >
+      {{ isUploadSignLoading ? 'Saving..' : 'Submit' }}
+    </CButton>
+    <CButton color="secondary" class="text-white" @click="closeSignModal">
+      Close
+    </CButton>
+  </CModalFooter>
+</CModal>
+
   <div>
     <div class="card mb-3">
       <!-- filter -->
@@ -266,6 +335,20 @@
                         width="50"
                         height="50"
                         alt="sign"
+                        style="cursor: pointer"
+  @click="
+    () => {
+      const signData = signObservationsTL_1.find(
+        (obserChild) =>
+          obserChild.date_idx == date.idx &&
+          obserChild.role_sign_sys == 'TL_1' &&
+          obserChild.group_nm == 'WHITE'
+      )
+      if (signData) {
+        openEditSignModal(signData) // <-- Panggil fungsi edit modal
+      }
+    }
+  "
                       />
                     </template>
                   </td>
@@ -397,6 +480,20 @@
                         width="50"
                         height="50"
                         alt="sign"
+                        style="cursor: pointer"
+  @click="
+    () => {
+      const signData = signObservationsGL.find(
+        (obserChild) =>
+          obserChild.date_idx == date.idx &&
+          obserChild.role_sign_sys == 'GL' &&
+          obserChild.group_nm == 'WHITE'
+      )
+      if (signData) {
+        openEditSignModal(signData) // <-- Panggil fungsi edit modal
+      }
+    }
+  "
                       />
                     </template>
                   </td>
@@ -461,6 +558,21 @@
                         width="50"
                         height="50"
                         alt="sign"
+                        style="cursor: pointer"
+                        @click="
+                         
+    () => {
+      const signData = signObservationsSH.find(
+        (obserChild) =>
+          obserChild.date_idx == date.idx &&
+          obserChild.role_sign_sys == 'SH' &&
+          obserChild.group_nm == 'WHITE'
+      )
+      if (signData) {
+        openEditSignModal(signData) // <-- Panggil fungsi edit modal
+      }
+    }
+  "
                       />
                     </template>
                   </td>
@@ -620,6 +732,20 @@
                         width="50"
                         height="50"
                         alt="sign"
+                                            style="cursor: pointer"
+                        @click="
+    () => {
+      const signData = signObservationsTL_1_RED.find(
+        (obserChild) =>
+          obserChild.date_idx == date.idx &&
+          obserChild.role_sign_sys == 'TL_1' &&
+          obserChild.group_nm == 'RED'
+      )
+      if (signData) {
+        openEditSignModal(signData) // <-- Panggil fungsi edit modal
+      }
+    }
+  "
                       />
                     </template>
                   </td>
@@ -728,25 +854,38 @@
                         @click="
                           () => {
                             showModalSignTL(date.date, 'RED', 'GL', date.idx)
-                          }
+                          } 
                         "
                       >
                         <CIcon icon="cil-pencil" class="text-dark" size="sm" />
                       </CButton>
                       <img
-                        v-else
-                        :src="
-                          signObservationsGL_RED.find(
-                            (obserChild) =>
-                              obserChild.date_idx == date.idx &&
-                              obserChild.role_sign_sys == 'GL' &&
-                              obserChild.group_nm == 'RED',
-                          )?.sign
-                        "
-                        width="50"
-                        height="50"
-                        alt="sign"
-                      />
+  v-else
+  :src="signObservationsGL_RED.find(
+    (obserChild) =>
+      obserChild.date_idx == date.idx &&
+      obserChild.role_sign_sys == 'GL' &&
+      obserChild.group_nm == 'RED'
+  )?.sign"
+  width="50"
+  height="50"
+  alt="sign"
+  style="cursor: pointer"
+  @click="
+    () => {
+      const signData = signObservationsGL_RED.find(
+        (obserChild) =>
+          obserChild.date_idx == date.idx &&
+          obserChild.role_sign_sys == 'GL' &&
+          obserChild.group_nm == 'RED'
+      )
+      if (signData) {
+        openEditSignModal(signData) // <-- Panggil fungsi edit modal
+      }
+    }
+  "
+/>
+
                     </template>
                   </td>
                 </tr>
@@ -810,6 +949,20 @@
                         width="50"
                         height="50"
                         alt="sign"
+                        style="cursor: pointer"
+                         @click="
+    () => {
+      const signData = signObservationsSH_RED.find(
+        (obserChild) =>
+          obserChild.date_idx == date.idx &&
+          obserChild.role_sign_sys == 'SH' &&
+          obserChild.group_nm == 'RED'
+      )
+      if (signData) {
+        openEditSignModal(signData) // <-- Panggil fungsi edit modal
+      }
+    }
+  "
                       />
                     </template>
                   </td>
@@ -909,6 +1062,7 @@ export default {
         line_id: null,
       },
       addSignModal: false,
+      editSignModal:false,
       isUploadSignLoading: false,
       signObservationsTL_1: [],
       signObservationsTL_1_RED: [],
@@ -944,6 +1098,47 @@ export default {
 
       this.addSign()
     },
+   updateSign() {
+  // Ambil data signature dari vueSignature
+  const signatureData = this.$refs.sign.save(); // default-nya akan berbentuk base64
+
+  if (!signatureData) {
+    toast.error("Signature belum diisi.");
+    return;
+  }
+
+  this.isUploadSignLoading = true;
+
+  // Masukkan signature ke payload
+  const payload = {
+    sign: signatureData, // sudah dalam format base64 image
+  };
+
+  // Simpan ke API
+
+  ApiService.put(`/operational/observation/sign/${this.signForm.id}`, payload)
+    .then(() => {
+      toast.success("Signature updated successfully!");
+      this.editSignModal = false;
+    })
+    this.getSignature('TL_1', 'signObservationsTL_1')
+          this.getSignature('TL_1', 'signObservationsTL_1_RED')
+          this.getSignature('TL_2', 'signObservationsTL_2')
+          this.getSignature('TL_2', 'signObservationsTL_2_RED')
+          this.getSignature('GL', 'signObservationsGL')
+          this.getSignature('GL', 'signObservationsGL_RED')
+          this.getSignature('SH', 'signObservationsSH')
+          this.getSignature('SH', 'signObservationsSH_RED')
+    .catch((err) => {
+      console.error(err);
+      toast.error("Gagal menyimpan tanda tangan.");
+    })
+    .finally(() => {
+      this.isUploadSignLoading = false;
+    });
+},
+
+
     async addSign() {
       this.isUploadSignLoading = true
       try {
@@ -972,6 +1167,32 @@ export default {
         toast.error('error to add toast')
       }
     },
+  EditshowModal(date_sign, group_nm, role_sign_sys, date_idx) {
+  this.editSignModal = true
+  this.signForm.date_sign = moment(date_sign).format('YYYY-MM-DD')
+      this.signForm.group_nm = group_nm
+      this.signForm.role_sign_sys = role_sign_sys
+      this.signForm.date_idx = date_idx
+      this.signForm.line_id = this.selectedLine
+  
+
+  
+},
+openEditSignModal(data) {
+  this.editSignModal = true
+this.signForm = { ...data }
+
+  // Tampilkan tanda tangan yang sudah ada ke canvas
+this.$nextTick(() => {
+  const pad = this.$refs.sign?.signaturePad
+  if (data.sign && pad) {
+    pad.fromDataURL(data.sign)
+  }
+})
+},
+
+
+
     closeSignModal() {
       this.addSignModal = false
       this.signForm = {
