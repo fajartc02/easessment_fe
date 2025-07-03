@@ -113,6 +113,7 @@
                 <th id="fixCol-head-2" rowspan="2">Line</th>
                 <th id="fixCol-head-3" rowspan="2">Zone</th>
                 <th id="fixCol-head-4" rowspan="2">No Kanban</th>
+                <th rowspan="2">Area</th>
                 <th id="fixCol-head-5" rowspan="2">Freq 4S</th>
                 <th id="fixCol-head-6" rowspan="2">Date</th>
                 <th id="fixCol-head-7" rowspan="2">Problem</th>
@@ -243,6 +244,9 @@
                 <td id="fixCol-3" class="text-center">{{ finding.zone_nm }}</td>
                 <td id="fixCol-4" class="text-center">
                   {{ finding.kanban_no }}
+                </td>
+                <td class="text-center">
+                  {{ finding.area_nm }}
                 </td>
                 <td id="fixCol-5" class="text-center">{{ finding.freq_nm }}</td>
                 <td id="fixCol-6">{{ formatDate(finding.finding_date) }}</td>
@@ -613,22 +617,22 @@
             </div>
           </div>
           <div class="col-12 col-md-12">
+            <CInputGroup class="mb-3">
+              <CInputGroupText>C/M Image</CInputGroupText>
+              <CFormInput @change="onChangeCmImage($event)" ref="cm_image" aria-label="Input your kaizen file"
+                type="file" />
+              <CInputGroupText class="p-0">
+                <button class="btn btn-sm btn-success" @click="uploadCmImage(selectedFindingID)">Upload
+                  Image</button>
+              </CInputGroupText>
+            </CInputGroup>
+          </div>
+          <div class="col-12 col-md-12">
             <div class="mb-2">
               <div class="card p-2">
                 <label>Apakah ada Improvement?</label>
                 <CFormSwitch v-model="is_need_improvement" />
                 <div v-if="is_need_improvement" class="row">
-                  <div class="col-12 col-md-12">
-                    <CInputGroup class="mb-3">
-                      <CInputGroupText>C/M Image</CInputGroupText>
-                      <CFormInput @change="onChangeCmImage($event)" ref="cm_image" aria-label="Input your kaizen file"
-                        type="file" />
-                      <CInputGroupText class="p-0">
-                        <button class="btn btn-sm btn-success" @click="uploadCmImage(selectedFindingID)">Upload
-                          Image</button>
-                      </CInputGroupText>
-                    </CInputGroup>
-                  </div>
                   <div class="col-12 col-md-12">
                     <CInputGroup class="mb-3">
                       <CInputGroupText>Kaizen File</CInputGroupText>

@@ -1,27 +1,15 @@
 <template>
-  <CModal
-    backdrop="static"
-    alignment="center"
-    :visible="visibleModalConfJudg"
-    @close="cancelJudgmentConf()"
-    size="sm"
-  >
+  <CModal backdrop="static" alignment="center" :visible="visibleModalConfJudg" @close="cancelJudgmentConf()" size="sm">
     <CModalHeader>
       <CModalTitle>Confirmation</CModalTitle>
     </CModalHeader>
     <CModalBody>
       Apakah kamu yakin ingin melakukan kanban no:
       <b>{{ selectedJudgContent.kanban_no }}</b> judgment:
-      <b>{{ selectedJudgContent.judgment }}</b
-      >?
+      <b>{{ selectedJudgContent.judgment }}</b>?
     </CModalBody>
     <CModalFooter>
-      <CButton
-        color="primary"
-        class="text-white"
-        @click="judgmentSubmission()"
-        :disabled="isLoading"
-      >
+      <CButton color="primary" class="text-white" @click="judgmentSubmission()" :disabled="isLoading">
         Yes
       </CButton>
       <CButton color="warning" class="text-white" @click="cancelJudgmentConf()">
@@ -30,15 +18,8 @@
     </CModalFooter>
   </CModal>
   <!-- modal check visible NG -->
-  <CModal
-    fullscreen
-    class="w-100"
-    backdrop="static"
-    alignment="center"
-    :visible="visibleModalFindingJudg"
-    @close="cancelFindingSubmission()"
-    size="xl"
-  >
+  <CModal fullscreen class="w-100" backdrop="static" alignment="center" :visible="visibleModalFindingJudg"
+    @close="cancelFindingSubmission()" size="xl">
     <CModalHeader>
       <CModalTitle>Input Finding</CModalTitle>
     </CModalHeader>
@@ -60,11 +41,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="(item, index) in itemCheckKanbans"
-              :key="item"
-              class="align-middle"
-            >
+            <tr v-for="(item, index) in itemCheckKanbans" :key="item" class="align-middle">
               <td class="text-center">{{ index + 1 }}</td>
               <td>{{ item.item_check_nm }}</td>
               <td>{{ item.method }}</td>
@@ -72,11 +49,7 @@
               <td>
                 <CFormSelect v-model="item.judgment_id">
                   <option>Select</option>
-                  <option
-                    v-for="judg in judgments"
-                    :key="judg.id"
-                    :value="judg.id"
-                  >
+                  <option v-for="judg in judgments" :key="judg.id" :value="judg.id">
                     {{ judg.text }}
                   </option>
                 </CFormSelect>
@@ -85,13 +58,9 @@
                 {{ item.before_standart_time ?? '-' }}
               </td>
               <td>
-                <CFormInput
-                  v-if="
-                    item.judgment_id !== 'c4f5ff30-1b95-4ad8-8af8-e3e9d90bd942'
-                  "
-                  v-model="item.standart_time"
-                  type="number"
-                />
+                <CFormInput v-if="
+                  item.judgment_id !== 'c4f5ff30-1b95-4ad8-8af8-e3e9d90bd942'
+                " v-model="item.standart_time" type="number" />
                 <span v-else>
                   {{ item.standart_time }}
                 </span>
@@ -101,23 +70,20 @@
               </td>
 
               <td v-if="item.actual_time" class="text-center">
-                <button
-                  class="btn btn-success btn-sm text-white"
-                  @click="
-                    saveScheduleCheck(
-                      item.judgment_id,
-                      item.actual_time,
-                      item.item_check_kanban_id,
-                      item.judgment_id !==
-                        'c4f5ff30-1b95-4ad8-8af8-e3e9d90bd942'
-                        ? item.standart_time
-                        : null,
-                    )
-                  "
-                >
+                <button class="btn btn-success btn-sm text-white" @click="
+                  saveScheduleCheck(
+                    item.judgment_id,
+                    item.actual_time,
+                    item.item_check_kanban_id,
+                    item.judgment_id !==
+                      'c4f5ff30-1b95-4ad8-8af8-e3e9d90bd942'
+                      ? item.standart_time
+                      : null,
+                  )
+                  ">
                   {{
                     isAddCheckLoading?.isLoading &&
-                    isAddCheckLoading?.id == item.item_check_kanban_id
+                      isAddCheckLoading?.id == item.item_check_kanban_id
                       ? 'Saving...'
                       : 'Save'
                   }}
@@ -129,24 +95,16 @@
                 </button>
               </td>
               <td v-if="item.is_abnormal" class="text-center">
-                <button
-                  v-if="item.findings.length == 0"
-                  class="btn btn-info btn-sm text-white"
-                  @click="
-                    openAddFindingModal(
-                      item.schedule_item_check_kanban_id,
-                      null,
-                      'add',
-                    )
-                  "
-                >
+                <button v-if="item.findings.length == 0" class="btn btn-info btn-sm text-white" @click="
+                  openAddFindingModal(
+                    item.schedule_item_check_kanban_id,
+                    null,
+                    'add',
+                  )
+                  ">
                   Add Finding
                 </button>
-                <button
-                  v-else
-                  class="btn btn-secondary btn-sm text-white"
-                  disabled
-                >
+                <button v-else class="btn btn-secondary btn-sm text-white" disabled>
                   Finding Submitted
                 </button>
               </td>
@@ -160,36 +118,25 @@
     </CModalBody>
     <!-- this.$emit('emit-refetch-schedule', true) -->
     <CModalFooter>
-      <CButton
-        color="secondary"
-        @click="
-          () => {
-            visibleModalFindingJudg = false
-            $emit('emit-refetch-schedule', true)
-          }
-        "
-      >
+      <CButton color="secondary" @click="
+        () => {
+          visibleModalFindingJudg = false
+          $emit('emit-refetch-schedule', true)
+        }
+      ">
         Close
       </CButton>
     </CModalFooter>
   </CModal>
 
   <!-- modal FINDING input -->
-  <CModal
-    backdrop="static"
-    size="xl"
-    :visible="addFindingModal"
-    @close="
-      () => {
-        addFindingModal = false
-      }
-    "
-    aria-labelledby="StaticBackdropExampleLabel"
-  >
+  <CModal backdrop="static" size="xl" :visible="addFindingModal" @close="
+    () => {
+      addFindingModal = false
+    }
+  " aria-labelledby="StaticBackdropExampleLabel">
     <CModalHeader>
-      <CModalTitle id="StaticBackdropExampleLabel"
-        >{{ isEdit ? 'Edit' : 'Add' }} Finding</CModalTitle
-      >
+      <CModalTitle id="StaticBackdropExampleLabel">{{ isEdit ? 'Edit' : 'Add' }} Finding</CModalTitle>
     </CModalHeader>
     <CForm @submit="submit" novalidate :validated="isFromFindingValidate">
       <CModalBody>
@@ -197,25 +144,12 @@
           <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Line</label>
-              <input
-                type="text"
-                :value="selectedJudgContent?.line_nm"
-                class="form-control"
-                disabled
-              />
+              <input type="text" :value="selectedJudgContent?.line_nm" class="form-control" disabled />
             </div>
             <div class="mb-2">
               <label class="mb-1">Zone</label>
-              <select
-                class="form-select"
-                v-model="selectedJudgContent.zone_id"
-                disabled
-              >
-                <option
-                  v-for="zone in getZones"
-                  :key="zone.zone_id"
-                  :value="zone.zone_id"
-                >
+              <select class="form-select" v-model="selectedJudgContent.zone_id" disabled>
+                <option v-for="zone in getZones" :key="zone.zone_id" :value="zone.zone_id">
                   {{ zone.zone_nm }}
                 </option>
               </select>
@@ -224,28 +158,15 @@
           <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Freq</label>
-              <select
-                class="form-select"
-                v-model="selectedJudgContent.freq_id"
-                disabled
-              >
-                <option
-                  v-for="freq in getFreqs"
-                  :key="freq.id"
-                  :value="freq.id"
-                >
+              <select class="form-select" v-model="selectedJudgContent.freq_id" disabled>
+                <option v-for="freq in getFreqs" :key="freq.id" :value="freq.id">
                   {{ freq.freq_nm }}
                 </option>
               </select>
             </div>
             <div class="mb-2">
               <label class="mb-1">Kanban</label>
-              <input
-                type="text"
-                :value="selectedJudgContent?.kanban_no"
-                class="form-control"
-                disabled
-              />
+              <input type="text" :value="selectedJudgContent?.kanban_no" class="form-control" disabled />
             </div>
           </div>
         </div>
@@ -253,13 +174,8 @@
           <div class="col-md-12">
             <div class="mb-2">
               <label class="mb-1">Finding Desc</label>
-              <input
-                type="text"
-                class="form-control"
-                v-model="findingDesc"
-                placeholder="Write Finding Desc"
-                :required="!isEdit"
-              />
+              <input type="text" class="form-control" v-model="findingDesc" placeholder="Write Finding Desc"
+                :required="!isEdit" />
             </div>
           </div>
         </div>
@@ -267,23 +183,14 @@
           <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Finding Date</label>
-              <input
-                type="date"
-                class="form-control"
-                v-model="findingDate"
-                placeholder="Select Finding Date"
-                :required="!isEdit"
-              />
+              <input type="date" class="form-control" v-model="findingDate" placeholder="Select Finding Date"
+                :required="!isEdit" />
             </div>
             <div class="mb-2" :class="{ invalid: showErrorFindingPic }">
               <label class="mb-1" style="margin-top: 1.5em">
                 Finding PIC
               </label>
-              <treeselect
-                v-model="selectedPIC"
-                :options="picData"
-                class="vue-multi-select"
-              >
+              <treeselect v-model="selectedPIC" :options="picData" class="vue-multi-select">
               </treeselect>
             </div>
           </div>
@@ -291,39 +198,18 @@
             <div class="mb-2">
               <label class="mb-1">Reduce Time Countermeasure (Menit)</label>
               <div class="d-flex align-items-center">
-                <input
-                  type="checkbox"
-                  id="vehicle1"
-                  name="vehicle1"
-                  value="Bike"
-                  v-model="enabledReduceTime"
-                  class="me-2"
-                  style="height: 20px; width: 20px"
-                />
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="timeCM"
-                  :disabled="!enabledReduceTime"
-                  @keypress="
-                    $event.key.match(/^[\d]$/) ? '' : $event.preventDefault()
-                  "
-                />
+                <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" v-model="enabledReduceTime"
+                  class="me-2" style="height: 20px; width: 20px" />
+                <input type="text" class="form-control" v-model="timeCM" :disabled="!enabledReduceTime" @keypress="
+                  $event.key.match(/^[\d]$/) ? '' : $event.preventDefault()
+                  " />
               </div>
-              <small v-if="!enabledReduceTime" class="text-info"
-                >* Ceklis & isi waktu pengurangan jika ada</small
-              >
-              <small v-else class="text-success"
-                >* Abaikan jika tidak ingin di ubah</small
-              >
+              <small v-if="!enabledReduceTime" class="text-info">* Ceklis & isi waktu pengurangan jika ada</small>
+              <small v-else class="text-success">* Abaikan jika tidak ingin di ubah</small>
             </div>
             <div class="mb-2" :class="{ invalid: showErrorActualPic }">
               <label class="mb-1">PIC Countermeasure</label>
-              <treeselect
-                v-model="actualPIC"
-                :options="picData"
-                class="vue-multi-select"
-              >
+              <treeselect v-model="actualPIC" :options="picData" class="vue-multi-select">
               </treeselect>
             </div>
           </div>
@@ -332,23 +218,13 @@
           <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Plan Countermeasure Date</label>
-              <input
-                type="date"
-                class="form-control"
-                v-model="planCMDate"
-                :required="!isEdit"
-              />
+              <input type="date" class="form-control" v-model="planCMDate" :required="!isEdit" />
             </div>
           </div>
           <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Actual Countermeasure Date</label>
-              <input
-                type="date"
-                class="form-control"
-                v-model="actualCMDate"
-                :disabled="!isEdit"
-              />
+              <input type="date" class="form-control" v-model="actualCMDate" :disabled="!isEdit" />
             </div>
           </div>
         </div>
@@ -356,12 +232,8 @@
           <div class="col-md-12">
             <div class="mb-2">
               <label class="mb-1">Plan Countermeasure Desc</label>
-              <input
-                type="text"
-                class="form-control"
-                v-model="planCMDesc"
-                placeholder="Write Plan Countermeasure Desc"
-              />
+              <input type="text" class="form-control" v-model="planCMDesc"
+                placeholder="Write Plan Countermeasure Desc" />
             </div>
           </div>
         </div>
@@ -369,12 +241,7 @@
           <div class="col-12 col-md-12">
             <div class="mb-2">
               <label class="mb-1">Department Terkait</label>
-              <treeselect
-                class=""
-                v-model="optDepartment"
-                :multiple="true"
-                :options="getSystemsOptDept"
-              />
+              <treeselect class="" v-model="optDepartment" :multiple="true" :options="getSystemsOptDept" />
             </div>
           </div>
           <div class="col-12 col-md-12">
@@ -382,11 +249,7 @@
               <label class="mb-1">Perubahan Standart</label>
               <select class="form-select" v-model="optChanges">
                 <option value="null" selected>Select Standart</option>
-                <option
-                  v-for="optChange in optChangeData"
-                  :key="optChange"
-                  :value="optChange.system_value"
-                >
+                <option v-for="optChange in optChangeData" :key="optChange" :value="optChange.system_value">
                   {{ optChange.system_value }}
                 </option>
               </select>
@@ -398,11 +261,7 @@
             <label class="mb-1">Evaluation</label>
             <select class="form-select" v-model="evaluationName">
               <option value="null" selected>Select Evaluation</option>
-              <option
-                v-for="optEval in optEvaluation"
-                :key="optEval"
-                :value="optEval.system_value"
-              >
+              <option v-for="optEval in optEvaluation" :key="optEval" :value="optEval.system_value">
                 {{ optEval.system_value }}
               </option>
             </select>
@@ -454,14 +313,11 @@
         </div>
       </CModalBody>
       <CModalFooter>
-        <CButton
-          color="secondary"
-          @click="
-            () => {
-              addFindingModal = false
-            }
-          "
-        >
+        <CButton color="secondary" @click="
+          () => {
+            addFindingModal = false
+          }
+        ">
           Close
         </CButton>
         <CButton color="primary" type="submit"> Add Finding Data </CButton>
@@ -776,39 +632,6 @@ export default {
         actual_cm_date: this.actualCMDate,
         evaluation_nm: this.evaluationName,
       }
-
-      //       {
-      //     "sub_schedule_id": "502a08c0-dcd4-408d-8a42-9cfc49dacb11",
-      //     "schedule_item_check_kanban_id": "a6b2d2b5-3827-4f90-b692-5024bf1dc922",
-      //     "finding_pic_id": "d4c969ce-fa7d-4a2d-a9e8-3b3766170655",
-      //     "actual_pic_id": "d4c969ce-fa7d-4a2d-a9e8-3b3766170655",
-      //     "finding_date": "2025-02-22",
-      //     "finding_desc": "TEST",
-      //     "plan_cm_date": "2025-02-22",
-      //     "plan_cm_desc": "TES CM",
-      //     "time_cm": 0,
-      //     "time_yokoten": false,
-      //     "opt_changes": "Perubahan Item Check",
-      //     "opt_depts": "Kaizen",
-      //     "cm_judg": false,
-      //     "actual_cm_date": null,
-      //     "evaluation_nm": "Order Part"
-      // }
-
-      // {
-      //     "schedule_item_check_kanban_id": "2e651173-c08c-40e5-ba8c-2ade04c04722",
-      //     "finding_date": "2025-02-22",
-      //     "finding_desc": "TEST",
-      //     "plan_cm_date": "2025-02-22",
-      //     "plan_cm_desc": "TEST CM",
-      //     "time_cm": 0,
-      //     "time_yokoten": false,
-      //     "opt_changes": "Perubahan Item Check",
-      //     "opt_depts": "Maintenance",
-      //     "cm_judg": false,
-      //     "actual_cm_date": null,
-      //     "evaluation_nm": "Order Part"
-      // }
 
       const saveFn = async (callback) => {
         if (event.currentTarget.checkValidity() === false) {
