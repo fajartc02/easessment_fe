@@ -243,7 +243,7 @@ export default {
             .dispatch(DELETE_OBSERVATION_LIST, id)
             .then(async () => {
               Swal.fire('Berhasil menghapus!', '', 'success')
-              await this.$store.dispatch(GET_OBSERVATION_SCHEDULE_LIST)
+              await this.$store.dispatch(GET_OBSERVATION_SCHEDULE_LIST, this.filter)
             })
             .catch((err) => {
               console.log(err)

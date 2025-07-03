@@ -11,7 +11,12 @@
       </div>
       <div class="overflow-auto">
         <label class="mx-2">Page {{ currentPage }}</label>
-        <nav aria-label="Page navigation example" class="mt-1 px-2">
+        <select class="form-control mt-1" v-model="selectedPage">
+          <option v-for="page in totalPage" :key="page" :value="page">
+            {{ page }}
+          </option>
+        </select>
+        <!-- <nav aria-label="Page navigation example" class="mt-1 px-2">
           <ul class="pagination">
             <li class="page-item">
               <button class="page-link text-black" :disabled="totalPage == 1 || currentPage == 1"
@@ -33,7 +38,7 @@
               </button>
             </li>
           </ul>
-        </nav>
+        </nav> -->
       </div>
     </div>
   </div>
@@ -86,7 +91,13 @@ export default {
           vals: -1,
         },
       ],
+      selectedPage: 1,
     }
+  },
+  watch: {
+    selectedPage(newVal) {
+      this.$emit('changePage', newVal, 'fromnumber')
+    },
   },
   computed: {
     startPage() {

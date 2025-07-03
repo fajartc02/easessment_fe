@@ -113,6 +113,7 @@
                 <th id="fixCol-head-2" rowspan="2">Line</th>
                 <th id="fixCol-head-3" rowspan="2">Zone</th>
                 <th id="fixCol-head-4" rowspan="2">No Kanban</th>
+                <th rowspan="2">Area</th>
                 <th id="fixCol-head-5" rowspan="2">Freq 4S</th>
                 <th id="fixCol-head-6" rowspan="2">Date</th>
                 <th id="fixCol-head-7" rowspan="2">Problem</th>
@@ -243,6 +244,9 @@
                 <td id="fixCol-3" class="text-center">{{ finding.zone_nm }}</td>
                 <td id="fixCol-4" class="text-center">
                   {{ finding.kanban_no }}
+                </td>
+                <td class="text-center">
+                  {{ finding.area_nm }}
                 </td>
                 <td id="fixCol-5" class="text-center">{{ finding.freq_nm }}</td>
                 <td id="fixCol-6">{{ formatDate(finding.finding_date) }}</td>
@@ -613,22 +617,22 @@
             </div>
           </div>
           <div class="col-12 col-md-12">
+            <CInputGroup class="mb-3">
+              <CInputGroupText>C/M Image</CInputGroupText>
+              <CFormInput @change="onChangeCmImage($event)" ref="cm_image" aria-label="Input your kaizen file"
+                type="file" />
+              <CInputGroupText class="p-0">
+                <button class="btn btn-sm btn-success" @click="uploadCmImage(selectedFindingID)">Upload
+                  Image</button>
+              </CInputGroupText>
+            </CInputGroup>
+          </div>
+          <div class="col-12 col-md-12">
             <div class="mb-2">
               <div class="card p-2">
                 <label>Apakah ada Improvement?</label>
                 <CFormSwitch v-model="is_need_improvement" />
                 <div v-if="is_need_improvement" class="row">
-                  <div class="col-12 col-md-12">
-                    <CInputGroup class="mb-3">
-                      <CInputGroupText>C/M Image</CInputGroupText>
-                      <CFormInput @change="onChangeCmImage($event)" ref="cm_image" aria-label="Input your kaizen file"
-                        type="file" />
-                      <CInputGroupText class="p-0">
-                        <button class="btn btn-sm btn-success" @click="uploadCmImage(selectedFindingID)">Upload
-                          Image</button>
-                      </CInputGroupText>
-                    </CInputGroup>
-                  </div>
                   <div class="col-12 col-md-12">
                     <CInputGroup class="mb-3">
                       <CInputGroupText>Kaizen File</CInputGroupText>
@@ -982,8 +986,10 @@ export default {
   },
   methods: {
     async uploadKaizen(finding_id, kaizen_file = null) {
+      this.isLoading = true
       if (!kaizen_file && !this.kaizenFile) {
         toast.info('Please select file')
+        this.isLoading = false
         return
       }
 
@@ -1000,13 +1006,23 @@ export default {
           `/operational/4s/finding/upload-kaizen?dest=4s-finding-kaizen`,
           formData,
         )
+        this.isLoading = false
+        toast.success('Susccessfully Upload Kaizen', {
+          autoClose: 1000,
+        })
       } catch (e) {
+        this.isLoading = false
         console.log('uploadKaizen', e)
+        toast.error('Failed to upload Kaizen', {
+          autoClose: 1000,
+        })
       }
     },
     async uploadCmImage(finding_id) {
+      this.isLoading = true
       if (!this.cmImage) {
         toast.info('Please select file')
+        this.isLoading = false
         return
       }
 
@@ -1022,8 +1038,14 @@ export default {
           `/operational/4s/finding/upload-cm-image?dest=4s-finding-kaizen`,
           formData,
         )
+        this.isLoading = false
+        toast.success('Susccessfully Upload CM Image', {
+          autoClose: 1000,
+        })
       } catch (e) {
+        this.isLoading = false
         console.log('uploadKaizen', e)
+        toast.error(JSON.stringify(e.message))
       }
     },
     showSopModal(sopBefore, sopAfter) {
@@ -1046,13 +1068,19 @@ export default {
     },
     async uploadSopFile() {
       try {
+        this.isLoading = true
+        if (!this.kanban_sop) {
+          toast.info('Please select file')
+          this.isLoading = false
+          return
+        }
         const formData = new FormData()
         formData.append('dest', 'kanban-sop')
         formData.append('kanban_id', this.selectedKanbanID)
         formData.append('sop_file', this.kanban_sop)
         formData.append('finding_4s_id', this.selectedFindingID)
 
-        const upload = await ApiService.post(
+        await ApiService.post(
           `/master/kanbans/upload-sop?dest=kanban-sop`,
           formData,
           {
@@ -1063,12 +1091,12 @@ export default {
           },
         )
 
-        if (upload.data.data) {
-          toast.success('Susccessfully Upload SOP', {
-            autoClose: 1000,
-          })
-        }
+        toast.success('Susccessfully Upload SOP', {
+          autoClose: 1000,
+        })
+        this.isLoading = false
       } catch (error) {
+        this.isLoading = false
         toast.error(JSON.stringify(error.message))
         setTimeout(() => {
           toast.remove()
