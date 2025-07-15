@@ -33,6 +33,7 @@
       <th rowspan="3" class="px-2">LH White sign</th>
       <th rowspan="3" class="px-2">SH/AM/Mgr Sign</th>
       <th rowspan="3" class="px-2">Countermeasure Comment</th>
+      <th id="fixCol-head-9" rowspan="3" width="120">Score</th>
       <th rowspan="3">Actions</th>
     </tr>
     <tr>

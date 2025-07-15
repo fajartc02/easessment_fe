@@ -44,6 +44,7 @@
               <th>Pilar</th>
               <th>Evaluasi</th>
               <th>Problem / finding</th>
+              <th>Score</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -68,6 +69,12 @@
                 </div>
               </td>
               <td>{{ focustheme.ft_remark }}</td>
+               <td id="fixCol-9" class="px-4">
+                  <!-- {{ finding.score }} -->
+                  <template  v-for="labelScore in scoreopts">
+                    <label :key="labelScore.score"  v-if="labelScore.score === focustheme.score">{{ labelScore.label }}</label>
+                  </template>
+                </td>
               <td>
                 <button class="btn btn-warning btn-sm text-white" @click="focusThemeDetailData(index)">
                   Problems
@@ -100,6 +107,25 @@
         <CModalTitle>Add fokus tema</CModalTitle>
       </CModalHeader>
       <CModalBody>
+          <div class="col" v-if="showScoreField" >
+            <label>Score</label>
+            <select class="form-select" v-model="focusThemeData.score" >
+             <option v-for="opt in scoreopts" :key="opt.score" :value="opt.score">
+              {{ opt.label }}
+               </option>  
+            </select>
+             <button class="btn btn-info my-2 btn-sm text-white" @click="
+          () => {
+            updateScoreFocusThema()
+          }
+        "
+          >
+              Submit Score
+            </button>
+            <hr>
+          </div>
+       
+        
         <CAccordion :active-item-key="1" always-open>
           <CAccordionItem :item-key="1">
             <CAccordionHeader> Focus theme input </CAccordionHeader>
@@ -299,6 +325,23 @@
         <CModalTitle>Add fokus tema</CModalTitle>
       </CModalHeader>
       <CModalBody>
+         <div class="col" v-if="showScoreField" >
+            <label>Score</label>
+            <select class="form-select" v-model="focusThemeData.score" >
+             <option v-for="opt in scoreopts" :key="opt.score" :value="opt.score">
+              {{ opt.label }}
+               </option>  
+            </select>
+             <button class="btn btn-info my-2 btn-sm text-white" @click="
+          () => {
+            updateScoreFocusThema()
+          }
+        "
+          >
+              Submit Score
+            </button>
+            <hr>
+          </div>
         <CAccordion :active-item-key="1" always-open>
           <CAccordionItem :item-key="1">
             <CAccordionHeader> Focus theme edit </CAccordionHeader>
@@ -704,12 +747,14 @@ import Pagination from '@/components/Pagination.vue'
 
 import Treeselect from '@cholakovdev/vue3-treeselect'
 import '@cholakovdev/vue3-treeselect/dist/vue3-treeselect.css'
+import SCORE_MOCK from '@/mocks/score.mock'
 
 
 export default {
   name: 'Focus Theme',
   data() {
     return {
+      showScoreField: false,
       // finding_desc: itm.findings[0].finding_desc,
       // finding_factor: itm.findings[0].factor_nm,
       // finding_cm: itm.findings[0].cm_desc,
@@ -789,7 +834,8 @@ export default {
       selectedFindingImage: null,
       selectedFindingImageToDisplay: null,
       selectedFindingImageToUpdate: null,
-      totalPage: 0
+      totalPage: 0,
+      scoreopts:SCORE_MOCK,
     }
   },
   computed: {
@@ -1131,6 +1177,30 @@ export default {
         this.editFocusThemeModal = false
       }
     },
+    async updateScoreFocusThema(){
+      try{
+        const FT_ID = this.selectedFocusThemeID
+        const data = {score:this.focusThemeData.score,}
+         ApiService.setHeader()
+        const updateData = await ApiService.put(
+          `operational/focus-thema/score/${FT_ID}`,
+          data,
+        )
+        console.log(FT_ID,'id');
+        
+        if (updateData) {
+          Swal.fire('Data updated!', '', 'success')
+          this.editFocusThemeModal = false
+          this.getFocusThemes()
+        } else {
+          Swal.fire('Error', '', 'warning')
+        }
+      } catch (error) {
+        console.log(error)
+        Swal.fire('Failed to update focus thema data', '', 'error')
+        this.editFocusThemeModal = false
+      }
+      },
     async getFactors() {
       ApiService.setHeader()
       const factors = await ApiService.get(`master/factors`)
@@ -1171,6 +1241,10 @@ export default {
         this.picData.push({ pic_id: item.id, pic_name: item.text })
       })
     },
+      AccesibilityScore(){
+    const role = localStorage.getItem('role')
+    this.showScoreField = role != 'TM' && role != 'null'
+},
     customLineFilterOptions({ line_name }) {
       return `${line_name}`
     },
@@ -1208,6 +1282,7 @@ export default {
     await this.getFactors()
     await this.getCategories()
     await this.getUsers()
+    await this.AccesibilityScore()
   },
   components: { VueMultiselect, Loading, Pagination, Treeselect },
 }

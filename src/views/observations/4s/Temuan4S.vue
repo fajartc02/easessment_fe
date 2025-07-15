@@ -138,6 +138,7 @@
                 <th class="fix-col-parent" colspan="4">Nov</th>
                 <th class="fix-col-parent" colspan="4">Dec</th>
                 <th class="fix-col-parent" rowspan="2">Evaluasi</th>
+                 <th class="fix-col-parent" rowspan="2">Score</th>
                 <th class="fix-col-parent" rowspan="2" colspan="2">Actions</th>
               </tr>
               <tr class="fix-col-child">
@@ -293,6 +294,12 @@
                   <img v-if="finding.evaluation_nm" :src="getImage(finding.evaluation_nm)"
                     :alt="getImage(finding.evaluation_nm)" width="50" height="50" />
                   <span v-else class="text-muted"> No Evaluation</span>
+                </td>
+               
+                 <td id="fixCol-9" class="px-4">
+                  <template  v-for="labelScore in scoreopts">
+                    <label :key="labelScore.score"  v-if="labelScore.score === finding.score">{{ labelScore.label }}</label>
+                  </template>
                 </td>
                 <td>
                   <div class="d-flex gap-2">
@@ -477,8 +484,28 @@
           </div>
         </div>
       </CModalBody> -->
-
+  
       <CModalBody>
+      
+        <div class="col" v-if="showScoreField">
+            <label>Score</label>
+            <select class="form-select" v-model="selectedScore" >
+             <option v-for="opt in scoreopts" :key="opt.score" :value="opt.score">
+              {{ opt.label }}
+               </option>  
+            </select>
+             <button class="btn btn-info my-2 btn-sm text-white" @click="
+          () => {
+            updateScoreFinding()
+          }
+        "
+          >
+              Edit Score
+            </button>
+            <hr>
+          </div>
+       
+        
         <div class="row">
           <div class="col-md-6">
             <div class="mb-2">
@@ -807,7 +834,7 @@ import 'vue3-treeselect/dist/vue3-treeselect.css'
 import Treeselect from 'vue3-treeselect'
 import ModalForm4sFinding from '@/components/4s/ModalForm4sFinding.vue'
 import ModalImage from '@/components/ModalImage.vue'
-
+import SCORE_MOCK from '@/mocks/score.mock'
 import VuePdfEmbed from 'vue-pdf-embed'
 
 export default {
@@ -824,6 +851,7 @@ export default {
   },
   data() {
     return {
+      showScoreField:false,
       enabledReduceTime: false,
       options: [
         {
@@ -947,6 +975,7 @@ export default {
       kaizenFile: null,
       cmImage: null,
       isKaizenModal: false,
+      scoreopts:SCORE_MOCK,
     }
   },
   computed: {
@@ -1224,6 +1253,7 @@ export default {
         this.enabledReduceTime = false
       }
       this.editFindingModal = true
+      this.selectedScore = data.score
     },
 
     async updateFinding() {
@@ -1269,7 +1299,32 @@ export default {
         this.editFindingModal = false
       }
     },
-
+  async updateScoreFinding(){
+      try{
+        const findingId = this.selectedFindingID
+        const data = {score:this.selectedScore,}
+         ApiService.setHeader()
+        ApiService.put(
+          `operational/4s/finding/score/${findingId}`,
+          data,
+        )
+         .then(res => {
+          if (res.data.message == 'Success to edit 4s finding') {
+            toast.success('Data added', {
+              autoClose: 1000
+            })
+          this.getFindings()
+             this.editFindingModal = false
+        } else {
+          Swal.fire('Error', '', 'warning')
+        }
+        
+      } )
+    }catch (error) {
+      console.log(error);
+      
+    }
+    },
     async deleteFinding(findingID) {
       Swal.fire({
         title: 'Are you sure to delete this Finding?',
@@ -1323,12 +1378,16 @@ export default {
     customPicOptions({ pic_name }) {
       return `${pic_name}`
     },
-    mapUsersData() {
-      this.picData = []
-      this.getUsersOpts?.map((item) => {
-        this.picData.push({ pic_id: item.id, pic_name: item.text })
-      })
+  mapUsersData() {
+     this.getUsersOpts?.map((item) => {
+        this.picData.push({ pic_id: item.id, pic_name: item.text })})
+      
     },
+
+    AccesibilityScore(){
+    const role = localStorage.getItem('role')
+    this.showScoreField = role != 'TM' && role != 'null'
+},
     async getLines() {
       try {
         this.$store.dispatch(GET_LINES)
@@ -1473,6 +1532,7 @@ export default {
     await this.getFindings()
     await this.getEvaluation()
     await this.getOptChangeSystem()
+    await this.AccesibilityScore()
     this.isLoading = false
     // TRY OPTIMIZING
     // try {
