@@ -423,9 +423,10 @@
           >
               Edit Score
             </button>
+            <hr>
           </div>
        
-        <hr>
+        
         <div class="mb-2">
           <label class="mb-1">Line</label>
           <input type="text" class="form-control" v-model="findingDetail.line_nm" />
