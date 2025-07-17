@@ -43,9 +43,9 @@ export default {
     },
     pages: function () {
       var pages = [];
-
-      for (var i = 1; i <= this.totalPages; i++)
-      {
+      console.log(this.totalPages, 'totalPAge');
+      if (this.totalPages == Infinity) return []
+      for (var i = 1; i <= this.totalPages; i++) {
         pages.push(i);
       }
 
@@ -56,20 +56,17 @@ export default {
         last = ['...', this.totalPages],
         range = [];
 
-      if (this.currentPage <= this.limitButton)
-      {
+      if (this.currentPage <= this.limitButton) {
         range = this.range(1, this.limitButton + 1);
 
         return (this.currentPage + range.length) <= this.totalPages ? range.concat(last) : range;
       }
-      else if (this.currentPage > (this.totalPages - this.limitButton))
-      {
+      else if (this.currentPage > (this.totalPages - this.limitButton)) {
         range = this.range(this.totalPages - (this.limitButton), this.totalPages);
 
         return (this.currentPage - range.length) >= 1 ? first.concat(range) : range;
       }
-      else
-      {
+      else {
         range = this.range(
           this.currentPage - Math.ceil(this.limitButton / 2),
           this.currentPage + Math.ceil(this.limitButton / 2)
@@ -92,8 +89,7 @@ export default {
   },
   methods: {
     changePage(page) {
-      if (page >= 1 && page <= this.totalPages)
-      {
+      if (page >= 1 && page <= this.totalPages) {
         this.$emit('page-changed', page);
       }
     },
@@ -106,10 +102,8 @@ export default {
     range: function (start, end) {
       var pages = [];
 
-      for (var i = start - 1; i < end; i++)
-      {
-        if (this.pages[i])
-        {
+      for (var i = start - 1; i < end; i++) {
+        if (this.pages[i]) {
           pages.push(this.pages[i]);
         }
       }
