@@ -28,7 +28,7 @@
             addHenkatenModal = true
             mapUsersData()
           }
-            ">
+          ">
             Add henkaten
           </button>
           <button :disabled="getHenkatens?.length < 1" class="btn btn-info text-white w-full my-1">
@@ -51,7 +51,7 @@
               <th>Tujuan</th>
               <th>Safety</th>
               <th>Quality</th>
-               <th>Score</th>
+              <th>Score</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -73,11 +73,12 @@
               <td>{{ henkaten.henkaten_purpose }}</td>
               <td>{{ henkaten.henkaten_flw_safety }}</td>
               <td>{{ henkaten.henkaten_flw_quality }}</td>
-                <td id="fixCol-9" class="px-4">
-                  <template  v-for="labelScore in scoreopts">
-                    <label :key="labelScore.score"  v-if="labelScore.score === henkaten.score">{{ labelScore.label }}</label>
-                  </template>
-                </td>
+              <td id="fixCol-9" class="px-4">
+                <template v-for="labelScore in scoreopts">
+                  <label :key="labelScore.score" v-if="labelScore.score === henkaten.score">{{ labelScore.label
+                  }}</label>
+                </template>
+              </td>
               <td>
                 <div class="d-flex justify-content-center align-items-baseline">
                   <button class="btn btn-secondary btn-sm text-white"
@@ -141,12 +142,12 @@
                 <div class="mb-2">
                   <label class="mb-1">Perubahan</label>
                   <textarea type="text" class="form-control" v-model="henkatenData.henkaten_desc">
-                  </textarea>
+              </textarea>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Tujuan</label>
                   <textarea type="text" class="form-control" v-model="henkatenData.henkaten_purpose">
-                  </textarea>
+              </textarea>
                 </div>
                 <span style="font-weight: bold" class="mb-2">Follow (2 weeks) item</span>
                 <div class="mb-2">
@@ -321,27 +322,26 @@
         <CModalTitle>Edit henkaten</CModalTitle>
       </CModalHeader>
       <CModalBody>
-      
-          <div class="col" v-if="showScoreField">
-            <label>Score</label>
-            <select class="form-select" v-model="henkatenDetail.score" >
-             <option v-for="opt in scoreopts" :key="opt.score" :value="opt.score">
+
+        <div class="col" v-if="showScoreField">
+          <label>Score</label>
+          <select class="form-select" v-model="henkatenDetail.score">
+            <option v-for="opt in scoreopts" :key="opt.score" :value="opt.score">
               {{ opt.label }}
-               </option>  
-            </select>
-             <button class="btn btn-info my-2 btn-sm text-white" @click="
-          () => {
-            updateScoreHenkanten()
-          }
-        "
-          >
-              Edit Score
-            </button>
-            <hr>
-          </div>
-       
-        
-        
+            </option>
+          </select>
+          <button class="btn btn-info my-2 btn-sm text-white" @click="
+            () => {
+              updateScoreHenkanten()
+            }
+          ">
+            Edit Score
+          </button>
+          <hr>
+        </div>
+
+
+
         <CAccordion :active-item-key="1" always-open>
           <CAccordionItem :item-key="1">
             <CAccordionHeader> Henkaten input </CAccordionHeader>
@@ -413,12 +413,12 @@
                 <div class="mb-2">
                   <label class="mb-1">Perubahan</label>
                   <textarea type="text" class="form-control" v-model="henkatenDetail.henkaten_desc">
-                  </textarea>
+              </textarea>
                 </div>
                 <div class="mb-2">
                   <label class="mb-1">Tujuan</label>
                   <textarea type="text" class="form-control" v-model="henkatenDetail.henkaten_purpose">
-                  </textarea>
+              </textarea>
                 </div>
                 <span style="font-weight: bold" class="mb-2">Follow (2 weeks) item</span>
                 <div class="mb-2">
@@ -683,7 +683,7 @@
           EditHenkatenModal = false
           selectedHenkatenID = null
         }
-          ">
+        ">
           Close
         </CButton>
         <CButton color="primary" @click="updateHenkatenData">Update data</CButton>
@@ -703,7 +703,7 @@
         <CButton color="secondary" class="text-white" @click="() => {
           findingImageModal = false
         }
-          ">
+        ">
           Close
         </CButton>
       </CModalFooter>
@@ -713,7 +713,7 @@
 </template>
 
 <script>
-import moment from 'moment'
+// import moment from 'moment'
 import { mapGetters } from 'vuex'
 import { GET_USERS } from '@/store/modules/user.module'
 import { GET_HENKATEN } from '@/store/modules/henkaten.module'
@@ -733,7 +733,7 @@ export default {
   name: 'Henkaten',
   data() {
     return {
-       showScoreField:false,
+      showScoreField: false,
       json_fields: {
         id: 'henkaten_id',
         Date: 'henkaten_date',
@@ -808,7 +808,7 @@ export default {
       selectedFindingImage: null,
       selectedFindingImageToDisplay: null,
       selectedFindingImageToUpdate: null,
-      scoreopts:SCORE_MOCK,
+      scoreopts: SCORE_MOCK,
     }
   },
   computed: {
@@ -974,33 +974,33 @@ export default {
 
       this.updateHenkaten(updateData)
     },
-    async updateScoreHenkanten(){
-      try{
+    async updateScoreHenkanten() {
+      try {
         const HenkantenId = this.selectedHenkatenID
-        const data = {score:this.henkatenDetail.score,}
-         ApiService.setHeader()
+        const data = { score: this.henkatenDetail.score, }
+        ApiService.setHeader()
         ApiService.put(
           `operational/henkaten/score/${HenkantenId}`,
           data,
         )
-         .then(res => {
-          if (res.data.message == 'Success to EDIT Score of Henkaten') {
-            toast.success('Data added', {
-              autoClose: 1000
-            })
-          this.getHenkaten()
-             this.EditHenkatenModal = false
-        } else {
-          Swal.fire('Error', '', 'warning')
-        }
-        
-      } )
-    }catch (error) {
-      console.log(error);
-      
-    }
+          .then(res => {
+            if (res.data.message == 'Success to EDIT Score of Henkaten') {
+              toast.success('Data added', {
+                autoClose: 1000
+              })
+              this.getHenkaten()
+              this.EditHenkatenModal = false
+            } else {
+              Swal.fire('Error', '', 'warning')
+            }
+
+          })
+      } catch (error) {
+        console.log(error);
+
+      }
     },
-      
+
     async getHenkaten() {
       this.isLoading = true
 
@@ -1179,9 +1179,9 @@ export default {
     async getUsers() {
       try {
         this.$store.dispatch(GET_USERS)
-        
-          this.mapUsersData()
-        
+
+        this.mapUsersData()
+
       } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
@@ -1193,15 +1193,16 @@ export default {
       })
     },
     mapUsersData() {
-     this.getUsersOpts?.map((item) => {
-        this.picData.push({ pic_id: item.id, pic_name: item.text })})
-      
+      this.getUsersOpts?.map((item) => {
+        this.picData.push({ pic_id: item.id, pic_name: item.text })
+      })
+
     },
 
-    AccesibilityScore(){
-    const role = localStorage.getItem('role')
-    this.showScoreField = role != 'TM' && role != 'null'
-},
+    AccesibilityScore() {
+      const role = localStorage.getItem('role')
+      this.showScoreField = role != 'TM' && role != 'null'
+    },
     customLineFilterOptions({ line_name }) {
       return `${line_name}`
     },
@@ -1213,12 +1214,13 @@ export default {
     },
   },
   async mounted() {
-    const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
-    const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
+    const year = new Date().getFullYear()
+    const month = new Date().getMonth() + 1 > 9 ? new Date().getMonth() + 1 : `0${new Date().getMonth() + 1}`
+    const lastDateThisMonth = new Date(year, month, 0).getDate()
     this.selectedMonth = `${year}-${month}`
+    this.selectedFilterStartDate = `${year}-${month}-01`
+    this.selectedFilterEndDate = `${year}-${month}-${lastDateThisMonth}`
     this.selectedLine = localStorage.getItem('line_id')
-    this.selectedFilterStartDate = `${year}-01-01`
-    this.selectedFilterEndDate = `${year}-12-31`
     await this.getLines()
     await this.getUsers()
     await this.getCategories()

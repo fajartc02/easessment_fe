@@ -728,7 +728,7 @@
 </template>
 
 <script>
-import moment from 'moment'
+// import moment from 'moment'
 import { GET_LINES } from '@/store/modules/line.module'
 import {
   GET_FOCUSTHEME,
@@ -1268,13 +1268,13 @@ export default {
     },
   },
   async mounted() {
-    const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
-    const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
+    const year = new Date().getFullYear()
+    const month = new Date().getMonth() + 1 > 9 ? new Date().getMonth() + 1 : `0${new Date().getMonth() + 1}`
+    const lastDateThisMonth = new Date(year, month, 0).getDate()
     this.selectedMonth = `${year}-${month}`
-
+    this.selectedFilterStartDate = `${year}-${month}-01`
+    this.selectedFilterEndDate = `${year}-${month}-${lastDateThisMonth}`
     this.selectedLine = localStorage.getItem('line_id')
-    this.selectedFilterStartDate = `${year}-01-01`
-    this.selectedFilterEndDate = `${year}-12-31`
     await this.getSystem()
     await this.getLines()
     await this.getFocusThemes()
