@@ -51,6 +51,7 @@
               <th>Tujuan</th>
               <th>Safety</th>
               <th>Quality</th>
+               <th>Score</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -72,6 +73,11 @@
               <td>{{ henkaten.henkaten_purpose }}</td>
               <td>{{ henkaten.henkaten_flw_safety }}</td>
               <td>{{ henkaten.henkaten_flw_quality }}</td>
+                <td id="fixCol-9" class="px-4">
+                  <template  v-for="labelScore in scoreopts">
+                    <label :key="labelScore.score"  v-if="labelScore.score === henkaten.score">{{ labelScore.label }}</label>
+                  </template>
+                </td>
               <td>
                 <div class="d-flex justify-content-center align-items-baseline">
                   <button class="btn btn-secondary btn-sm text-white"
@@ -315,6 +321,27 @@
         <CModalTitle>Edit henkaten</CModalTitle>
       </CModalHeader>
       <CModalBody>
+      
+          <div class="col" v-if="showScoreField">
+            <label>Score</label>
+            <select class="form-select" v-model="henkatenDetail.score" >
+             <option v-for="opt in scoreopts" :key="opt.score" :value="opt.score">
+              {{ opt.label }}
+               </option>  
+            </select>
+             <button class="btn btn-info my-2 btn-sm text-white" @click="
+          () => {
+            updateScoreHenkanten()
+          }
+        "
+          >
+              Edit Score
+            </button>
+            <hr>
+          </div>
+       
+        
+        
         <CAccordion :active-item-key="1" always-open>
           <CAccordionItem :item-key="1">
             <CAccordionHeader> Henkaten input </CAccordionHeader>
@@ -697,7 +724,7 @@ import ApiService from '@/store/api.service'
 import Loading from 'vue-loading-overlay'
 import Pagination from '@/components/Pagination.vue'
 import { toast } from 'vue3-toastify'
-
+import SCORE_MOCK from '@/mocks/score.mock'
 import Treeselect from '@cholakovdev/vue3-treeselect'
 import '@cholakovdev/vue3-treeselect/dist/vue3-treeselect.css'
 
@@ -706,6 +733,7 @@ export default {
   name: 'Henkaten',
   data() {
     return {
+       showScoreField:false,
       json_fields: {
         id: 'henkaten_id',
         Date: 'henkaten_date',
@@ -780,6 +808,7 @@ export default {
       selectedFindingImage: null,
       selectedFindingImageToDisplay: null,
       selectedFindingImageToUpdate: null,
+      scoreopts:SCORE_MOCK,
     }
   },
   computed: {
@@ -945,6 +974,33 @@ export default {
 
       this.updateHenkaten(updateData)
     },
+    async updateScoreHenkanten(){
+      try{
+        const HenkantenId = this.selectedHenkatenID
+        const data = {score:this.henkatenDetail.score,}
+         ApiService.setHeader()
+        ApiService.put(
+          `operational/henkaten/score/${HenkantenId}`,
+          data,
+        )
+         .then(res => {
+          if (res.data.message == 'Success to EDIT Score of Henkaten') {
+            toast.success('Data added', {
+              autoClose: 1000
+            })
+          this.getHenkaten()
+             this.EditHenkatenModal = false
+        } else {
+          Swal.fire('Error', '', 'warning')
+        }
+        
+      } )
+    }catch (error) {
+      console.log(error);
+      
+    }
+    },
+      
     async getHenkaten() {
       this.isLoading = true
 
@@ -1123,9 +1179,9 @@ export default {
     async getUsers() {
       try {
         this.$store.dispatch(GET_USERS)
-        if (this.getUsersOpts) {
+        
           this.mapUsersData()
-        }
+        
       } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
@@ -1137,10 +1193,15 @@ export default {
       })
     },
     mapUsersData() {
-      this.getUsersOpts?.map((item) => {
-        this.picData.push({ pic_id: item.id, pic_name: item.text })
-      })
+     this.getUsersOpts?.map((item) => {
+        this.picData.push({ pic_id: item.id, pic_name: item.text })})
+      
     },
+
+    AccesibilityScore(){
+    const role = localStorage.getItem('role')
+    this.showScoreField = role != 'TM' && role != 'null'
+},
     customLineFilterOptions({ line_name }) {
       return `${line_name}`
     },
@@ -1163,6 +1224,7 @@ export default {
     await this.getCategories()
     await this.getFactors()
     await this.getHenkaten()
+    await this.AccesibilityScore()
   },
   updated() {
     this.mapLinesData()

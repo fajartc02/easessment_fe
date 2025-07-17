@@ -284,6 +284,12 @@
                     </div>
                   </div>
                 </td>
+                 <td id="fixCol-9" class="px-4">
+                  <!-- {{ finding.score }} -->
+                  <template  v-for="labelScore in scoreopts">
+                    <label :key="labelScore.score"  v-if="labelScore.score === finding.score">{{ labelScore.label }}</label>
+                  </template>
+                </td>
                 <td class="px-1">
                   <div class="px-2 d-flex">
                     <button v-if="finding.finding_img" @click="
@@ -402,6 +408,25 @@
         <CModalTitle>Edit temuan</CModalTitle>
       </CModalHeader>
       <CModalBody>
+          <div class="col" v-if="showScoreField">
+            <label>Score</label>
+            <select class="form-select" v-model="findingDetail.score" >
+             <option v-for="opt in scoreopts" :key="opt.score" :value="opt.score">
+              {{ opt.label }}
+               </option>  
+            </select>
+             <button class="btn btn-info my-2 btn-sm text-white" @click="
+          () => {
+            updateScoreFindingList()
+          }
+        "
+          >
+              Edit Score
+            </button>
+            <hr>
+          </div>
+       
+        
         <div class="mb-2">
           <label class="mb-1">Line</label>
           <input type="text" class="form-control" v-model="findingDetail.line_nm" />
@@ -1080,12 +1105,14 @@ import ModalFindingDetail from '@/components/ModalFinding/ModalFindingDetail.vue
 import HeadFindingList from '@/components/table/HeadFindingList.vue'
 import { COLOR_STW } from '@/constant/COLOR_STW'
 import VuePdfEmbed from 'vue-pdf-embed'
+import SCORE_MOCK from '@/mocks/score.mock'
 
 export default {
   name: 'List Temuan',
   data() {
     return {
       // for export data
+      showScoreField: false,
       COLOR_STW,
       json_fields: {
         FindingID: 'finding_id',
@@ -1103,6 +1130,7 @@ export default {
         'End Date Start CM': 'cm_end_plan_date',
         Status: 'status_finding',
       },
+      
       json_data: null,
       selected_json_data: null,
       isLoading: false,
@@ -1157,7 +1185,8 @@ export default {
       isKaizenModal: false,
       isSopModal: false,
       sopBefore: null,
-      sopAfter: null
+      sopAfter: null,
+      scoreopts:SCORE_MOCK,
     }
   },
   watch: {
@@ -1490,7 +1519,9 @@ export default {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
+      
     },
+    
     async getFindingsFunc() {
       let objQuery = {
         start_date:
@@ -1611,10 +1642,36 @@ export default {
         this.editTemuanModal = false
       }
     },
+    async updateScoreFindingList(){
+      try{
+        const findingID = this.selectedFindingID
+        const data = {score:this.findingDetail.score,}
+         ApiService.setHeader()
+        const updateData = await ApiService.put(
+          `operational/findingCm/score/${findingID}`,
+          data,
+        )
+        if (updateData) {
+          Swal.fire('Data updated!', '', 'success')
+          this.editTemuanModal = false
+          this.getFindingsFunc()
+        } else {
+          Swal.fire('Error', '', 'warning')
+        }
+      } catch (error) {
+        console.log(error)
+        Swal.fire('Failed to update finding data', '', 'error')
+        this.editTemuanModal = false
+      }
+      },
+      
+
+    
     async updateFindingList() {
       try {
         const findingID = this.selectedFindingID
         const data = {
+          score:this.findingDetail.score,
           line_id: this.findingDetail.line_id,
           finding_date: this.formatTheDate(this.findingDetail.finding_date), // from henkaten_date
           finding_location: this.findingDetail.finding_location, // from mv_location
@@ -1665,6 +1722,9 @@ export default {
         this.editTemuanModal = false
       }
     },
+
+
+   
     async uploadPinkSheet(state) {
       this.isUploadKaizenFile = true
       let findingID = await this.getFindings[this.selectedFindingIndex]
@@ -1729,10 +1789,15 @@ export default {
       this.findingDetail = data
     },
     mapUsersData() {
-      this.getUsersOpts?.map((item) => {
-        this.picData.push(item.text)
-      })
+     this.getUsersOpts?.map((item) => {
+        this.picData.push({ pic_id: item.id, pic_name: item.text })})
+      
     },
+
+    AccesibilityScore(){
+    const role = localStorage.getItem('role')
+    this.showScoreField = role != 'TM' && role != 'null'
+},
     formatTheDate(val) {
       if (val) {
         const year = val.split('T')[0].split('-')[0]
@@ -1786,6 +1851,7 @@ export default {
     await this.getUsers()
     await this.getFindingsFunc()
     await this.getLines()
+    await this.AccesibilityScore()
   },
   components: {
     VueMultiselect,

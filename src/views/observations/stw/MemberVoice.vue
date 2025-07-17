@@ -90,6 +90,7 @@
                 <th rowspan="3">Hasil Evaluasi</th>
                 <th colspan="48">Waktu Pelaksanaan</th>
                 <th rowspan="3">PIC</th>
+                <th id="fixCol-6" rowspan="3">Score</th>
                 <th rowspan="3">Actions</th>
               </tr>
               <tr>
@@ -218,6 +219,12 @@
                       `"></div>
                 </td>
                 <td>{{ membervoice.mv_pic_nm }}</td>
+                  <td id="fixCol-9" class="px-4">
+                  <!-- {{ finding.score }} -->
+                  <template  v-for="labelScore in scoreopts">
+                    <label :key="labelScore.score"  v-if="labelScore.score === membervoice.score">{{ labelScore.label }}</label>
+                  </template>
+                </td>
                 <td>
                   <button class="btn btn-secondary btn-sm text-white w-full" @click="() => {
                     detailMVModal = true
@@ -501,7 +508,25 @@
       <CModalHeader>
         <CModalTitle>Edit member voice</CModalTitle>
       </CModalHeader>
+    
       <CModalBody>
+         
+            <div class="col" v-if="showScoreField">
+            <label>Score</label>
+            <select class="form-select" v-model="memberVoiceDetail.mv_score" >
+             <option v-for="opt in scoreopts" :key="opt.score" :value="opt.score">
+              {{ opt.label }}
+               </option>  
+            </select>
+             <button class="btn btn-info my-2 btn-sm text-white" @click="
+          () => {
+            updateScoreMemberVoice()
+          }
+        "
+          >
+              Submit Score
+            </button>
+          </div>
         <CAccordion :active-item-key="1" always-open>
           <CAccordionItem :item-key="1">
             <CAccordionHeader> Member voice input </CAccordionHeader>
@@ -1025,11 +1050,12 @@ import Pagination from '@/components/Pagination.vue'
 
 import Treeselect from '@cholakovdev/vue3-treeselect'
 import '@cholakovdev/vue3-treeselect/dist/vue3-treeselect.css'
-
+import SCORE_MOCK from '@/mocks/score.mock'
 export default {
   name: 'Member Voice',
   data() {
     return {
+      
       json_fields: {
         id: 'mv_id',
         Date: 'mv_date_finding',
@@ -1044,6 +1070,7 @@ export default {
         'PIC': 'mv_pic_nm',
         Status: 'cm_status'
       },
+      showScoreField:false,
       json_data: null,
       isLoading: false,
       isUploadLoading: false,
@@ -1083,6 +1110,8 @@ export default {
         mv_actual_date: null,
         mv_pic_id: null,
         line_id: null,
+        mv_score:null,
+       
       },
       // findings data
       findingsData: {
@@ -1108,16 +1137,19 @@ export default {
         cm_sign_sh: null,
         cm_comments: null,
       },
+      
       memberVoiceDataReadyToUpload: {},
       accordionAddMVActiveKey: 1,
       selectedFindingImage: null,
       selectedFindingImageToDisplay: null,
       selectedFindingImageToUpdate: null,
       totalPage: 0,
+       scoreopts:SCORE_MOCK,
     }
+    
   },
   computed: {
-    ...mapGetters(['getLinesOpts', 'getUsersTree', 'getMemberVoice']),
+    ...mapGetters(['getLinesOpts', 'getUsersTree', 'getMemberVoice','getUsersOpts']),
   },
   watch: {
     selectedPIC(newVal) {
@@ -1238,7 +1270,9 @@ export default {
     async getUsers() {
       try {
         this.$store.dispatch(GET_USERS)
-        this.mapUsersData()
+         if (this.getUsersOpts) {
+          this.mapUsersData()
+        }
       } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
@@ -1350,6 +1384,7 @@ export default {
         mv_date_finding: this.formatTheDate(
           this.memberVoiceDetail.mv_date_finding,
         ),
+        mv_score:this.memberVoiceDetail.mv_score,
         mv_location: this.memberVoiceDetail.mv_location,
         mv_problem: this.memberVoiceDetail.mv_problem,
         mv_process_no: this.memberVoiceDetail.mv_process_no,
@@ -1412,6 +1447,32 @@ export default {
 
       this.updateMemberVoice(updateData)
     },
+     async updateScoreMemberVoice(){
+      try{
+        const MVID = this.selectedMVID
+        const data = {score:this.memberVoiceDetail.mv_score,}
+         ApiService.setHeader()
+        ApiService.put(
+          `operational/member-voice/score/${MVID}`,
+          data,
+        )
+        .then(res => {
+          if (res.data.message == 'Success to EDIT Score of MV') {
+            toast.success('Data added', {
+              autoClose: 1000
+            })
+            this.getMemberVoices()
+             this.editMVModal = false
+        } else {
+          Swal.fire('Error', '', 'warning')
+        }
+      })
+      } catch (error) {
+        console.log(error)
+        Swal.fire('Failed to update MV   data', '', 'error')
+        this.editMVModal = false
+      }
+      },
     updateMemberVoice(data) {
       const MVID = this.selectedMVID
 
@@ -1468,10 +1529,16 @@ export default {
       })
     },
     mapUsersData() {
-      this.getUsersOpts?.map((item) => {
-        this.picData.push({ pic_id: item.id, pic_name: item.text })
-      })
+     this.getUsersOpts?.map((item) => {
+        this.picData.push({ pic_id: item.id, pic_name: item.text })})
+      
     },
+
+    AccesibilityScore(){
+    const role = localStorage.getItem('role')
+    this.showScoreField = role != 'TM' && role != 'null'
+},
+
     customLineFilterOptions({ line_name }) {
       return `${line_name}`
     },
@@ -1531,6 +1598,7 @@ export default {
     await this.getMemberVoices()
     await this.getFactors()
     await this.getCategories()
+    await this.AccesibilityScore()
   },
   components: { VueMultiselect, Loading, Pagination, Treeselect },
 }

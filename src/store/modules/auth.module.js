@@ -69,6 +69,7 @@ const actions = {
                 .then(({ data }) => {
                     localStorage.setItem('name', data.message.fullname)
                     localStorage.setItem('noreg', data.message.noreg)
+                    localStorage.setItem('role',data.message.role)
                         // localStorage.setItem('line_id', data.message.line_id)
                         // context.commit(SET_AUTH, data);
                 })
