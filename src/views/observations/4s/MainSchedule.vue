@@ -160,8 +160,8 @@
                     <th id="fixCol-2" class="bg-dark" rowspan="2">Zona</th>
                     <th id="fixCol-3" class="bg-dark" rowspan="2">No Kanban</th>
                     <th id="fixCol-4" class="bg-dark" rowspan="2">Area</th>
+                    <th id="fixCol-5" class="bg-dark" rowspan="2">PIC</th>
                     <th style="z-index: 1;" rowspan="2">Time</th>
-                    <th style="z-index: 1;" rowspan="2">PIC</th>
                     <th style="z-index: 1;" rowspan="2">Freq</th>
                     <th :colspan="getDateThisMonth" class="text-center">{{ getMonthStr }}</th>
                   </tr>
@@ -187,8 +187,7 @@
                       <td id="fixCol-body-3" style="min-width: 120px;background-color: white;">{{ data?.kanban_no }}
                       </td>
                       <td id="fixCol-body-4" style="min-width: 200px;background-color: white;">{{ data?.area_nm }}</td>
-                      <td style="min-width: 50px">{{ data?.standart_time }}</td>
-                      <td style="min-width: 100px">
+                      <td id="fixCol-body-5" style="min-width: 100px;background-color: white">
                         <div style="cursor: pointer;" v-if="data?.pic_nm"
                           @click="openEditModal(data.sub_schedule_id, data.pic_id, data.pic_nm)">
                           <p class="cursor-pointer"> {{ data?.pic_nm }}</p>
@@ -200,6 +199,7 @@
                           </button>
                         </div>
                       </td>
+                      <td style="min-width: 50px">{{ data?.standart_time }}</td>
                       <td> {{ data?.freq_nm }}</td>
 
                       <td v-for="(children, childIdx) in data?.children" :key="children"
@@ -1231,6 +1231,13 @@ export default {
   z-index: 70;
 }
 
+#fixCol-5 {
+  position: sticky;
+  top: 0px;
+  left: 440px;
+  z-index: 70;
+}
+
 #fixCol-body-1 {
   position: sticky;
   width: 38px;
@@ -1258,6 +1265,13 @@ export default {
   position: sticky;
   top: 0px;
   left: 240px;
+  z-index: 60;
+}
+
+#fixCol-body-5 {
+  position: sticky;
+  top: 0px;
+  left: 440px;
   z-index: 60;
 }
 </style>
