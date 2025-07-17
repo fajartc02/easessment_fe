@@ -56,7 +56,7 @@
           <tr v-for="(job, i) in jobState" :key="job.uuid">
             <!-- <td>{{ job.no }}</td> -->
             <td>{{ i + 1 + (this.filtered.currentPage == 1 ? 0 : (this.filtered.currentPage - 1) * this.filtered.limit)
-              }}</td>
+            }}</td>
             <td>{{ job.line_nm }}</td>
             <!-- <td>{{ job.machine_nm ? job.machine_nm : '-' }}</td> -->
             <td>{{ job.pos_nm }}</td>
@@ -153,7 +153,7 @@ export default {
         },
         {
           label: 'All',
-          vals: 0,
+          vals: null,
         },
       ],
       isLoading: false
