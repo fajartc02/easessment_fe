@@ -1,95 +1,160 @@
 <template>
   <div>
     <div class="card mb-5">
-      <div class="card-header">
-        <div class="row d-flex align-items-center">
-          <div class="col">
-            <label>Select month</label>
-            <input type="month" class="form-control" v-model="selectedMonth" @change="addFilter()" />
-          </div>
-          <div class="col">
-            <label>Line</label>
-            <select class="form-select" v-model="selectedLineID" @change="addFilter()">
-              <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
-                {{ line.text }}
-              </option>
-            </select>
-          </div>
-          <div class="col">
-            <label>Zona</label>
-            <Select2 v-if="getZoneOpts.length > 1" class="form-control" v-model="selectedZoneID" :options="getZoneOpts"
-              @select="addFilter()" :disabled="getZoneOpts.length == 1" />
-            <input v-else type="text" class="form-control" value="tidak ada zona" disabled>
-          </div>
-          <div class="col">
-            <label>Kanban</label>
-            <Select2 v-if="getZoneOpts.length > 1" class="form-control" v-model="selectedKanbanID"
-              :options="getKanbansOpts" @select="addFilter()" />
-            <input v-else type="text" class="form-control" value="tidak ada kanban" disabled>
-          </div>
-          <div class="col">
-            <label>Freq</label>
-            <select class="form-select" v-model="selectedFreqID" @change="addFilter()">
-              <option v-for="freq in getFreqsOpts" :key="freq.id" :value="freq.id">
-                {{ freq.text }}
-              </option>
-            </select>
-          </div>
-          <div class="col-sm-1">
-            <button class="mt-4 btn btn-info text-white" @click="resetFilter()">
-              Reset
-            </button>
+      <template v-if="!mainScheduleData">
+        <div class="card-header">
+          <div class="row d-flex align-items-center">
+            <div class="col">
+              <label>Select month</label>
+              <input type="month" class="form-control" v-model="selectedMonth" @change="addFilter()" />
+            </div>
+            <div class="col">
+              <label>Line</label>
+              <select class="form-select" v-model="selectedLineID" @change="addFilter()">
+                <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
+                  {{ line.text }}
+                </option>
+              </select>
+            </div>
+            <div class="col">
+              <label>Zona</label>
+              <Select2 v-if="getZoneOpts.length > 1" class="form-control" v-model="selectedZoneID"
+                :options="getZoneOpts" @select="addFilter()" :disabled="getZoneOpts.length == 1" />
+              <input v-else type="text" class="form-control" value="tidak ada zona" disabled>
+            </div>
+            <div class="col">
+              <label>Kanban</label>
+              <Select2 v-if="getZoneOpts.length > 1" class="form-control" v-model="selectedKanbanID"
+                :options="getKanbansOpts" @select="addFilter()" />
+              <input v-else type="text" class="form-control" value="tidak ada kanban" disabled>
+            </div>
+            <div class="col">
+              <label>Freq</label>
+              <select class="form-select" v-model="selectedFreqID" @change="addFilter()">
+                <option v-for="freq in getFreqsOpts" :key="freq.id" :value="freq.id">
+                  {{ freq.text }}
+                </option>
+              </select>
+            </div>
+            <div class="col-sm-1">
+              <button class="mt-4 btn btn-info text-white" @click="resetFilter()">
+                Reset
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="card-header">
-        <div class="row">
-          <div class="col">
-            <div class="d-flex align-items-center">
+        <div class="card-header">
+          <div class="row">
+            <div class="col">
               <div class="d-flex align-items-center">
-                <CIcon icon="cil-circle" class="text-dark" size="lg" />
-                <!-- <div class="bullet" style="width: 20px; height: 20px"></div> -->
-                <span class="mx-2">Planning</span>
-              </div>
-              <div class="d-flex align-items-center">
-                <CIcon icon="cil-check-circle" class="text-success" size="lg" />
-                <!-- <div class="bullet-filled" style="width: 20px; height: 20px"></div> -->
-                <span class="mx-2">Sudah Cleaning</span>
-              </div>
-              <div class="d-flex align-items-center">
-                <CIcon icon="cil-circle" class="text-danger" size="lg" />
-                <span class="mx-2">Delay</span>
-              </div>
-              <div class="d-flex align-items-center">
-                <!-- <div class="bullet-cancel d-flex justify-content-center align-items-center"
-                  style="width: 20px; height: 20px">
-                  <CIcon icon="cil-x" class="text-danger" size="sm" />
-                </div> -->
-                <!--                <CIcon icon="cil-bell" class="text-warning" size="lg" />-->
-                <img src="../../../assets/red-x-mark.svg" width="23" />
-                <span class="mx-2">Sudah Cleaning, ada temuan abnormally</span>
+                <div class="d-flex align-items-center">
+                  <CIcon icon="cil-circle" class="text-dark" size="lg" />
+                  <span class="mx-2">Planning</span>
+                </div>
+                <div class="d-flex align-items-center">
+                  <CIcon icon="cil-check-circle" class="text-success" size="lg" />
+                  <span class="mx-2">Sudah Cleaning</span>
+                </div>
+                <div class="d-flex align-items-center">
+                  <CIcon icon="cil-circle" class="text-danger" size="lg" />
+                  <span class="mx-2">Delay</span>
+                </div>
+                <div class="d-flex align-items-center">
+                  <img src="../../../assets/red-x-mark.svg" width="23" />
+                  <span class="mx-2">Sudah Cleaning, ada temuan abnormally</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </template>
       <div class="card-body p-0 overflow-x-auto">
         <div v-if="isLoadingMainSchedule" class="text-center p-5">
           <CSpinner aria-hidden="true" />
         </div>
         <div v-else class="card p-0 mb-3" ref="content">
           <template v-for="(mainSchedule, index) in mainScheduleData" :key="mainSchedule.id">
+            <div class="card-header">
+              <div class="row d-flex align-items-center">
+                <div class="col">
+                  <label>Select month</label>
+                  <input type="month" class="form-control" v-model="selectedMonth" @change="addFilter()" />
+                </div>
+                <div class="col">
+                  <label>Line</label>
+                  <select class="form-select" v-model="selectedLineID" @change="addFilter()">
+                    <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
+                      {{ line.text }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col">
+                  <label>Zona</label>
+                  <Select2 v-if="getZoneOpts.length > 1" class="form-control" v-model="selectedZoneID"
+                    :options="getZoneOpts" @select="addFilter()" :disabled="getZoneOpts.length == 1" />
+                  <input v-else type="text" class="form-control" value="tidak ada zona" disabled>
+                </div>
+                <div class="col">
+                  <label>Kanban</label>
+                  <Select2 v-if="getZoneOpts.length > 1" class="form-control" v-model="selectedKanbanID"
+                    :options="getKanbansOpts" @select="addFilter()" />
+                  <input v-else type="text" class="form-control" value="tidak ada kanban" disabled>
+                </div>
+                <div class="col">
+                  <label>Freq</label>
+                  <select class="form-select" v-model="selectedFreqID" @change="addFilter()">
+                    <option v-for="freq in getFreqsOpts" :key="freq.id" :value="freq.id">
+                      {{ freq.text }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-sm-1">
+                  <button class="mt-4 btn btn-info text-white" @click="resetFilter()">
+                    Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="card-header">
+              <div class="row">
+                <div class="col">
+                  <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center">
+                      <CIcon icon="cil-circle" class="text-dark" size="lg" />
+                      <!-- <div class="bullet" style="width: 20px; height: 20px"></div> -->
+                      <span class="mx-2">Planning</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                      <CIcon icon="cil-check-circle" class="text-success" size="lg" />
+                      <!-- <div class="bullet-filled" style="width: 20px; height: 20px"></div> -->
+                      <span class="mx-2">Sudah Cleaning</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                      <CIcon icon="cil-circle" class="text-danger" size="lg" />
+                      <span class="mx-2">Delay</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                      <!-- <div class="bullet-cancel d-flex justify-content-center align-items-center"
+                  style="width: 20px; height: 20px">
+                  <CIcon icon="cil-x" class="text-danger" size="sm" />
+                </div> -->
+                      <!--                <CIcon icon="cil-bell" class="text-warning" size="lg" />-->
+                      <img src="../../../assets/red-x-mark.svg" width="23" />
+                      <span class="mx-2">Sudah Cleaning, ada temuan abnormally</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="card">
               <button class="btn btn-primary" @click="exportToPDF(index)">Export PDF</button>
+            </div>
+            <div class="card bg-dark text-light p-2">
+              <h6>4S Schedule Activities ({{ mainSchedule.line_nm }} - {{ mainSchedule.group_nm }})</h6>
             </div>
             <div class="card-body p-0 tableFixHead" :ref="'content_' + index">
               <table class="table table-hover" style="width: 100%;">
                 <thead class="bg-dark text-light">
-                  <tr>
-                    <th colspan="40" class="text-center">
-                      4S Schedule Activities ({{ mainSchedule.line_nm }} - {{ mainSchedule.group_nm }})
-                    </th>
-                  </tr>
                   <tr>
                     <th id="fixCol-1" class="bg-dark" rowspan="2">No</th>
                     <th id="fixCol-2" class="bg-dark" rowspan="2">Zona</th>

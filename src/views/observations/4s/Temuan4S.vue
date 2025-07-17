@@ -225,7 +225,7 @@
                     <div class="btn m-1 rounded-pill align-items-center justify-content-center p-1 text-center"
                       style="background: red;height: 15px;width: 15px">
                     </div>
-                    <label style="font-size: 9px">Temuan</label>
+                    <label style="font-size: 9px">Non Schedule</label>
                   </div>
                   <div v-if="finding.is_need_improvement">
                     <div class="btn m-1 rounded-pill align-items-center justify-content-center p-1 text-center"
