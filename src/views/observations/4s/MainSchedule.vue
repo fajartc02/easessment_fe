@@ -318,45 +318,52 @@
                     <!-- SIGN GL -->
                     <tr>
                       <td colspan="7" class="text-center">Sign GL</td>
-                      <td v-for="children in mainSchedule?.glSigns" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
-                        } `" :colspan="children?.col_span">
-                        <div class="d-flex align-items-center justify-content-center w-full">
-                          <button @click="
-                            openSignModal(children?.sign_checker_id, 'sign_gl')
-                            " v-if="!children?.is_holiday && !children?.sign"
-                            class="check-wrapper-null d-flex align-items-center justify-content-center">
-                            <CIcon icon="cil-x" class="text-danger" size="md" />
-                          </button>
-                          <button @click="
-                            openSignModal(children?.sign_checker_id, 'sign_gl')
-                            " v-else-if="!children?.is_holiday && children?.sign"
-                            class="check-wrapper d-flex align-items-center justify-content-center">
-                            <CIcon icon="cil-check" class="text-black" size="md" />
-                          </button>
-                        </div>
-                      </td>
+                      <template v-for="(children, index) in mainSchedule?.glSigns" :key="children">
+                        <td :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
+                          } `"
+                          :colspan="getDateThisMonth / 4.5 + (getDateThisMonth > 30 && index === mainSchedule?.glSigns.length - 1 ? 1 : 0)">
+                          <div v-if="children?.sign_checker_id"
+                            class="d-flex align-items-center justify-content-center w-full">
+                            <button @click="
+                              openSignModal(children?.sign_checker_id, 'sign_gl')
+                              " v-if="!children?.is_holiday && !children?.sign"
+                              class="check-wrapper-null d-flex align-items-center justify-content-center">
+                              <CIcon icon="cil-x" class="text-danger" size="md" />
+                            </button>
+                            <button @click="
+                              openSignModal(children?.sign_checker_id, 'sign_gl')
+                              " v-else-if="!children?.is_holiday && children?.sign"
+                              class="check-wrapper d-flex align-items-center justify-content-center">
+                              <CIcon icon="cil-check" class="text-black" size="md" />
+                            </button>
+                          </div>
+                        </td>
+                      </template>
                     </tr>
 
                     <!-- SIGN SH -->
                     <tr>
                       <td colspan="7" class="text-center">Sign SH</td>
-                      <td class="" v-for="children in mainSchedule?.shSigns" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
-                        }`" :colspan="children?.col_span">
-                        <div class="d-flex align-items-center justify-content-center w-full">
-                          <button @click="
-                            openSignModal(children?.sign_checker_id, 'sign_sh')
-                            " v-if="!children?.is_holiday && !children?.sign"
-                            class="check-wrapper-null d-flex align-items-center justify-content-center">
-                            <CIcon icon="cil-x" class="text-danger" size="md" />
-                          </button>
-                          <button @click="
-                            openSignModal(children?.sign_checker_id, 'sign_sh')
-                            " v-else-if="!children?.is_holiday && children?.sign"
-                            class="check-wrapper d-flex align-items-center justify-content-center">
-                            <CIcon icon="cil-check" class="text-black" size="md" />
-                          </button>
-                        </div>
-                      </td>
+                      <template v-for="(children, index) in mainSchedule?.shSigns" :key="children">
+                        <td class="" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''}`"
+                          :colspan="(getDateThisMonth / 3 + 2) + (getDateThisMonth > 30 && index === mainSchedule?.shSigns.length - 1 ? 1 : 0)">
+                          <div v-if="children?.sign_checker_id"
+                            class="d-flex align-items-center justify-content-center w-full">
+                            <button @click="
+                              openSignModal(children?.sign_checker_id, 'sign_sh')
+                              " v-if="!children?.is_holiday && !children?.sign"
+                              class="check-wrapper-null d-flex align-items-center justify-content-center">
+                              <CIcon icon="cil-x" class="text-danger" size="md" />
+                            </button>
+                            <button @click="
+                              openSignModal(children?.sign_checker_id, 'sign_sh')
+                              " v-else-if="!children?.is_holiday && children?.sign"
+                              class="check-wrapper d-flex align-items-center justify-content-center">
+                              <CIcon icon="cil-check" class="text-black" size="md" />
+                            </button>
+                          </div>
+                        </td>
+                      </template>
                     </tr>
                   </template>
                 </tbody>
@@ -650,10 +657,12 @@ export default {
       let subSchedule = this.newSubScheduleData;
       let sortedData = subSchedule.sort((a, b) => {
         let fa = a[0]?.group_nm.toLowerCase(), fb = b[0]?.group_nm.toLowerCase();
-        if (fa < fb) {
+        if (fa < fb)
+        {
           return -1;
         }
-        if (fa > fb) {
+        if (fa > fb)
+        {
           return 1;
         }
         return 0;
@@ -664,7 +673,8 @@ export default {
   },
   watch: {
     selectedMonth: function () {
-      if (this.selectedMonth) {
+      if (this.selectedMonth)
+      {
         this.generateDate();
         let idx = this.idxMonth.indexOf(this.selectedMonth.split("-")[1]);
         this.yearMonth = `${this.monthStr[idx]} ${this.selectedMonth.split("-")[0]
@@ -693,7 +703,8 @@ export default {
       // Gunakan ref dinamis berdasarkan indeks
       const tableToExport = this.$refs[`content_${index}`][0];
 
-      if (!tableToExport) {
+      if (!tableToExport)
+      {
         toast.error("Tabel yang ingin diekspor tidak ditemukan!", { autoClose: 700 });
         return;
       }
@@ -748,9 +759,11 @@ export default {
       };
       await this.$store.dispatch(GET_SCHEDULES, objQuery).then(async (res) => {
         this.isLoadingMainSchedule = false;
-        if (res) {
+        if (res)
+        {
           const data = res.list;
-          if (data && data.length > 0) {
+          if (data && data.length > 0)
+          {
             this.mainScheduleData = data.map((item) => {
               item.sub_schedules = [];
               item.tl1Signs = [];
@@ -765,11 +778,14 @@ export default {
             });
           }
 
-          if (this.mainScheduleData.length > 0) {
-            for (let i = 0; i < this.mainScheduleData.length; i++) {
+          if (this.mainScheduleData.length > 0)
+          {
+            for (let i = 0; i < this.mainScheduleData.length; i++)
+            {
               await this.getSubSchedules(this.mainScheduleData[i].main_schedule_id, i);
             }
-          } else {
+          } else
+          {
             this.isMainScheduleEmpty = true;
           }
         }
@@ -791,7 +807,8 @@ export default {
       };
 
       await this.$store.dispatch(GET_SUB_SCHEDULES, objQuery).then((res) => {
-        if (res) {
+        if (res)
+        {
           let redTemp = "";
           let whiteTemp = "";
           let temp = res.schedule;
@@ -835,7 +852,8 @@ export default {
         data
       );
 
-      if (add.data.message == "Success to edit 4s schedule plan") {
+      if (add.data.message == "Success to edit 4s schedule plan")
+      {
         toast.success("PIC added", {
           autoClose: 700
         });
@@ -865,7 +883,8 @@ export default {
         `/operational/4s/sub-schedule/edit/${this.selectedSubScheduleID}`,
         data
       );
-      if (change.data.message == "Success to edit 4s schedule plan") {
+      if (change.data.message == "Success to edit 4s schedule plan")
+      {
         this.isChangeDateLoading = false;
         this.changeDateModal = false;
         await this.getSchedules();
@@ -881,22 +900,26 @@ export default {
         confirmButtonText: "Sure",
         denyButtonText: `No`
       }).then((result) => {
-        if (result.isConfirmed) {
+        if (result.isConfirmed)
+        {
           ApiService.setHeader();
           const deleteData = ApiService.delete(`operational/4s/sub-schedule/delete/${subScheduleID}`);
 
 
-          if (deleteData) {
+          if (deleteData)
+          {
             toast.success("Data daleted", {
               autoClose: 700
             });
             this.getSchedules();
-          } else {
+          } else
+          {
             toast.error("Failed to delete data", {
               autoClose: 700
             });
           }
-        } else if (result.isDenied) {
+        } else if (result.isDenied)
+        {
           Swal.fire("Canceled", "", "info");
         }
       });
@@ -916,12 +939,15 @@ export default {
     },
 
     async getUsers() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_USERS);
-        if (this.getUsersOpts) {
+        if (this.getUsersOpts)
+        {
           this.mapUsersData();
         }
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
@@ -935,41 +961,51 @@ export default {
       return `${pic_name}`;
     },
     async getLines() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_LINES);
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
     },
     async getGroup() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_GROUP);
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
     },
     async getZone() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_ZONES, { line_id: this.selectedLineID ?? -1 });
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
     },
     async getKanban() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_KANBANS, { zone_id: this.selectedZoneID ?? -1 });
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
     },
     async getFreq() {
-      try {
+      try
+      {
         this.$store.dispatch(GET_FREQS);
-      } catch (error) {
+      } catch (error)
+      {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
@@ -981,7 +1017,8 @@ export default {
       var lastDay = new Date(year, month, 0);
       let container = [];
       this.containerDate = [];
-      for (let i = 1; i <= lastDay.getDate(); i++) {
+      for (let i = 1; i <= lastDay.getDate(); i++)
+      {
         let setDt = new Date(selectedMonth).setDate(i);
         let newDate = new Date(setDt);
         container.push(newDate.getDate());
@@ -1014,7 +1051,8 @@ export default {
     saveSignature(from) {
       var signFile;
 
-      switch (from) {
+      switch (from)
+      {
         case "sign_tl_1":
           signFile = this.$refs[from].save();
           this.selectedSignature = signFile;
@@ -1022,7 +1060,8 @@ export default {
         default:
           break;
       }
-      switch (from) {
+      switch (from)
+      {
         case "sign_tl_2":
           signFile = this.$refs[from].save();
           this.selectedSignature = signFile;
@@ -1030,7 +1069,8 @@ export default {
         default:
           break;
       }
-      switch (from) {
+      switch (from)
+      {
         case "sign_gl":
           signFile = this.$refs[from].save();
           this.selectedSignature = signFile;
@@ -1038,7 +1078,8 @@ export default {
         default:
           break;
       }
-      switch (from) {
+      switch (from)
+      {
         case "sign_sh":
           signFile = this.$refs[from].save();
           this.selectedSignature = signFile;
@@ -1059,7 +1100,8 @@ export default {
         `/operational/4s/sub-schedule/sign/${this.selectedSignCheckerID}`,
         { sign: this.selectedSignature }
       );
-      if (upload.data.message == "success to sign 4s schedule") {
+      if (upload.data.message == "success to sign 4s schedule")
+      {
         this.isUploadSignLoading = false;
         toast.success("Sign saved", {
           autoClose: 700
@@ -1074,7 +1116,8 @@ export default {
         `/operational/4s/sub-schedule/sign/${this.selectedSignCheckerID}`
       );
 
-      if (getData.data.message == "Success to get 4s sign checker") {
+      if (getData.data.message == "Success to get 4s sign checker")
+      {
         this.selectedSign = getData.data.data.sign;
         this.isUploadSignLoading = false;
       }
@@ -1082,7 +1125,8 @@ export default {
 
     // edit data
     openEditModal(subScheduleID, picID, picName) {
-      if (picName) {
+      if (picName)
+      {
         this.selectedPICName = picName;
       }
       this.editDataModal = true;
@@ -1099,9 +1143,11 @@ export default {
         this.selectedLineID
         && filtered.length > 0
         && filtered[0].text.toLowerCase().includes("line")
-      ) {
+      )
+      {
         this.isAssyLine = true;
-      } else {
+      } else
+      {
         this.isAssyLine = false;
       }
     },
@@ -1122,7 +1168,8 @@ export default {
   },
 
   async mounted() {
-    if (localStorage.getItem("line_id")) {
+    if (localStorage.getItem("line_id"))
+    {
       this.selectedLineID = localStorage.getItem("line_id");
     }
     this.newSubScheduleData = [];
