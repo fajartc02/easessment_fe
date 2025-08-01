@@ -2,133 +2,148 @@ import { defineComponent, h, onMounted, ref, resolveComponent } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 
 import {
-    CBadge,
-    CSidebarNav,
-    CNavItem,
-    CNavGroup,
-    CNavTitle,
+  CBadge,
+  CSidebarNav,
+  CNavItem,
+  CNavGroup,
+  CNavTitle,
 } from '@coreui/vue'
 import nav from '@/_nav.js'
 
 const normalizePath = (path) =>
-    decodeURI(path)
+  decodeURI(path)
     .replace(/#.*$/, '')
     .replace(/(index)?\.(html)$/, '')
 
 const isActiveLink = (route, link) => {
-    if (link === undefined) {
-        return false
-    }
+  if (link === undefined) {
+    return false
+  }
 
-    if (route.hash === link) {
-        return true
-    }
+  if (route.hash === link) {
+    return true
+  }
 
-    const currentPath = normalizePath(route.path)
-    const targetPath = normalizePath(link)
+  const currentPath = normalizePath(route.path)
+  const targetPath = normalizePath(link)
 
-    return currentPath === targetPath
+  return currentPath === targetPath
 }
 
 const isActiveItem = (route, item) => {
-    if (isActiveLink(route, item.to)) {
-        return true
-    }
+  if (isActiveLink(route, item.to)) {
+    return true
+  }
 
-    if (item.items) {
-        return item.items.some((child) => isActiveItem(route, child))
-    }
+  if (item.items) {
+    return item.items.some((child) => isActiveItem(route, child))
+  }
 
-    return false
+  return false
 }
 
 const AppSidebarNav = defineComponent({
-    name: 'AppSidebarNav',
-    components: {
-        CNavItem,
-        CNavGroup,
-        CNavTitle,
-    },
-    setup() {
-        const route = useRoute()
-        const firstRender = ref(true)
+  name: 'AppSidebarNav',
+  components: {
+    CNavItem,
+    CNavGroup,
+    CNavTitle,
+  },
+  setup() {
+    const route = useRoute()
+    const firstRender = ref(true)
 
-        onMounted(() => {
-            firstRender.value = false
-        })
+    onMounted(() => {
+      firstRender.value = false
+    })
 
-        const renderItem = (item) => {
-            const admins = process.env.VUE_APP_ADMINS.split('|')
-            const is_admin = admins.indexOf(localStorage.getItem('noreg')) !== -1
-            const is_allow_to_see_menu = item.is_admin == is_admin
-            if (is_allow_to_see_menu || is_admin) {
-                if (item.items) {
-                    return h(
-                        CNavGroup, {
-                            ...(firstRender.value && {
-                                visible: item.items.some((child) => isActiveItem(route, child)),
-                            }),
-                        }, {
-                            togglerContent: () => [
-                                h(resolveComponent('CIcon'), {
-                                    customClassName: 'nav-icon',
-                                    name: item.icon,
-                                }),
-                                item.name,
-                            ],
-                            default: () => item.items.map((child) => renderItem(child)),
-                        },
-                    )
-                }
-
-                return item.to ?
-                    h(
-                        RouterLink, {
-                            to: item.to,
-                            custom: true,
-                        }, {
-                            default: (props) =>
-                                h(
-                                    resolveComponent(item.component), {
-                                        active: props.isActive,
-                                        href: props.href,
-                                        onClick: () => props.navigate(),
-                                    }, {
-                                        default: () => [
-                                            item.icon &&
-                                            h(resolveComponent('CIcon'), {
-                                                customClassName: 'nav-icon',
-                                                name: item.icon,
-                                            }),
-                                            item.name,
-                                            item.badge &&
-                                            h(
-                                                CBadge, {
-                                                    class: 'ms-auto',
-                                                    color: item.badge.color,
-                                                }, {
-                                                    default: () => item.badge.text,
-                                                },
-                                            ),
-                                        ],
-                                    },
-                                ),
-                        },
-                    ) :
-                    h(
-                        resolveComponent(item.component), {}, {
-                            default: () => item.name,
-                        },
-                    )
-            }
+    const renderItem = (item) => {
+      const admins = process.env.VUE_APP_ADMINS.split('|')
+      const is_admin = admins.indexOf(localStorage.getItem('noreg')) !== -1
+      const is_allow_to_see_menu = item.is_admin == is_admin
+      if (is_allow_to_see_menu || is_admin) {
+        if (item.items) {
+          return h(
+            CNavGroup, {
+            ...(firstRender.value && {
+              visible: item.items.some((child) => isActiveItem(route, child)),
+            }),
+          }, {
+            togglerContent: () => [
+              h(resolveComponent('CIcon'), {
+                customClassName: 'nav-icon',
+                name: item.icon,
+              }),
+              item.name,
+            ],
+            default: () => item.items.map((child) => renderItem(child)),
+          },
+          )
         }
 
-        return () =>
+        return item.to ?
+          h(
+            RouterLink, {
+            to: item.to,
+            custom: true,
+          }, {
+            default: (props) =>
+              h(
+                resolveComponent(item.component), {
+                active: props.isActive,
+                href: props.href,
+                onClick: () => props.navigate(),
+              }, {
+                default: () => [
+                  item.icon &&
+                  h(resolveComponent('CIcon'), {
+                    customClassName: 'nav-icon',
+                    name: item.icon,
+                  }),
+                  item.name,
+                  item.badge &&
+                  h(
+                    CBadge, {
+                    class: 'ms-auto',
+                    color: item.badge.color,
+                  }, {
+                    default: () => item.badge.text,
+                  },
+                  ),
+                ],
+              },
+              ),
+          },
+          ) : item.href ?
             h(
-                CSidebarNav, {}, {
-                    default: () => nav.map((item) => renderItem(item)),
-                },
+              'a', {
+              href: item.href,
+              // target: item.target,
+              class: 'nav-link'
+            }, {
+              default: () => [
+                h(resolveComponent('CIcon'), {
+                  customClassName: 'nav-icon',
+                  name: item.icon,
+                }),
+                item.name,
+              ],
+            },
+            ) :
+            h(
+              resolveComponent(item.component), {}, {
+              default: () => item.name,
+            },
             )
-    },
+      }
+    }
+
+    return () =>
+      h(
+        CSidebarNav, {}, {
+        default: () => nav.map((item) => renderItem(item)),
+      },
+      )
+  },
 })
 export { AppSidebarNav }

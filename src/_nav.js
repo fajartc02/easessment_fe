@@ -46,6 +46,13 @@ export default [{
 },
 {
   component: 'CNavItem',
+  name: 'Yamazumi',
+  to: '/stw/yamazumi',
+  icon: 'cil-graph',
+  is_admin: false
+},
+{
+  component: 'CNavItem',
   name: 'Member Voice',
   to: '/stw/member-voice',
   icon: 'cil-people',
@@ -119,14 +126,14 @@ export default [{
 {
   component: 'CNavItem',
   name: 'Main Schedule OM',
-  to: '/om/main-schedule',
+  href: 'http://mt-system.id:9200/#/om/schedule-monitoring',
   icon: 'cil-speedometer',
   is_admin: false
 },
 {
   component: 'CNavItem',
   name: 'Temuan OM',
-  to: '/om/temuan',
+  href: 'http://mt-system.id:9200/#/om/OMfindings',
   icon: 'cil-grid',
   is_admin: false
 },
