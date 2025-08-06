@@ -44,6 +44,14 @@
               </option>
             </select>
           </div>
+            <div class="col">
+            <label>Status</label>
+            <select class="form-select" @change="addFilter()" v-model="selectedFilterJudge">
+              <option value="-1" selected>All</option>
+              <option value="true">Sudah</option>
+              <option value="false">Belum</option>
+            </select>
+          </div>
           <div class="col-sm-1">
             <button class="mt-4 btn btn-info text-white" @click="resetFilter()">
               Reset
@@ -904,6 +912,7 @@ export default {
       selectedZoneIDFilter: '-1',
       selectedKanbanIDFilter: '-1',
       selectedFreqIDFilter: '-1',
+      selectedFilterJudge: '-1',
       idxMonth: [
         '01',
         '02',
@@ -1239,6 +1248,7 @@ export default {
         end_date: this.selectedFilterEndDate,
         limit: this.currentPageLimit,
         current_page: this.currentPage,
+        cm_judg: this.selectedFilterJudge
       }
       await this.$store.dispatch(GET_4S_FINDINGS, objQuery).then((res) => {
         this.findingList = res.list

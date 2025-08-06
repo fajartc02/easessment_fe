@@ -564,9 +564,8 @@ import VueMultiselect from "vue-multiselect";
 import Swal from "sweetalert2";
 import { toast } from "vue3-toastify";
 import CustPagination from "@/components/pagination/CustPagination.vue";
-import html2pdf from "html2pdf.js";
 import JudgmentConfirmation from "@/components/new/JudgmentConfirmation.vue";
-
+import html2pdf from "html2pdf.js";
 
 export default {
   name: "Main Schedule",
@@ -710,51 +709,94 @@ export default {
         ...children
       }
     },
-    exportToPDF(index) {
-      // Gunakan ref dinamis berdasarkan indeks
-      const tableToExport = this.$refs[`content_${index}`][0];
 
-      if (!tableToExport)
-      {
-        toast.error("Tabel yang ingin diekspor tidak ditemukan!", { autoClose: 700 });
-        return;
+exportToPDF(index) {
+  const tableOriginal = this.$refs[`content_${index}`]?.[0];
+  if (!tableOriginal) {
+    toast.error("Tabel tidak ditemukan");
+    return;
+  }
+
+  const shift = this.mainScheduleData[index]?.group_nm || "Default";
+  const nameFile = `4S_Schedule_${shift.replace(/\s+/g, "_")}`;
+  const cloneWrapper = document.createElement("div");
+  const clone = tableOriginal.cloneNode(true);
+
+  
+  clone.querySelectorAll("*").forEach((el) => {
+    const computed = window.getComputedStyle(el);
+
+    if (computed.position === "sticky" || el.style.position === "sticky") {
+      el.style.position = "static";
+      el.style.top = "auto";
+      el.style.bottom = "auto";
+      el.style.zIndex = "auto";
+    }
+
+    el.classList.forEach((cls) => {
+      if (cls.toLowerCase().includes("sticky")) {
+        el.classList.remove(cls);
       }
+    });
 
-      // Pastikan nama file sesuai shift
-      const shift = this.mainScheduleData[index]?.group_nm || "Default";
-      const nameFile = `4S_Schedule_${shift.replace(/\s+/g, "_")}`;
+    if (el.style.bottom) el.style.bottom = "auto";
+    if (el.style.zIndex) el.style.zIndex = "auto";
+  });
 
-      // Konfigurasi ekspor
+
+  clone.style.display = "block";
+  clone.style.overflow = "visible";
+  clone.style.maxHeight = "none";
+
+  cloneWrapper.style.position = "absolute";
+  cloneWrapper.style.top = "0";
+  cloneWrapper.style.left = "0";
+  cloneWrapper.style.zIndex = "-9999";
+  cloneWrapper.style.padding = "20px";
+  cloneWrapper.style.background = "#fff";
+  cloneWrapper.appendChild(clone);
+  document.body.appendChild(cloneWrapper);
+
+  document.body.style.height = clone.scrollHeight + "px";
+  document.body.style.overflow = "visible";
+
+
+  this.$nextTick(() => {
+    setTimeout(() => {
       const options = {
-        margin: [5, 5, 5, 5],
+        margin: 0,
         filename: `${nameFile}.pdf`,
         image: { type: "jpeg", quality: 1 },
         html2canvas: {
-          scale: 3,
-          useCORS: true
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          scrollY: 0,
+          scrollX: 0,
+          windowHeight: clone.scrollHeight,
         },
         jsPDF: {
-          unit: "pt",
-          format: [2500, 1500],
-          orientation: "landscape"
-        }
+          unit: "px",
+          format: [5500, 1500], 
+          orientation: "landscape",
+        },
       };
 
-      // Eksekusi ekspor
       html2pdf()
         .set(options)
-        .from(tableToExport)
-        .toPdf()
+        .from(clone)
         .save()
         .then(() => {
-          toast.success(`PDF berhasil diekspor untuk shift ${shift}!`, { autoClose: 700 });
-        })
-        .catch((error) => {
-          console.error("Error saat ekspor PDF:", error);
-          toast.error("Gagal mengekspor PDF", { autoClose: 700 });
+          document.body.removeChild(cloneWrapper);
+          document.body.style.height = "";
+          document.body.style.overflow = "";
         });
-    }
-    ,
+    }, 800); // kasih waktu render
+  });
+}
+,
+
+
 
     addScheduleCheck(mainScheduleID, subScheduleID) {
       this.$router.push(`/4s/schedule-check/${mainScheduleID}/${subScheduleID}`);
