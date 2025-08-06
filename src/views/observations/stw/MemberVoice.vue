@@ -91,7 +91,7 @@
                 <th colspan="48">Waktu Pelaksanaan</th>
                 <th rowspan="3">PIC</th>
                 <th id="fixCol-6" rowspan="3">Score</th>
-                <th rowspan="3">Actions</th>
+                <th style="min-width: 500px" rowspan="3">Actions</th>
               </tr>
               <tr>
                 <th colspan="4">Jan</th>
@@ -229,8 +229,36 @@
                   </template>
                 </td>
 
-                <td>
-                  <button class="btn btn-secondary btn-sm text-white w-full" @click="() => {
+                <td class="d-flex justify-content-between">
+                  <button v-if="membervoice.findings[0].finding_img" @click="
+                    () => {
+                      openFindingImage(membervoice.findings[0].finding_img)
+                    }
+                  " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
+                    Finding image
+                  </button>
+                  <button v-else class="btn btn-secondary btn-sm" disabled>
+                    No Image
+                  </button>
+                  <button v-if="membervoice.findings[0].cm_image" @click="
+                    () => {
+                      openFindingImage(membervoice.findings[0].cm_image)
+                    }
+                  " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
+                    C/M image
+                  </button>
+                  <button v-else class="btn btn-secondary btn-sm w-full my-1 mx-1" disabled>
+                    No Image C/M
+                  </button>
+                  <button :class="{
+                    'btn btn-sm w-full my-1 mx-1': true,
+                    'btn-info text-white': membervoice.findings[0].kaizen_file,
+                    'btn-secondary text-white': !membervoice.findings[0].kaizen_file,
+                  }" @click="showKaizenModal(membervoice.findings[0].kaizen_file)"
+                    :disabled="!membervoice.findings[0].kaizen_file">
+                    Kaizen
+                  </button>
+                  <button class="btn btn-warning btn-sm text-white w-full my-1 mx-1" @click="() => {
                     detailMVModal = true
                     getDetailMVData(index)
                   }
@@ -240,7 +268,8 @@
                   <button class="btn btn-info btn-sm text-white my-1" @click="getDetailMVToEdit(index)">
                     Edit
                   </button>
-                  <button class="btn btn-danger btn-sm text-white" @click="deleteMV(membervoice.mv_id)">
+                  <button class="btn btn-danger btn-sm text-white w-full my-1 mx-1"
+                    @click="deleteMV(membervoice.mv_id)">
                     Delete
                   </button>
                 </td>
@@ -934,9 +963,10 @@
                 <div>
                   <label> CM Image</label>
                   <br>
-                  <img v-if="memberVoiceDetail.findings[0].finding_img" :src="memberVoiceDetail.findings[0].finding_img"
+                  <img v-if="memberVoiceDetail.findings[0].cm_image" :src="memberVoiceDetail.findings[0].cm_image"
                     alt="image" class="img-fluid rounded mb-2" width="100" style="cursor: pointer"
-                    @click="showFindingImg(memberVoiceDetail.findings[0].finding_img)" />
+                    @click="showFindingImg(memberVoiceDetail.findings[0].cm_image)" />
+                  <label class="text-secondary" v-else>Tidak ada cm image</label>
                 </div>
 
                 <div class="card p-2 mb-2">
@@ -1090,6 +1120,28 @@
         </CButton>
       </CModalFooter>
     </CModal>
+
+    <!-- Kaizen Modal -->
+    <CModal backdrop="static" size="xl" :visible="isKaizenModal" @close="
+      () => {
+        isKaizenModal = false
+      }
+    ">
+      <CModalHeader>
+        <CModalTitle>Kaizen Report</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <table class="table table-bordered">
+          <tr>
+            <td class="text-center">
+              <img v-if="kaizenFile && !kaizenFile.includes('.pdf')" :src="kaizenFile" width="400" alt="KZ" />
+              <vue-pdf-embed v-else-if="kaizenFile && kaizenFile.includes('.pdf')" :source="kaizenFile" />
+              <h3 v-else>No Kaizen</h3>
+            </td>
+          </tr>
+        </table>
+      </CModalBody>
+    </CModal>
   </div>
 </template>
 
@@ -1205,8 +1257,12 @@ export default {
       selectedFindingImageToUpdate: null,
       totalPage: 0,
       scoreopts: SCORE_MOCK,
-    }
 
+      // additional for kaizen file
+      kaizenFile: null,
+      cmImage: null,
+      isKaizenModal: false
+    }
   },
   computed: {
     ...mapGetters(['getLinesOpts', 'getUsersTree', 'getMemberVoice', 'getUsersOpts']),
@@ -1227,6 +1283,82 @@ export default {
     this.mapUsersData()
   },
   methods: {
+    openFindingImage(findingImage) {
+      this.findingImageModal = true
+      this.selectedFindingImageToDisplay = findingImage
+    },
+    showKaizenModal(kaizenFile) {
+      this.kaizenFile = kaizenFile
+      this.isKaizenModal = true
+    },
+    async uploadCmImage() {
+      this.isLoading = true
+      if (!this.cmImage) {
+        toast.info('Please select file')
+        this.isLoading = false
+        return
+      }
+
+      try {
+        const formData = new FormData()
+        formData.append('finding_id', this.memberVoiceDetail.findings[0].finding_id)
+        formData.append('dest', 'findings')
+        formData.append(
+          'cm_image',
+          this.cmImage,
+        )
+        await ApiService.post(
+          `/operational/findingCm/upload-cm-image?dest=findings`,
+          formData,
+        )
+
+        toast.success('Susccessfully Upload Cm image', {
+          autoClose: 1000,
+        })
+        this.isLoading = false
+      } catch (e) {
+        this.isLoading = false
+        console.log('uploadKaizen', e)
+        toast.error(JSON.stringify(e.message))
+      }
+    },
+    async uploadKaizen(finding_id, kaizen_file = null) {
+      this.isLoading = true
+      if (!kaizen_file && !this.kaizenFile) {
+        toast.info('Please select file')
+        this.isLoading = false
+        return
+      }
+
+      try {
+        const formData = new FormData()
+        formData.append('finding_id', this.memberVoiceDetail.findings[0].finding_id)
+        formData.append('dest', 'pinkSheet')
+        formData.append(
+          'kaizen_file',
+          kaizen_file ? kaizen_file : this.kaizenFile,
+        )
+
+        await ApiService.post(
+          `/operational/findingCm/upload-kaizen?dest=pinkSheet`,
+          formData,
+        )
+        toast.success('Susccessfully Upload Kaizen', {
+          autoClose: 1000,
+        })
+        this.isLoading = false
+      } catch (e) {
+        console.log('uploadKaizen', e)
+        this.isLoading = false
+        toast.error(JSON.stringify(e.message))
+      }
+    },
+    onChangeCmImage(event) {
+      this.cmImage = event.target.files[0]
+    },
+    onChangeKaizenFile(event) {
+      this.kaizenFile = event.target.files[0]
+    },
     onPageChange(page, type) {
       if (type == 'prev') {
         this.currentPage = this.currentPage - 1
