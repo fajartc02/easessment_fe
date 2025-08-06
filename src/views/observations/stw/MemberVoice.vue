@@ -219,10 +219,11 @@
                       `"></div>
                 </td>
                 <td>{{ membervoice.mv_pic_nm }}</td>
-                  <td id="fixCol-9" class="px-4">
+                <td id="fixCol-9" class="px-4">
                   <!-- {{ finding.score }} -->
-                  <template  v-for="labelScore in scoreopts">
-                    <label :key="labelScore.score"  v-if="labelScore.score === membervoice.score">{{ labelScore.label }}</label>
+                  <template v-for="labelScore in scoreopts">
+                    <label :key="labelScore.score" v-if="labelScore.score === membervoice.score">{{ labelScore.label
+                      }}</label>
                   </template>
                 </td>
                 <td>
@@ -230,7 +231,7 @@
                     detailMVModal = true
                     getDetailMVData(index)
                   }
-                    ">
+                  ">
                     Detail
                   </button>
                   <button class="btn btn-info btn-sm text-white my-1" @click="getDetailMVToEdit(index)">
@@ -508,25 +509,24 @@
       <CModalHeader>
         <CModalTitle>Edit member voice</CModalTitle>
       </CModalHeader>
-    
+
       <CModalBody>
-         
-            <div class="col" v-if="showScoreField">
-            <label>Score</label>
-            <select class="form-select" v-model="memberVoiceDetail.mv_score" >
-             <option v-for="opt in scoreopts" :key="opt.score" :value="opt.score">
+
+        <div class="col" v-if="showScoreField">
+          <label>Score</label>
+          <select class="form-select" v-model="memberVoiceDetail.mv_score">
+            <option v-for="opt in scoreopts" :key="opt.score" :value="opt.score">
               {{ opt.label }}
-               </option>  
-            </select>
-             <button class="btn btn-info my-2 btn-sm text-white" @click="
-          () => {
-            updateScoreMemberVoice()
-          }
-        "
-          >
-              Submit Score
-            </button>
-          </div>
+            </option>
+          </select>
+          <button class="btn btn-info my-2 btn-sm text-white" @click="
+            () => {
+              updateScoreMemberVoice()
+            }
+          ">
+            Submit Score
+          </button>
+        </div>
         <CAccordion :active-item-key="1" always-open>
           <CAccordionItem :item-key="1">
             <CAccordionHeader> Member voice input </CAccordionHeader>
@@ -1025,7 +1025,7 @@
         <CButton color="secondary" class="text-white" @click="() => {
           findingImageModal = false
         }
-          ">
+        ">
           Close
         </CButton>
       </CModalFooter>
@@ -1055,7 +1055,7 @@ export default {
   name: 'Member Voice',
   data() {
     return {
-      
+
       json_fields: {
         id: 'mv_id',
         Date: 'mv_date_finding',
@@ -1070,7 +1070,7 @@ export default {
         'PIC': 'mv_pic_nm',
         Status: 'cm_status'
       },
-      showScoreField:false,
+      showScoreField: false,
       json_data: null,
       isLoading: false,
       isUploadLoading: false,
@@ -1110,8 +1110,8 @@ export default {
         mv_actual_date: null,
         mv_pic_id: null,
         line_id: null,
-        mv_score:null,
-       
+        mv_score: null,
+
       },
       // findings data
       findingsData: {
@@ -1137,19 +1137,19 @@ export default {
         cm_sign_sh: null,
         cm_comments: null,
       },
-      
+
       memberVoiceDataReadyToUpload: {},
       accordionAddMVActiveKey: 1,
       selectedFindingImage: null,
       selectedFindingImageToDisplay: null,
       selectedFindingImageToUpdate: null,
       totalPage: 0,
-       scoreopts:SCORE_MOCK,
+      scoreopts: SCORE_MOCK,
     }
-    
+
   },
   computed: {
-    ...mapGetters(['getLinesOpts', 'getUsersTree', 'getMemberVoice','getUsersOpts']),
+    ...mapGetters(['getLinesOpts', 'getUsersTree', 'getMemberVoice', 'getUsersOpts']),
   },
   watch: {
     selectedPIC(newVal) {
@@ -1270,7 +1270,7 @@ export default {
     async getUsers() {
       try {
         this.$store.dispatch(GET_USERS)
-         if (this.getUsersOpts) {
+        if (this.getUsersOpts) {
           this.mapUsersData()
         }
       } catch (error) {
@@ -1384,7 +1384,7 @@ export default {
         mv_date_finding: this.formatTheDate(
           this.memberVoiceDetail.mv_date_finding,
         ),
-        mv_score:this.memberVoiceDetail.mv_score,
+        mv_score: this.memberVoiceDetail.mv_score,
         mv_location: this.memberVoiceDetail.mv_location,
         mv_problem: this.memberVoiceDetail.mv_problem,
         mv_process_no: this.memberVoiceDetail.mv_process_no,
@@ -1447,32 +1447,32 @@ export default {
 
       this.updateMemberVoice(updateData)
     },
-     async updateScoreMemberVoice(){
-      try{
+    async updateScoreMemberVoice() {
+      try {
         const MVID = this.selectedMVID
-        const data = {score:this.memberVoiceDetail.mv_score,}
-         ApiService.setHeader()
+        const data = { score: this.memberVoiceDetail.mv_score, }
+        ApiService.setHeader()
         ApiService.put(
           `operational/member-voice/score/${MVID}`,
           data,
         )
-        .then(res => {
-          if (res.data.message == 'Success to EDIT Score of MV') {
-            toast.success('Data added', {
-              autoClose: 1000
-            })
-            this.getMemberVoices()
-             this.editMVModal = false
-        } else {
-          Swal.fire('Error', '', 'warning')
-        }
-      })
+          .then(res => {
+            if (res.data.message == 'Success to EDIT Score of MV') {
+              toast.success('Data added', {
+                autoClose: 1000
+              })
+              this.getMemberVoices()
+              this.editMVModal = false
+            } else {
+              Swal.fire('Error', '', 'warning')
+            }
+          })
       } catch (error) {
         console.log(error)
         Swal.fire('Failed to update MV   data', '', 'error')
         this.editMVModal = false
       }
-      },
+    },
     updateMemberVoice(data) {
       const MVID = this.selectedMVID
 
@@ -1529,15 +1529,16 @@ export default {
       })
     },
     mapUsersData() {
-     this.getUsersOpts?.map((item) => {
-        this.picData.push({ pic_id: item.id, pic_name: item.text })})
-      
+      this.getUsersOpts?.map((item) => {
+        this.picData.push({ pic_id: item.id, pic_name: item.text })
+      })
+
     },
 
-    AccesibilityScore(){
-    const role = localStorage.getItem('role')
-    this.showScoreField = role != 'TM' && role != 'null'
-},
+    AccesibilityScore() {
+      const role = localStorage.getItem('role')
+      this.showScoreField = role != 'TM' && role != 'null'
+    },
 
     customLineFilterOptions({ line_name }) {
       return `${line_name}`
@@ -1586,12 +1587,13 @@ export default {
     },
   },
   async mounted() {
-    const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
-    const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
+    const year = new Date().getFullYear()
+    const month = new Date().getMonth() + 1 > 9 ? new Date().getMonth() + 1 : `0${new Date().getMonth() + 1}`
+    const lastDateThisMonth = new Date(year, month, 0).getDate()
     this.selectedMonth = `${year}-${month}`
+    this.selectedFilterStartDate = `${year}-${month}-01`
+    this.selectedFilterEndDate = `${year}-${month}-${lastDateThisMonth}`
     this.selectedLine = localStorage.getItem('line_id')
-    this.selectedFilterStartDate = `${year}-01-01`
-    this.selectedFilterEndDate = `${year}-12-31`
 
     await this.getLines()
     await this.getUsers()

@@ -69,12 +69,13 @@
                 </div>
               </td>
               <td>{{ focustheme.ft_remark }}</td>
-               <td id="fixCol-9" class="px-4">
-                  <!-- {{ finding.score }} -->
-                  <template  v-for="labelScore in scoreopts">
-                    <label :key="labelScore.score"  v-if="labelScore.score === focustheme.score">{{ labelScore.label }}</label>
-                  </template>
-                </td>
+              <td id="fixCol-9" class="px-4">
+                <!-- {{ finding.score }} -->
+                <template v-for="labelScore in scoreopts">
+                  <label :key="labelScore.score" v-if="labelScore.score === focustheme.score">{{ labelScore.label
+                  }}</label>
+                </template>
+              </td>
               <td>
                 <button class="btn btn-warning btn-sm text-white" @click="focusThemeDetailData(index)">
                   Problems
@@ -107,25 +108,24 @@
         <CModalTitle>Add fokus tema</CModalTitle>
       </CModalHeader>
       <CModalBody>
-          <div class="col" v-if="showScoreField" >
-            <label>Score</label>
-            <select class="form-select" v-model="focusThemeData.score" >
-             <option v-for="opt in scoreopts" :key="opt.score" :value="opt.score">
+        <div class="col" v-if="showScoreField">
+          <label>Score</label>
+          <select class="form-select" v-model="focusThemeData.score">
+            <option v-for="opt in scoreopts" :key="opt.score" :value="opt.score">
               {{ opt.label }}
-               </option>  
-            </select>
-             <button class="btn btn-info my-2 btn-sm text-white" @click="
-          () => {
-            updateScoreFocusThema()
-          }
-        "
-          >
-              Submit Score
-            </button>
-            <hr>
-          </div>
-       
-        
+            </option>
+          </select>
+          <button class="btn btn-info my-2 btn-sm text-white" @click="
+            () => {
+              updateScoreFocusThema()
+            }
+          ">
+            Submit Score
+          </button>
+          <hr>
+        </div>
+
+
         <CAccordion :active-item-key="1" always-open>
           <CAccordionItem :item-key="1">
             <CAccordionHeader> Focus theme input </CAccordionHeader>
@@ -325,23 +325,22 @@
         <CModalTitle>Add fokus tema</CModalTitle>
       </CModalHeader>
       <CModalBody>
-         <div class="col" v-if="showScoreField" >
-            <label>Score</label>
-            <select class="form-select" v-model="focusThemeData.score" >
-             <option v-for="opt in scoreopts" :key="opt.score" :value="opt.score">
+        <div class="col" v-if="showScoreField">
+          <label>Score</label>
+          <select class="form-select" v-model="focusThemeData.score">
+            <option v-for="opt in scoreopts" :key="opt.score" :value="opt.score">
               {{ opt.label }}
-               </option>  
-            </select>
-             <button class="btn btn-info my-2 btn-sm text-white" @click="
-          () => {
-            updateScoreFocusThema()
-          }
-        "
-          >
-              Submit Score
-            </button>
-            <hr>
-          </div>
+            </option>
+          </select>
+          <button class="btn btn-info my-2 btn-sm text-white" @click="
+            () => {
+              updateScoreFocusThema()
+            }
+          ">
+            Submit Score
+          </button>
+          <hr>
+        </div>
         <CAccordion :active-item-key="1" always-open>
           <CAccordionItem :item-key="1">
             <CAccordionHeader> Focus theme edit </CAccordionHeader>
@@ -699,7 +698,7 @@
           focusThemeDetailModal = false
           this.selectedFocusTheme = null
         }
-          ">
+        ">
           Close
         </CButton>
       </CModalFooter>
@@ -718,7 +717,7 @@
         <CButton color="secondary" class="text-white" @click="() => {
           findingImageModal = false
         }
-          ">
+        ">
           Close
         </CButton>
       </CModalFooter>
@@ -729,7 +728,7 @@
 </template>
 
 <script>
-import moment from 'moment'
+// import moment from 'moment'
 import { GET_LINES } from '@/store/modules/line.module'
 import {
   GET_FOCUSTHEME,
@@ -835,7 +834,7 @@ export default {
       selectedFindingImageToDisplay: null,
       selectedFindingImageToUpdate: null,
       totalPage: 0,
-      scoreopts:SCORE_MOCK,
+      scoreopts: SCORE_MOCK,
     }
   },
   computed: {
@@ -921,15 +920,15 @@ export default {
             const mapFindingShow = res.map(itm => {
               return {
                 ...itm,
-                finding_desc: itm.findings[0].finding_desc,
-                finding_factor: itm.findings[0].factor_nm,
-                finding_cm: itm.findings[0].cm_desc,
-                finding_cm_date: itm.findings[0].cm_str_plan_date,
-                finding_pic: itm.findings[0].cm_pic_nm,
-                cm_desc: itm.findings[0].cm_desc,
-                cm_str_plan_date: itm.findings[0].cm_str_plan_date,
-                cm_str_act_date: itm.findings[0].cm_str_act_date,
-                cm_status: itm.findings[0].cm_judg ? 'Closed' : 'Open',
+                finding_desc: itm.findings[0]?.finding_desc,
+                finding_factor: itm.findings[0]?.factor_nm,
+                finding_cm: itm.findings[0]?.cm_desc,
+                finding_cm_date: itm.findings[0]?.cm_str_plan_date,
+                finding_pic: itm.findings[0]?.cm_pic_nm,
+                cm_desc: itm.findings[0]?.cm_desc,
+                cm_str_plan_date: itm.findings[0]?.cm_str_plan_date,
+                cm_str_act_date: itm.findings[0]?.cm_str_act_date,
+                cm_status: itm.findings[0]?.cm_judg ? 'Closed' : 'Open',
               }
             })
             this.json_data = mapFindingShow
@@ -1177,17 +1176,17 @@ export default {
         this.editFocusThemeModal = false
       }
     },
-    async updateScoreFocusThema(){
-      try{
+    async updateScoreFocusThema() {
+      try {
         const FT_ID = this.selectedFocusThemeID
-        const data = {score:this.focusThemeData.score,}
-         ApiService.setHeader()
+        const data = { score: this.focusThemeData.score, }
+        ApiService.setHeader()
         const updateData = await ApiService.put(
           `operational/focus-thema/score/${FT_ID}`,
           data,
         )
-        console.log(FT_ID,'id');
-        
+        console.log(FT_ID, 'id');
+
         if (updateData) {
           Swal.fire('Data updated!', '', 'success')
           this.editFocusThemeModal = false
@@ -1200,7 +1199,7 @@ export default {
         Swal.fire('Failed to update focus thema data', '', 'error')
         this.editFocusThemeModal = false
       }
-      },
+    },
     async getFactors() {
       ApiService.setHeader()
       const factors = await ApiService.get(`master/factors`)
@@ -1241,10 +1240,10 @@ export default {
         this.picData.push({ pic_id: item.id, pic_name: item.text })
       })
     },
-      AccesibilityScore(){
-    const role = localStorage.getItem('role')
-    this.showScoreField = role != 'TM' && role != 'null'
-},
+    AccesibilityScore() {
+      const role = localStorage.getItem('role')
+      this.showScoreField = role != 'TM' && role != 'null'
+    },
     customLineFilterOptions({ line_name }) {
       return `${line_name}`
     },
@@ -1269,13 +1268,13 @@ export default {
     },
   },
   async mounted() {
-    const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
-    const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
+    const year = new Date().getFullYear()
+    const month = new Date().getMonth() + 1 > 9 ? new Date().getMonth() + 1 : `0${new Date().getMonth() + 1}`
+    const lastDateThisMonth = new Date(year, month, 0).getDate()
     this.selectedMonth = `${year}-${month}`
-
+    this.selectedFilterStartDate = `${year}-${month}-01`
+    this.selectedFilterEndDate = `${year}-${month}-${lastDateThisMonth}`
     this.selectedLine = localStorage.getItem('line_id')
-    this.selectedFilterStartDate = `${year}-01-01`
-    this.selectedFilterEndDate = `${year}-12-31`
     await this.getSystem()
     await this.getLines()
     await this.getFocusThemes()

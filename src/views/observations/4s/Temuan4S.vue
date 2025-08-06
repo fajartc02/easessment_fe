@@ -145,7 +145,7 @@
                 <th class="fix-col-parent" colspan="4">Nov</th>
                 <th class="fix-col-parent" colspan="4">Dec</th>
                 <th class="fix-col-parent" rowspan="2">Evaluasi</th>
-                 <th class="fix-col-parent" rowspan="2">Score</th>
+                <th class="fix-col-parent" rowspan="2">Score</th>
                 <th class="fix-col-parent" rowspan="2" colspan="2">Actions</th>
               </tr>
               <tr class="fix-col-child">
@@ -302,10 +302,11 @@
                     :alt="getImage(finding.evaluation_nm)" width="50" height="50" />
                   <span v-else class="text-muted"> No Evaluation</span>
                 </td>
-               
-                 <td id="fixCol-9" class="px-4">
-                  <template  v-for="labelScore in scoreopts">
-                    <label :key="labelScore.score"  v-if="labelScore.score === finding.score">{{ labelScore.label }}</label>
+
+                <td id="fixCol-9" class="px-4">
+                  <template v-for="labelScore in scoreopts">
+                    <label :key="labelScore.score" v-if="labelScore.score === finding.score">{{ labelScore.label
+                      }}</label>
                   </template>
                 </td>
                 <td>
@@ -491,13 +492,13 @@
           </div>
         </div>
       </CModalBody> -->
-  
+
       <CModalBody>
-      
+
         <div class="col" v-if="showScoreField">
-            <label>Score</label>
-            <select class="form-select" v-model="selectedScore" >
-             <option v-for="opt in scoreopts" :key="opt.score" :value="opt.score">
+          <label>Score</label>
+          <select class="form-select" v-model="selectedScore">
+            <option v-for="opt in scoreopts" :key="opt.score" :value="opt.score">
               {{ opt.label }}
                </option>  
             </select>
@@ -858,7 +859,7 @@ export default {
   },
   data() {
     return {
-      showScoreField:false,
+      showScoreField: false,
       enabledReduceTime: false,
       options: [
         {
@@ -1332,11 +1333,11 @@ export default {
         this.editFindingModal = false
       }
     },
-  async updateScoreFinding(){
-      try{
+    async updateScoreFinding() {
+      try {
         const findingId = this.selectedFindingID
-        const data = {score:this.selectedScore,}
-         ApiService.setHeader()
+        const data = { score: this.selectedScore, }
+        ApiService.setHeader()
         ApiService.put(
           `operational/4s/finding/score/${findingId}`,
           data,
@@ -1411,16 +1412,17 @@ export default {
     customPicOptions({ pic_name }) {
       return `${pic_name}`
     },
-  mapUsersData() {
-     this.getUsersOpts?.map((item) => {
-        this.picData.push({ pic_id: item.id, pic_name: item.text })})
-      
+    mapUsersData() {
+      this.getUsersOpts?.map((item) => {
+        this.picData.push({ pic_id: item.id, pic_name: item.text })
+      })
+
     },
 
-    AccesibilityScore(){
-    const role = localStorage.getItem('role')
-    this.showScoreField = role != 'TM' && role != 'null'
-},
+    AccesibilityScore() {
+      const role = localStorage.getItem('role')
+      this.showScoreField = role != 'TM' && role != 'null'
+    },
     async getLines() {
       try {
         this.$store.dispatch(GET_LINES)
@@ -1552,11 +1554,12 @@ export default {
 
   async mounted() {
     this.isLoading = true
-    const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
-    const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
+    const year = new Date().getFullYear()
+    const month = new Date().getMonth() + 1 > 9 ? new Date().getMonth() + 1 : `0${new Date().getMonth() + 1}`
+    const lastDateThisMonth = new Date(year, month, 0).getDate()
     this.selectedMonth = `${year}-${month}`
-    this.selectedFilterStartDate = `${year}-01-01`
-    this.selectedFilterEndDate = `${year}-12-30`
+    this.selectedFilterStartDate = `${year}-${month}-01`
+    this.selectedFilterEndDate = `${year}-${month}-${lastDateThisMonth}`
 
     if (localStorage.getItem('line_id')) {
       this.selectedLineIDFilter = localStorage.getItem('line_id')

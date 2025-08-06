@@ -1,4 +1,5 @@
 <template>
+  <loading :active="isLoading" :can-cancel="true" :is-full-page="false" />
   <div class="card">
     <div class="card-header">
       <div class="d-flex row align-items-center">
@@ -52,8 +53,10 @@
           <th colspan="2">Actions</th>
         </tr>
         <template v-if="jobState.length > 0">
-          <tr v-for="job in jobState" :key="job.uuid">
-            <td>{{ job.no }}</td>
+          <tr v-for="(job, i) in jobState" :key="job.uuid">
+            <!-- <td>{{ job.no }}</td> -->
+            <td>{{ i + 1 + (this.filtered.currentPage == 1 ? 0 : (this.filtered.currentPage - 1) * this.filtered.limit)
+            }}</td>
             <td>{{ job.line_nm }}</td>
             <!-- <td>{{ job.machine_nm ? job.machine_nm : '-' }}</td> -->
             <td>{{ job.pos_nm }}</td>
@@ -115,6 +118,7 @@ import { GET_JOB, DELETE_JOB } from '@/store/modules/job.module'
 import { mapGetters } from 'vuex'
 import Swal from 'sweetalert2'
 import CustPagination from '@/components/pagination/CustPagination.vue';
+import Loading from 'vue-loading-overlay'
 
 export default {
   name: 'Job',
@@ -147,7 +151,12 @@ export default {
           label: 100,
           vals: 100,
         },
+        {
+          label: 'All',
+          vals: null,
+        },
       ],
+      isLoading: false
     }
   },
   watch: {
@@ -176,7 +185,8 @@ export default {
     ...mapGetters(['jobData', 'getLinesOpts', 'getPosOpts']),
   },
   components: {
-    CustPagination
+    CustPagination,
+    Loading
   },
   methods: {
     pageControl(state = 0, page = null) {
@@ -210,6 +220,7 @@ export default {
       this.$store.dispatch(GET_JOB, this.filtered)
     },
     async getJob(isSearch = false) {
+      this.isLoading = true
       if (isSearch) {
         this.filtered.currentPage = 1
         this.filtered.limit = 5
@@ -218,9 +229,11 @@ export default {
         let query = this.filtered
         if (!this.filtered.pos_id) delete query.pos_id
         await this.$store.dispatch(GET_JOB, query)
+        this.isLoading = false
         return
       }
       await this.$store.dispatch(GET_JOB)
+      this.isLoading = false
     },
     async editPos(id) {
       await this.$router.push(`/master/job/form?id=${id}`)

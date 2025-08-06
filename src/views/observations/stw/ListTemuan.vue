@@ -169,11 +169,9 @@
                   {{ finding.finding_location }}
                 </td>
                 <td id="fixCol-8" class="px-2 text-start">
-                  <template
-                    v-if="
-                      `${finding?.finding_desc}`.length > 30 && !finding.is_open
-                    "
-                  >
+                  <template v-if="
+                    `${finding?.finding_desc}`.length > 30 && !finding.is_open
+                  ">
                     {{ `${finding?.finding_desc}`.slice(0, 30) }}
                     <span class="text-info" style="cursor: pointer" @click="
                       () => {
@@ -284,10 +282,11 @@
                     </div>
                   </div>
                 </td>
-                 <td id="fixCol-9" class="px-4">
+                <td id="fixCol-9" class="px-4">
                   <!-- {{ finding.score }} -->
-                  <template  v-for="labelScore in scoreopts">
-                    <label :key="labelScore.score"  v-if="labelScore.score === finding.score">{{ labelScore.label }}</label>
+                  <template v-for="labelScore in scoreopts">
+                    <label :key="labelScore.score" v-if="labelScore.score === finding.score">{{ labelScore.label
+                    }}</label>
                   </template>
                 </td>
                 <td class="px-1">
@@ -408,25 +407,24 @@
         <CModalTitle>Edit temuan</CModalTitle>
       </CModalHeader>
       <CModalBody>
-          <div class="col" v-if="showScoreField">
-            <label>Score</label>
-            <select class="form-select" v-model="findingDetail.score" >
-             <option v-for="opt in scoreopts" :key="opt.score" :value="opt.score">
+        <div class="col" v-if="showScoreField">
+          <label>Score</label>
+          <select class="form-select" v-model="findingDetail.score">
+            <option v-for="opt in scoreopts" :key="opt.score" :value="opt.score">
               {{ opt.label }}
-               </option>  
-            </select>
-             <button class="btn btn-info my-2 btn-sm text-white" @click="
-          () => {
-            updateScoreFindingList()
-          }
-        "
-          >
-              Edit Score
-            </button>
-            <hr>
-          </div>
-       
-        
+            </option>
+          </select>
+          <button class="btn btn-info my-2 btn-sm text-white" @click="
+            () => {
+              updateScoreFindingList()
+            }
+          ">
+            Edit Score
+          </button>
+          <hr>
+        </div>
+
+
         <div class="mb-2">
           <label class="mb-1">Line</label>
           <input type="text" class="form-control" v-model="findingDetail.line_nm" />
@@ -1089,7 +1087,7 @@
 </template>
 
 <script>
-import moment from 'moment'
+// import moment from 'moment'
 import { GET_USERS } from '@/store/modules/user.module'
 import { GET_FINDINGS } from '@/store/modules/finding.module'
 import { GET_LINES } from '@/store/modules/line.module'
@@ -1130,7 +1128,7 @@ export default {
         'End Date Start CM': 'cm_end_plan_date',
         Status: 'status_finding',
       },
-      
+
       json_data: null,
       selected_json_data: null,
       isLoading: false,
@@ -1186,7 +1184,7 @@ export default {
       isSopModal: false,
       sopBefore: null,
       sopAfter: null,
-      scoreopts:SCORE_MOCK,
+      scoreopts: SCORE_MOCK,
     }
   },
   watch: {
@@ -1519,9 +1517,9 @@ export default {
         if (error.response.status == 401) this.$router.push('/login')
         console.log(error)
       }
-      
+
     },
-    
+
     async getFindingsFunc() {
       let objQuery = {
         start_date:
@@ -1642,11 +1640,11 @@ export default {
         this.editTemuanModal = false
       }
     },
-    async updateScoreFindingList(){
-      try{
+    async updateScoreFindingList() {
+      try {
         const findingID = this.selectedFindingID
-        const data = {score:this.findingDetail.score,}
-         ApiService.setHeader()
+        const data = { score: this.findingDetail.score, }
+        ApiService.setHeader()
         const updateData = await ApiService.put(
           `operational/findingCm/score/${findingID}`,
           data,
@@ -1663,15 +1661,15 @@ export default {
         Swal.fire('Failed to update finding data', '', 'error')
         this.editTemuanModal = false
       }
-      },
-      
+    },
 
-    
+
+
     async updateFindingList() {
       try {
         const findingID = this.selectedFindingID
         const data = {
-          score:this.findingDetail.score,
+          score: this.findingDetail.score,
           line_id: this.findingDetail.line_id,
           finding_date: this.formatTheDate(this.findingDetail.finding_date), // from henkaten_date
           finding_location: this.findingDetail.finding_location, // from mv_location
@@ -1724,7 +1722,7 @@ export default {
     },
 
 
-   
+
     async uploadPinkSheet(state) {
       this.isUploadKaizenFile = true
       let findingID = await this.getFindings[this.selectedFindingIndex]
@@ -1789,15 +1787,16 @@ export default {
       this.findingDetail = data
     },
     mapUsersData() {
-     this.getUsersOpts?.map((item) => {
-        this.picData.push({ pic_id: item.id, pic_name: item.text })})
-      
+      this.getUsersOpts?.map((item) => {
+        this.picData.push({ pic_id: item.id, pic_name: item.text })
+      })
+
     },
 
-    AccesibilityScore(){
-    const role = localStorage.getItem('role')
-    this.showScoreField = role != 'TM' && role != 'null'
-},
+    AccesibilityScore() {
+      const role = localStorage.getItem('role')
+      this.showScoreField = role != 'TM' && role != 'null'
+    },
     formatTheDate(val) {
       if (val) {
         const year = val.split('T')[0].split('-')[0]
@@ -1839,12 +1838,19 @@ export default {
     this.selectedFilterStartDate = this.$route.query.start_date
     this.selectedFileterEndDate = this.$route.query.end_date
 
-    const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
-    const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
+    // const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
+    // const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
 
+    // this.selectedMonth = `${year}-${month}`
+    // this.selectedFilterStartDate = `${year}-01-01`
+    // this.selectedFilterEndDate = `${year}-12-31`
+
+    const year = new Date().getFullYear()
+    const month = new Date().getMonth() + 1 > 9 ? new Date().getMonth() + 1 : `0${new Date().getMonth() + 1}`
+    const lastDateThisMonth = new Date(year, month, 0).getDate()
     this.selectedMonth = `${year}-${month}`
-    this.selectedFilterStartDate = `${year}-01-01`
-    this.selectedFilterEndDate = `${year}-12-31`
+    this.selectedFilterStartDate = `${year}-${month}-01`
+    this.selectedFilterEndDate = `${year}-${month}-${lastDateThisMonth}`
     this.selectedLine = this.$route.query.line_id
       ? this.$route.query.line_id
       : localStorage.getItem('line_id')
