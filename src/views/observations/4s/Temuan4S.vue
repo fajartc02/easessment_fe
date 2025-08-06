@@ -99,6 +99,13 @@
           <button class="btn btn-info text-white mx-2" @click="openAddFindingModal()">
             Add Finding
           </button>
+             <div>
+            <button :disabled="get4sFindings?.length < 1" class="btn btn-info btn-sm text-white w-full my-1">
+            <download-excel :data="excelData()" :fields="json_fields" worksheet="Temuan4S" name="temuan4Slist.xls">
+                Export all data
+              </download-excel>
+            </button>
+          </div>
         </div>
       </div>
       <div class="card-body p-0">
@@ -500,7 +507,7 @@
           }
         "
           >
-              Edit Score
+              Submit Score
             </button>
             <hr>
           </div>
@@ -976,6 +983,30 @@ export default {
       cmImage: null,
       isKaizenModal: false,
       scoreopts:SCORE_MOCK,
+      
+     json_fields: {
+    'No': 'no',
+    'Status': 'status',
+    'Line': 'line_nm',
+    'Zone': 'zone_nm',
+    'No Kanban': 'kanban_no',
+    'Area': 'area_nm',
+    'Freq 4S': 'freq_nm',
+    'Date': 'finding_date',
+    'Problem': 'finding_desc',
+    'PIC': 'finding_pic_nm',
+    'Waktu 4S (mnt)': 'time_cm',
+    'Yokoten': 'time_yokoten',
+    'Evaluasi': 'evaluation_nm',
+    'Score': 'score',
+    'Ada Perubahan SOP?': 'is_change_sop',
+    'Before Sop':'sop_file_before',
+    'After Sop':'sop_file_after',
+    'ada Improvement?': 'is_need_improvement',
+    'Link Improvement':'cm_image'
+
+    },
+
     }
   },
   computed: {
@@ -995,6 +1026,7 @@ export default {
     kanbanGetID() {
       return this.selectedKanbanID.id
     },
+   
   },
   watch: {
     selectedMonth: function () {
@@ -1201,6 +1233,7 @@ export default {
         this.findingList = res.list
         this.totalPage = res.total_page
         this.currentPage = res.current_page
+       
       })
     },
     openAddFindingModal() {
@@ -1309,7 +1342,7 @@ export default {
           data,
         )
          .then(res => {
-          if (res.data.message == 'Success to edit 4s finding') {
+          if (res.data.message == 'Success to EDIT Score of 4s Finding') {
             toast.success('Data added', {
               autoClose: 1000
             })
@@ -1508,6 +1541,13 @@ export default {
         this.getFindings()
       }
     },
+     excelData() {
+    return this.findingList.map(item => ({
+      ...item,
+      is_change_sop: item.is_change_sop === true ? 'Ya' : 'Tidak',
+      is_need_improvement: item.is_need_improvement === true ? 'Ya' : 'Tidak',
+    }));
+  },
   },
 
   async mounted() {
