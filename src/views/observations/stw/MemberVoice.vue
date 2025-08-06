@@ -223,7 +223,7 @@
                   <!-- {{ finding.score }} -->
                   <template v-for="labelScore in scoreopts">
                     <label :key="labelScore.score" v-if="labelScore.score === membervoice.score">{{ labelScore.label
-                      }}</label>
+                    }}</label>
                   </template>
                 </td>
                 <td>
@@ -424,6 +424,18 @@
                   <div v-if="selectedFindingImage">
                     <img :src="selectedFindingImage" width="300" alt="" />
                   </div>
+                </div>
+                <!-- CAN'T implemented -->
+                <!-- <div class="card p-2 mb-2">
+                  <label>Apakah ada perubahan SOP?</label>
+                  <CFormSwitch v-model="findingsData.is_change_sop" />
+
+                </div> -->
+
+                <div class="card p-2 mb-2">
+                  <label>Apakah ada Improvement?</label>
+                  <CFormSwitch v-model="findingsData.is_need_improvement" />
+
                 </div>
 
                 <div class="row">
@@ -866,22 +878,12 @@
                     <option value="false">Belum</option>
                   </select>
                 </div>
-                <div class="mb-2">
-                  <label class="mb-1">Countermeasure Sign LH Red</label>
-                  <input type="file" class="form-control" disabled />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">Countermeasure Sign LH White</label>
-                  <input type="file" class="form-control" disabled />
-                </div>
-                <div class="mb-2">
-                  <label class="mb-1">Countermeasure Sign SH</label>
-                  <input type="file" class="form-control" disabled />
-                </div>
+
                 <div class="mb-2">
                   <label class="mb-1">Countermeasure Comments</label>
                   <input type="text" class="form-control" v-model="memberVoiceDetail.findings[0].cm_comments" />
                 </div>
+
                 <div class="mb-2">
                   <label class="mb-1">Finding image </label> <br>
                   <img v-if="memberVoiceDetail.findings[0].finding_img" :src="memberVoiceDetail.findings[0].finding_img"
@@ -895,6 +897,61 @@
                   </button>
                   <div v-if="selectedFindingImage">
                     <img :src="selectedFindingImage" width="300" alt="" />
+                  </div>
+                </div>
+                <!-- CAN'T implemented -->
+                <!-- <div class="card p-2 mb-2">
+                  <label>Apakah ada perubahan SOP?</label>
+                  <CFormSwitch v-model="memberVoiceDetail.findings[0].is_change_sop" />
+                  <div v-if="memberVoiceDetail.findings[0].is_change_sop" class="col-12 col-md-12">
+                    <CInputGroup class="mb-3">
+                      <CInputGroupText>SOP</CInputGroupText>
+                      <CFormInput aria-label="Input your kaizen file" ref="kanban_sop" class="form-control" type="file"
+                        @change="onChangeSopFile($event)" />
+                      <CInputGroupText class="p-0">
+                        <button class="btn btn-sm btn-success" @click="uploadSopFile()" :disabled="isLoading">Upload
+                          SOP</button>
+                      </CInputGroupText>
+                    </CInputGroup>
+                  </div>
+                </div> -->
+
+                <CInputGroup class="mb-2">
+                  <CInputGroupText>C/M Image</CInputGroupText>
+                  <CFormInput @change="onChangeCmImage($event)" ref="cm_image" aria-label="Input your kaizen file"
+                    type="file" />
+                  <CInputGroupText class="p-0">
+                    <button class="btn btn-sm btn-success" @click="uploadCmImage(selectedFindingID)"
+                      :disabled="isLoading">Upload
+                      Image</button>
+                  </CInputGroupText>
+                </CInputGroup>
+
+                <!-- IMG FOR CM -->
+                <div>
+                  <label> CM Image</label>
+                  <br>
+                  <img v-if="memberVoiceDetail.findings[0].finding_img" :src="memberVoiceDetail.findings[0].finding_img"
+                    alt="image" class="img-fluid rounded mb-2" width="100" style="cursor: pointer"
+                    @click="showFindingImg(memberVoiceDetail.findings[0].finding_img)" />
+                </div>
+
+                <div class="card p-2 mb-2">
+                  <label>Apakah ada Improvement?</label>
+                  <CFormSwitch v-model="memberVoiceDetail.findings[0].is_need_improvement" />
+                  <div v-if="memberVoiceDetail.findings[0].is_need_improvement" class="row">
+                    <div class="col-12 col-md-12">
+                      <CInputGroup class="mb-3">
+                        <CInputGroupText>Kaizen File</CInputGroupText>
+                        <CFormInput @change="onChangeKaizenFile($event)" ref="kaizen_file"
+                          aria-label="Input your kaizen file" type="file" />
+                        <CInputGroupText class="p-0">
+                          <button class="btn btn-sm btn-success" @click="uploadKaizen(selectedFindingID)"
+                            :disabled="isLoading">Upload
+                            Kaizen</button>
+                        </CInputGroupText>
+                      </CInputGroup>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1441,6 +1498,8 @@ export default {
           cm_sign_lh_white: null,
           cm_sign_sh: null,
           cm_comments: this.memberVoiceDetail.findings[0].cm_comments,
+          is_need_improvement: this.memberVoiceDetail.findings[0]
+            .is_need_improvement,
           finding_img: this.selectedFindingImageToUpdate,
         },
       }

@@ -286,7 +286,7 @@
                   <!-- {{ finding.score }} -->
                   <template v-for="labelScore in scoreopts">
                     <label :key="labelScore.score" v-if="labelScore.score === finding.score">{{ labelScore.label
-                    }}</label>
+                      }}</label>
                   </template>
                 </td>
                 <td class="px-1">
@@ -579,6 +579,16 @@
           </select>
           <small class="text-danger">*Wajib di isi</small>
         </div>
+        <CInputGroup class="mb-3">
+          <CInputGroupText>C/M Image</CInputGroupText>
+          <CFormInput @change="onChangeCmImage($event)" ref="cm_image" aria-label="Input your kaizen file"
+            type="file" />
+          <CInputGroupText class="p-0">
+            <button class="btn btn-sm btn-success" @click="uploadCmImage(selectedFindingID)"
+              :disabled="isLoading">Upload
+              Image</button>
+          </CInputGroupText>
+        </CInputGroup>
         <div v-if="findingDetail.observation_id" class="mb-2">
           <div class="card p-2">
             <label>Apakah ada perubahan SOP?</label>
@@ -601,18 +611,6 @@
             <label>Apakah ada Improvement?</label>
             <CFormSwitch v-model="findingDetail.is_need_improvement" />
             <div v-if="findingDetail.is_need_improvement" class="row">
-              <div class="col-12 col-md-12">
-                <CInputGroup class="mb-3">
-                  <CInputGroupText>C/M Image</CInputGroupText>
-                  <CFormInput @change="onChangeCmImage($event)" ref="cm_image" aria-label="Input your kaizen file"
-                    type="file" />
-                  <CInputGroupText class="p-0">
-                    <button class="btn btn-sm btn-success" @click="uploadCmImage(selectedFindingID)"
-                      :disabled="isLoading">Upload
-                      Image</button>
-                  </CInputGroupText>
-                </CInputGroup>
-              </div>
               <div class="col-12 col-md-12">
                 <CInputGroup class="mb-3">
                   <CInputGroupText>Kaizen File</CInputGroupText>
