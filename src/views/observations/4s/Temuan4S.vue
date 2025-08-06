@@ -304,11 +304,15 @@
                 </td>
 
                 <td id="fixCol-9" class="px-4">
-                  <template v-for="labelScore in scoreopts">
-                    <label :key="labelScore.score" v-if="labelScore.score === finding.score">{{ labelScore.label
-                      }}</label>
-                  </template>
-                </td>
+  <template v-if="finding.score && finding.score !== 0">
+    <template v-for="labelScore in scoreopts">
+      <label :key="labelScore.score" v-if="labelScore.score === finding.score">
+        {{ labelScore.label }}
+      </label>
+    </template>
+  </template>
+</td>
+
                 <td>
                   <div class="d-flex gap-2">
                     <button v-if="finding.finding_img" class="btn btn-info btn-sm text-white w-full"
@@ -514,6 +518,9 @@
           </div>
        
         
+            
+
+
         <div class="row">
           <div class="col-md-6">
             <div class="mb-2">
@@ -814,7 +821,10 @@
     <!-- <ModalForm4sFinding :visiblee="modalFormFinding" :loadedFinding="" /> -->
     <ModalImage :img="selectedFindingImage" :visible="isVisibleFindingImage" @close="isVisibleFindingImage = false" />
     <!-- v-if="addFindingModal" -->
-    <ModalForm4sFinding :visible="addFindingModal" :is-input="true" :loadedFinding="null"
+    <ModalForm4sFinding
+      :visible="addFindingModal"
+      :is-input="true"
+      :loadedFinding="null"
       @close="onCloseModalFinding($event)" />
   </div>
 </template>
@@ -1343,7 +1353,7 @@ export default {
           data,
         )
          .then(res => {
-          if (res.data.message == 'Success to EDIT Score of 4s Finding') {
+          if (res.data.message == 'Success to edit 4s finding') {
             toast.success('Data added', {
               autoClose: 1000
             })

@@ -70,12 +70,18 @@
               </td>
               <td>{{ focustheme.ft_remark }}</td>
               <td id="fixCol-9" class="px-4">
-                <!-- {{ finding.score }} -->
-                <template v-for="labelScore in scoreopts">
-                  <label :key="labelScore.score" v-if="labelScore.score === focustheme.score">{{ labelScore.label
-                  }}</label>
-                </template>
-              </td>
+  <template v-if="focustheme.score && focustheme.score !== 0">
+    <template v-for="labelScore in scoreopts">
+      <label
+        :key="labelScore.score"
+        v-if="labelScore.score === focustheme.score"
+      >
+        {{ labelScore.label }}
+      </label>
+    </template>
+  </template>
+</td>
+
               <td>
                 <button class="btn btn-warning btn-sm text-white" @click="focusThemeDetailData(index)">
                   Problems

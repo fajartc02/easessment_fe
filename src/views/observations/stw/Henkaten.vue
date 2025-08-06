@@ -73,12 +73,12 @@
               <td>{{ henkaten.henkaten_purpose }}</td>
               <td>{{ henkaten.henkaten_flw_safety }}</td>
               <td>{{ henkaten.henkaten_flw_quality }}</td>
-              <td id="fixCol-9" class="px-4">
-                <template v-for="labelScore in scoreopts">
-                  <label :key="labelScore.score" v-if="labelScore.score === henkaten.score">{{ labelScore.label
-                  }}</label>
-                </template>
-              </td>
+             <td id="fixCol-9" class="px-4">
+  <template v-for="labelScore in scoreopts">
+    <label :key="labelScore.score" v-if="labelScore.score === henkaten.score">{{ labelScore.label }}</label>
+  </template>
+</td>
+
               <td>
                 <div class="d-flex justify-content-center align-items-baseline">
                   <button class="btn btn-secondary btn-sm text-white"
