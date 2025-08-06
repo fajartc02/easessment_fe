@@ -4,11 +4,7 @@
       <div class="col">
         <label>Line</label>
         <select class="form-select" v-model="filter.line_id">
-          <option
-            v-for="(line, index) in getLinesOpts"
-            :key="index"
-            :value="line.id"
-          >
+          <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
             {{ line.text }}
           </option>
         </select>
@@ -22,11 +18,7 @@
         <div class="card-body">
           <h5><u>STW</u></h5>
           <div class="row">
-            <div
-              class="col-12 col-md-4 colcol-12 col-md-4 col-lg-4 card p-2"
-              v-for="(item, i) in countSTW"
-              :key="i"
-            >
+            <div class="col-12 col-md-4 colcol-12 col-md-4 col-lg-4 card p-2" v-for="(item, i) in countSTW" :key="i">
               <h6>{{ Object.keys(item)[0].toUpperCase() }}</h6>
               {{ Object.values(item)[0] }}
             </div>
@@ -38,11 +30,7 @@
         <div class="card-body">
           <h5><u>4S</u></h5>
           <div class="row">
-            <div
-              class="col-12 col-md-4 col-lg-4 card p-2"
-              v-for="(item, i) in Object.keys(count4S)"
-              :key="i"
-            >
+            <div class="col-12 col-md-4 col-lg-4 card p-2" v-for="(item, i) in Object.keys(count4S)" :key="i">
               <h6>{{ item.toUpperCase() }}</h6>
               {{ count4S[item] }}
             </div>
@@ -54,11 +42,7 @@
         <div class="card-body">
           <h5><u>OM</u></h5>
           <div class="row">
-            <div
-              class="col-12 col-md-4 col-lg-4 card p-2"
-              v-for="(item, i) in Object.keys(countOM)"
-              :key="i"
-            >
+            <div class="col-12 col-md-4 col-lg-4 card p-2" v-for="(item, i) in Object.keys(countOM)" :key="i">
               <h6>{{ item.toUpperCase() }}</h6>
               {{ countOM[item] }}
             </div>
@@ -75,31 +59,17 @@
         <div class="d-flex flex-row justify-content-between align-items-center">
           <template v-if="isMobile">
             <div v-for="(item, i) in dailyOpts" :key="i" class="flex-col">
-              <button
-                :class="`btn btn-sm ${
-                  item.is_active ? 'btn-primary' : 'btn-outline-primary'
-                } rounded-circle`"
-                type="button"
-                @click="getTodayActivities(i)"
-              >
+              <button :class="`btn btn-sm ${item.is_active ? 'btn-primary' : 'btn-outline-primary'
+                } rounded-circle`" type="button" @click="getTodayActivities(i)">
                 {{ item.label }} <br />
                 {{ item.date_label.split('-')[0] }}
               </button>
             </div>
           </template>
           <template v-else>
-            <div
-              v-for="(item, i) in dailyDesktopOpts"
-              :key="i"
-              class="flex-col"
-            >
-              <button
-                :class="`btn btn-sm ${
-                  item.is_active ? 'btn-primary' : 'btn-outline-primary'
-                } rounded-circle`"
-                type="button"
-                @click="getTodayActivities(i)"
-              >
+            <div v-for="(item, i) in dailyDesktopOpts" :key="i" class="flex-col">
+              <button :class="`btn btn-sm ${item.is_active ? 'btn-primary' : 'btn-outline-primary'
+                } rounded-circle`" type="button" @click="getTodayActivities(i)">
                 {{ item.label }} <br />{{ item.date_label }}
               </button>
             </div>
@@ -112,24 +82,15 @@
             <table style="border: none !important">
               <tr>
                 <td>
-                  <div
-                    class="card"
-                    style="width: 20px; height: 20px; background-color: cyan"
-                  ></div>
+                  <div class="card" style="width: 20px; height: 20px; background-color: cyan"></div>
                 </td>
                 <td>: On Progress</td>
                 <td>
-                  <div
-                    class="card"
-                    style="width: 20px; height: 20px; background-color: #01ff4f"
-                  ></div>
+                  <div class="card" style="width: 20px; height: 20px; background-color: #01ff4f"></div>
                 </td>
                 <td>: Done</td>
                 <td>
-                  <div
-                    class="card"
-                    style="width: 20px; height: 20px; background-color: red"
-                  ></div>
+                  <div class="card" style="width: 20px; height: 20px; background-color: red"></div>
                 </td>
                 <td>: Delay</td>
               </tr>
@@ -143,75 +104,44 @@
         </ul>
         <div class="row">
           <template v-if="dataSTW.length > 0 && !isLoading">
-            <div
-              v-for="item in dataSTW"
-              :key="item.observation_id"
-              class="col-12 col-md-4 col-lg-4 mt-1"
-            >
-              <div
-                class="card p-2"
-                :style="`border-left: 10px solid ${
-                  item.color_status ? item.color_status : 'cyan'
-                };min-height: 100px;`"
-              >
-                <div
-                  class="d-flex flex-row justify-content-between align-items-center"
-                >
+            <div v-for="item in dataSTW" :key="item.observation_id" class="col-12 col-md-4 col-lg-4 mt-1">
+              <div class="card p-2" :style="`border-left: 10px solid ${item.color_status ? item.color_status : 'cyan'
+                };min-height: 100px;`">
+                <div class="d-flex flex-row justify-content-between align-items-center">
                   <div class="d-flex flex-column">
                     {{ item.line_snm }} | {{ item.pos_nm }} |
                     {{ item.member_nm }} |
                     <b v-if="item.group_nm == 'RED'" class="text-danger">{{
                       item.group_nm
-                    }}</b>
-                    <b
-                      v-else
-                      class="text-light bg-dark"
-                      style="max-width: 70px"
-                      >{{ item.group_nm }}</b
-                    >
+                      }}</b>
+                    <b v-else class="text-light bg-dark" style="max-width: 70px">{{ item.group_nm }}</b>
                   </div>
                   <div class="d-flex flex-column">
                     <template v-if="!item.actual_check_dt">
-                      <button
-                        v-if="!item.is_new_form"
-                        class="btn btn-sm btn-primary"
-                        @click="
-                          $router.push(`/observation/${item.observation_id}`)
-                        "
-                      >
+                      <button v-if="!item.is_new_form" class="btn btn-sm btn-primary" @click="
+                        $router.push(`/observation/${item.observation_id}`)
+                        ">
                         Check
                       </button>
-                      <button
-                        v-else
-                        class="btn btn-sm btn-primary"
-                        @click="
-                          $router.push(
-                            `/new-observation/${item.observation_id}`,
-                          )
-                        "
-                      >
+                      <button v-else class="btn btn-sm btn-primary" @click="
+                        $router.push(
+                          `/new-observation/${item.observation_id}`,
+                        )
+                        ">
                         Check
                       </button>
                     </template>
                     <template v-else>
-                      <button
-                        v-if="!item.is_new_form"
-                        class="btn btn-sm btn-success"
-                        @click="
-                          $router.push(`/observation/${item.observation_id}`)
-                        "
-                      >
+                      <button v-if="!item.is_new_form" class="btn btn-sm btn-success" @click="
+                        $router.push(`/observation/${item.observation_id}`)
+                        ">
                         Details
                       </button>
-                      <button
-                        v-else
-                        class="btn btn-sm btn-success"
-                        @click="
-                          $router.push(
-                            `/new-observation/${item.observation_id}`,
-                          )
-                        "
-                      >
+                      <button v-else class="btn btn-sm btn-success" @click="
+                        $router.push(
+                          `/new-observation/${item.observation_id}`,
+                        )
+                        ">
                         Details
                       </button>
                     </template>
@@ -222,12 +152,7 @@
           </template>
           <template v-else-if="isLoading">
             <div class="col-12 col-md-4 col-lg-4">
-              <CSpinner
-                component="span"
-                size="sm"
-                variant="grow"
-                aria-hidden="true"
-              />
+              <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
               Loading...
             </div>
           </template>
@@ -242,40 +167,25 @@
         </ul>
         <div class="row">
           <template v-if="data4S.length > 0 && !isLoading">
-            <div
-              v-for="item in data4S"
-              :key="item.observation_id"
-              class="col-12 col-md-4 col-lg-4"
-            >
-              <div
-                class="card p-2"
-                :style="`border-left: 10px solid ${getColorStatus(
-                  item.plan_check_dt,
-                  item.actual_check_dt,
-                )};min-height: 100px;`"
-              >
-                <div
-                  class="d-flex flex-row justify-content-between align-items-center"
-                >
+            <div v-for="item in data4S" :key="item.observation_id" class="col-12 col-md-4 col-lg-4">
+              <div class="card p-2" :style="`border-left: 10px solid ${getColorStatus(
+                item.plan_check_dt,
+                item.actual_check_dt,
+              )};min-height: 100px;`">
+                <div class="d-flex flex-row justify-content-between align-items-center">
                   <div class="d-flex flex-column">
                     {{ item.line_nm }} | {{ item.area_nm }} |
                     {{ item.group_nm }} |
-                    <template v-if="item.pic_nm">{{ item.pic_nm }}</template>
-                    <template v-else
-                      ><i class="text-danger"
-                        >Pic belum di tentukan</i
-                      ></template
-                    >
+                    <template v-if="item.pic_nm || item.actual_pic_nm">{{ item.pic_nm ? item.pic_nm : item.actual_pic_nm
+                      }}</template>
+                    <template v-else><i class="text-danger">Pic belum di tentukan</i></template>
                   </div>
                   <div class="d-flex flex-column">
-                    <button
-                      class="btn btn-sm btn-primary"
-                      @click="
-                        $router.push(
-                          `/4s/schedule-check/${item.main_schedule_id}/${item.sub_schedule_id}`,
-                        )
-                      "
-                    >
+                    <button class="btn btn-sm btn-primary" @click="
+                      $router.push(
+                        `/4s/schedule-check/${item.main_schedule_id}/${item.sub_schedule_id}`,
+                      )
+                      ">
                       Check
                     </button>
                   </div>
@@ -285,12 +195,7 @@
           </template>
           <template v-else-if="isLoading">
             <div class="col-12 col-md-4 col-lg-4">
-              <CSpinner
-                component="span"
-                size="sm"
-                variant="grow"
-                aria-hidden="true"
-              />
+              <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
               Loading...
             </div>
           </template>
@@ -305,40 +210,24 @@
         </ul>
         <div class="row">
           <template v-if="dataOM.length > 0 && !isLoading">
-            <div
-              v-for="item in dataOM"
-              :key="item.observation_id"
-              class="col-12 col-md-4 col-lg-4"
-            >
-              <div
-                class="card p-2"
-                :style="`border-left: 10px solid ${getColorStatus(
-                  item.plan_check_dt,
-                  item.actual_check_dt,
-                )};min-height: 100px;`"
-              >
-                <div
-                  class="d-flex flex-row justify-content-between align-items-center"
-                >
+            <div v-for="item in dataOM" :key="item.observation_id" class="col-12 col-md-4 col-lg-4">
+              <div class="card p-2" :style="`border-left: 10px solid ${getColorStatus(
+                item.plan_check_dt,
+                item.actual_check_dt,
+              )};min-height: 100px;`">
+                <div class="d-flex flex-row justify-content-between align-items-center">
                   <div class="d-flex flex-column">
                     {{ item.line_nm }} | {{ item.machine_nm }} |
                     {{ item.item_check_nm }} | {{ item.group_nm }} |
                     <template v-if="item.pic_nm">{{ item.pic_nm }}</template>
-                    <template v-else
-                      ><i class="text-danger"
-                        >Pic belum di tentukan</i
-                      ></template
-                    >
+                    <template v-else><i class="text-danger">Pic belum di tentukan</i></template>
                   </div>
                   <div class="d-flex flex-column">
-                    <button
-                      class="btn btn-sm btn-primary"
-                      @click="
-                        $router.push(
-                          `/om/schedule-detail/${item.om_main_schedule_id}/${item.om_sub_schedule_id}`,
-                        )
-                      "
-                    >
+                    <button class="btn btn-sm btn-primary" @click="
+                      $router.push(
+                        `/om/schedule-detail/${item.om_main_schedule_id}/${item.om_sub_schedule_id}`,
+                      )
+                      ">
                       Check
                     </button>
                   </div>
@@ -348,12 +237,7 @@
           </template>
           <template v-else-if="isLoading">
             <div class="col-12 col-md-4 col-lg-4">
-              <CSpinner
-                component="span"
-                size="sm"
-                variant="grow"
-                aria-hidden="true"
-              />
+              <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
               Loading...
             </div>
           </template>
