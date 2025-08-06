@@ -99,6 +99,13 @@
           <button class="btn btn-info text-white mx-2" @click="openAddFindingModal()">
             Add Finding
           </button>
+             <div>
+            <button :disabled="get4sFindings?.length < 1" class="btn btn-info btn-sm text-white w-full my-1">
+            <download-excel :data="excelData()" :fields="json_fields" worksheet="Temuan4S" name="temuan4Slist.xls">
+                Export all data
+              </download-excel>
+            </button>
+          </div>
         </div>
       </div>
       <div class="card-body p-0">
@@ -297,11 +304,15 @@
                 </td>
 
                 <td id="fixCol-9" class="px-4">
-                  <template v-for="labelScore in scoreopts">
-                    <label :key="labelScore.score" v-if="labelScore.score === finding.score">{{ labelScore.label
-                      }}</label>
-                  </template>
-                </td>
+  <template v-if="finding.score && finding.score !== 0">
+    <template v-for="labelScore in scoreopts">
+      <label :key="labelScore.score" v-if="labelScore.score === finding.score">
+        {{ labelScore.label }}
+      </label>
+    </template>
+  </template>
+</td>
+
                 <td>
                   <div class="d-flex gap-2">
                     <button v-if="finding.finding_img" class="btn btn-info btn-sm text-white w-full"
@@ -493,17 +504,21 @@
           <select class="form-select" v-model="selectedScore">
             <option v-for="opt in scoreopts" :key="opt.score" :value="opt.score">
               {{ opt.label }}
-            </option>
-          </select>
-          <button class="btn btn-info my-2 btn-sm text-white" @click="
-            () => {
-              updateScoreFinding()
-            }
-          ">
-            Edit Score
-          </button>
-          <hr>
-        </div>
+               </option>  
+            </select>
+             <button class="btn btn-info my-2 btn-sm text-white" @click="
+          () => {
+            updateScoreFinding()
+          }
+        "
+          >
+              Submit Score
+            </button>
+            <hr>
+          </div>
+       
+        
+            
 
 
         <div class="row">
@@ -806,7 +821,10 @@
     <!-- <ModalForm4sFinding :visiblee="modalFormFinding" :loadedFinding="" /> -->
     <ModalImage :img="selectedFindingImage" :visible="isVisibleFindingImage" @close="isVisibleFindingImage = false" />
     <!-- v-if="addFindingModal" -->
-    <ModalForm4sFinding :visible="addFindingModal" :is-input="true" :loadedFinding="null"
+    <ModalForm4sFinding
+      :visible="addFindingModal"
+      :is-input="true"
+      :loadedFinding="null"
       @close="onCloseModalFinding($event)" />
   </div>
 </template>
@@ -975,7 +993,31 @@ export default {
       kaizenFile: null,
       cmImage: null,
       isKaizenModal: false,
-      scoreopts: SCORE_MOCK,
+      scoreopts:SCORE_MOCK,
+      
+     json_fields: {
+    'No': 'no',
+    'Status': 'status',
+    'Line': 'line_nm',
+    'Zone': 'zone_nm',
+    'No Kanban': 'kanban_no',
+    'Area': 'area_nm',
+    'Freq 4S': 'freq_nm',
+    'Date': 'finding_date',
+    'Problem': 'finding_desc',
+    'PIC': 'finding_pic_nm',
+    'Waktu 4S (mnt)': 'time_cm',
+    'Yokoten': 'time_yokoten',
+    'Evaluasi': 'evaluation_nm',
+    'Score': 'score',
+    'Ada Perubahan SOP?': 'is_change_sop',
+    'Before Sop':'sop_file_before',
+    'After Sop':'sop_file_after',
+    'ada Improvement?': 'is_need_improvement',
+    'Link Improvement':'cm_image'
+
+    },
+
     }
   },
   computed: {
@@ -995,6 +1037,7 @@ export default {
     kanbanGetID() {
       return this.selectedKanbanID.id
     },
+   
   },
   watch: {
     selectedMonth: function () {
@@ -1201,6 +1244,7 @@ export default {
         this.findingList = res.list
         this.totalPage = res.total_page
         this.currentPage = res.current_page
+       
       })
     },
     openAddFindingModal() {
@@ -1308,22 +1352,22 @@ export default {
           `operational/4s/finding/score/${findingId}`,
           data,
         )
-          .then(res => {
-            if (res.data.message == 'Success to edit 4s finding') {
-              toast.success('Data added', {
-                autoClose: 1000
-              })
-              this.getFindings()
-              this.editFindingModal = false
-            } else {
-              Swal.fire('Error', '', 'warning')
-            }
-
-          })
-      } catch (error) {
-        console.log(error);
-
-      }
+         .then(res => {
+          if (res.data.message == 'Success to edit 4s finding') {
+            toast.success('Data added', {
+              autoClose: 1000
+            })
+          this.getFindings()
+             this.editFindingModal = false
+        } else {
+          Swal.fire('Error', '', 'warning')
+        }
+        
+      } )
+    }catch (error) {
+      console.log(error);
+      
+    }
     },
     async deleteFinding(findingID) {
       Swal.fire({
@@ -1509,6 +1553,13 @@ export default {
         this.getFindings()
       }
     },
+     excelData() {
+    return this.findingList.map(item => ({
+      ...item,
+      is_change_sop: item.is_change_sop === true ? 'Ya' : 'Tidak',
+      is_need_improvement: item.is_need_improvement === true ? 'Ya' : 'Tidak',
+    }));
+  },
   },
 
   async mounted() {

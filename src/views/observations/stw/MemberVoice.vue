@@ -220,12 +220,15 @@
                 </td>
                 <td>{{ membervoice.mv_pic_nm }}</td>
                 <td id="fixCol-9" class="px-4">
-                  <!-- {{ finding.score }} -->
-                  <template v-for="labelScore in scoreopts">
-                    <label :key="labelScore.score" v-if="labelScore.score === membervoice.score">{{ labelScore.label
-                    }}</label>
+                  <template v-if="membervoice.score && membervoice.score !== 0">
+                    <template v-for="labelScore in scoreopts">
+                      <label :key="labelScore.score" v-if="labelScore.score === membervoice.score">
+                        {{ labelScore.label }}
+                      </label>
+                    </template>
                   </template>
                 </td>
+
                 <td>
                   <button class="btn btn-secondary btn-sm text-white w-full" @click="() => {
                     detailMVModal = true

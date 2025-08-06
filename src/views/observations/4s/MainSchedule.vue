@@ -59,8 +59,12 @@
                   <CIcon icon="cil-circle" class="text-danger" size="lg" />
                   <span class="mx-2">Delay</span>
                 </div>
-                <div class="d-flex align-items-center">
+                <!-- <div class="d-flex align-items-center">
                   <img src="../../../assets/red-x-mark.svg" width="23" />
+                  <span class="mx-2">Sudah Cleaning, ada temuan abnormally</span>
+                </div> -->
+                 <div class="d-flex align-items-center">
+                  <CIcon icon="cilXCircle" class="text-danger" size="lg" />
                   <span class="mx-2">Sudah Cleaning, ada temuan abnormally</span>
                 </div>
               </div>
@@ -133,15 +137,19 @@
                       <CIcon icon="cil-circle" class="text-danger" size="lg" />
                       <span class="mx-2">Delay</span>
                     </div>
-                    <div class="d-flex align-items-center">
+                    <!-- <div class="d-flex align-items-center"> -->
                       <!-- <div class="bullet-cancel d-flex justify-content-center align-items-center"
                   style="width: 20px; height: 20px">
                   <CIcon icon="cil-x" class="text-danger" size="sm" />
                 </div> -->
                       <!--                <CIcon icon="cil-bell" class="text-warning" size="lg" />-->
-                      <img src="../../../assets/red-x-mark.svg" width="23" />
+                      <!-- <img src="../../../assets/red-x-mark.svg" width="23" />
                       <span class="mx-2">Sudah Cleaning, ada temuan abnormally</span>
-                    </div>
+                    </div> -->
+                    <div class="d-flex align-items-center">
+                  <CIcon icon="cilXCircle" class="text-danger" size="lg" />
+                  <span class="mx-2">Sudah Cleaning, ada temuan abnormally</span>
+                </div>
                   </div>
                 </div>
               </div>
@@ -220,9 +228,12 @@
                               size="lg" />
                             <!--                            <CIcon v-else-if="children?.status == 'PROBLEM'" icon="cil-bell" class="text-warning"
                                                         size="lg" />-->
-                            <div v-else-if="children?.status == 'PROBLEM'">
+                            <!-- <div v-else-if="children?.status == 'PROBLEM'">
                               <img src="../../../assets/red-x-mark.svg" width="23" />
-                            </div>
+                            </div> -->
+                             <CIcon v-else-if="children?.status == 'PROBLEM'" icon="cilXCircle" class="text-danger"
+                              size="lg" />
+                              
                             <!-- <div
                             class="bullet-cancel d-flex justify-content-center align-items-center"
                             style="width: 20px; height: 20px">

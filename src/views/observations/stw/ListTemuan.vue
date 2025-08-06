@@ -283,12 +283,15 @@
                   </div>
                 </td>
                 <td id="fixCol-9" class="px-4">
-                  <!-- {{ finding.score }} -->
-                  <template v-for="labelScore in scoreopts">
-                    <label :key="labelScore.score" v-if="labelScore.score === finding.score">{{ labelScore.label
-                      }}</label>
+                  <template v-if="finding.score && finding.score !== 0">
+                    <template v-for="labelScore in scoreopts">
+                      <label :key="labelScore.score" v-if="labelScore.score === finding.score">
+                        {{ labelScore.label }}
+                      </label>
+                    </template>
                   </template>
                 </td>
+
                 <td class="px-1">
                   <div class="px-2 d-flex">
                     <button v-if="finding.finding_img" @click="
