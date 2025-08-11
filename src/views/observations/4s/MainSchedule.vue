@@ -295,7 +295,6 @@
                             class="check-wrapper d-flex align-items-center justify-content-center">
                             <CIcon icon="cil-check" class="text-black" size="sm" />
                           </button>
-
                         </div>
                       </td>
                     </tr>
@@ -329,10 +328,9 @@
                     <!-- SIGN GL -->
                     <tr>
                       <td colspan="7" class="text-center">Sign GL</td>
-                      <template v-for="(children, index) in mainSchedule?.glSigns" :key="children">
+                      <template v-for="(children) in mainSchedule?.glSigns" :key="children">
                         <td :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
-                          } `"
-                          :colspan="getDateThisMonth / 4.5 + (getDateThisMonth > 30 && index === mainSchedule?.glSigns.length - 1 ? 1 : 0)">
+                          } `">
                           <div v-if="children?.sign_checker_id"
                             class="d-flex align-items-center justify-content-center w-full">
                             <button @click="
@@ -355,9 +353,8 @@
                     <!-- SIGN SH -->
                     <tr>
                       <td colspan="7" class="text-center">Sign SH</td>
-                      <template v-for="(children, index) in mainSchedule?.shSigns" :key="children">
-                        <td class="" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''}`"
-                          :colspan="(getDateThisMonth / 3 + 2) + (getDateThisMonth > 30 && index === mainSchedule?.shSigns.length - 1 ? 1 : 0)">
+                      <template v-for="(children) in mainSchedule?.shSigns" :key="children">
+                        <td class="" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''}`">
                           <div v-if="children?.sign_checker_id"
                             class="d-flex align-items-center justify-content-center w-full">
                             <button @click="
