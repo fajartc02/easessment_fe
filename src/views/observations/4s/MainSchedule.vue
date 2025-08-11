@@ -63,7 +63,7 @@
                   <img src="../../../assets/red-x-mark.svg" width="23" />
                   <span class="mx-2">Sudah Cleaning, ada temuan abnormally</span>
                 </div> -->
-                 <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center">
                   <CIcon icon="cilXCircle" class="text-danger" size="lg" />
                   <span class="mx-2">Sudah Cleaning, ada temuan abnormally</span>
                 </div>
@@ -138,18 +138,18 @@
                       <span class="mx-2">Delay</span>
                     </div>
                     <!-- <div class="d-flex align-items-center"> -->
-                      <!-- <div class="bullet-cancel d-flex justify-content-center align-items-center"
+                    <!-- <div class="bullet-cancel d-flex justify-content-center align-items-center"
                   style="width: 20px; height: 20px">
                   <CIcon icon="cil-x" class="text-danger" size="sm" />
                 </div> -->
-                      <!--                <CIcon icon="cil-bell" class="text-warning" size="lg" />-->
-                      <!-- <img src="../../../assets/red-x-mark.svg" width="23" />
+                    <!--                <CIcon icon="cil-bell" class="text-warning" size="lg" />-->
+                    <!-- <img src="../../../assets/red-x-mark.svg" width="23" />
                       <span class="mx-2">Sudah Cleaning, ada temuan abnormally</span>
                     </div> -->
                     <div class="d-flex align-items-center">
-                  <CIcon icon="cilXCircle" class="text-danger" size="lg" />
-                  <span class="mx-2">Sudah Cleaning, ada temuan abnormally</span>
-                </div>
+                      <CIcon icon="cilXCircle" class="text-danger" size="lg" />
+                      <span class="mx-2">Sudah Cleaning, ada temuan abnormally</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -231,9 +231,9 @@
                             <!-- <div v-else-if="children?.status == 'PROBLEM'">
                               <img src="../../../assets/red-x-mark.svg" width="23" />
                             </div> -->
-                             <CIcon v-else-if="children?.status == 'PROBLEM'" icon="cilXCircle" class="text-danger"
+                            <CIcon v-else-if="children?.status == 'PROBLEM'" icon="cilXCircle" class="text-danger"
                               size="lg" />
-                              
+
                             <!-- <div
                             class="bullet-cancel d-flex justify-content-center align-items-center"
                             style="width: 20px; height: 20px">
@@ -667,12 +667,10 @@ export default {
       let subSchedule = this.newSubScheduleData;
       let sortedData = subSchedule.sort((a, b) => {
         let fa = a[0]?.group_nm.toLowerCase(), fb = b[0]?.group_nm.toLowerCase();
-        if (fa < fb)
-        {
+        if (fa < fb) {
           return -1;
         }
-        if (fa > fb)
-        {
+        if (fa > fb) {
           return 1;
         }
         return 0;
@@ -683,8 +681,7 @@ export default {
   },
   watch: {
     selectedMonth: function () {
-      if (this.selectedMonth)
-      {
+      if (this.selectedMonth) {
         this.generateDate();
         let idx = this.idxMonth.indexOf(this.selectedMonth.split("-")[1]);
         this.yearMonth = `${this.monthStr[idx]} ${this.selectedMonth.split("-")[0]
@@ -710,91 +707,91 @@ export default {
       }
     },
 
-exportToPDF(index) {
-  const tableOriginal = this.$refs[`content_${index}`]?.[0];
-  if (!tableOriginal) {
-    toast.error("Tabel tidak ditemukan");
-    return;
-  }
-
-  const shift = this.mainScheduleData[index]?.group_nm || "Default";
-  const nameFile = `4S_Schedule_${shift.replace(/\s+/g, "_")}`;
-  const cloneWrapper = document.createElement("div");
-  const clone = tableOriginal.cloneNode(true);
-
-  
-  clone.querySelectorAll("*").forEach((el) => {
-    const computed = window.getComputedStyle(el);
-
-    if (computed.position === "sticky" || el.style.position === "sticky") {
-      el.style.position = "static";
-      el.style.top = "auto";
-      el.style.bottom = "auto";
-      el.style.zIndex = "auto";
-    }
-
-    el.classList.forEach((cls) => {
-      if (cls.toLowerCase().includes("sticky")) {
-        el.classList.remove(cls);
+    exportToPDF(index) {
+      const tableOriginal = this.$refs[`content_${index}`]?.[0];
+      if (!tableOriginal) {
+        toast.error("Tabel tidak ditemukan");
+        return;
       }
-    });
 
-    if (el.style.bottom) el.style.bottom = "auto";
-    if (el.style.zIndex) el.style.zIndex = "auto";
-  });
-
-
-  clone.style.display = "block";
-  clone.style.overflow = "visible";
-  clone.style.maxHeight = "none";
-
-  cloneWrapper.style.position = "absolute";
-  cloneWrapper.style.top = "0";
-  cloneWrapper.style.left = "0";
-  cloneWrapper.style.zIndex = "-9999";
-  cloneWrapper.style.padding = "20px";
-  cloneWrapper.style.background = "#fff";
-  cloneWrapper.appendChild(clone);
-  document.body.appendChild(cloneWrapper);
-
-  document.body.style.height = clone.scrollHeight + "px";
-  document.body.style.overflow = "visible";
+      const shift = this.mainScheduleData[index]?.group_nm || "Default";
+      const nameFile = `4S_Schedule_${shift.replace(/\s+/g, "_")}`;
+      const cloneWrapper = document.createElement("div");
+      const clone = tableOriginal.cloneNode(true);
 
 
-  this.$nextTick(() => {
-    setTimeout(() => {
-      const options = {
-        margin: 0,
-        filename: `${nameFile}.pdf`,
-        image: { type: "jpeg", quality: 1 },
-        html2canvas: {
-          scale: 2,
-          useCORS: true,
-          allowTaint: true,
-          scrollY: 0,
-          scrollX: 0,
-          windowHeight: clone.scrollHeight,
-        },
-        jsPDF: {
-          unit: "px",
-          format: [5500, 1500], 
-          orientation: "landscape",
-        },
-      };
+      clone.querySelectorAll("*").forEach((el) => {
+        const computed = window.getComputedStyle(el);
 
-      html2pdf()
-        .set(options)
-        .from(clone)
-        .save()
-        .then(() => {
-          document.body.removeChild(cloneWrapper);
-          document.body.style.height = "";
-          document.body.style.overflow = "";
+        if (computed.position === "sticky" || el.style.position === "sticky") {
+          el.style.position = "static";
+          el.style.top = "auto";
+          el.style.bottom = "auto";
+          el.style.zIndex = "auto";
+        }
+
+        el.classList.forEach((cls) => {
+          if (cls.toLowerCase().includes("sticky")) {
+            el.classList.remove(cls);
+          }
         });
-    }, 800); // kasih waktu render
-  });
-}
-,
+
+        if (el.style.bottom) el.style.bottom = "auto";
+        if (el.style.zIndex) el.style.zIndex = "auto";
+      });
+
+
+      clone.style.display = "block";
+      clone.style.overflow = "visible";
+      clone.style.maxHeight = "none";
+
+      cloneWrapper.style.position = "absolute";
+      cloneWrapper.style.top = "0";
+      cloneWrapper.style.left = "0";
+      cloneWrapper.style.zIndex = "-9999";
+      cloneWrapper.style.padding = "20px";
+      cloneWrapper.style.background = "#fff";
+      cloneWrapper.appendChild(clone);
+      document.body.appendChild(cloneWrapper);
+
+      document.body.style.height = clone.scrollHeight + "px";
+      document.body.style.overflow = "visible";
+
+
+      this.$nextTick(() => {
+        setTimeout(() => {
+          const options = {
+            margin: 0,
+            filename: `${nameFile}.pdf`,
+            image: { type: "jpeg", quality: 1 },
+            html2canvas: {
+              scale: 2,
+              useCORS: true,
+              allowTaint: true,
+              scrollY: 0,
+              scrollX: 0,
+              windowHeight: clone.scrollHeight,
+            },
+            jsPDF: {
+              unit: "px",
+              format: [5500, 1500],
+              orientation: "landscape",
+            },
+          };
+
+          html2pdf()
+            .set(options)
+            .from(clone)
+            .save()
+            .then(() => {
+              document.body.removeChild(cloneWrapper);
+              document.body.style.height = "";
+              document.body.style.overflow = "";
+            });
+        }, 800); // kasih waktu render
+      });
+    }
+    ,
 
 
 
@@ -812,11 +809,9 @@ exportToPDF(index) {
       };
       await this.$store.dispatch(GET_SCHEDULES, objQuery).then(async (res) => {
         this.isLoadingMainSchedule = false;
-        if (res)
-        {
+        if (res) {
           const data = res.list;
-          if (data && data.length > 0)
-          {
+          if (data && data.length > 0) {
             this.mainScheduleData = data.map((item) => {
               item.sub_schedules = [];
               item.tl1Signs = [];
@@ -831,14 +826,11 @@ exportToPDF(index) {
             });
           }
 
-          if (this.mainScheduleData.length > 0)
-          {
-            for (let i = 0; i < this.mainScheduleData.length; i++)
-            {
+          if (this.mainScheduleData.length > 0) {
+            for (let i = 0; i < this.mainScheduleData.length; i++) {
               await this.getSubSchedules(this.mainScheduleData[i].main_schedule_id, i);
             }
-          } else
-          {
+          } else {
             this.isMainScheduleEmpty = true;
           }
         }
@@ -860,8 +852,7 @@ exportToPDF(index) {
       };
 
       await this.$store.dispatch(GET_SUB_SCHEDULES, objQuery).then((res) => {
-        if (res)
-        {
+        if (res) {
           let redTemp = "";
           let whiteTemp = "";
           let temp = res.schedule;
@@ -901,12 +892,10 @@ exportToPDF(index) {
       };
 
       const add = await ApiService.put(
-        `/operational/4s/sub-schedule/edit/${this.selectedSubScheduleID}`,
+        `/operational/4s/sub-schedule/add-plan-pic/${this.selectedSubScheduleID}`,
         data
       );
-
-      if (add.data.message == "Success to edit 4s schedule plan")
-      {
+      if (add.data.message == "Success to add plan pic 4s sub schedule") {
         toast.success("PIC added", {
           autoClose: 700
         });
@@ -936,8 +925,7 @@ exportToPDF(index) {
         `/operational/4s/sub-schedule/edit/${this.selectedSubScheduleID}`,
         data
       );
-      if (change.data.message == "Success to edit 4s schedule plan")
-      {
+      if (change.data.message == "Success to edit 4s schedule plan") {
         this.isChangeDateLoading = false;
         this.changeDateModal = false;
         await this.getSchedules();
@@ -953,26 +941,22 @@ exportToPDF(index) {
         confirmButtonText: "Sure",
         denyButtonText: `No`
       }).then((result) => {
-        if (result.isConfirmed)
-        {
+        if (result.isConfirmed) {
           ApiService.setHeader();
           const deleteData = ApiService.delete(`operational/4s/sub-schedule/delete/${subScheduleID}`);
 
 
-          if (deleteData)
-          {
+          if (deleteData) {
             toast.success("Data daleted", {
               autoClose: 700
             });
             this.getSchedules();
-          } else
-          {
+          } else {
             toast.error("Failed to delete data", {
               autoClose: 700
             });
           }
-        } else if (result.isDenied)
-        {
+        } else if (result.isDenied) {
           Swal.fire("Canceled", "", "info");
         }
       });
@@ -992,15 +976,12 @@ exportToPDF(index) {
     },
 
     async getUsers() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_USERS);
-        if (this.getUsersOpts)
-        {
+        if (this.getUsersOpts) {
           this.mapUsersData();
         }
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
@@ -1014,51 +995,41 @@ exportToPDF(index) {
       return `${pic_name}`;
     },
     async getLines() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_LINES);
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
     },
     async getGroup() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_GROUP);
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
     },
     async getZone() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_ZONES, { line_id: this.selectedLineID ?? -1 });
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
     },
     async getKanban() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_KANBANS, { zone_id: this.selectedZoneID ?? -1 });
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
     },
     async getFreq() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_FREQS);
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
@@ -1070,8 +1041,7 @@ exportToPDF(index) {
       var lastDay = new Date(year, month, 0);
       let container = [];
       this.containerDate = [];
-      for (let i = 1; i <= lastDay.getDate(); i++)
-      {
+      for (let i = 1; i <= lastDay.getDate(); i++) {
         let setDt = new Date(selectedMonth).setDate(i);
         let newDate = new Date(setDt);
         container.push(newDate.getDate());
@@ -1104,8 +1074,7 @@ exportToPDF(index) {
     saveSignature(from) {
       var signFile;
 
-      switch (from)
-      {
+      switch (from) {
         case "sign_tl_1":
           signFile = this.$refs[from].save();
           this.selectedSignature = signFile;
@@ -1113,8 +1082,7 @@ exportToPDF(index) {
         default:
           break;
       }
-      switch (from)
-      {
+      switch (from) {
         case "sign_tl_2":
           signFile = this.$refs[from].save();
           this.selectedSignature = signFile;
@@ -1122,8 +1090,7 @@ exportToPDF(index) {
         default:
           break;
       }
-      switch (from)
-      {
+      switch (from) {
         case "sign_gl":
           signFile = this.$refs[from].save();
           this.selectedSignature = signFile;
@@ -1131,8 +1098,7 @@ exportToPDF(index) {
         default:
           break;
       }
-      switch (from)
-      {
+      switch (from) {
         case "sign_sh":
           signFile = this.$refs[from].save();
           this.selectedSignature = signFile;
@@ -1153,8 +1119,7 @@ exportToPDF(index) {
         `/operational/4s/sub-schedule/sign/${this.selectedSignCheckerID}`,
         { sign: this.selectedSignature }
       );
-      if (upload.data.message == "success to sign 4s schedule")
-      {
+      if (upload.data.message == "success to sign 4s schedule") {
         this.isUploadSignLoading = false;
         toast.success("Sign saved", {
           autoClose: 700
@@ -1169,8 +1134,7 @@ exportToPDF(index) {
         `/operational/4s/sub-schedule/sign/${this.selectedSignCheckerID}`
       );
 
-      if (getData.data.message == "Success to get 4s sign checker")
-      {
+      if (getData.data.message == "Success to get 4s sign checker") {
         this.selectedSign = getData.data.data.sign;
         this.isUploadSignLoading = false;
       }
@@ -1178,8 +1142,7 @@ exportToPDF(index) {
 
     // edit data
     openEditModal(subScheduleID, picID, picName) {
-      if (picName)
-      {
+      if (picName) {
         this.selectedPICName = picName;
       }
       this.editDataModal = true;
@@ -1196,11 +1159,9 @@ exportToPDF(index) {
         this.selectedLineID
         && filtered.length > 0
         && filtered[0].text.toLowerCase().includes("line")
-      )
-      {
+      ) {
         this.isAssyLine = true;
-      } else
-      {
+      } else {
         this.isAssyLine = false;
       }
     },
@@ -1221,8 +1182,7 @@ exportToPDF(index) {
   },
 
   async mounted() {
-    if (localStorage.getItem("line_id"))
-    {
+    if (localStorage.getItem("line_id")) {
       this.selectedLineID = localStorage.getItem("line_id");
     }
     this.newSubScheduleData = [];
