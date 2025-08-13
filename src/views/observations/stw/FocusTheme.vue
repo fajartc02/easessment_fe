@@ -1,4 +1,5 @@
 <template>
+  <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false" :on-cancel="onCancel" />
   <div>
     <div class="card mb-3">
       <div class="card-header">
@@ -70,21 +71,47 @@
               </td>
               <td>{{ focustheme.ft_remark }}</td>
               <td id="fixCol-9" class="px-4">
-  <template v-if="focustheme.score && focustheme.score !== 0">
-    <template v-for="labelScore in scoreopts">
-      <label
-        :key="labelScore.score"
-        v-if="labelScore.score === focustheme.score"
-      >
-        {{ labelScore.label }}
-      </label>
-    </template>
-  </template>
-</td>
+                <template v-if="focustheme.score && focustheme.score !== 0">
+                  <template v-for="labelScore in scoreopts">
+                    <label :key="labelScore.score" v-if="labelScore.score === focustheme.score">
+                      {{ labelScore.label }}
+                    </label>
+                  </template>
+                </template>
+              </td>
 
               <td>
-                <button class="btn btn-warning btn-sm text-white" @click="focusThemeDetailData(index)">
+
+                <!-- <button class="btn btn-warning btn-sm text-white" @click="focusThemeDetailData(index)">
                   Problems
+                </button> -->
+                <button v-if="focustheme.findings[0].finding_img" @click="
+                  () => {
+                    openFindingImage(focustheme.findings[0].finding_img)
+                  }
+                " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
+                  Finding image
+                </button>
+                <button v-else class="btn btn-secondary btn-sm" disabled>
+                  No Image
+                </button>
+                <button v-if="focustheme.findings[0].cm_image" @click="
+                  () => {
+                    openFindingImage(focustheme.findings[0].cm_image)
+                  }
+                " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
+                  C/M image
+                </button>
+                <button v-else class="btn btn-secondary btn-sm w-full my-1 mx-1" disabled>
+                  No Image C/M
+                </button>
+                <button :class="{
+                  'btn btn-sm w-full my-1 mx-1': true,
+                  'btn-info text-white': focustheme.findings[0].kaizen_file,
+                  'btn-secondary text-white': !focustheme.findings[0].kaizen_file,
+                }" @click="showKaizenModal(focustheme.findings[0].kaizen_file)"
+                  :disabled="!focustheme.findings[0].kaizen_file">
+                  Kaizen
                 </button>
                 <button class="btn btn-danger btn-sm text-white mx-2" @click="deleteFT(focustheme.ft_id)">
                   Delete
@@ -246,6 +273,12 @@
                   <div v-if="selectedFindingImage">
                     <img :src="selectedFindingImage" width="300" alt="" />
                   </div>
+                </div>
+
+
+                <div class="card p-2 mb-2">
+                  <label>Apakah ada Improvement?</label>
+                  <CFormSwitch v-model="findingsData.is_need_improvement" />
                 </div>
 
                 <div class="row">
@@ -630,11 +663,8 @@
                   <label class="mb-1">Countermeasure Comments</label>
                   <input type="text" class="form-control" v-model="focusThemeDetail.findings[0].cm_comments" />
                 </div>
-                <div class="mb-2">
-                  <label class="mb-1">Finding image </label> <br>
-                  <img v-if="focusThemeDetail.findings[0].finding_img" :src="focusThemeDetail.findings[0].finding_img"
-                    alt="image" class="img-fluid rounded mb-2" width="100" style="cursor: pointer"
-                    @click="showFindingImg(focusThemeDetail.findings[0].finding_img)" />
+                <div class="mb-2 card card-body">
+                  <label class="mb-1">Finding image </label>
                   <input ref="focus-theme-finding-image" type="file" class="form-control" />
                   <button class="btn btn-info my-2 text-white" :disabled="isUploadLoading" @click="
                     uploadFindingImage('focus-theme-finding-image', focusThemeDetail.findings[0].finding_img)
@@ -643,6 +673,47 @@
                   </button>
                   <div v-if="selectedFindingImage">
                     <img :src="selectedFindingImage" width="300" alt="" />
+                  </div>
+                  <img v-if="focusThemeDetail.findings[0].finding_img" :src="focusThemeDetail.findings[0].finding_img"
+                    alt="image" class="img-fluid rounded mb-2" width="100" style="cursor: pointer"
+                    @click="showFindingImg(focusThemeDetail.findings[0].finding_img)" />
+                </div>
+
+                <!-- IMG FOR CM -->
+
+                <div class="mb-2 card card-body">
+                  <label>CM Image</label>
+                  <CInputGroup class="mb-2">
+                    <CInputGroupText>C/M Image</CInputGroupText>
+                    <CFormInput @change="onChangeCmImage($event)" ref="cm_image" aria-label="Input your kaizen file"
+                      type="file" />
+                    <CInputGroupText class="p-0">
+                      <button class="btn btn-sm btn-success" @click="uploadCmImage()" :disabled="isLoading">Upload
+                        Image</button>
+                    </CInputGroupText>
+                  </CInputGroup>
+                  <img v-if="focusThemeDetail.findings[0].cm_image" :src="focusThemeDetail.findings[0].cm_image"
+                    alt="image" class="img-fluid rounded mb-2" width="100" style="cursor: pointer"
+                    @click="showFindingImg(focusThemeDetail.findings[0].cm_image)" />
+                  <label class="text-secondary" v-else>Tidak ada cm image</label>
+                </div>
+
+                <div class="card p-2 mb-2">
+                  <label>Apakah ada Improvement?</label>
+                  <CFormSwitch v-model="focusThemeDetail.findings[0].is_need_improvement" />
+                  <div v-if="focusThemeDetail.findings[0].is_need_improvement" class="row">
+                    <div class="col-12 col-md-12">
+                      <CInputGroup class="mb-3">
+                        <CInputGroupText>Kaizen File</CInputGroupText>
+                        <CFormInput @change="onChangeKaizenFile($event)" ref="kaizen_file"
+                          aria-label="Input your kaizen file" type="file" />
+                        <CInputGroupText class="p-0">
+                          <button class="btn btn-sm btn-success" @click="uploadKaizen(selectedFindingID)"
+                            :disabled="isLoading">Upload
+                            Kaizen</button>
+                        </CInputGroupText>
+                      </CInputGroup>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -729,12 +800,34 @@
       </CModalFooter>
     </CModal>
 
+    <!-- Kaizen Modal -->
+    <CModal backdrop="static" size="xl" :visible="isKaizenModal" @close="
+      () => {
+        isKaizenModal = false
+      }
+    ">
+      <CModalHeader>
+        <CModalTitle>Kaizen Report</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <table class="table table-bordered">
+          <tr>
+            <td class="text-center">
+              <img v-if="kaizenFile && !kaizenFile.includes('.pdf')" :src="kaizenFile" width="400" alt="KZ" />
+              <vue-pdf-embed v-else-if="kaizenFile && kaizenFile.includes('.pdf')" :source="kaizenFile" />
+              <h3 v-else>No Kaizen</h3>
+            </td>
+          </tr>
+        </table>
+      </CModalBody>
+    </CModal>
 
   </div>
 </template>
 
 <script>
 // import moment from 'moment'
+import Loading from 'vue-loading-overlay'
 import { GET_LINES } from '@/store/modules/line.module'
 import {
   GET_FOCUSTHEME,
@@ -746,7 +839,7 @@ import { mapGetters } from 'vuex'
 import VueMultiselect from 'vue-multiselect'
 import Swal from 'sweetalert2'
 import ApiService from '@/store/api.service'
-import Loading from 'vue-loading-overlay'
+
 import { toast } from 'vue3-toastify'
 import Pagination from '@/components/Pagination.vue'
 
@@ -841,6 +934,13 @@ export default {
       selectedFindingImageToUpdate: null,
       totalPage: 0,
       scoreopts: SCORE_MOCK,
+      isLoading: false,
+      cmImage: null,
+      kaizenFile: null,
+      isKaizenModal: false
+
+      // findingImageModal: false,
+      // selectedFindingImageToDisplay: null
     }
   },
   computed: {
@@ -851,6 +951,83 @@ export default {
     this.mapUsersData()
   },
   methods: {
+    showKaizenModal(kaizenFile) {
+      this.kaizenFile = kaizenFile
+      this.isKaizenModal = true
+    },
+    async uploadKaizen(finding_id, kaizen_file = null) {
+      this.isLoading = true
+      if (!kaizen_file && !this.kaizenFile) {
+        toast.info('Please select file')
+        this.isLoading = false
+        return
+      }
+
+      try {
+        const formData = new FormData()
+        formData.append('finding_id', this.focusThemeDetail.findings[0].finding_id)
+        formData.append('dest', 'pinkSheet')
+        formData.append(
+          'kaizen_file',
+          kaizen_file ? kaizen_file : this.kaizenFile,
+        )
+
+        await ApiService.post(
+          `/operational/findingCm/upload-kaizen?dest=pinkSheet`,
+          formData,
+        )
+        toast.success('Susccessfully Upload Kaizen', {
+          autoClose: 1000,
+        })
+        this.isLoading = false
+      } catch (e) {
+        console.log('uploadKaizen', e)
+        this.isLoading = false
+        toast.error(JSON.stringify(e.message))
+      }
+    },
+    onChangeKaizenFile(event) {
+      this.kaizenFile = event.target.files[0]
+    },
+    async uploadCmImage() {
+      this.isLoading = true
+      if (!this.cmImage) {
+        toast.info('Please select file')
+        this.isLoading = false
+        return
+      }
+
+      try {
+        const formData = new FormData()
+        formData.append('finding_id', this.focusThemeDetail.findings[0].finding_id)
+        formData.append('dest', 'findings')
+        formData.append(
+          'cm_image',
+          this.cmImage,
+        )
+        await ApiService.post(
+          `/operational/findingCm/upload-cm-image?dest=findings`,
+          formData,
+        )
+
+        toast.success('Susccessfully Upload Cm image', {
+          autoClose: 1000,
+        })
+        this.isLoading = false
+        this.getFocusThemes()
+      } catch (e) {
+        this.isLoading = false
+        console.log('uploadKaizen', e)
+        toast.error(JSON.stringify(e.message))
+      }
+    },
+    onChangeCmImage(event) {
+      this.cmImage = event.target.files[0]
+    },
+    openFindingImage(findingImage) {
+      this.findingImageModal = true
+      this.selectedFindingImageToDisplay = findingImage
+    },
     getImage(eval_nm) {
       console.log(eval_nm);
       console.log(this.evaluationOpts);
@@ -1002,7 +1179,8 @@ export default {
       this.findingImageModal = true
       this.selectedFindingImageToDisplay = findingImg
     },
-    addFocusThemeData() {
+    async addFocusThemeData() {
+      this.isLoading = true
       this.focusThemeData.ft_line_id = this.selectedLineID?.line_id
       this.findingsData.cm_result_factor_id = this.findingsData?.factor_id
       this.findingsData.line_id = this.selectedLineID?.line_id
@@ -1019,6 +1197,7 @@ export default {
         || !this.findingsData.factor_id
         || !this.findingsData.cm_str_plan_date
         || !this.findingsData.cm_end_plan_date) {
+        console.log(this.findingsData);
         toast.error('Harap isi semua field di finding', {
           autoClose: 1000
         })
@@ -1027,7 +1206,7 @@ export default {
           ...this.focusThemeData,
           findings: this.findingsData,
         }
-        this.addFocusTheme(data)
+        await this.addFocusTheme(data)
       }
 
     },
@@ -1041,16 +1220,19 @@ export default {
             })
             this.addFocusThemeModal = false
             this.getFocusThemes()
+
           } else {
             toast.error('Failed to add data', {
               autoClose: 1000
             })
           }
         })
+        this.isLoading = false
       } catch (error) {
         console.log(error)
         Swal.fire('Failed', '', 'error')
         this.addFocusThemeModal = false
+        this.isLoading = false
       }
     },
     focusThemeDetailData(index) {

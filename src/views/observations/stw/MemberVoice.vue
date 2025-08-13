@@ -1322,6 +1322,9 @@ export default {
         toast.error(JSON.stringify(e.message))
       }
     },
+    onChangeCmImage(event) {
+      this.cmImage = event.target.files[0]
+    },
     async uploadKaizen(finding_id, kaizen_file = null) {
       this.isLoading = true
       if (!kaizen_file && !this.kaizenFile) {
@@ -1352,9 +1355,6 @@ export default {
         this.isLoading = false
         toast.error(JSON.stringify(e.message))
       }
-    },
-    onChangeCmImage(event) {
-      this.cmImage = event.target.files[0]
     },
     onChangeKaizenFile(event) {
       this.kaizenFile = event.target.files[0]
