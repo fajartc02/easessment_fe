@@ -43,6 +43,7 @@
             <th>Nama</th>
             <th>Pembuat</th>
             <th>Tanggal Di buat</th>
+            <th >Role</th>
             <th colspan="2">Actions</th>
           </tr>
           <template v-if="usersState.length > 0">
@@ -52,6 +53,18 @@
               <td>{{ pos.text }}</td>
               <td>{{ pos.created_by }}</td>
               <td>{{ pos.created_dt.split('T')[0] }}</td>
+               <td>
+                <select class="form-select form-select-sm w-auto"
+                v-model="pos.role"
+                @change="editRole(pos.id, pos.role)">
+                  <option v-if="pos.role && !roleopts.some(r => r.label === pos.role)" :value="pos.role">
+                    {{ pos.role }}
+                  </option>
+                  <option v-for="opts in roleopts" :key="opts.label" :value="opts.label">
+                    {{ opts.label }}
+                  </option>
+                </select>
+              </td>
               <td>
                 <CButton color="warning" @click="edit(pos.id)">
                   <CIcon icon="cil-pencil" size="sm" />
@@ -77,11 +90,11 @@
 
 <script>
 import { GET_LINES } from "@/store/modules/line.module";
-
-import { GET_USERS, DELETE_USER } from '@/store/modules/user.module'
+import { GET_USERS, DELETE_USER,PUT_USER_ROLE } from '@/store/modules/user.module'
 import { mapGetters } from 'vuex'
 import Swal from 'sweetalert2'
 import CustomFullLoading from '@/components/CustomFullLoading.vue';
+import ROLE_MOCK from "@/mocks/role.mock";
 // import queryFormat from "@/functions/queryFormat";
 
 export default {
@@ -98,15 +111,18 @@ export default {
         limit: 5,
         totalPage: 1,
         currentPage: 1,
-        id: -1
+        id: -1,
+        
         // job_type_id: null
       },
-      isLoading: false
+      isLoading: false,
+      roleopts:ROLE_MOCK,
     }
   },
   watch: {
     getUsers: function () {
       this.usersState = this.getUsers
+      this.selectedrole = this.filtered.role
     }
   },
   computed: {
@@ -169,7 +185,29 @@ export default {
             })
         }
       })
+    },
+async editRole(id, role) {
+  Swal.fire({
+    title: `Ubah role user ini menjadi "${role}"?`,
+    showCancelButton: true,
+    confirmButtonText: 'Ya',
+    cancelButtonText: 'Tidak',
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+    await this.$store.dispatch(PUT_USER_ROLE, { id, role })
+    Swal.fire('Berhasil ubah role', '', 'success')
+  } catch (error) {
+    console.error(error)
+    Swal.fire('Gagal ubah role', '', 'error')
+  }
     }
+  });
+}
+
+
+
+    
   },
   async mounted() {
     this.isLoading = true
