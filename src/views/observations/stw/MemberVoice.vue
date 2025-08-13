@@ -948,19 +948,18 @@
                   </div>
                 </div> -->
 
-                <CInputGroup class="mb-2">
-                  <CInputGroupText>C/M Image</CInputGroupText>
-                  <CFormInput @change="onChangeCmImage($event)" ref="cm_image" aria-label="Input your kaizen file"
-                    type="file" />
-                  <CInputGroupText class="p-0">
-                    <button class="btn btn-sm btn-success" @click="uploadCmImage(selectedFindingID)"
-                      :disabled="isLoading">Upload
-                      Image</button>
-                  </CInputGroupText>
-                </CInputGroup>
-
                 <!-- IMG FOR CM -->
-                <div>
+                <div class="card card-body mb-2">
+                  <CInputGroup>
+                    <CInputGroupText>C/M Image</CInputGroupText>
+                    <CFormInput @change="onChangeCmImage($event)" ref="cm_image" aria-label="Input your kaizen file"
+                      type="file" />
+                    <CInputGroupText class="p-0">
+                      <button class="btn btn-sm btn-success" @click="uploadCmImage(selectedFindingID)"
+                        :disabled="isLoading">Upload
+                        Image</button>
+                    </CInputGroupText>
+                  </CInputGroup>
                   <label> CM Image</label>
                   <br>
                   <img v-if="memberVoiceDetail.findings[0].cm_image" :src="memberVoiceDetail.findings[0].cm_image"
