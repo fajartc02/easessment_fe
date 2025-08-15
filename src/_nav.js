@@ -1,3 +1,4 @@
+
 export default [{
   component: 'CNavTitle', // --- HISTORY MENU
   name: 'Main Dashboard',
@@ -190,6 +191,7 @@ export default [{
   to: '/master/user',
   is_admin: true,
   icon: 'cil-user',
+  hide_for_roles: ['TM', null]
 },
 {
   component: 'CNavGroup',

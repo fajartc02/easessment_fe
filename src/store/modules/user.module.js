@@ -3,7 +3,7 @@ export const GET_USERS = "getUsers";
 export const POST_USER = "postUser";
 export const PUT_USER = "putUser";
 export const DELETE_USER = "deleteUser";
-
+export const PUT_USER_ROLE = "putUserRole";
 // mutation types
 export const SET_USERS = "setUsers";
 
@@ -132,7 +132,22 @@ const actions = {
         });
 
     });
-  }
+  },
+  [PUT_USER_ROLE]({ commit }, { id, role }) {
+  ApiService.setHeader()
+  return new Promise((resolve, reject) => {
+    ApiService.put(`master/users/role/${id}`, { role })
+    
+      .then((result) => { 
+        const roledata = result.data 
+        resolve (roledata.data)
+      console.log(commit)
+      }).catch((err) => {
+          reject(err)
+        });
+  })
+}
+
 };
 
 const mutations = {

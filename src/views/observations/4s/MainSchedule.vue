@@ -629,12 +629,10 @@ export default {
       let subSchedule = this.newSubScheduleData;
       let sortedData = subSchedule.sort((a, b) => {
         let fa = a[0]?.group_nm.toLowerCase(), fb = b[0]?.group_nm.toLowerCase();
-        if (fa < fb)
-        {
+        if (fa < fb) {
           return -1;
         }
-        if (fa > fb)
-        {
+        if (fa > fb) {
           return 1;
         }
         return 0;
@@ -645,8 +643,7 @@ export default {
   },
   watch: {
     selectedMonth: function () {
-      if (this.selectedMonth)
-      {
+      if (this.selectedMonth) {
         this.generateDate();
         let idx = this.idxMonth.indexOf(this.selectedMonth.split("-")[1]);
         this.yearMonth = `${this.monthStr[idx]} ${this.selectedMonth.split("-")[0]
@@ -672,18 +669,18 @@ export default {
       }
     },
 
-    exportToPDF(index) {
-      const tableOriginal = this.$refs[`content_${index}`]?.[0];
-      if (!tableOriginal)
+        exportToPDF(index) {
+          const tableOriginal = this.$refs[`content_${index}`]?.[0];
+          if (!tableOriginal)
       {
-        toast.error("Tabel tidak ditemukan");
-        return;
-      }
+            toast.error("Tabel tidak ditemukan");
+            return;
+          }
 
-      const shift = this.mainScheduleData[index]?.group_nm || "Default";
-      const nameFile = `4S_Schedule_${shift.replace(/\s+/g, "_")}`;
-      const cloneWrapper = document.createElement("div");
-      const clone = tableOriginal.cloneNode(true);
+          const shift = this.mainScheduleData[index]?.group_nm || "Default";
+          const nameFile = `4S_Schedule_${shift.replace(/\s+/g, "_")}`;
+          const cloneWrapper = document.createElement("div");
+          const clone = tableOriginal.cloneNode(true);
 
 
       clone.querySelectorAll("*").forEach((el) => {
@@ -777,11 +774,9 @@ export default {
       };
       await this.$store.dispatch(GET_SCHEDULES, objQuery).then(async (res) => {
         this.isLoadingMainSchedule = false;
-        if (res)
-        {
+        if (res) {
           const data = res.list;
-          if (data && data.length > 0)
-          {
+          if (data && data.length > 0) {
             this.mainScheduleData = data.map((item) => {
               item.sub_schedules = [];
               item.glSigns = [];
@@ -801,8 +796,7 @@ export default {
               this.loadingSign[i] = true;
               await this.getSubSchedules(this.mainScheduleData[i].main_schedule_id, i);
             }
-          } else
-          {
+          } else {
             this.isMainScheduleEmpty = true;
           }
         }
@@ -904,12 +898,10 @@ export default {
       };
 
       const add = await ApiService.put(
-        `/operational/4s/sub-schedule/edit/${this.selectedSubScheduleID}`,
+        `/operational/4s/sub-schedule/add-plan-pic/${this.selectedSubScheduleID}`,
         data
       );
-
-      if (add.data.message == "Success to edit 4s schedule plan")
-      {
+      if (add.data.message == "Success to add plan pic 4s sub schedule") {
         toast.success("PIC added", {
           autoClose: 700
         });
@@ -939,8 +931,7 @@ export default {
         `/operational/4s/sub-schedule/edit/${this.selectedSubScheduleID}`,
         data
       );
-      if (change.data.message == "Success to edit 4s schedule plan")
-      {
+      if (change.data.message == "Success to edit 4s schedule plan") {
         this.isChangeDateLoading = false;
         this.changeDateModal = false;
         await this.getSchedules();
@@ -956,26 +947,22 @@ export default {
         confirmButtonText: "Sure",
         denyButtonText: `No`
       }).then((result) => {
-        if (result.isConfirmed)
-        {
+        if (result.isConfirmed) {
           ApiService.setHeader();
           const deleteData = ApiService.delete(`operational/4s/sub-schedule/delete/${subScheduleID}`);
 
 
-          if (deleteData)
-          {
+          if (deleteData) {
             toast.success("Data daleted", {
               autoClose: 700
             });
             this.getSchedules();
-          } else
-          {
+          } else {
             toast.error("Failed to delete data", {
               autoClose: 700
             });
           }
-        } else if (result.isDenied)
-        {
+        } else if (result.isDenied) {
           Swal.fire("Canceled", "", "info");
         }
       });
@@ -995,15 +982,12 @@ export default {
     },
 
     async getUsers() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_USERS);
-        if (this.getUsersOpts)
-        {
+        if (this.getUsersOpts) {
           this.mapUsersData();
         }
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
@@ -1017,51 +1001,41 @@ export default {
       return `${pic_name}`;
     },
     async getLines() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_LINES);
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
     },
     async getGroup() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_GROUP);
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
     },
     async getZone() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_ZONES, { line_id: this.selectedLineID ?? -1 });
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
     },
     async getKanban() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_KANBANS, { zone_id: this.selectedZoneID ?? -1 });
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
     },
     async getFreq() {
-      try
-      {
+      try {
         this.$store.dispatch(GET_FREQS);
-      } catch (error)
-      {
+      } catch (error) {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
       }
@@ -1073,8 +1047,7 @@ export default {
       var lastDay = new Date(year, month, 0);
       let container = [];
       this.containerDate = [];
-      for (let i = 1; i <= lastDay.getDate(); i++)
-      {
+      for (let i = 1; i <= lastDay.getDate(); i++) {
         let setDt = new Date(selectedMonth).setDate(i);
         let newDate = new Date(setDt);
         container.push(newDate.getDate());
@@ -1129,8 +1102,7 @@ export default {
         `/operational/4s/sub-schedule/sign/${this.selectedSignCheckerID}`,
         { sign: this.selectedSignature, ...this.selectedScheduleData }
       );
-      if (upload.data.message == "success to sign 4s schedule")
-      {
+      if (upload.data.message == "success to sign 4s schedule") {
         this.isUploadSignLoading = false;
         toast.success("Sign saved", {
           autoClose: 700
@@ -1150,8 +1122,7 @@ export default {
         `/operational/4s/sub-schedule/sign/${this.selectedSignCheckerID}`
       );
 
-      if (getData.data.message == "Success to get 4s sign checker")
-      {
+      if (getData.data.message == "Success to get 4s sign checker") {
         this.selectedSign = getData.data.data.sign;
         this.isUploadSignLoading = false;
       }
@@ -1159,8 +1130,7 @@ export default {
 
     // edit data
     openEditModal(subScheduleID, picID, picName) {
-      if (picName)
-      {
+      if (picName) {
         this.selectedPICName = picName;
       }
       this.editDataModal = true;
@@ -1177,11 +1147,9 @@ export default {
         this.selectedLineID
         && filtered.length > 0
         && filtered[0].text.toLowerCase().includes("line")
-      )
-      {
+      ) {
         this.isAssyLine = true;
-      } else
-      {
+      } else {
         this.isAssyLine = false;
       }
     },
@@ -1225,8 +1193,7 @@ export default {
   },
 
   async mounted() {
-    if (localStorage.getItem("line_id"))
-    {
+    if (localStorage.getItem("line_id")) {
       this.selectedLineID = localStorage.getItem("line_id");
     }
     this.newSubScheduleData = [];

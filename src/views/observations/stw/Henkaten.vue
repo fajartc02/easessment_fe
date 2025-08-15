@@ -73,24 +73,48 @@
               <td>{{ henkaten.henkaten_purpose }}</td>
               <td>{{ henkaten.henkaten_flw_safety }}</td>
               <td>{{ henkaten.henkaten_flw_quality }}</td>
-             <td id="fixCol-9" class="px-4">
-  <template v-for="labelScore in scoreopts">
-    <label :key="labelScore.score" v-if="labelScore.score === henkaten.score">{{ labelScore.label }}</label>
-  </template>
-</td>
+              <td id="fixCol-9" class="px-4">
+                <template v-for="labelScore in scoreopts">
+                  <label :key="labelScore.score" v-if="labelScore.score === henkaten.score">{{ labelScore.label
+                    }}</label>
+                </template>
+              </td>
 
-              <td>
-                <div class="d-flex justify-content-center align-items-baseline">
-                  <button class="btn btn-secondary btn-sm text-white"
-                    @click="showFindingImg(henkaten.findings[0]?.finding_img)"
-                    :disabled="!henkaten.findings[0]?.finding_img">Image</button>
-                  <button class="btn btn-info btn-sm text-white mx-2 my-2" @click="getDetailHenkaten(index)">
-                    Edit
-                  </button>
-                  <button class="btn btn-danger btn-sm text-white " @click="deleteHenkaten(henkaten.henkaten_id)">
-                    Delete
-                  </button>
-                </div>
+              <td class="d-flex justify-content-between">
+                <!-- <div class="d-flex justify-content-center"> -->
+                <button v-if="henkaten.findings[0].finding_img" class="btn btn-info btn-sm text-white w-full my-1 mx-1"
+                  @click="showFindingImg(henkaten.findings[0]?.finding_img)"
+                  :disabled="!henkaten.findings[0]?.finding_img">Finding
+                  Image</button>
+                <button v-else class="btn btn-secondary btn-sm w-full my-1 mx-1" disabled>
+                  No Image
+                </button>
+                <button v-if="henkaten.findings[0].cm_image" @click="
+                  () => {
+                    showFindingImg(henkaten.findings[0].cm_image)
+                  }
+                " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
+                  C/M image
+                </button>
+                <button v-else class="btn btn-secondary btn-sm w-full my-1 mx-1" disabled>
+                  No Image C/M
+                </button>
+                <button :class="{
+                  'btn btn-sm w-full my-1 mx-1': true,
+                  'btn-info text-white': henkaten.findings[0].kaizen_file,
+                  'btn-secondary text-white': !henkaten.findings[0].kaizen_file,
+                }" @click="showKaizenModal(henkaten.findings[0].kaizen_file)"
+                  :disabled="!henkaten.findings[0].kaizen_file">
+                  Kaizen
+                </button>
+                <button class="btn btn-info btn-sm text-white w-full my-1 mx-1" @click="getDetailHenkaten(index)">
+                  Edit
+                </button>
+                <button class="btn btn-danger btn-sm text-white w-full my-1 mx-1"
+                  @click="deleteHenkaten(henkaten.henkaten_id)">
+                  Delete
+                </button>
+                <!-- </div> -->
               </td>
             </tr>
             <tr v-if="getHenkatens?.length < 1">
@@ -237,6 +261,12 @@
                   <div v-if="selectedFindingImage">
                     <img :src="selectedFindingImage" width="300" alt="" />
                   </div>
+                </div>
+
+                <div class="card p-2 mb-2">
+                  <label>Apakah ada Improvement?</label>
+                  <CFormSwitch v-model="findingsData.is_need_improvement" />
+
                 </div>
 
                 <div class="row">
@@ -658,8 +688,8 @@
                   <label class="mb-1">Countermeasure Comments</label>
                   <input type="text" class="form-control" v-model="henkatenDetail.findings[0].cm_comments" />
                 </div>
-                <div class="mb-2">
-                  <label class="mb-1">Finding image </label> <br>
+                <div class="card card-body mb-2">
+                  <label class="mb-1">Finding image</label> <br>
                   <img v-if="henkatenDetail.findings[0].finding_img" :src="henkatenDetail.findings[0].finding_img"
                     alt="image" class="img-fluid rounded mb-2" width="100" style="cursor: pointer"
                     @click="showFindingImg(henkatenDetail.findings[0].finding_img)" />
@@ -671,6 +701,45 @@
                   </button>
                   <div v-if="selectedFindingImage">
                     <img :src="selectedFindingImage" width="300" alt="" />
+                  </div>
+                </div>
+
+                <!-- IMG FOR CM -->
+                <div class="card card-body mb-2">
+                  <CInputGroup class="mb-2">
+                    <CInputGroupText>C/M Image</CInputGroupText>
+                    <CFormInput @change="onChangeCmImage($event)" ref="cm_image" aria-label="Input your kaizen file"
+                      type="file" />
+                    <CInputGroupText class="p-0">
+                      <button class="btn btn-sm btn-success" @click="uploadCmImage()" :disabled="isLoading">Upload
+                        Image</button>
+                    </CInputGroupText>
+                  </CInputGroup>
+                  <div>
+                    <label> CM Image</label>
+                    <br>
+                    <img v-if="henkatenDetail.findings[0].cm_image" :src="henkatenDetail.findings[0].cm_image"
+                      alt="image" class="img-fluid rounded mb-2" width="100" style="cursor: pointer"
+                      @click="showFindingImg(henkatenDetail.findings[0].cm_image)" />
+                    <label class="text-secondary" v-else>Tidak ada cm image</label>
+                  </div>
+                </div>
+
+                <div class="card card-body">
+                  <label>Apakah ada Improvement?</label>
+                  <CFormSwitch v-model="henkatenDetail.findings[0].is_need_improvement" />
+                  <div v-if="henkatenDetail.findings[0].is_need_improvement" class="row">
+                    <div class="col-12 col-md-12">
+                      <CInputGroup class="mb-3">
+                        <CInputGroupText>Kaizen File</CInputGroupText>
+                        <CFormInput @change="onChangeKaizenFile($event)" ref="kaizen_file"
+                          aria-label="Input your kaizen file" type="file" />
+                        <CInputGroupText class="p-0">
+                          <button class="btn btn-sm btn-success" @click="uploadKaizen()" :disabled="isLoading">Upload
+                            Kaizen</button>
+                        </CInputGroupText>
+                      </CInputGroup>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -707,6 +776,28 @@
           Close
         </CButton>
       </CModalFooter>
+    </CModal>
+
+    <!-- Kaizen Modal -->
+    <CModal backdrop="static" size="xl" :visible="isKaizenModal" @close="
+      () => {
+        isKaizenModal = false
+      }
+    ">
+      <CModalHeader>
+        <CModalTitle>Kaizen Report</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <table class="table table-bordered">
+          <tr>
+            <td class="text-center">
+              <img v-if="kaizenFile && !kaizenFile.includes('.pdf')" :src="kaizenFile" width="400" alt="KZ" />
+              <vue-pdf-embed v-else-if="kaizenFile && kaizenFile.includes('.pdf')" :source="kaizenFile" />
+              <h3 v-else>No Kaizen</h3>
+            </td>
+          </tr>
+        </table>
+      </CModalBody>
     </CModal>
 
   </div>
@@ -809,12 +900,94 @@ export default {
       selectedFindingImageToDisplay: null,
       selectedFindingImageToUpdate: null,
       scoreopts: SCORE_MOCK,
+
+      kaizenFile: null,
+      isKaizenModal: false,
+      cmImage: null
+
     }
   },
   computed: {
     ...mapGetters(['getUsersOpts', 'getHenkatens', 'getLinesOpts', 'getUsersTree']),
   },
   methods: {
+    openFindingImage(findingImage) {
+      this.findingImageModal = true
+      this.selectedFindingImageToDisplay = findingImage
+    },
+    showKaizenModal(kaizenFile) {
+      this.kaizenFile = kaizenFile
+      this.isKaizenModal = true
+    },
+    async uploadCmImage() {
+      this.isLoading = true
+      if (!this.cmImage) {
+        toast.info('Please select file')
+        this.isLoading = false
+        return
+      }
+
+      try {
+        const formData = new FormData()
+        formData.append('finding_id', this.henkatenDetail.findings[0].finding_id)
+        formData.append('dest', 'findings')
+        formData.append(
+          'cm_image',
+          this.cmImage,
+        )
+        await ApiService.post(
+          `/operational/findingCm/upload-cm-image?dest=findings`,
+          formData,
+        )
+
+        toast.success('Susccessfully Upload Cm image', {
+          autoClose: 1000,
+        })
+        this.isLoading = false
+        this.getHenkaten()
+      } catch (e) {
+        this.isLoading = false
+        console.log('uploadKaizen', e)
+        toast.error(JSON.stringify(e.message))
+      }
+    },
+    onChangeCmImage(event) {
+      this.cmImage = event.target.files[0]
+    },
+    async uploadKaizen(finding_id, kaizen_file = null) {
+      this.isLoading = true
+      if (!kaizen_file && !this.kaizenFile) {
+        toast.info('Please select file')
+        this.isLoading = false
+        return
+      }
+
+      try {
+        const formData = new FormData()
+        formData.append('finding_id', this.henkatenDetail.findings[0].finding_id)
+        formData.append('dest', 'pinkSheet')
+        formData.append(
+          'kaizen_file',
+          kaizen_file ? kaizen_file : this.kaizenFile,
+        )
+
+        await ApiService.post(
+          `/operational/findingCm/upload-kaizen?dest=pinkSheet`,
+          formData,
+        )
+        toast.success('Susccessfully Upload Kaizen', {
+          autoClose: 1000,
+        })
+        this.isLoading = false
+      } catch (e) {
+        console.log('uploadKaizen', e)
+        this.isLoading = false
+        toast.error(JSON.stringify(e.message))
+      }
+    },
+    onChangeKaizenFile(event) {
+      this.kaizenFile = event.target.files[0]
+    },
     onPageChange(page) {
       if (page == -1) {
         this.currentPage = this.currentPage - 1

@@ -948,19 +948,18 @@
                   </div>
                 </div> -->
 
-                <CInputGroup class="mb-2">
-                  <CInputGroupText>C/M Image</CInputGroupText>
-                  <CFormInput @change="onChangeCmImage($event)" ref="cm_image" aria-label="Input your kaizen file"
-                    type="file" />
-                  <CInputGroupText class="p-0">
-                    <button class="btn btn-sm btn-success" @click="uploadCmImage(selectedFindingID)"
-                      :disabled="isLoading">Upload
-                      Image</button>
-                  </CInputGroupText>
-                </CInputGroup>
-
                 <!-- IMG FOR CM -->
-                <div>
+                <div class="card card-body mb-2">
+                  <CInputGroup>
+                    <CInputGroupText>C/M Image</CInputGroupText>
+                    <CFormInput @change="onChangeCmImage($event)" ref="cm_image" aria-label="Input your kaizen file"
+                      type="file" />
+                    <CInputGroupText class="p-0">
+                      <button class="btn btn-sm btn-success" @click="uploadCmImage(selectedFindingID)"
+                        :disabled="isLoading">Upload
+                        Image</button>
+                    </CInputGroupText>
+                  </CInputGroup>
                   <label> CM Image</label>
                   <br>
                   <img v-if="memberVoiceDetail.findings[0].cm_image" :src="memberVoiceDetail.findings[0].cm_image"
@@ -1322,6 +1321,9 @@ export default {
         toast.error(JSON.stringify(e.message))
       }
     },
+    onChangeCmImage(event) {
+      this.cmImage = event.target.files[0]
+    },
     async uploadKaizen(finding_id, kaizen_file = null) {
       this.isLoading = true
       if (!kaizen_file && !this.kaizenFile) {
@@ -1352,9 +1354,6 @@ export default {
         this.isLoading = false
         toast.error(JSON.stringify(e.message))
       }
-    },
-    onChangeCmImage(event) {
-      this.cmImage = event.target.files[0]
     },
     onChangeKaizenFile(event) {
       this.kaizenFile = event.target.files[0]

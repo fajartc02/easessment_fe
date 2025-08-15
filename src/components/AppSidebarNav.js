@@ -58,9 +58,14 @@ const AppSidebarNav = defineComponent({
     })
 
     const renderItem = (item) => {
+     
       const admins = process.env.VUE_APP_ADMINS.split('|')
       const is_admin = admins.indexOf(localStorage.getItem('noreg')) !== -1
       const is_allow_to_see_menu = item.is_admin == is_admin
+       const role = localStorage.getItem('role')
+       if (item.name === 'Users' && (role === 'TM' || role === null)) {
+        return null
+      }
       if (is_allow_to_see_menu || is_admin) {
         if (item.items) {
           return h(
