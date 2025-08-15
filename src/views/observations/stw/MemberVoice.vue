@@ -178,7 +178,7 @@
                 <td>{{ membervoice.mv_countermeasure }}</td>
                 <td>{{ membervoice.mv_evaluation }}</td>
                 <td v-for="week in totalWeek" :key="week" style="min-width: 30px !important; padding: 5px">
-                  <div v-if="week == membervoice.w_mv_plan_date - 1
+                  <div v-if="week == membervoice.w_mv_plan_date - 2
                   " :style="`
                       width: 100%;
                       height: 25px;
@@ -198,7 +198,7 @@
                     };
                       `"></div>
                   <div class="mt-1" v-if="
-                    week == membervoice.w_mv_actual_date
+                    week == membervoice.w_mv_actual_date - 2
                   " :style="`
                       width: 100%;
                       height: 25px;
