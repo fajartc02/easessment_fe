@@ -593,6 +593,17 @@
               Image</button>
           </CInputGroupText>
         </CInputGroup>
+        <div class="col-12 col-md-12">
+          <div class="mb-2">
+            <div class="card p-2">
+              <label>PIC Penanggung Jawab <small class="text-info">*TL UP</small></label>
+              <!-- <VueMultiselect v-model="findingDetail.pic_supervisor_id" :options="picData"
+                :custom-label="customPicOptions">
+              </VueMultiselect> -->
+              <treeselect v-model="findingDetail.pic_supervisor_id" :options="getUsersTreeselect2" />
+            </div>
+          </div>
+        </div>
         <div v-if="findingDetail.observation_id" class="mb-2">
           <div class="card p-2">
             <label>Apakah ada perubahan SOP?</label>
@@ -1707,6 +1718,7 @@ export default {
           is_need_improvement: this.findingDetail.is_need_improvement,
           is_change_sop: this.findingDetail.is_change_sop,
           cm_image: this.findingDetail.cm_image,
+          pic_supervisor_id: this.findingDetail.pic_supervisor_id
         }
         ApiService.setHeader()
         const updateData = await ApiService.put(

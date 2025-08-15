@@ -464,6 +464,15 @@
 
                 </div> -->
 
+                <div class="col-12 col-md-12">
+                  <div class="mb-2">
+                    <div class="card p-2">
+                      <label>PIC Penanggung Jawab <small class="text-info">*TL UP</small></label>
+                      <treeselect v-model="findingsData.pic_supervisor_id" :options="getUsersTreeselect2" />
+                    </div>
+                  </div>
+                </div>
+
                 <div class="card p-2 mb-2">
                   <label>Apakah ada Improvement?</label>
                   <CFormSwitch v-model="findingsData.is_need_improvement" />
@@ -968,6 +977,16 @@
                   <label class="text-secondary" v-else>Tidak ada cm image</label>
                 </div>
 
+                <div class="col-12 col-md-12">
+                  <div class="mb-2">
+                    <div class="card p-2">
+                      <label>PIC Penanggung Jawab <small class="text-info">*TL UP</small></label>
+                      <treeselect v-model="memberVoiceDetail.findings[0].pic_supervisor_id"
+                        :options="getUsersTreeselect2" />
+                    </div>
+                  </div>
+                </div>
+
                 <div class="card p-2 mb-2">
                   <label>Apakah ada Improvement?</label>
                   <CFormSwitch v-model="memberVoiceDetail.findings[0].is_need_improvement" />
@@ -1222,7 +1241,6 @@ export default {
         mv_pic_id: null,
         line_id: null,
         mv_score: null,
-
       },
       // findings data
       findingsData: {
@@ -1264,7 +1282,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getLinesOpts', 'getUsersTree', 'getMemberVoice', 'getUsersOpts']),
+    ...mapGetters(['getLinesOpts', 'getUsersTree', 'getMemberVoice', 'getUsersOpts', 'getUsersTreeselect2']),
   },
   watch: {
     selectedPIC(newVal) {
@@ -1635,6 +1653,7 @@ export default {
           is_need_improvement: this.memberVoiceDetail.findings[0]
             .is_need_improvement,
           finding_img: this.selectedFindingImageToUpdate,
+          pic_supervisor_id: this.findingsData.pic_supervisor_id ? this.findingsData.pic_supervisor_id : this.memberVoiceDetail.findings[0].pic_supervisor_id
         },
       }
 
