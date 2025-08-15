@@ -489,8 +489,9 @@
             </div>
             <div class="col">
               <label class="mb-1">Edit PIC</label>
-              <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
-              </VueMultiselect>
+              <!-- <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
+              </VueMultiselect> -->
+              <treeselect v-model="selectedPIC" :options="getUsersTreeselect2" />
               <small class="text-success">*Abaikan jika tidak ingin diubah</small>
             </div>
           </div>
@@ -1088,12 +1089,14 @@
 </template>
 
 <script>
-// import moment from 'moment'
+import Treeselect from 'vue3-treeselect'
+import 'vue3-treeselect/dist/vue3-treeselect.css'
+
 import { GET_USERS } from '@/store/modules/user.module'
 import { GET_FINDINGS } from '@/store/modules/finding.module'
 import { GET_LINES } from '@/store/modules/line.module'
 import { mapGetters } from 'vuex'
-import VueMultiselect from 'vue-multiselect'
+// import VueMultiselect from 'vue-multiselect'
 import Loading from 'vue-loading-overlay'
 import ApiService from '@/store/api.service'
 import Pagination from '@/components/Pagination.vue'
@@ -1266,9 +1269,12 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['getUsersOpts', 'getFindings', 'getLinesOpts']),
+    ...mapGetters(['getUsersOpts', 'getFindings', 'getLinesOpts', 'getUsersTreeselect2']),
   },
   methods: {
+    customPicOptions({ pic_name }) {
+      return `${pic_name}`
+    },
     showKaizenModal(kaizenFile) {
       this.kaizenFile = kaizenFile
       this.isKaizenModal = true
@@ -1510,9 +1516,9 @@ export default {
     },
     async getUsers() {
       try {
-        this.$store.dispatch(GET_USERS)
+        await this.$store.dispatch(GET_USERS)
         if (this.getUsersOpts) {
-          this.mapUsersData()
+          await this.mapUsersData()
         }
       } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
@@ -1679,7 +1685,7 @@ export default {
           cm_priority: this.findingDetail.cm_priority,
           category_id: '5b5bfd20-f5f7-4edc-8030-1d3e3f15d0e6', // select manual (STW, Safety, quality,etc.)
           factor_id: this.findingDetail.factor_id, // from mv_factor_id
-          cm_pic_id: this.findingDetail.cm_pic_id, // from henkaten_pic
+          cm_pic_id: this.selectedPIC, // from henkaten_pic
           cm_str_plan_date: this.findingDetail.cm_str_plan_date, // from mv_plan_date
           cm_end_plan_date: this.findingDetail.cm_end_plan_date, // from mv_plan_date
           cm_result_factor_id: this.findingDetail.factor_id,
@@ -1861,13 +1867,14 @@ export default {
     await this.AccesibilityScore()
   },
   components: {
-    VueMultiselect,
+    // VueMultiselect,
     Loading,
     Pagination,
     vueSignature,
     ModalFindingDetail,
     HeadFindingList,
-    VuePdfEmbed
+    VuePdfEmbed,
+    Treeselect
   },
 }
 </script>

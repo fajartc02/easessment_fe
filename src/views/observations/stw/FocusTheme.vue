@@ -523,7 +523,7 @@
                     </div>
                     <div class="col">
                       <label class="mb-1">Edit PIC</label>
-                      <treeselect v-if="getUsersTree" class="w-50" v-model="focusThemeDetail.findings[0].cm_pic_id"
+                      <treeselect v-if="getUsersTree" class="w-100" v-model="focusThemeDetail.findings[0].cm_pic_id"
                         :options="getUsersTree" />
                       <!-- <VueMultiselect v-model="selectedFindingPIC" :options="picData" :custom-label="customPicOptions">
                       </VueMultiselect> -->

@@ -681,7 +681,7 @@
                     </div>
                     <div class="col">
                       <label class="mb-1">Edit PIC</label>
-                      <treeselect v-if="getUsersTree" class="w-50" v-model="memberVoiceDetail.mv_pic_id"
+                      <treeselect v-if="getUsersTree" class="w-100" v-model="memberVoiceDetail.mv_pic_id"
                         :options="getUsersTree" />
                       <small v-if="selectedPIC" class="text-success">*Abaikan jika tidak ingin
                         diubah</small>
