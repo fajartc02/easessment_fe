@@ -16,6 +16,7 @@ const getters = {
     return state.users
   },
   getUsersOpts(state) {
+    // console.log(state);
     if (state.users) {
       const mapUsers = state.users.map(user => {
         return {
@@ -50,6 +51,18 @@ const getters = {
           name: user.text,
           label: `${user.noreg}-${user.text}`,
           real_id: user?.id
+        }
+      })
+      return mapUsers
+    }
+  },
+  getUsersTreeselect2(state) {
+    if (state.users) {
+      const mapUsers = state.users.map(user => {
+        return {
+          id: user.id,
+          name: user.text,
+          label: `${user.noreg}-${user.text}`,
         }
       })
       return mapUsers
@@ -134,19 +147,19 @@ const actions = {
     });
   },
   [PUT_USER_ROLE]({ commit }, { id, role }) {
-  ApiService.setHeader()
-  return new Promise((resolve, reject) => {
-    ApiService.put(`master/users/role/${id}`, { role })
-    
-      .then((result) => { 
-        const roledata = result.data 
-        resolve (roledata.data)
-      console.log(commit)
-      }).catch((err) => {
+    ApiService.setHeader()
+    return new Promise((resolve, reject) => {
+      ApiService.put(`master/users/role/${id}`, { role })
+
+        .then((result) => {
+          const roledata = result.data
+          resolve(roledata.data)
+          console.log(commit)
+        }).catch((err) => {
           reject(err)
         });
-  })
-}
+    })
+  }
 
 };
 

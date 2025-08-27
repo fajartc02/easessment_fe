@@ -85,9 +85,9 @@
                 <!-- <button class="btn btn-warning btn-sm text-white" @click="focusThemeDetailData(index)">
                   Problems
                 </button> -->
-                <button v-if="focustheme.findings[0].finding_img" @click="
+                <button v-if="focustheme.findings[0]?.finding_img" @click="
                   () => {
-                    openFindingImage(focustheme.findings[0].finding_img)
+                    openFindingImage(focustheme.findings[0]?.finding_img)
                   }
                 " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
                   Finding image
@@ -95,9 +95,9 @@
                 <button v-else class="btn btn-secondary btn-sm" disabled>
                   No Image
                 </button>
-                <button v-if="focustheme.findings[0].cm_image" @click="
+                <button v-if="focustheme.findings[0]?.cm_image" @click="
                   () => {
-                    openFindingImage(focustheme.findings[0].cm_image)
+                    openFindingImage(focustheme.findings[0]?.cm_image)
                   }
                 " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
                   C/M image
@@ -107,10 +107,10 @@
                 </button>
                 <button :class="{
                   'btn btn-sm w-full my-1 mx-1': true,
-                  'btn-info text-white': focustheme.findings[0].kaizen_file,
-                  'btn-secondary text-white': !focustheme.findings[0].kaizen_file,
-                }" @click="showKaizenModal(focustheme.findings[0].kaizen_file)"
-                  :disabled="!focustheme.findings[0].kaizen_file">
+                  'btn-info text-white': focustheme.findings[0]?.kaizen_file,
+                  'btn-secondary text-white': !focustheme.findings[0]?.kaizen_file,
+                }" @click="showKaizenModal(focustheme.findings[0]?.kaizen_file)"
+                  :disabled="!focustheme.findings[0]?.kaizen_file">
                   Kaizen
                 </button>
                 <button class="btn btn-danger btn-sm text-white mx-2" @click="deleteFT(focustheme.ft_id)">
@@ -281,6 +281,15 @@
                   <CFormSwitch v-model="findingsData.is_need_improvement" />
                 </div>
 
+                <div class="col-12 col-md-12">
+                  <div class="mb-2">
+                    <div class="card p-2">
+                      <label>PIC Penanggung Jawab <small class="text-info">*TL UP</small></label>
+                      <treeselect v-model="findingsData.pic_supervisor_id" :options="getUsersTreeselect2" />
+                    </div>
+                  </div>
+                </div>
+
                 <div class="row">
                   <div class="col">
                     <div class="mb-2">
@@ -361,7 +370,7 @@
     <CModal scrollable backdrop="static" alignment="center" :visible="editFocusThemeModal"
       @close="editFocusThemeModal = false" size="lg">
       <CModalHeader>
-        <CModalTitle>Add fokus tema</CModalTitle>
+        <CModalTitle>Edit fokus tema</CModalTitle>
       </CModalHeader>
       <CModalBody>
         <div class="col" v-if="showScoreField">
@@ -708,11 +717,20 @@
                         <CFormInput @change="onChangeKaizenFile($event)" ref="kaizen_file"
                           aria-label="Input your kaizen file" type="file" />
                         <CInputGroupText class="p-0">
-                          <button class="btn btn-sm btn-success" @click="uploadKaizen(selectedFindingID)"
-                            :disabled="isLoading">Upload
+                          <button class="btn btn-sm btn-success" @click="uploadKaizen()" :disabled="isLoading">Upload
                             Kaizen</button>
                         </CInputGroupText>
                       </CInputGroup>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-12 col-md-12">
+                  <div class="mb-2">
+                    <div class="card p-2">
+                      <label>PIC Penanggung Jawab <small class="text-info">*TL UP</small></label>
+                      <treeselect v-model="focusThemeDetail.findings[0].pic_supervisor_id"
+                        :options="getUsersTreeselect2" />
                     </div>
                   </div>
                 </div>
@@ -928,6 +946,7 @@ export default {
         cm_sign_lh_white: null,
         cm_sign_sh: null,
         cm_comments: null,
+        pic_supervisor_id: null
       },
       selectedFindingImage: null,
       selectedFindingImageToDisplay: null,
@@ -944,7 +963,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getLinesOpts', 'getUsersOpts', 'getFocusTheme', 'getUsersTree']),
+    ...mapGetters(['getLinesOpts', 'getUsersOpts', 'getFocusTheme', 'getUsersTree', 'getUsersTreeselect2']),
   },
   updated() {
     this.mapLinesData()
@@ -1101,17 +1120,20 @@ export default {
             this.isLoading = false
             console.log(res, 'res');
             const mapFindingShow = res.map(itm => {
-              return {
-                ...itm,
-                finding_desc: itm.findings[0]?.finding_desc,
-                finding_factor: itm.findings[0]?.factor_nm,
-                finding_cm: itm.findings[0]?.cm_desc,
-                finding_cm_date: itm.findings[0]?.cm_str_plan_date,
-                finding_pic: itm.findings[0]?.cm_pic_nm,
-                cm_desc: itm.findings[0]?.cm_desc,
-                cm_str_plan_date: itm.findings[0]?.cm_str_plan_date,
-                cm_str_act_date: itm.findings[0]?.cm_str_act_date,
-                cm_status: itm.findings[0]?.cm_judg ? 'Closed' : 'Open',
+
+              if (itm.findings.length > 0) {
+                return {
+                  ...itm,
+                  finding_desc: itm.findings[0]?.finding_desc,
+                  finding_factor: itm.findings[0]?.factor_nm,
+                  finding_cm: itm.findings[0]?.cm_desc,
+                  finding_cm_date: itm.findings[0]?.cm_str_plan_date,
+                  finding_pic: itm.findings[0]?.cm_pic_nm,
+                  cm_desc: itm.findings[0]?.cm_desc,
+                  cm_str_plan_date: itm.findings[0]?.cm_str_plan_date,
+                  cm_str_act_date: itm.findings[0]?.cm_str_act_date,
+                  cm_status: itm.findings[0]?.cm_judg ? 'Closed' : 'Open',
+                }
               }
             })
             this.json_data = mapFindingShow
@@ -1196,7 +1218,8 @@ export default {
         || !this.findingsData.cm_priority
         || !this.findingsData.factor_id
         || !this.findingsData.cm_str_plan_date
-        || !this.findingsData.cm_end_plan_date) {
+        || !this.findingsData.cm_end_plan_date
+        || !this.findingsData.pic_supervisor_id) {
         console.log(this.findingsData);
         toast.error('Harap isi semua field di finding', {
           autoClose: 1000
@@ -1208,7 +1231,7 @@ export default {
         }
         await this.addFocusTheme(data)
       }
-
+      this.isLoading = false
     },
     async addFocusTheme(data) {
       try {
@@ -1328,6 +1351,7 @@ export default {
           cm_sign_sh: null,
           cm_comments: this.focusThemeDetail.findings[0].cm_comments,
           finding_img: this.selectedFindingImageToUpdate,
+          pic_supervisor_id: this.focusThemeDetail.findings[0].pic_supervisor_id
         },
       }
 

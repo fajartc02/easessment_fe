@@ -387,7 +387,7 @@
               <div class="mb-2">
                 <div class="card p-2">
                   <label>PIC Penanggung Jawab <small>*TL UP</small></label>
-                  <CFormSwitch v-model="is_change_sop" />
+                  <treeselect v-model="pic_supervisor_id" :options="getUsersTreeselect2" />
                 </div>
               </div>
             </div>
@@ -561,6 +561,7 @@ export default {
       isDirectUploadKaizen: false,
       is_change_sop: false,
       is_need_improvement: false,
+      pic_supervisor_id: null,
     }
   },
   computed: {
@@ -572,6 +573,7 @@ export default {
       'getKanbans',
       'getFreqs',
       'getSystemsOptDept',
+      'getUsersTreeselect2'
     ]),
     Users() {
       if (this.getUsersOpts) {
@@ -783,6 +785,7 @@ export default {
       this.lineName = data?.line_nm
       this.findingPicName = data?.finding_pic_nm
       this.actualPicName = data?.actual_pic_nm
+      this.pic_supervisor_id = data?.pic_supervisor_uuid
 
       this.addFindingModal = true
       if (data?.time_cm) {
@@ -826,6 +829,7 @@ export default {
         evaluation_nm: this.evaluationName,
         is_need_improvement: this.is_need_improvement,
         is_change_sop: this.is_change_sop,
+        pic_supervisor_id: this.pic_supervisor_id
       }
 
       const saveFn = async (callback) => {
@@ -1091,6 +1095,7 @@ export default {
       this.findingPicName = null
       this.actualPicName = null
       this.enabledReduceTime = false
+      this.pic_supervisor_id = null
     },
     async uploadKaizen(finding_id, kaizen_file = null) {
       if (!kaizen_file && !this.$refs.kaizen_file.files.length) {

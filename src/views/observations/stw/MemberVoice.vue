@@ -427,7 +427,7 @@
                 </div>
 
                 <div class="mb-2">
-                  <label class="mb-1">PIC </label>
+                  <label class="mb-1">PIC Penanggulang</label>
                   <treeselect v-if="getUsersTree" class="w-50" v-model="findingsData.cm_pic_id"
                     :options="getUsersTree" />
                   <!-- <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
@@ -789,12 +789,12 @@
 
                   <div class="row">
                     <div class="col">
-                      <label class="mb-1">PIC</label>
+                      <label class="mb-1">PIC Countermeasure</label>
                       <input type="text" disabled class="form-control" :value="getPicName(memberVoiceDetail.findings[0].cm_pic_id)
                         " />
                     </div>
                     <div class="col">
-                      <label class="mb-1">Edit PIC</label>
+                      <label class="mb-1">Edit PIC Countermeasure</label>
                       <treeselect class="w-100" v-if="getUsersTree" v-model="memberVoiceDetail.findings[0].cm_pic_id"
                         :options="getUsersTree" />
                       <small v-if="selectedFindingPIC" class="text-success">*Abaikan jika tidak

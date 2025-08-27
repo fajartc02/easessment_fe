@@ -700,6 +700,14 @@
               </div>
             </div>
           </div>
+          <div class="col-12 col-md-12">
+            <div class="mb-2">
+              <div class="card p-2">
+                <label>PIC Penanggung Jawab <small>*TL UP</small></label>
+                <treeselect v-model="pic_supervisor_id" :options="getUsersTreeselect2" />
+              </div>
+            </div>
+          </div>
         </div>
         <div class="row">
           <div class="col-md-12">
@@ -764,9 +772,9 @@
         </CButton>
         <CButton color="primary" @click="updateFinding()">
           {{
-          isUpdateFindingLoading
-          ? 'Updating...'
-          : `Update
+            isUpdateFindingLoading
+              ? 'Updating...'
+              : `Update
           finding data`
           }}
         </CButton>
@@ -1003,6 +1011,7 @@ export default {
       cmImage: null,
       isKaizenModal: false,
       scoreopts: SCORE_MOCK,
+      pic_supervisor_id: null,
 
       json_fields: {
         'No': 'no',
@@ -1290,6 +1299,7 @@ export default {
       this.optChanges = data.opt_changes
       this.is_change_sop = data.is_change_sop
       this.is_need_improvement = data.is_need_improvement
+      this.pic_supervisor_id = data.pic_supervisor_uuid
       // this.optDepartment = data.opt_depts
       this.optDepartment =
         data.opt_depts != null ? data.opt_depts.split(';') : null
@@ -1330,6 +1340,7 @@ export default {
         evaluation_nm: this.evaluationName,
         is_change_sop: this.is_change_sop,
         is_need_improvement: this.is_need_improvement,
+        pic_supervisor_id: this.pic_supervisor_id
       }
 
       const add = await ApiService.put(
