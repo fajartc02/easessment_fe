@@ -786,7 +786,6 @@
                 </div>
 
                 <div class="mb-2">
-
                   <div class="row">
                     <div class="col">
                       <label class="mb-1">PIC Countermeasure</label>

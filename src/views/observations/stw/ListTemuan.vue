@@ -95,6 +95,7 @@
       </div>
       <div style="
           width: 100%;
+          height: 500px;
           display: block;
           overflow-x: auto;
           white-space: nowrap;
@@ -1913,42 +1914,42 @@ export default {
 #fixCol-1 {
   position: sticky;
   width: 38px;
-  top: 0px;
+  top: 125px;
   left: 0px;
-  z-index: 3;
+  z-index: 30;
   background-color: white;
 }
 
 #fixCol-2 {
   position: sticky;
-  top: 0px;
+  top: 125px;
   left: 37px;
-  z-index: 3;
+  z-index: 1;
   background-color: white;
 }
 
 #fixCol-3 {
   position: sticky;
   min-width: 121px;
-  top: 0px;
+  top: 125px;
   left: 125px;
-  z-index: 3;
+  z-index: 1;
   background-color: white;
 }
 
 #fixCol-4 {
   position: sticky;
-  top: 0px;
+  top: 125px;
   left: 220px;
-  z-index: 3;
+  z-index: 1;
   background-color: white;
 }
 
 #fixCol-5 {
   position: sticky;
-  top: 0px;
+  top: 125px;
   left: 320px;
-  z-index: 3;
+  z-index: 1;
   background-color: white;
 }
 
@@ -1957,9 +1958,9 @@ export default {
   max-width: 300px;
   min-width: 300px;
   width: 300px;
-  top: 0px;
+  top: 125px;
   left: 370px;
-  z-index: 3;
+  z-index: 1;
   background-color: white;
 }
 </style>

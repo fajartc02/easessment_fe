@@ -1636,7 +1636,7 @@ export default {
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
-<style>
+<style scoped>
 .status-wrapper {
   width: 30px;
   height: 30px;
