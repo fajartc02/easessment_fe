@@ -42,61 +42,64 @@ import omFindingModule from './modules/omFinding.module';
 import comments from './modules/comments.module';
 import wras from '@/views/master/Wras/wras.vue';
 export default createStore({
-    state: {
-        sidebarVisible: '',
-        sidebarUnfoldable: false,
+  state: {
+    sidebarVisible: localStorage.getItem('sidebarVisible') === 'true',
+    sidebarUnfoldable: localStorage.getItem('sidebarUnfoldable') === 'true',
+  },
+  mutations: {
+    toggleSidebar(state) {
+      state.sidebarVisible = !state.sidebarVisible
+      localStorage.setItem('sidebarVisible', state.sidebarVisible)
     },
-    mutations: {
-        toggleSidebar(state) {
-            state.sidebarVisible = !state.sidebarVisible
-        },
-        toggleUnfoldable(state) {
-            state.sidebarUnfoldable = !state.sidebarUnfoldable
-        },
-        updateSidebarVisible(state, payload) {
-            state.sidebarVisible = payload.value
-        },
+    toggleUnfoldable(state) {
+      state.sidebarUnfoldable = !state.sidebarUnfoldable
+      localStorage.setItem('sidebarUnfoldable', state.sidebarUnfoldable)
     },
-    actions: {},
-    modules: {
-        auth,
-        user,
-        group,
-
-        company,
-        plant,
-        shop,
-        line,
-        machine,
-        zone,
-        itemchecks,
-
-        observations,
-        pos,
-        job,
-        jobType,
-
-        finding,
-        membervoice,
-        focustheme,
-        henkaten,
-        graph,
-
-        schedule4s,
-        zones,
-        kanban,
-        freq,
-        pagination,
-        system,
-
-        omItemCheck,
-        //scheduleom,
-        omScheduleModule,
-
-        judgmentModule,
-
-        omFindingModule,
-
-        comments,wras
+    updateSidebarVisible(state, payload) {
+      state.sidebarVisible = payload.value
+      localStorage.setItem('sidebarVisible', payload.value)
     },
+  },
+  actions: {},
+  modules: {
+    auth,
+    user,
+    group,
+
+    company,
+    plant,
+    shop,
+    line,
+    machine,
+    zone,
+    itemchecks,
+
+    observations,
+    pos,
+    job,
+    jobType,
+
+    finding,
+    membervoice,
+    focustheme,
+    henkaten,
+    graph,
+
+    schedule4s,
+    zones,
+    kanban,
+    freq,
+    pagination,
+    system,
+
+    omItemCheck,
+    //scheduleom,
+    omScheduleModule,
+
+    judgmentModule,
+
+    omFindingModule,
+
+    comments,wras
+  },
 })
