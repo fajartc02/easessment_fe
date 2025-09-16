@@ -210,6 +210,12 @@ export default [{
     to: '/master/job',
     is_admin: false
   },
+  {
+    component: 'CNavItem',
+    name: 'Wras',
+    to: '/master/wras',
+    is_admin: false
+  },
   ]
 },
 {
