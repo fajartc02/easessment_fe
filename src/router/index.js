@@ -148,6 +148,12 @@ const routes = [{
     component: () =>
       import('@/views/master/Machine/FormMachine.vue'),
   },
+  {
+    path: '/master/wras',
+    name: 'Wras',
+    component: () =>
+      import('@/views/master/Wras/wras.vue'),
+  },
 
   {
     path: '/stw/dashboard',

@@ -40,7 +40,7 @@ import omScheduleModule from './modules/omSchedule.module';
 import judgmentModule from './modules/judgment.module';
 import omFindingModule from './modules/omFinding.module';
 import comments from './modules/comments.module';
-
+import wras from '@/views/master/Wras/wras.vue';
 export default createStore({
   state: {
     sidebarVisible: localStorage.getItem('sidebarVisible') === 'true',
@@ -100,6 +100,6 @@ export default createStore({
 
     omFindingModule,
 
-    comments
+    comments,wras
   },
 })
