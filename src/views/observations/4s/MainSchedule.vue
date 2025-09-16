@@ -155,7 +155,7 @@
               </div>
             </div>
             <div class="card">
-              <button class="btn btn-primary" @click="exportToPDF(index)" disabled="isLoading">Export PDF</button>
+              <button class="btn btn-primary" @click="exportToPDF(index)" :disabled="isLoading">Export PDF</button>
             </div>
             <div class="card bg-dark text-light p-2">
               <h6>4S Schedule Activities ({{ mainSchedule.line_nm }} - {{ mainSchedule.group_nm }})</h6>
