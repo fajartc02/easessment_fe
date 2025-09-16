@@ -179,6 +179,15 @@
                 </div>
               </div>
             </div>
+
+            <div class="col-12 col-md-12">
+              <div class="mb-2">
+                <div class="card p-2">
+                  <label>PIC Penanggung Jawab <small>*TL UP</small></label>
+                  <treeselect v-model="form.pic_supervisor_id" :options="getUsersTreeselect2" />
+                </div>
+              </div>
+            </div>
           </div>
           <div class="row mb-2">
             <div class="col-md-12">
@@ -315,6 +324,7 @@ export default {
         time_cm: null,
         is_change_sop: false,
         is_need_improvement: false,
+        pic_supervisor_id: null,
       },
       optChangeData: null,
       optEvaluation: null,
@@ -357,6 +367,7 @@ export default {
         is_need_improvement: this.form.is_need_improvement,
         is_input: this.isInput,
         judgment_id: null,
+        pic_supervisor_id: this.form.pic_supervisor_id,
       }
 
       console.log('====================================')
@@ -686,6 +697,7 @@ export default {
       'getKanbans',
       'getZoneOptsWithoutAll',
       'getItemchecksOptsTreeselect',
+      'getUsersTreeselect2',
     ]),
     title() {
       return this.loadedFinding?.finding_id
@@ -715,6 +727,9 @@ export default {
         finding_pic: null,
         actual_pic: null,
         time_cm: null,
+        is_change_sop: false,
+        is_need_improvement: false,
+        pic_supervisor_id: null,
       }
 
       this.mainForm = {

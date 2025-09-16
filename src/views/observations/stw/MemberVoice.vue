@@ -178,7 +178,7 @@
                 <td>{{ membervoice.mv_countermeasure }}</td>
                 <td>{{ membervoice.mv_evaluation }}</td>
                 <td v-for="week in totalWeek" :key="week" style="min-width: 30px !important; padding: 5px">
-                  <div v-if="week == membervoice.w_mv_plan_date - 1
+                  <div v-if="week == membervoice.w_mv_plan_date - 2
                   " :style="`
                       width: 100%;
                       height: 25px;
@@ -198,7 +198,7 @@
                     };
                       `"></div>
                   <div class="mt-1" v-if="
-                    week == membervoice.w_mv_actual_date
+                    week == membervoice.w_mv_actual_date - 2
                   " :style="`
                       width: 100%;
                       height: 25px;
@@ -427,7 +427,7 @@
                 </div>
 
                 <div class="mb-2">
-                  <label class="mb-1">PIC </label>
+                  <label class="mb-1">PIC Penanggulang</label>
                   <treeselect v-if="getUsersTree" class="w-50" v-model="findingsData.cm_pic_id"
                     :options="getUsersTree" />
                   <!-- <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
@@ -463,6 +463,15 @@
                   <CFormSwitch v-model="findingsData.is_change_sop" />
 
                 </div> -->
+
+                <div class="col-12 col-md-12">
+                  <div class="mb-2">
+                    <div class="card p-2">
+                      <label>PIC Penanggung Jawab <small class="text-info">*TL UP</small></label>
+                      <treeselect v-model="findingsData.pic_supervisor_id" :options="getUsersTreeselect2" />
+                    </div>
+                  </div>
+                </div>
 
                 <div class="card p-2 mb-2">
                   <label>Apakah ada Improvement?</label>
@@ -681,7 +690,7 @@
                     </div>
                     <div class="col">
                       <label class="mb-1">Edit PIC</label>
-                      <treeselect v-if="getUsersTree" class="w-50" v-model="memberVoiceDetail.mv_pic_id"
+                      <treeselect v-if="getUsersTree" class="w-100" v-model="memberVoiceDetail.mv_pic_id"
                         :options="getUsersTree" />
                       <small v-if="selectedPIC" class="text-success">*Abaikan jika tidak ingin
                         diubah</small>
@@ -777,15 +786,14 @@
                 </div>
 
                 <div class="mb-2">
-
                   <div class="row">
                     <div class="col">
-                      <label class="mb-1">PIC</label>
+                      <label class="mb-1">PIC Countermeasure</label>
                       <input type="text" disabled class="form-control" :value="getPicName(memberVoiceDetail.findings[0].cm_pic_id)
                         " />
                     </div>
                     <div class="col">
-                      <label class="mb-1">Edit PIC</label>
+                      <label class="mb-1">Edit PIC Countermeasure</label>
                       <treeselect class="w-100" v-if="getUsersTree" v-model="memberVoiceDetail.findings[0].cm_pic_id"
                         :options="getUsersTree" />
                       <small v-if="selectedFindingPIC" class="text-success">*Abaikan jika tidak
@@ -948,25 +956,34 @@
                   </div>
                 </div> -->
 
-                <CInputGroup class="mb-2">
-                  <CInputGroupText>C/M Image</CInputGroupText>
-                  <CFormInput @change="onChangeCmImage($event)" ref="cm_image" aria-label="Input your kaizen file"
-                    type="file" />
-                  <CInputGroupText class="p-0">
-                    <button class="btn btn-sm btn-success" @click="uploadCmImage(selectedFindingID)"
-                      :disabled="isLoading">Upload
-                      Image</button>
-                  </CInputGroupText>
-                </CInputGroup>
-
                 <!-- IMG FOR CM -->
-                <div>
+                <div class="card card-body mb-2">
+                  <CInputGroup>
+                    <CInputGroupText>C/M Image</CInputGroupText>
+                    <CFormInput @change="onChangeCmImage($event)" ref="cm_image" aria-label="Input your kaizen file"
+                      type="file" />
+                    <CInputGroupText class="p-0">
+                      <button class="btn btn-sm btn-success" @click="uploadCmImage(selectedFindingID)"
+                        :disabled="isLoading">Upload
+                        Image</button>
+                    </CInputGroupText>
+                  </CInputGroup>
                   <label> CM Image</label>
                   <br>
                   <img v-if="memberVoiceDetail.findings[0].cm_image" :src="memberVoiceDetail.findings[0].cm_image"
                     alt="image" class="img-fluid rounded mb-2" width="100" style="cursor: pointer"
                     @click="showFindingImg(memberVoiceDetail.findings[0].cm_image)" />
                   <label class="text-secondary" v-else>Tidak ada cm image</label>
+                </div>
+
+                <div class="col-12 col-md-12">
+                  <div class="mb-2">
+                    <div class="card p-2">
+                      <label>PIC Penanggung Jawab <small class="text-info">*TL UP</small></label>
+                      <treeselect v-model="memberVoiceDetail.findings[0].pic_supervisor_id"
+                        :options="getUsersTreeselect2" />
+                    </div>
+                  </div>
                 </div>
 
                 <div class="card p-2 mb-2">
@@ -1223,7 +1240,6 @@ export default {
         mv_pic_id: null,
         line_id: null,
         mv_score: null,
-
       },
       // findings data
       findingsData: {
@@ -1265,7 +1281,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getLinesOpts', 'getUsersTree', 'getMemberVoice', 'getUsersOpts']),
+    ...mapGetters(['getLinesOpts', 'getUsersTree', 'getMemberVoice', 'getUsersOpts', 'getUsersTreeselect2']),
   },
   watch: {
     selectedPIC(newVal) {
@@ -1322,6 +1338,9 @@ export default {
         toast.error(JSON.stringify(e.message))
       }
     },
+    onChangeCmImage(event) {
+      this.cmImage = event.target.files[0]
+    },
     async uploadKaizen(finding_id, kaizen_file = null) {
       this.isLoading = true
       if (!kaizen_file && !this.kaizenFile) {
@@ -1352,9 +1371,6 @@ export default {
         this.isLoading = false
         toast.error(JSON.stringify(e.message))
       }
-    },
-    onChangeCmImage(event) {
-      this.cmImage = event.target.files[0]
     },
     onChangeKaizenFile(event) {
       this.kaizenFile = event.target.files[0]
@@ -1636,6 +1652,7 @@ export default {
           is_need_improvement: this.memberVoiceDetail.findings[0]
             .is_need_improvement,
           finding_img: this.selectedFindingImageToUpdate,
+          pic_supervisor_id: this.findingsData.pic_supervisor_id ? this.findingsData.pic_supervisor_id : this.memberVoiceDetail.findings[0].pic_supervisor_id
         },
       }
 

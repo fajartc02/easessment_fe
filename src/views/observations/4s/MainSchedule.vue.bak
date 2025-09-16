@@ -155,7 +155,7 @@
               </div>
             </div>
             <div class="card">
-              <button class="btn btn-primary" @click="exportToPDF(index)" disabled="isLoading">Export PDF</button>
+              <button class="btn btn-primary" @click="exportToPDF(index)">Export PDF</button>
             </div>
             <div class="card bg-dark text-light p-2">
               <h6>4S Schedule Activities ({{ mainSchedule.line_nm }} - {{ mainSchedule.group_nm }})</h6>
@@ -192,13 +192,8 @@
                       <td id="fixCol-body-2" style="min-width: 100px;background-color: white;">
                         {{ data?.zone_nm }}
                       </td>
-                      <td 
-                            id="fixCol-body-3" 
-                            style="min-width: 120px;" 
-                            :style="{ backgroundColor: data?.color || '#ffffff' }"
-                          >
-                            {{ data?.kanban_no }}
-                          </td>
+                      <td id="fixCol-body-3" style="min-width: 120px;background-color: white;">{{ data?.kanban_no }}
+                      </td>
                       <td id="fixCol-body-4" style="min-width: 200px;background-color: white;">{{ data?.area_nm }}</td>
                       <td id="fixCol-body-5" style="min-width: 100px;background-color: white">
                         <div style="cursor: pointer;" v-if="data?.pic_nm"
@@ -282,30 +277,42 @@
 
                     <!-- Sign TL 1 -->
                     <tr>
-                      <td colspan="7" class="text-center">Sign TL</td>
-                      <td v-for="children in mainSchedule?.sub_schedules[0]?.children" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
-                        } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
-                        } `">
+                      <td colspan="7" class="text-center">Sign TL 1</td>
+                      <template v-if="loadingSubSchedule[index] === false">
+                        <template v-for="(children) in mainSchedule?.sub_schedules[0]?.children" :key="children">
+                          <td :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
+                            } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
+                            } `">
 
-                        <div v-if="canSign(children, 'tl1_sign_checker_id', 'has_tl1_sign') || children?.has_tl1_sign"
-                          class="d-flex align-items-center justify-content-center w-full">
-                          <button @click="
-                            openSignModal(extractSignReq(mainSchedule?.sub_schedules[0], children), children.tl1_sign_checker_id, 'sign_tl_1')
-                            " class="check-wrapper-null d-flex align-items-center justify-content-center">
-                            <CIcon v-if="canSign(children, 'tl1_sign_checker_id', 'has_tl1_sign')" icon="cil-x"
-                              class="text-danger" size="sm" />
-                            <img v-else-if="children?.has_tl1_sign" :src="children.sign_tl_1" alt="sign" :style="{
-                              width: '50px',
-                              height: '50px'
-                            }" />
-                          </button>
-                        </div>
-                      </td>
+                            <div class="d-flex align-items-center justify-content-center w-full">
+                              <!-- <CButton v-if="" color="dark" variant="outline" size="sm" >
+                                <CIcon icon="cil-pencil" class="text-dark" size="sm" />
+                              </CButton> -->
+                              <button @click="
+                                openSignModal(children?.tl1_sign_checker_id, 'sign_tl_1')
+                                " v-if="children?.tl1_sign_checker_id && !children?.has_tl1_sign"
+                                class="check-wrapper-null d-flex align-items-center justify-content-center">
+                                <CIcon icon="cil-x" class="text-danger" size="sm" />
+                              </button>
+                              <button @click="
+                                openSignModal(children?.tl1_sign_checker_id, 'sign_tl_1')
+                                " v-else class="check-wrapper d-flex align-items-center justify-content-center">
+                                <CIcon icon="cil-check" class="text-black" size="sm" />
+                              </button>
+                            </div>
+                          </td>
+                        </template>
+                      </template>
+                      <template v-else>
+                        <td colspan="7" class="text-center">
+                          <CSpinner color="primary" size="sm" />
+                        </td>
+                      </template>
                     </tr>
 
                     <!-- SIGN TL 2 -->
                     <!-- should hide when line is crank shaft (temporary) -->
-                    <!-- <tr v-if="mainSchedule.line_id !== '73a281a9-8923-48d3-a80e-e62ed61d89b7'">
+                    <tr v-if="mainSchedule.line_id !== '73a281a9-8923-48d3-a80e-e62ed61d89b7'">
                       <td colspan="7" class="text-center">Sign TL 2</td>
                       <td v-for="children in mainSchedule?.sub_schedules[0]?.children" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
                         } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
@@ -314,70 +321,114 @@
                         <div class="d-flex align-items-center justify-content-center w-full">
                           <button @click="
                             openSignModal(children?.tl2_sign_checker_id, 'sign_tl_2')
-                            " v-if="canSign(children)"
+                            " v-if="children?.tl2_sign_checker_id && !children?.has_tl2_sign"
                             class="check-wrapper-null d-flex align-items-center justify-content-center">
                             <CIcon icon="cil-x" class="text-danger" size="sm" />
                           </button>
                           <button @click="
                             openSignModal(children?.tl2_sign_checker_id, 'sign_tl_2')
-                            " v-else-if="children?.has_tl2_sign"
-                            class="check-wrapper d-flex align-items-center justify-content-center">
-                            <img :src="children.sign_tl_2" alt="sign" :style="{
-                              width: '50px',
-                              height: '50px'
-                            }" />
+                            " v-else class="check-wrapper d-flex align-items-center justify-content-center">
+                            <CIcon icon="cil-check" class="text-black" size="md" />
                           </button>
 
                         </div>
                       </td>
-                    </tr> -->
+                    </tr>
 
                     <!-- SIGN GL -->
+                    <!-- <tr>
+                      <td colspan="7" class="text-center">Sign GL</td>
+                      <template v-for="(children) in mainSchedule?.glSigns" :key="children">
+                        <td :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
+                          } `">
+                          <div v-if="children?.sign_checker_id"
+                            class="d-flex align-items-center justify-content-center w-full">
+                            <button @click="
+                              openSignModal(children?.sign_checker_id, 'sign_gl')
+                              " v-if="!children?.is_holiday && !children?.sign"
+                              class="check-wrapper-null d-flex align-items-center justify-content-center">
+                              <CIcon icon="cil-x" class="text-danger" size="md" />
+                            </button>
+                            <button @click="
+                              openSignModal(children?.sign_checker_id, 'sign_gl')
+                              " v-else-if="!children?.is_holiday && children?.sign"
+                              class="check-wrapper d-flex align-items-center justify-content-center">
+                              <CIcon icon="cil-check" class="text-black" size="md" />
+                            </button>
+                          </div>
+                        </td>
+                      </template>
+                    </tr> -->
                     <tr>
                       <td colspan="7" class="text-center">Sign GL</td>
-                      <td v-for="children in mainSchedule?.sub_schedules[0]?.children" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
-                        } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
-                        } `">
+                      <template v-for="children in mainSchedule?.sub_schedules[0]?.children" :key="children">
+                        <td :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
+                          } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
+                          } `">
 
-                        <div v-if="canSign(children, 'gl_sign_checker_id', 'has_gl_sign') || children?.has_gl_sign"
-                          class="d-flex align-items-center justify-content-center w-full">
-                          <button @click="
-                            openSignModal(extractSignReq(mainSchedule?.sub_schedules[0], children), children?.gl_sign_checker_id, 'sign_gl')
-                            " class="check-wrapper-null d-flex align-items-center justify-content-center">
-
-                            <img v-if="children?.has_gl_sign" :src="children.sign_gl" alt="sign" :style="{
-                              width: '50px',
-                              height: '50px'
-                            }" />
-                            <CIcon v-else-if="canSign(children, 'gl_sign_checker_id', 'has_gl_sign')" icon="cil-x"
-                              class="text-danger" size="sm" />
-                          </button>
-                        </div>
-                      </td>
+                          <div class="d-flex align-items-center justify-content-center w-full">
+                            <button @click="
+                              openSignModal(children?.tl1_sign_checker_id, 'sign_tl_1')
+                              " v-if="children?.tl1_sign_checker_id && !children?.has_tl1_sign"
+                              class="check-wrapper-null d-flex align-items-center justify-content-center">
+                              <CIcon icon="cil-x" class="text-danger" size="sm" />
+                            </button>
+                            <button @click="
+                              openSignModal(children?.tl1_sign_checker_id, 'sign_tl_1')
+                              " v-else class="check-wrapper d-flex align-items-center justify-content-center">
+                              <CIcon icon="cil-check" class="text-black" size="sm" />
+                            </button>
+                          </div>
+                        </td>
+                      </template>
                     </tr>
 
                     <!-- SIGN SH -->
                     <tr>
                       <td colspan="7" class="text-center">Sign SH</td>
-                      <td v-for="children in mainSchedule?.sub_schedules[0]?.children" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
-                        } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
-                        } `">
+                      <template v-for="children in mainSchedule?.sub_schedules[0]?.children" :key="children">
+                        <td :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
+                          } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
+                          } `">
 
-                        <div v-if="canSign(children, 'sh_sign_checker_id', 'has_sh_sign') || children?.has_sh_sign"
-                          class="d-flex align-items-center justify-content-center w-full">
-                          <button @click="
-                            openSignModal(extractSignReq(mainSchedule?.sub_schedules[0], children), children?.sh_sign_checker_id, 'sign_sh')
-                            " class="check-wrapper-null d-flex align-items-center justify-content-center">
-                            <img v-if="children?.has_sh_sign" :src="children.sign_sh" alt="sign" :style="{
-                              width: '50px',
-                              height: '50px'
-                            }" />
-                            <CIcon v-else-if="canSign(children, 'sh_sign_checker_id', 'has_sh_sign')" icon="cil-x"
-                              class="text-danger" size="sm" />
-                          </button>
-                        </div>
-                      </td>
+                          <div class="d-flex align-items-center justify-content-center w-full">
+                            <button @click="
+                              openSignModal(children?.tl1_sign_checker_id, 'sign_tl_1')
+                              " v-if="children?.tl1_sign_checker_id && !children?.has_tl1_sign"
+                              class="check-wrapper-null d-flex align-items-center justify-content-center">
+                              <CIcon icon="cil-x" class="text-danger" size="sm" />
+                            </button>
+                            <button @click="
+                              openSignModal(children?.tl1_sign_checker_id, 'sign_tl_1')
+                              " v-else class="check-wrapper d-flex align-items-center justify-content-center">
+                              <CIcon icon="cil-check" class="text-black" size="sm" />
+                            </button>
+                          </div>
+                        </td>
+                      </template>
                     </tr>
+                    <!-- <tr>
+                      <td colspan="7" class="text-center">Sign SH</td>
+                      <template v-for="(children) in mainSchedule?.shSigns" :key="children">
+                        <td class="" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''}`">
+                          <div v-if="children?.sign_checker_id"
+                            class="d-flex align-items-center justify-content-center w-full">
+                            <button @click="
+                              openSignModal(children?.sign_checker_id, 'sign_sh')
+                              " v-if="!children?.is_holiday && !children?.sign"
+                              class="check-wrapper-null d-flex align-items-center justify-content-center">
+                              <CIcon icon="cil-x" class="text-danger" size="md" />
+                            </button>
+                            <button @click="
+                              openSignModal(children?.sign_checker_id, 'sign_sh')
+                              " v-else-if="!children?.is_holiday && children?.sign"
+                              class="check-wrapper d-flex align-items-center justify-content-center">
+                              <CIcon icon="cil-check" class="text-black" size="md" />
+                            </button>
+                          </div>
+                        </td>
+                      </template>
+                    </tr> -->
                   </template>
                 </tbody>
               </table>
@@ -423,13 +474,13 @@
 
         <input type="image" v-if="selectedSign" :src="selectedSign" style="width: 100%; height: 100%" />
 
-        <div style="height: 150px">
+        <div style="height: 150px" v-if="selectedSignType == 'sign_tl_1'">
           <div style="width: 100%; height: 100px; border: 1px solid #eaeaea">
-            <vueSignature :ref="selectedSignType" :sigOption="option" :w="'100%'" :h="'100px'">
+            <vueSignature ref="sign_tl_1" :sigOption="option" :w="'100%'" :h="'100px'">
             </vueSignature>
             <button class="btn btn-info my-3 btn-sm text-white" :disabled="isUploadSignLoading"
-              @click="saveSignature()">
-              {{ isUploadSignLoading ? "Saving.." : `Save ${selectedSignType?.replaceAll("_", " ")?.toUpperCase()}` }}
+              @click="saveSignature('sign_tl_1')">
+              {{ isUploadSignLoading ? "Saving.." : "Save TL 1" }}
             </button>
             <button class="btn btn-info btn-sm mx-2 my-3 text-white" @click="clearSignature('sign_tl_1')">
               Clear
@@ -437,6 +488,47 @@
           </div>
         </div>
 
+        <div style="height: 150px" v-else-if="selectedSignType == 'sign_tl_2'">
+          <div style="width: 100%; height: 100px; border: 1px solid #eaeaea">
+            <vueSignature ref="sign_tl_2" :sigOption="option" :w="'100%'" :h="'100px'">
+            </vueSignature>
+            <button class="btn btn-info my-3 btn-sm text-white" :disabled="isUploadSignLoading"
+              @click="saveSignature('sign_tl_2')">
+              {{ isUploadSignLoading ? "Saving.." : "Save TL 2" }}
+            </button>
+            <button class="btn btn-info btn-sm mx-2 my-3 text-white" @click="clearSignature('sign_tl_2')">
+              Clear
+            </button>
+          </div>
+        </div>
+
+        <div style="height: 150px" v-else-if="selectedSignType == 'sign_gl'">
+          <div style="width: 100%; height: 100px; border: 1px solid #eaeaea">
+            <vueSignature ref="sign_gl" :sigOption="option" :w="'100%'" :h="'100px'">
+            </vueSignature>
+            <button class="btn btn-info my-3 btn-sm text-white" :disabled="isUploadSignLoading"
+              @click="saveSignature('sign_gl')">
+              {{ isUploadSignLoading ? "Saving.." : "Save Sign GL" }}
+            </button>
+            <button class="btn btn-info btn-sm mx-2 my-3 text-white" @click="clearSignature('sign_gl')">
+              Clear
+            </button>
+          </div>
+        </div>
+
+        <div style="height: 150px" v-else-if="selectedSignType == 'sign_sh'">
+          <div style="width: 100%; height: 100px; border: 1px solid #eaeaea">
+            <vueSignature ref="sign_sh" :sigOption="option" :w="'100%'" :h="'100px'">
+            </vueSignature>
+            <button class="btn btn-info my-3 btn-sm text-white" :disabled="isUploadSignLoading"
+              @click="saveSignature('sign_sh')">
+              {{ isUploadSignLoading ? "Saving.." : "Save Sign SH" }}
+            </button>
+            <button class="btn btn-info btn-sm mx-2 my-3 text-white" @click="clearSignature('sign_sh')">
+              Clear
+            </button>
+          </div>
+        </div>
       </CModalBody>
       <CModalFooter>
         <CButton color="secondary" class="text-white" @click="closeSignModal()">
@@ -527,7 +619,6 @@ import { toast } from "vue3-toastify";
 import CustPagination from "@/components/pagination/CustPagination.vue";
 import JudgmentConfirmation from "@/components/new/JudgmentConfirmation.vue";
 import html2pdf from "html2pdf.js";
-import { autoCropSignature } from "@/functions/imageUtils";
 
 export default {
   name: "Main Schedule",
@@ -604,8 +695,7 @@ export default {
       isAssyLine: false,
       limitSubSchedule: 10,
       currentPageSubSchedule: 1,
-      selectedScheduleData: null, // uc. sign checker
-      loadingSign: [
+      loadingSubSchedule: [
         false,
         false
       ]
@@ -789,6 +879,8 @@ export default {
           {
             this.mainScheduleData = data.map((item) => {
               item.sub_schedules = [];
+              item.tl1Signs = [];
+              item.tl2Signs = [];
               item.glSigns = [];
               item.shSigns = [];
               item.limit = 10;
@@ -803,17 +895,16 @@ export default {
           {
             for (let i = 0; i < this.mainScheduleData.length; i++)
             {
-              this.loadingSign[i] = true;
+              this.loadingSubSchedule[i] = true;
               await this.getSubSchedules(this.mainScheduleData[i].main_schedule_id, i);
+              this.loadingSubSchedule[i] = false;
             }
           } else
           {
             this.isMainScheduleEmpty = true;
           }
         }
-        
       });
-      
     },
     async getSubSchedules(mainScheduleID, index) {
       //this.newSubScheduleData = []
@@ -830,9 +921,7 @@ export default {
         current_page: this.currentPageSubSchedule
       };
 
-      const self = this;
-
-      await this.$store.dispatch(GET_SUB_SCHEDULES, objQuery).then(async (res) => {
+      await this.$store.dispatch(GET_SUB_SCHEDULES, objQuery).then((res) => {
         if (res)
         {
           let redTemp = "";
@@ -845,48 +934,13 @@ export default {
             return redTemp.localeCompare(whiteTemp);
           });
 
-
-          if (res.schedule && res.schedule.length && res.schedule[0].children.length)
-          {
-
-            for (let i = 0; i < res.schedule[0].children.length; i++)
-            {
-              const item = res.schedule[0].children[i];
-
-              try
-              {
-                if (item.tl1_sign_checker_id && item.has_tl1_sign)
-                {
-                  const base64 = await self.loadSign(item.tl1_sign_checker_id);
-                  const cropped = await autoCropSignature(base64);
-                  item.sign_tl_1 = cropped;
-                }
-
-                if (item.gl_sign_checker_id && item.has_gl_sign)
-                {
-                  const base64 = await self.loadSign(item.gl_sign_checker_id);
-                  const cropped = await autoCropSignature(base64);
-                  item.sign_gl = cropped;
-                }
-
-                if (item.sh_sign_checker_id && item.has_sh_sign)
-                {
-                  const base64 = await self.loadSign(item.sh_sign_checker_id);
-                  const cropped = await autoCropSignature(base64);
-                  item.sign_sh = cropped;
-                }
-              }
-              catch (error)
-              {
-                console.error(`Error processing signatures for item ${i}:`, error);
-              }
-            }
-          }
-
-
           this.mainScheduleData[index].sub_schedules = res.schedule;
+
+          this.mainScheduleData[index].tl1Signs = res.sign_checker_tl1;
+          this.mainScheduleData[index].tl2Signs = res.sign_checker_tl2;
           this.mainScheduleData[index].glSigns = res.sign_checker_gl;
           this.mainScheduleData[index].shSigns = res.sign_checker_sh;
+
           this.mainScheduleData[index].limit = res.limit;
           this.mainScheduleData[index].current_page = res.current_page;
           this.mainScheduleData[index].total_data = res.total_data;
@@ -894,8 +948,9 @@ export default {
           //console.log(temp)
           //this.newSubScheduleData = res.schedule
           //this.newSubScheduleData.push(res.schedule)
-          this.signGLData = res.sign_checker_gl;
-          this.signSHData = res.sign_checker_sh;
+          //this.signGLData = res.sign_checker_gl;
+          //this.signSHData = res.sign_checker_sh;
+
           this.isLoading = false;
 
           console.log("mainScheduleData", this.mainScheduleData);
@@ -911,10 +966,11 @@ export default {
       };
 
       const add = await ApiService.put(
-        `/operational/4s/sub-schedule/add-plan-pic/${this.selectedSubScheduleID}`,
+        `/operational/4s/sub-schedule/edit/${this.selectedSubScheduleID}`,
         data
       );
-      if (add.data.message == "Success to add plan pic 4s sub schedule")
+
+      if (add.data.message == "Success to edit 4s schedule plan")
       {
         toast.success("PIC added", {
           autoClose: 700
@@ -1096,44 +1152,71 @@ export default {
     },
 
     // sign methods
-    openSignModal(schedule, signCheckerID, from) {
-      this.selectedScheduleData = {
-        ...schedule,
-        is_tl_1: from === "sign_tl_1" ? true : null,
-        is_gl: from === "sign_gl" ? true : null,
-        is_sh: from === "sign_sh" ? true : null,
-      };
-
+    openSignModal(signCheckerID, from) {
       this.selectedSignType = from;
       this.addSignModal = true;
-      this.selectedSignCheckerID = signCheckerID ?? "createnew";
+      this.selectedSignCheckerID = signCheckerID;
       this.getSignature();
     },
-    async closeSignModal(isRefresh = false) {
+    async closeSignModal() {
       this.addSignModal = false;
       this.selectedSignCheckerID = null;
       this.selectedSignature = null;
       this.selectedSignType = null;
       this.selectedSign = null;
-      this.selectedScheduleData = null;
-      if (isRefresh)
-      {
-        await this.getSchedules();
-      }
+      await this.getSchedules();
     },
-    saveSignature() {
-      this.selectedSignature = this.$refs[this.selectedSignType].save();
+    saveSignature(from) {
+      var signFile;
+
+      switch (from)
+      {
+        case "sign_tl_1":
+          signFile = this.$refs[from].save();
+          this.selectedSignature = signFile;
+          break;
+        default:
+          break;
+      }
+      switch (from)
+      {
+        case "sign_tl_2":
+          signFile = this.$refs[from].save();
+          this.selectedSignature = signFile;
+          break;
+        default:
+          break;
+      }
+      switch (from)
+      {
+        case "sign_gl":
+          signFile = this.$refs[from].save();
+          this.selectedSignature = signFile;
+          break;
+        default:
+          break;
+      }
+      switch (from)
+      {
+        case "sign_sh":
+          signFile = this.$refs[from].save();
+          this.selectedSignature = signFile;
+          break;
+        default:
+          break;
+      }
+
       this.uploadSignature();
     },
-    clearSignature() {
-      this.$refs[this.selectedSignType].clear();
+    clearSignature(from) {
+      this.$refs[from].clear();
     },
     async uploadSignature() {
       this.isUploadSignLoading = true;
       ApiService.setHeader();
       const upload = await ApiService.put(
         `/operational/4s/sub-schedule/sign/${this.selectedSignCheckerID}`,
-        { sign: this.selectedSignature, ...this.selectedScheduleData }
+        { sign: this.selectedSignature }
       );
       if (upload.data.message == "success to sign 4s schedule")
       {
@@ -1141,15 +1224,10 @@ export default {
         toast.success("Sign saved", {
           autoClose: 700
         });
-        this.closeSignModal(true);
+        this.closeSignModal();
       }
     },
     async getSignature() {
-      if (!this.selectedSignCheckerID || this.selectedSignCheckerID == "createnew")
-      {
-        return
-      }
-
       this.isUploadSignLoading = true;
       ApiService.setHeader();
       const getData = await ApiService.get(
@@ -1204,29 +1282,6 @@ export default {
         main_schedule_id,
         index
       );
-    },
-    canSign(data, signIdKey, hasIdKey) {
-      const activityStat = (data?.status === 'PLANNING' || data?.status === 'PROBLEM' || data?.status === 'ACTUAL');
-      if (signIdKey.toLowerCase().includes("sh") || signIdKey.toLowerCase().includes("gl"))
-      {
-        return activityStat;
-      }
-
-      return data[signIdKey] && !data[hasIdKey] && activityStat;
-    },
-    async loadSign(id) {
-      ApiService.setHeader();
-      const result = await ApiService.get(
-        `/operational/4s/sub-schedule/sign/${id}`
-      );
-
-      return result.data.data.sign
-    },
-    extractSignReq(parent, child) {
-      return {
-        main_schedule_id: parent.main_schedule_id,
-        date: child.date,
-      }
     }
   },
 
