@@ -155,7 +155,7 @@
               </div>
             </div>
             <div class="card">
-              <button class="btn btn-primary" @click="exportToPDF(index)">Export PDF</button>
+              <button class="btn btn-primary" @click="exportToPDF(index)" disabled="isLoading">Export PDF</button>
             </div>
             <div class="card bg-dark text-light p-2">
               <h6>4S Schedule Activities ({{ mainSchedule.line_nm }} - {{ mainSchedule.group_nm }})</h6>
@@ -192,8 +192,13 @@
                       <td id="fixCol-body-2" style="min-width: 100px;background-color: white;">
                         {{ data?.zone_nm }}
                       </td>
-                      <td id="fixCol-body-3" style="min-width: 120px;background-color: white;">{{ data?.kanban_no }}
-                      </td>
+                      <td 
+                            id="fixCol-body-3" 
+                            style="min-width: 120px;" 
+                            :style="{ backgroundColor: data?.color || '#ffffff' }"
+                          >
+                            {{ data?.kanban_no }}
+                          </td>
                       <td id="fixCol-body-4" style="min-width: 200px;background-color: white;">{{ data?.area_nm }}</td>
                       <td id="fixCol-body-5" style="min-width: 100px;background-color: white">
                         <div style="cursor: pointer;" v-if="data?.pic_nm"
@@ -806,7 +811,9 @@ export default {
             this.isMainScheduleEmpty = true;
           }
         }
+        
       });
+      
     },
     async getSubSchedules(mainScheduleID, index) {
       //this.newSubScheduleData = []
