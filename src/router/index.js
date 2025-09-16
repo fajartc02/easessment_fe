@@ -162,6 +162,12 @@ const routes = [{
       import('@/views/observations/stw/ListTemuan.vue'),
   },
   {
+    path: '/stw/yamazumi',
+    name: 'YamazumiScreen',
+    component: () =>
+      import('@/views/observations/stw/YamazumiScreen.vue'),
+  },
+  {
     path: '/stw/list-temuan/add',
     name: 'List Temuan Add',
     component: () =>
