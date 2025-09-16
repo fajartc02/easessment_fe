@@ -79,7 +79,47 @@
       </td>
       <td>
         <button class="btn btn-warning w-100" @click="preventEdit(freq)">Edit</button>
-        <!-- Modal edit tetap sama -->
+       <CModal backdrop="static" :visible="freq.is_edit" @close="() => { freq.is_edit = false }" clos
+                  size="lg">
+                  <CModalHeader>
+                    <CModalTitle>Edit Periodic</CModalTitle>
+                  </CModalHeader>
+                  <CModalBody>
+                    <div class="row">
+                      <div class="col-lg-6 col-md-6 col-sm-12">
+                        <label>Periodic</label>
+                        <input v-model="input.freq_nm" class="form-control" type="text" placeholder="Masukan Periodic">
+                      </div>
+                      <div class="col-lg-6 col-md-6 col-sm-12">
+                        <label>Type</label>
+                        <select class="form-select" v-model="input.type_val">
+                          <option v-for="(type, index) in typePeriodics" :key="index" :value="type.value">
+                            {{ type.text }}
+                          </option>
+                        </select>
+                      </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 mt-3">
+      <label>Color</label>
+     <input 
+    v-model="input.color" 
+    type="color"
+    class="form-control form-control-color w-100"
+  
+  >
+    </div>
+                    </div>
+                  </CModalBody>
+                  <CModalFooter>
+                    <template v-if="isLoading">
+                      <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
+                      Loading...
+                    </template>
+                    <template v-else>
+                      <CButton color="primary" @click="actionEditFreq(freq.id)">Submit</CButton>
+                    </template>
+                    <CButton color="secondary" @click="() => { freq.is_edit = false }">Close</CButton>
+                  </CModalFooter>
+                </CModal>
       </td>
       <td>
         <button class="btn btn-danger w-100" @click="actionDeleteFreq(freq.id)">Delete</button>

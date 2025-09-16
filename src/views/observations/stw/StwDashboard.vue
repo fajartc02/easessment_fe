@@ -144,7 +144,8 @@
       <!-- white shift -->
       <div class="card">
          <div class="card">
-              <button class="btn btn-primary" @click="exportToPDF(observation)" disabled="isLoading">Export PDF</button>
+              <button class="btn btn-primary" @click="exportToPDF(observation)" :disabled="isLoading">Export PDF</button>
+           
             </div>
         <div class="card-header">
           <h6>White Shift</h6>
@@ -452,7 +453,7 @@
 
       <div class="card">
          <div class="card">
-              <button class="btn btn-primary" @click="exportToPDFRed(observationRedShift)" disabled="isLoading">Export PDF</button>
+              <button class="btn btn-primary" @click="exportToPDFRed(observationRedShift)" :disabled="isLoading">Export PDF</button>
             </div>
         <div class="card-header">
           <h6>Red Shift</h6>
