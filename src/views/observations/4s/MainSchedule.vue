@@ -849,7 +849,7 @@ exportToPDF(index) {
         }
         
       });
-      console.log(this.mainScheduleData,'wkekekeke')
+      
     },
     async getSubSchedules(mainScheduleID, index) {
       //this.newSubScheduleData = []
