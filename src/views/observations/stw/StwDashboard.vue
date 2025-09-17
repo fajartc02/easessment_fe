@@ -133,13 +133,13 @@
             <CIcon icon="cil-circle" class="text-danger" size="sm" />
             Is Finding:
             <CIcon icon="cil-bell" class="text-warning" size="sm" />
-            Revision:
+            Reschedule:
             <h6 class="m-0 p-0 text-primary">R</h6>
           </div>
         </div>
-        
+
       </div>
-     
+
 
       <!-- white shift -->
       <div class="card">
@@ -150,9 +150,9 @@
         <div class="card-header">
           <h6>White Shift</h6>
         </div>
-        <div class="card-body" >
-          <div class="card-body p-0 tableFixHead" :ref="'content_' +  observation" >
-            <table class="table table-bordered text-center table-stripped"  >
+        <div class="card-body">
+          <div class="card-body p-0 tableFixHead" :ref="'content_' + observation">
+            <table class="table table-bordered text-center table-stripped">
               <thead>
                 <tr>
                   <th id="fixCol-head-1" rowspan="2">No</th>
@@ -450,7 +450,7 @@
       <hr />
 
       <!-- Red shift table -->
-     
+
       <div class="card">
          <div class="card">
               <button class="btn btn-primary" @click="exportToPDFRed(observationRedShift)" :disabled="isLoading">Export PDF</button>
@@ -459,8 +459,8 @@
           <h6>Red Shift</h6>
         </div>
         <div class="card-body">
-          <div class="tableFixHead" :ref="'content_' +   observationRedShift">
-            <table class="table table-bordered text-center" >
+          <div class="tableFixHead" :ref="'content_' + observationRedShift">
+            <table class="table table-bordered text-center">
               <thead>
                 <tr>
                   <th id="fixCol-head-1" rowspan="2">No</th>
@@ -1111,160 +1111,160 @@ export default {
       this.getObsSchedule()
       this.getObsScheduleRedShift()
     },
-exportToPDF(observation) {
-  const original = this.$refs[`content_${observation}`];
-  if (!original) {
-    toast.error("Tabel tidak ditemukan");
-    return;
-  }
-
-  const shift = observation || "White";
-  const nameFile = `STW_Schedule_${shift.replace(/\s+/g, "_")}`;
-
-  const cloneWrapper = document.createElement("div");
-  const clone = original.cloneNode(true);
-  clone.querySelectorAll("*").forEach((el) => {
-    const computed = window.getComputedStyle(el);
-    if (computed.position === "sticky") {
-      el.style.position = "static";
-      el.style.bottom = "auto";
-      el.style.zIndex = "auto";
-    }
-    el.classList.forEach((cls) => {
-      if (cls.toLowerCase().includes("sticky")) {
-        el.classList.remove(cls);
+    exportToPDF(observation) {
+      const original = this.$refs[`content_${observation}`];
+      if (!original) {
+        toast.error("Tabel tidak ditemukan");
+        return;
       }
-    });
-  });
 
-  clone.style.display = "block";
-  clone.style.overflow = "visible";
-  clone.style.maxHeight = "none";
+      const shift = observation || "White";
+      const nameFile = `STW_Schedule_${shift.replace(/\s+/g, "_")}`;
 
-  cloneWrapper.style.position = "absolute";
-  cloneWrapper.style.top = "0";
-  cloneWrapper.style.left = "0";
-  cloneWrapper.style.zIndex = "-9999";
-  cloneWrapper.style.padding = "20px";
-  cloneWrapper.style.background = "#fff";
-  cloneWrapper.appendChild(clone);
-  document.body.appendChild(cloneWrapper);
-
-  document.body.style.height = clone.scrollHeight + "px";
-  document.body.style.overflow = "visible";
-
-  this.$nextTick(() => {
-    setTimeout(() => {
-      const options = {
-        margin: 0,
-        filename: `${nameFile}.pdf`,
-        image: { type: "jpeg", quality: 1 },
-        html2canvas: {
-          scale: 2,
-          useCORS: true,
-          allowTaint: true,
-          scrollY: 0,
-          scrollX: 0,
-          windowHeight: clone.scrollHeight, 
-        },
-        jsPDF: {
-          unit: "px",
-          format: [2500,1500],
-          orientation: "landscape",
-        },
-      };
-
-      html2pdf().set(options).from(clone).save().then(() => {
-       
-        document.body.removeChild(cloneWrapper);
-        document.body.style.height = "";
-        document.body.style.overflow = "";
-      });
-    }, 500); 
-  });
-},
-exportToPDFRed(observationRedShift) {
-  const original = this.$refs[`content_${observationRedShift}`];
-  if (!original) {
-    toast.error("Tabel tidak ditemukan");
-    return;
-  }
-
-  const shift = observationRedShift || "Red";
-  const nameFile = `STW_Schedule_${shift.replace(/\s+/g, "_")}`;
-
-  const cloneWrapper = document.createElement("div");
-  const clone = original.cloneNode(true);
-
-  clone.querySelectorAll("*").forEach((el) => {
-    const computed = window.getComputedStyle(el);
-
-    if (computed.position === "sticky" || el.style.position === "sticky") {
-      el.style.position = "static";
-      el.style.top = "auto";
-      el.style.bottom = "auto";
-      el.style.zIndex = "auto";
-    }
-
-    el.classList.forEach((cls) => {
-      if (cls.toLowerCase().includes("sticky")) {
-        el.classList.remove(cls);
-      }
-    });
-
-    if (el.style.bottom) el.style.bottom = "auto";
-    if (el.style.zIndex) el.style.zIndex = "auto";
-  });
-
-  clone.style.display = "block";
-  clone.style.overflow = "visible";
-  clone.style.maxHeight = "none";
-
-  cloneWrapper.style.position = "absolute";
-  cloneWrapper.style.top = "0";
-  cloneWrapper.style.left = "0";
-  cloneWrapper.style.zIndex = "-9999";
-  cloneWrapper.style.padding = "20px";
-  cloneWrapper.style.background = "#fff";
-  cloneWrapper.appendChild(clone);
-  document.body.appendChild(cloneWrapper);
-
-  document.body.style.height = clone.scrollHeight + "px";
-  document.body.style.overflow = "visible";
-
-  this.$nextTick(() => {
-    setTimeout(() => {
-      const options = {
-        margin: 0,
-        filename: `${nameFile}.pdf`,
-        image: { type: "jpeg", quality: 1 },
-        html2canvas: {
-          scale: 2,
-          useCORS: true,
-          allowTaint: true,
-          scrollY: 0,
-          scrollX: 0,
-          windowHeight: clone.scrollHeight,
-        },
-        jsPDF: {
-          unit: "px",
-          format: [2500, 1500],
-          orientation: "landscape",
-        },
-      };
-
-      html2pdf()
-        .set(options)
-        .from(clone)
-        .save()
-        .then(() => {
-          document.body.removeChild(cloneWrapper);
-          document.body.style.height = "";
-          document.body.style.overflow = "";
+      const cloneWrapper = document.createElement("div");
+      const clone = original.cloneNode(true);
+      clone.querySelectorAll("*").forEach((el) => {
+        const computed = window.getComputedStyle(el);
+        if (computed.position === "sticky") {
+          el.style.position = "static";
+          el.style.bottom = "auto";
+          el.style.zIndex = "auto";
+        }
+        el.classList.forEach((cls) => {
+          if (cls.toLowerCase().includes("sticky")) {
+            el.classList.remove(cls);
+          }
         });
-    }, 500);
-  });
-},
+      });
+
+      clone.style.display = "block";
+      clone.style.overflow = "visible";
+      clone.style.maxHeight = "none";
+
+      cloneWrapper.style.position = "absolute";
+      cloneWrapper.style.top = "0";
+      cloneWrapper.style.left = "0";
+      cloneWrapper.style.zIndex = "-9999";
+      cloneWrapper.style.padding = "20px";
+      cloneWrapper.style.background = "#fff";
+      cloneWrapper.appendChild(clone);
+      document.body.appendChild(cloneWrapper);
+
+      document.body.style.height = clone.scrollHeight + "px";
+      document.body.style.overflow = "visible";
+
+      this.$nextTick(() => {
+        setTimeout(() => {
+          const options = {
+            margin: 0,
+            filename: `${nameFile}.pdf`,
+            image: { type: "jpeg", quality: 1 },
+            html2canvas: {
+              scale: 2,
+              useCORS: true,
+              allowTaint: true,
+              scrollY: 0,
+              scrollX: 0,
+              windowHeight: clone.scrollHeight,
+            },
+            jsPDF: {
+              unit: "px",
+              format: [2500, 1500],
+              orientation: "landscape",
+            },
+          };
+
+          html2pdf().set(options).from(clone).save().then(() => {
+
+            document.body.removeChild(cloneWrapper);
+            document.body.style.height = "";
+            document.body.style.overflow = "";
+          });
+        }, 500);
+      });
+    },
+    exportToPDFRed(observationRedShift) {
+      const original = this.$refs[`content_${observationRedShift}`];
+      if (!original) {
+        toast.error("Tabel tidak ditemukan");
+        return;
+      }
+
+      const shift = observationRedShift || "Red";
+      const nameFile = `STW_Schedule_${shift.replace(/\s+/g, "_")}`;
+
+      const cloneWrapper = document.createElement("div");
+      const clone = original.cloneNode(true);
+
+      clone.querySelectorAll("*").forEach((el) => {
+        const computed = window.getComputedStyle(el);
+
+        if (computed.position === "sticky" || el.style.position === "sticky") {
+          el.style.position = "static";
+          el.style.top = "auto";
+          el.style.bottom = "auto";
+          el.style.zIndex = "auto";
+        }
+
+        el.classList.forEach((cls) => {
+          if (cls.toLowerCase().includes("sticky")) {
+            el.classList.remove(cls);
+          }
+        });
+
+        if (el.style.bottom) el.style.bottom = "auto";
+        if (el.style.zIndex) el.style.zIndex = "auto";
+      });
+
+      clone.style.display = "block";
+      clone.style.overflow = "visible";
+      clone.style.maxHeight = "none";
+
+      cloneWrapper.style.position = "absolute";
+      cloneWrapper.style.top = "0";
+      cloneWrapper.style.left = "0";
+      cloneWrapper.style.zIndex = "-9999";
+      cloneWrapper.style.padding = "20px";
+      cloneWrapper.style.background = "#fff";
+      cloneWrapper.appendChild(clone);
+      document.body.appendChild(cloneWrapper);
+
+      document.body.style.height = clone.scrollHeight + "px";
+      document.body.style.overflow = "visible";
+
+      this.$nextTick(() => {
+        setTimeout(() => {
+          const options = {
+            margin: 0,
+            filename: `${nameFile}.pdf`,
+            image: { type: "jpeg", quality: 1 },
+            html2canvas: {
+              scale: 2,
+              useCORS: true,
+              allowTaint: true,
+              scrollY: 0,
+              scrollX: 0,
+              windowHeight: clone.scrollHeight,
+            },
+            jsPDF: {
+              unit: "px",
+              format: [2500, 1500],
+              orientation: "landscape",
+            },
+          };
+
+          html2pdf()
+            .set(options)
+            .from(clone)
+            .save()
+            .then(() => {
+              document.body.removeChild(cloneWrapper);
+              document.body.style.height = "";
+              document.body.style.overflow = "";
+            });
+        }, 500);
+      });
+    },
 
 
 
@@ -1313,6 +1313,7 @@ exportToPDFRed(observationRedShift) {
   overflow: auto;
   height: 100vh;
 }
+
 .force-full-width {
   width: max-content !important;
   overflow: visible !important;
@@ -1333,6 +1334,7 @@ exportToPDFRed(observationRedShift) {
   z-index: 10;
   background-color: white;
 }
+
 #pdf-clone-wrapper {
   position: absolute;
   top: -9999px;

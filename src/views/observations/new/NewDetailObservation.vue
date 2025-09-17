@@ -87,7 +87,7 @@
             <CModalHeader>
               <CModalTitle v-if="observation.job_type_nm">{{
                 tskLabel
-                }}</CModalTitle>
+              }}</CModalTitle>
             </CModalHeader>
             <CModalBody>
               <vue-pdf-embed v-if="tskFile" :source="tskFile" />
@@ -370,7 +370,7 @@
                 <CModalHeader>
                   <CModalTitle>Add temuan ({{ item?.category_nm }}-{{
                     sub_category?.sub_category_nm
-                  }})</CModalTitle>
+                    }})</CModalTitle>
                 </CModalHeader>
                 <CModalBody>
                   <div>
@@ -461,6 +461,16 @@
                         </div>
                         <div class="mb-2">
                           <CFormSwitch label="Add To Abnormality Dashboard" v-model="isLinkAbnormality" />
+                        </div>
+                        <div class="col-12 col-md-12">
+                          <div class="mb-2">
+                            <div class="card p-2">
+                              <label>PIC Penanggung Jawab <small class="text-info">*TL UP</small></label>
+                              <VueMultiselect v-model="finding.pic_supervisor_id" :options="picData"
+                                :custom-label="customPicOptions">
+                              </VueMultiselect>
+                            </div>
+                          </div>
                         </div>
                         <div class="mb-2">
                           <div class="card p-2">
