@@ -44,7 +44,7 @@
               </option>
             </select>
           </div>
-            <div class="col">
+          <div class="col">
             <label>Status</label>
             <select class="form-select" @change="addFilter()" v-model="selectedFilterJudge">
               <option value="-1" selected>All</option>
@@ -107,9 +107,9 @@
           <button class="btn btn-info text-white mx-2" @click="openAddFindingModal()">
             Add Finding
           </button>
-             <div>
+          <div>
             <button :disabled="get4sFindings?.length < 1" class="btn btn-info btn-sm text-white w-full my-1">
-            <download-excel :data="excelData()" :fields="json_fields" worksheet="Temuan4S" name="temuan4Slist.xls">
+              <download-excel :data="excelData()" :fields="json_fields" worksheet="Temuan4S" name="temuan4Slist.xls">
                 Export all data
               </download-excel>
             </button>
@@ -312,14 +312,14 @@
                 </td>
 
                 <td id="fixCol-9" class="px-4">
-  <template v-if="finding.score && finding.score !== 0">
-    <template v-for="labelScore in scoreopts">
-      <label :key="labelScore.score" v-if="labelScore.score === finding.score">
-        {{ labelScore.label }}
-      </label>
-    </template>
-  </template>
-</td>
+                  <template v-if="finding.score && finding.score !== 0">
+                    <template v-for="labelScore in scoreopts">
+                      <label :key="labelScore.score" v-if="labelScore.score === finding.score">
+                        {{ labelScore.label }}
+                      </label>
+                    </template>
+                  </template>
+                </td>
 
                 <td>
                   <div class="d-flex gap-2">
@@ -512,21 +512,20 @@
           <select class="form-select" v-model="selectedScore">
             <option v-for="opt in scoreopts" :key="opt.score" :value="opt.score">
               {{ opt.label }}
-               </option>  
-            </select>
-             <button class="btn btn-info my-2 btn-sm text-white" @click="
-          () => {
-            updateScoreFinding()
-          }
-        "
-          >
-              Submit Score
-            </button>
-            <hr>
-          </div>
-       
-        
-            
+            </option>
+          </select>
+          <button class="btn btn-info my-2 btn-sm text-white" @click="
+            () => {
+              updateScoreFinding()
+            }
+          ">
+            Submit Score
+          </button>
+          <hr>
+        </div>
+
+
+
 
 
         <div class="row">
@@ -595,9 +594,12 @@
             </div>
             <div class="mb-2">
               <label class="mb-1">PIC Countermeasure</label>
-              <VueMultiselect v-model="actualPIC" :disabled="findingActionType == 'update'" :options="picData"
+              <!-- <VueMultiselect v-model="actualPIC" :disabled="findingActionType == 'update'" :options="picData"
                 :custom-label="customPicOptions" class="vue-multi-select">
-              </VueMultiselect>
+              </VueMultiselect> -->
+              <!-- <Select2 class="form-control" v-model="actualPIC" :options="getUsersOpts" /> -->
+              <treeselect v-model="actualPIC" :options="getUsersTreeselect2"
+                :disabled="findingActionType == 'update'" />
             </div>
           </div>
         </div>
@@ -695,6 +697,14 @@
                     </CInputGroup>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-12">
+            <div class="mb-2">
+              <div class="card p-2">
+                <label>PIC Penanggung Jawab <small>*TL UP</small></label>
+                <treeselect v-model="pic_supervisor_id" :options="getUsersTreeselect2" />
               </div>
             </div>
           </div>
@@ -829,10 +839,7 @@
     <!-- <ModalForm4sFinding :visiblee="modalFormFinding" :loadedFinding="" /> -->
     <ModalImage :img="selectedFindingImage" :visible="isVisibleFindingImage" @close="isVisibleFindingImage = false" />
     <!-- v-if="addFindingModal" -->
-    <ModalForm4sFinding
-      :visible="addFindingModal"
-      :is-input="true"
-      :loadedFinding="null"
+    <ModalForm4sFinding :visible="addFindingModal" :is-input="true" :loadedFinding="null"
       @close="onCloseModalFinding($event)" />
   </div>
 </template>
@@ -851,13 +858,14 @@ import { GET_SYSTEMS } from '@/store/modules/system.module'
 import { mapGetters } from 'vuex'
 import ApiService from '@/store/api.service'
 
+
 import VueMultiselect from 'vue-multiselect'
 import { GET_4S_FINDINGS } from '@/store/modules/finding.module'
 import Swal from 'sweetalert2'
 import { toast } from 'vue3-toastify'
 import Pagination from '@/components/Pagination.vue'
-import 'vue3-treeselect/dist/vue3-treeselect.css'
 import Treeselect from 'vue3-treeselect'
+import 'vue3-treeselect/dist/vue3-treeselect.css'
 import ModalForm4sFinding from '@/components/4s/ModalForm4sFinding.vue'
 import ModalImage from '@/components/ModalImage.vue'
 import SCORE_MOCK from '@/mocks/score.mock'
@@ -1002,30 +1010,31 @@ export default {
       kaizenFile: null,
       cmImage: null,
       isKaizenModal: false,
-      scoreopts:SCORE_MOCK,
-      
-     json_fields: {
-    'No': 'no',
-    'Status': 'status',
-    'Line': 'line_nm',
-    'Zone': 'zone_nm',
-    'No Kanban': 'kanban_no',
-    'Area': 'area_nm',
-    'Freq 4S': 'freq_nm',
-    'Date': 'finding_date',
-    'Problem': 'finding_desc',
-    'PIC': 'finding_pic_nm',
-    'Waktu 4S (mnt)': 'time_cm',
-    'Yokoten': 'time_yokoten',
-    'Evaluasi': 'evaluation_nm',
-    'Score': 'score',
-    'Ada Perubahan SOP?': 'is_change_sop',
-    'Before Sop':'sop_file_before',
-    'After Sop':'sop_file_after',
-    'ada Improvement?': 'is_need_improvement',
-    'Link Improvement':'cm_image'
+      scoreopts: SCORE_MOCK,
+      pic_supervisor_id: null,
 
-    },
+      json_fields: {
+        'No': 'no',
+        'Status': 'status',
+        'Line': 'line_nm',
+        'Zone': 'zone_nm',
+        'No Kanban': 'kanban_no',
+        'Area': 'area_nm',
+        'Freq 4S': 'freq_nm',
+        'Date': 'finding_date',
+        'Problem': 'finding_desc',
+        'PIC': 'finding_pic_nm',
+        'Waktu 4S (mnt)': 'time_cm',
+        'Yokoten': 'time_yokoten',
+        'Evaluasi': 'evaluation_nm',
+        'Score': 'score',
+        'Ada Perubahan SOP?': 'is_change_sop',
+        'Before Sop': 'sop_file_before',
+        'After Sop': 'sop_file_after',
+        'ada Improvement?': 'is_need_improvement',
+        'Link Improvement': 'cm_image'
+
+      },
 
     }
   },
@@ -1039,6 +1048,7 @@ export default {
       'getUsersOpts',
       'get4sFindings',
       'getSystemsOptDept',
+      'getUsersTreeselect2',
     ]),
     zoneGetID() {
       return this.selectedZoneIDFilter.id
@@ -1046,7 +1056,7 @@ export default {
     kanbanGetID() {
       return this.selectedKanbanID.id
     },
-   
+
   },
   watch: {
     selectedMonth: function () {
@@ -1254,7 +1264,7 @@ export default {
         this.findingList = res.list
         this.totalPage = res.total_page
         this.currentPage = res.current_page
-       
+
       })
     },
     openAddFindingModal() {
@@ -1289,14 +1299,12 @@ export default {
       this.optChanges = data.opt_changes
       this.is_change_sop = data.is_change_sop
       this.is_need_improvement = data.is_need_improvement
+      this.pic_supervisor_id = data.pic_supervisor_uuid
       // this.optDepartment = data.opt_depts
       this.optDepartment =
         data.opt_depts != null ? data.opt_depts.split(';') : null
       this.cmJudg = data.cm_judg
-      this.actualPIC =
-        data.actual_pic_id != null
-          ? { pic_name: data.actual_pic_nm, pic_id: data.actual_pic_id }
-          : null
+      this.actualPIC = data.actual_pic_id
       this.actualCMDate =
         data.actual_cm_date != null ? data.actual_cm_date.split(' ')[0] : null // formating form yyy-mm-dd HH:mm:ss
       this.evaluationName = data.evaluation_nm
@@ -1327,11 +1335,12 @@ export default {
         opt_depts:
           this.optDepartment?.length > 0 ? this.optDepartment.join(';') : null,
         cm_judg: this.cmJudg,
-        actual_pic_id: this.actualPIC != null ? this.actualPIC.pic_id : null,
+        actual_pic_id: this.actualPIC,
         actual_cm_date: this.actualCMDate,
         evaluation_nm: this.evaluationName,
         is_change_sop: this.is_change_sop,
         is_need_improvement: this.is_need_improvement,
+        pic_supervisor_id: this.pic_supervisor_id
       }
 
       const add = await ApiService.put(
@@ -1362,22 +1371,22 @@ export default {
           `operational/4s/finding/score/${findingId}`,
           data,
         )
-         .then(res => {
-          if (res.data.message == 'Success to edit 4s finding') {
-            toast.success('Data added', {
-              autoClose: 1000
-            })
-          this.getFindings()
-             this.editFindingModal = false
-        } else {
-          Swal.fire('Error', '', 'warning')
-        }
-        
-      } )
-    }catch (error) {
-      console.log(error);
-      
-    }
+          .then(res => {
+            if (res.data.message == 'Success to edit 4s finding') {
+              toast.success('Data added', {
+                autoClose: 1000
+              })
+              this.getFindings()
+              this.editFindingModal = false
+            } else {
+              Swal.fire('Error', '', 'warning')
+            }
+
+          })
+      } catch (error) {
+        console.log(error);
+
+      }
     },
     async deleteFinding(findingID) {
       Swal.fire({
@@ -1563,13 +1572,13 @@ export default {
         this.getFindings()
       }
     },
-     excelData() {
-    return this.findingList.map(item => ({
-      ...item,
-      is_change_sop: item.is_change_sop === true ? 'Ya' : 'Tidak',
-      is_need_improvement: item.is_need_improvement === true ? 'Ya' : 'Tidak',
-    }));
-  },
+    excelData() {
+      return this.findingList.map(item => ({
+        ...item,
+        is_change_sop: item.is_change_sop === true ? 'Ya' : 'Tidak',
+        is_need_improvement: item.is_need_improvement === true ? 'Ya' : 'Tidak',
+      }));
+    },
   },
 
   async mounted() {
@@ -1627,7 +1636,7 @@ export default {
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
-<style>
+<style scoped>
 .status-wrapper {
   width: 30px;
   height: 30px;

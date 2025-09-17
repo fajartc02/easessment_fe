@@ -82,16 +82,16 @@
 
               <td class="d-flex justify-content-between">
                 <!-- <div class="d-flex justify-content-center"> -->
-                <button v-if="henkaten.findings[0].finding_img" class="btn btn-info btn-sm text-white w-full my-1 mx-1"
+                <button v-if="henkaten.findings[0]?.finding_img" class="btn btn-info btn-sm text-white w-full my-1 mx-1"
                   @click="showFindingImg(henkaten.findings[0]?.finding_img)"
                   :disabled="!henkaten.findings[0]?.finding_img">Finding
                   Image</button>
                 <button v-else class="btn btn-secondary btn-sm w-full my-1 mx-1" disabled>
                   No Image
                 </button>
-                <button v-if="henkaten.findings[0].cm_image" @click="
+                <button v-if="henkaten.findings[0]?.cm_image" @click="
                   () => {
-                    showFindingImg(henkaten.findings[0].cm_image)
+                    showFindingImg(henkaten.findings[0]?.cm_image)
                   }
                 " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
                   C/M image
@@ -101,10 +101,10 @@
                 </button>
                 <button :class="{
                   'btn btn-sm w-full my-1 mx-1': true,
-                  'btn-info text-white': henkaten.findings[0].kaizen_file,
-                  'btn-secondary text-white': !henkaten.findings[0].kaizen_file,
-                }" @click="showKaizenModal(henkaten.findings[0].kaizen_file)"
-                  :disabled="!henkaten.findings[0].kaizen_file">
+                  'btn-info text-white': henkaten.findings[0]?.kaizen_file,
+                  'btn-secondary text-white': !henkaten.findings[0]?.kaizen_file,
+                }" @click="showKaizenModal(henkaten.findings[0]?.kaizen_file)"
+                  :disabled="!henkaten.findings[0]?.kaizen_file">
                   Kaizen
                 </button>
                 <button class="btn btn-info btn-sm text-white w-full my-1 mx-1" @click="getDetailHenkaten(index)">
@@ -266,7 +266,15 @@
                 <div class="card p-2 mb-2">
                   <label>Apakah ada Improvement?</label>
                   <CFormSwitch v-model="findingsData.is_need_improvement" />
+                </div>
 
+                <div class="col-12 col-md-12">
+                  <div class="mb-2">
+                    <div class="card p-2">
+                      <label>PIC Penanggung Jawab <small class="text-info">*TL UP</small></label>
+                      <treeselect v-model="findingsData.pic_supervisor_id" :options="getUsersTreeselect2" />
+                    </div>
+                  </div>
                 </div>
 
                 <div class="row">
@@ -742,6 +750,16 @@
                     </div>
                   </div>
                 </div>
+
+                <div class="col-12 col-md-12">
+                  <div class="mb-2">
+                    <div class="card p-2">
+                      <label>PIC Penanggung Jawab <small class="text-info">*TL UP</small></label>
+                      <treeselect v-model="henkatenDetail.findings[0].pic_supervisor_id"
+                        :options="getUsersTreeselect2" />
+                    </div>
+                  </div>
+                </div>
               </div>
             </CAccordionBody>
           </CAccordionItem>
@@ -895,6 +913,7 @@ export default {
         cm_sign_lh_white: null,
         cm_sign_sh: null,
         cm_comments: null,
+        pic_supervisor_id: null
       },
       selectedFindingImage: null,
       selectedFindingImageToDisplay: null,
@@ -908,7 +927,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getUsersOpts', 'getHenkatens', 'getLinesOpts', 'getUsersTree']),
+    ...mapGetters(['getUsersOpts', 'getHenkatens', 'getLinesOpts', 'getUsersTree', 'getUsersTreeselect2']),
   },
   methods: {
     openFindingImage(findingImage) {
@@ -1142,6 +1161,7 @@ export default {
           cm_sign_sh: null,
           cm_comments: this.henkatenDetail.findings[0].cm_comments,
           finding_img: this.selectedFindingImageToUpdate,
+          pic_supervisor_id: this.henkatenDetail.findings[0].pic_supervisor_id
         },
       }
 
@@ -1204,10 +1224,10 @@ export default {
               const remapFinding = res.map(itm => {
                 return {
                   ...itm,
-                  cm_desc: itm.findings[0].cm_desc,
-                  cm_str_plan_date: itm.findings[0].cm_str_plan_date,
-                  cm_str_act_date: itm.findings[0].cm_str_act_date,
-                  cm_status: itm.findings[0].cm_judg ? 'Closed' : 'Open',
+                  cm_desc: itm.findings[0]?.cm_desc,
+                  cm_str_plan_date: itm.findings[0]?.cm_str_plan_date,
+                  cm_str_act_date: itm.findings[0]?.cm_str_act_date,
+                  cm_status: itm.findings[0]?.cm_judg ? 'Closed' : 'Open',
                 }
               })
               this.json_data = remapFinding

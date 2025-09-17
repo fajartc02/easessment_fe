@@ -1,6 +1,6 @@
 <template>
   <thead class="text-center">
-    <tr>
+    <tr style="position: sticky; top: 0">
       <th id="fixCol-head-1" rowspan="3">No</th>
       <th id="fixCol-head-2" rowspan="3" width="120">Line name</th>
       <th id="fixCol-head-3" rowspan="3">Source</th>
@@ -156,5 +156,10 @@ export default {
   left: 370px;
   z-index: 3;
   background-color: white;
+}
+
+thead th:first-child {
+  z-index: 4;
+  /* highest to appear above both */
 }
 </style>

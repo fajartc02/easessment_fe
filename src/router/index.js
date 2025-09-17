@@ -148,6 +148,12 @@ const routes = [{
     component: () =>
       import('@/views/master/Machine/FormMachine.vue'),
   },
+  // {
+  //   path: '/master/wras',
+  //   name: 'Wras',
+  //   component: () =>
+  //     import('@/views/master/Wras/wras.vue'),
+  // },
 
   {
     path: '/stw/dashboard',
@@ -161,6 +167,12 @@ const routes = [{
     component: () =>
       import('@/views/observations/stw/ListTemuan.vue'),
   },
+  // {
+  //   path: '/stw/yamazumi',
+  //   name: 'YamazumiScreen',
+  //   component: () =>
+  //     import('@/views/observations/stw/YamazumiScreen.vue'),
+  // },
   {
     path: '/stw/list-temuan/add',
     name: 'List Temuan Add',

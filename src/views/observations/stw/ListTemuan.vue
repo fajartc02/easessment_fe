@@ -95,6 +95,7 @@
       </div>
       <div style="
           width: 100%;
+          height: 500px;
           display: block;
           overflow-x: auto;
           white-space: nowrap;
@@ -489,8 +490,9 @@
             </div>
             <div class="col">
               <label class="mb-1">Edit PIC</label>
-              <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
-              </VueMultiselect>
+              <!-- <VueMultiselect v-model="selectedPIC" :options="picData" :custom-label="customPicOptions">
+              </VueMultiselect> -->
+              <treeselect v-model="selectedPIC" :options="getUsersTreeselect2" />
               <small class="text-success">*Abaikan jika tidak ingin diubah</small>
             </div>
           </div>
@@ -592,6 +594,17 @@
               Image</button>
           </CInputGroupText>
         </CInputGroup>
+        <div class="col-12 col-md-12">
+          <div class="mb-2">
+            <div class="card p-2">
+              <label>PIC Penanggung Jawab <small class="text-info">*TL UP</small></label>
+              <!-- <VueMultiselect v-model="findingDetail.pic_supervisor_id" :options="picData"
+                :custom-label="customPicOptions">
+              </VueMultiselect> -->
+              <treeselect v-model="findingDetail.pic_supervisor_id" :options="getUsersTreeselect2" />
+            </div>
+          </div>
+        </div>
         <div v-if="findingDetail.observation_id" class="mb-2">
           <div class="card p-2">
             <label>Apakah ada perubahan SOP?</label>
@@ -1088,12 +1101,14 @@
 </template>
 
 <script>
-// import moment from 'moment'
+import Treeselect from 'vue3-treeselect'
+import 'vue3-treeselect/dist/vue3-treeselect.css'
+
 import { GET_USERS } from '@/store/modules/user.module'
 import { GET_FINDINGS } from '@/store/modules/finding.module'
 import { GET_LINES } from '@/store/modules/line.module'
 import { mapGetters } from 'vuex'
-import VueMultiselect from 'vue-multiselect'
+// import VueMultiselect from 'vue-multiselect'
 import Loading from 'vue-loading-overlay'
 import ApiService from '@/store/api.service'
 import Pagination from '@/components/Pagination.vue'
@@ -1266,9 +1281,12 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['getUsersOpts', 'getFindings', 'getLinesOpts']),
+    ...mapGetters(['getUsersOpts', 'getFindings', 'getLinesOpts', 'getUsersTreeselect2']),
   },
   methods: {
+    customPicOptions({ pic_name }) {
+      return `${pic_name}`
+    },
     showKaizenModal(kaizenFile) {
       this.kaizenFile = kaizenFile
       this.isKaizenModal = true
@@ -1510,9 +1528,9 @@ export default {
     },
     async getUsers() {
       try {
-        this.$store.dispatch(GET_USERS)
+        await this.$store.dispatch(GET_USERS)
         if (this.getUsersOpts) {
-          this.mapUsersData()
+          await this.mapUsersData()
         }
       } catch (error) {
         if (error.response.status == 401) this.$router.push('/login')
@@ -1679,7 +1697,7 @@ export default {
           cm_priority: this.findingDetail.cm_priority,
           category_id: '5b5bfd20-f5f7-4edc-8030-1d3e3f15d0e6', // select manual (STW, Safety, quality,etc.)
           factor_id: this.findingDetail.factor_id, // from mv_factor_id
-          cm_pic_id: this.findingDetail.cm_pic_id, // from henkaten_pic
+          cm_pic_id: this.selectedPIC, // from henkaten_pic
           cm_str_plan_date: this.findingDetail.cm_str_plan_date, // from mv_plan_date
           cm_end_plan_date: this.findingDetail.cm_end_plan_date, // from mv_plan_date
           cm_result_factor_id: this.findingDetail.factor_id,
@@ -1701,6 +1719,7 @@ export default {
           is_need_improvement: this.findingDetail.is_need_improvement,
           is_change_sop: this.findingDetail.is_change_sop,
           cm_image: this.findingDetail.cm_image,
+          pic_supervisor_id: this.findingDetail.pic_supervisor_id
         }
         ApiService.setHeader()
         const updateData = await ApiService.put(
@@ -1861,13 +1880,14 @@ export default {
     await this.AccesibilityScore()
   },
   components: {
-    VueMultiselect,
+    // VueMultiselect,
     Loading,
     Pagination,
     vueSignature,
     ModalFindingDetail,
     HeadFindingList,
-    VuePdfEmbed
+    VuePdfEmbed,
+    Treeselect
   },
 }
 </script>
@@ -1894,42 +1914,42 @@ export default {
 #fixCol-1 {
   position: sticky;
   width: 38px;
-  top: 0px;
+  top: 125px;
   left: 0px;
-  z-index: 3;
+  z-index: 30;
   background-color: white;
 }
 
 #fixCol-2 {
   position: sticky;
-  top: 0px;
+  top: 125px;
   left: 37px;
-  z-index: 3;
+  z-index: 1;
   background-color: white;
 }
 
 #fixCol-3 {
   position: sticky;
   min-width: 121px;
-  top: 0px;
+  top: 125px;
   left: 125px;
-  z-index: 3;
+  z-index: 1;
   background-color: white;
 }
 
 #fixCol-4 {
   position: sticky;
-  top: 0px;
+  top: 125px;
   left: 220px;
-  z-index: 3;
+  z-index: 1;
   background-color: white;
 }
 
 #fixCol-5 {
   position: sticky;
-  top: 0px;
+  top: 125px;
   left: 320px;
-  z-index: 3;
+  z-index: 1;
   background-color: white;
 }
 
@@ -1938,9 +1958,9 @@ export default {
   max-width: 300px;
   min-width: 300px;
   width: 300px;
-  top: 0px;
+  top: 125px;
   left: 370px;
-  z-index: 3;
+  z-index: 1;
   background-color: white;
 }
 </style>

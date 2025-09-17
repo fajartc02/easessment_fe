@@ -23,6 +23,16 @@
                 </option>
               </select>
             </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 mt-3">
+      <label>Color</label>
+     <input 
+    v-model="input.color" 
+    type="color"
+    class="form-control form-control-color w-100"
+  
+  >
+    </div>
+
           </div>
         </CModalBody>
         <CModalFooter>
@@ -47,19 +57,29 @@
             <th>Periodic</th>
             <th>Created By</th>
             <th>Created Date</th>
+             <th>Color</th>
             <th colspan="2">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <template v-if="getFreqsStatusEdit.length > 0 && !isLoading">
-            <tr v-for="freq in getFreqsStatusEdit" :key="freq.id">
-              <td>{{ freq.no }}</td>
-              <td>{{ freq.freq_nm }}</td>
-              <td>{{ freq.created_by }}</td>
-              <td>{{ freq.created_dt.split(' ')[0] }}</td>
-              <td>
-                <button class="btn btn-warning w-100" @click="preventEdit(freq)">Edit</button>
-                <CModal backdrop="static" :visible="freq.is_edit" @close="() => { freq.is_edit = false }" clos
+  <template v-if="getFreqsStatusEdit.length > 0 && !isLoading">
+    <tr 
+      v-for="freq in getFreqsStatusEdit" 
+      :key="freq.id"
+      :style="{ backgroundColor: freq.color || 'transparent' }"
+    >
+      <td>{{ freq.no }}</td>
+      <td>{{ freq.freq_nm }}</td>
+      <td>{{ freq.created_by }}</td>
+      <td>{{ freq.created_dt.split(' ')[0] }}</td>
+      <td>
+        <div 
+          :style="{ backgroundColor: freq.color, width: '30px', height: '30px', borderRadius: '4px', margin: 'auto' }"
+        ></div>
+      </td>
+      <td>
+        <button class="btn btn-warning w-100" @click="preventEdit(freq)">Edit</button>
+       <CModal backdrop="static" :visible="freq.is_edit" @close="() => { freq.is_edit = false }" clos
                   size="lg">
                   <CModalHeader>
                     <CModalTitle>Edit Periodic</CModalTitle>
@@ -78,6 +98,15 @@
                           </option>
                         </select>
                       </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 mt-3">
+      <label>Color</label>
+     <input 
+    v-model="input.color" 
+    type="color"
+    class="form-control form-control-color w-100"
+  
+  >
+    </div>
                     </div>
                   </CModalBody>
                   <CModalFooter>
@@ -91,24 +120,25 @@
                     <CButton color="secondary" @click="() => { freq.is_edit = false }">Close</CButton>
                   </CModalFooter>
                 </CModal>
-              </td>
-              <td>
-                <button class="btn btn-danger w-100" @click="actionDeleteFreq(freq.id)">Delete</button>
-              </td>
-            </tr>
-          </template>
-          <template v-else-if="!isLoading && getFreqsStatusEdit.length == 0">
-            <NoDataTable :colspan="6" />
-          </template>
-          <template v-else>
-            <tr>
-              <td colspan="6">
-                <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
-                Loading...
-              </td>
-            </tr>
-          </template>
-        </tbody>
+      </td>
+      <td>
+        <button class="btn btn-danger w-100" @click="actionDeleteFreq(freq.id)">Delete</button>
+      </td>
+    </tr>
+  </template>
+  <template v-else-if="!isLoading && getFreqsStatusEdit.length == 0">
+    <NoDataTable :colspan="6" />
+  </template>
+  <template v-else>
+    <tr>
+      <td colspan="6">
+        <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
+        Loading...
+      </td>
+    </tr>
+  </template>
+</tbody>
+
       </table>
     </div>
   </div>
@@ -129,6 +159,7 @@ export default {
       input: {
         freq_nm: null,
         type_val: 1,
+        color: '#000000',
       },
       typePeriodics: [{
         value: 1,
@@ -183,7 +214,8 @@ export default {
         this.isLoading = true
         let data = {
           freq_nm: this.getStringFreq,
-          precition_val: this.getPrecVals
+          precition_val: this.getPrecVals,
+          color: this.input.color
         }
         await this.$store.dispatch(POST_FREQ, data)
         await this.actionGetFreqs()
@@ -204,7 +236,8 @@ export default {
         let data = {
           id,
           freq_nm: this.getStringFreq,
-          precition_val: this.getPrecVals
+          precition_val: this.getPrecVals,
+          color: this.input.color
         }
         await this.$store.dispatch(EDIT_FREQ, data)
         await this.actionGetFreqs()

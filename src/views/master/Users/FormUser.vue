@@ -90,6 +90,9 @@ export default {
   watch: {
     getUsers: function () {
       this.form = this.getUsers[0]
+    },
+    ['form.fullname']: function () {
+      this.form.fullname = this?.form?.fullname?.toUpperCase()
     }
   },
   computed: {
