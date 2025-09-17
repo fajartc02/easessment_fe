@@ -363,7 +363,7 @@
                           <button @click="
                             openSignModal(extractSignReq(mainSchedule?.sub_schedules[0], children), children?.sh_sign_checker_id, 'sign_sh')
                             " class="check-wrapper-null d-flex align-items-center justify-content-center">
-                            <img v-if="children?.has_sh_sign" :src="children.sign_sh" alt="sign" :style="{
+                            <img v-if="children?.has_sh_sign && canSign(children, 'sh_sign_checker_id', 'has_sh_sign')" :src="children.sign_sh" alt="sign" :style="{
                               width: '50px',
                               height: '50px'
                             }" />
