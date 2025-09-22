@@ -224,23 +224,27 @@ export default [{
   name: 'Master STW',
   icon: 'cil-clipboard',
   is_admin: false,
+  hide_for_roles: ['TM', null],
   items: [{
     component: 'CNavItem',
     name: 'Pos',
     to: '/master/pos',
-    is_admin: false
+    is_admin: false,
+    hide_for_roles: ['TM', null]
   },
   {
     component: 'CNavItem',
     name: 'Job',
     to: '/master/job',
-    is_admin: false
+    is_admin: false,
+    hide_for_roles: ['TM', null]
   },
   {
     component: 'CNavItem',
     name: 'Wras',
     to: '/master/wras',
-    is_admin: false
+    is_admin: false,
+    hide_for_roles: ['TM', null]
   },
   ]
 },
@@ -249,31 +253,36 @@ export default [{
   name: 'Locations',
   icon: 'cil-building',
   is_admin: true,
+  hide_for_roles: ['TM', null],
   items: [{
     component: 'CNavItem',
     name: 'Company',
     to: '/master/company',
-    is_admin: true
+    is_admin: true,
+    hide_for_roles: ['TM', null]
   },
   {
     component: 'CNavItem',
     name: 'Plant',
     to: '/master/plant',
-    is_admin: true
+    is_admin: true,
+    hide_for_roles: ['TM', null]
     // icon: 'cil-factory',
   },
   {
     component: 'CNavItem',
     name: 'Shop',
     to: '/master/shop',
-    is_admin: true
+    is_admin: true,
+    hide_for_roles: ['TM', null]
     // icon: 'cil-double-quote-sans-right',
   },
   {
     component: 'CNavItem',
     name: 'Line',
     to: '/master/line',
-    is_admin: true
+    is_admin: true,
+    hide_for_roles: ['TM', null]
     // icon: 'cil-border-all',
   },
   ]
