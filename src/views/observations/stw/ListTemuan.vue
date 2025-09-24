@@ -33,8 +33,9 @@
             <label>Status</label>
             <select class="form-select" @change="addFilter()" v-model="selectedFilterJudge">
               <option value="-1" selected>All</option>
-              <option value="true">Sudah</option>
-              <option value="false">Belum</option>
+              <option value="closed">Closed</option>
+              <option value="remain">Remain</option>
+              <option value="problem">Problem</option>
             </select>
           </div>
         </div>
@@ -1551,7 +1552,7 @@ export default {
             : this.selectedMonth + '-29',
         line_id: this.selectedLine,
         source_category: this.selectedFilterSourceCat,
-        cm_judg: this.selectedFilterJudge,
+        status_finding: this.selectedFilterJudge,
         limit: this.$route.query.no_limit ? -1 : this.currentPageLimit,
         currentPage: this.currentPage,
       }
@@ -1843,13 +1844,13 @@ export default {
     if (
       this.$route.query.line_id &&
       this.$route.query.source_category &&
-      this.$route.query.cm_judg
+      this.$route.query.status_finding
     ) {
       this.selectedFilterSourceCat = this.$route.query.source_category
         ? this.$route.query.source_category
         : '-1'
-      this.selectedFilterJudge = this.$route.query.cm_judg
-        ? this.$route.query.cm_judg
+      this.selectedFilterJudge = this.$route.query.status_finding
+        ? this.$route.query.status_finding
         : '-1'
       this.selectedLine = this.$route.query.line_id
         ? this.$route.query.line_id

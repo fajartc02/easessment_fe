@@ -319,6 +319,8 @@ export default {
       let source_category
 
       if (currentSeriesIndex != -1) {
+        console.log(currentSeriesIndex);
+        const seriesIndex = ['problem', 'closed', 'remain']
         currentDataPointIndex == 1 ? (cm_judg = true) : null
         const start_date = moment().set('month', i).set('date', 1).format('YYYY-MM-DD')
         const end_date = moment().set('month', i).set('date', moment().set('month', i).daysInMonth()).format('YYYY-MM-DD')
@@ -339,13 +341,9 @@ export default {
           default:
             break
         }
-        // console.log(source_category, cm_judg);
-        console.log(`/stw/list-temuan?source_category=${source_category}&cm_judg=${cm_judg}&line_id=${this.selectedLineID?.line_id
-          ? this.selectedLineID.line_id
-          : this.selectedLine
-          }&start_date=${start_date}&end_date=${end_date}&no_limit=true`);
+
         this.$router.push(
-          `/stw/list-temuan?source_category=${source_category}&cm_judg=${cm_judg}&line_id=${this.selectedLineID?.line_id
+          `/stw/list-temuan?source_category=${source_category}&status_finding=${seriesIndex[currentDataPointIndex]}&cm_judg=${cm_judg}&line_id=${this.selectedLineID?.line_id
             ? this.selectedLineID.line_id
             : this.selectedLine
           }&start_date=${start_date}&end_date=${end_date}&no_limit=true`,
