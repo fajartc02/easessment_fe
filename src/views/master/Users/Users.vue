@@ -70,7 +70,12 @@
                   <CIcon icon="cil-pencil" size="sm" />
                 </CButton>
               </td>
-              <td>
+               <td>
+                <CButton color="warning" @click="getPass(pos)">
+                  <CIcon icon="cil-settings" size="sm" />
+                </CButton>
+              </td>
+              <td>  
                 <CButton color="danger" @click="del(pos.id)">
                   <CIcon icon="cil-trash" size="sm" />
                 </CButton>
@@ -85,12 +90,29 @@
         </table>
       </div>
     </div>
+     <CModal size="lg" alignment="center" :visible="showSettingModal" @close="showSettingModal = false">
+      <CModalHeader>
+        <CModalTitle>Change Password</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <div v-if="selectedUser">
+          <div class="mb-3">
+            <label class="form-label">New Password</label>
+            <input type="text" class="form-control" v-model="newPassword" />
+          </div>
+        </div>
+      </CModalBody>
+      <CModalFooter>
+        <CButton color="secondary" @click="showSettingModal = false">Close</CButton>
+        <CButton color="primary" @click="saveSetting">Save</CButton>
+      </CModalFooter>
+    </CModal>
   </div>
 </template>
 
 <script>
 import { GET_LINES } from "@/store/modules/line.module";
-import { GET_USERS, DELETE_USER,PUT_USER_ROLE } from '@/store/modules/user.module'
+import { GET_USERS, DELETE_USER,PUT_USER_ROLE,PUT_USER_PASS } from '@/store/modules/user.module'
 import { mapGetters } from 'vuex'
 import Swal from 'sweetalert2'
 import CustomFullLoading from '@/components/CustomFullLoading.vue';
@@ -117,12 +139,16 @@ export default {
       },
       isLoading: false,
       roleopts:ROLE_MOCK,
+      showSettingModal:false,
+     selectedUser:this.getUsers,
+    
     }
   },
   watch: {
     getUsers: function () {
       this.usersState = this.getUsers
       this.selectedrole = this.filtered.role
+ 
     }
   },
   computed: {
@@ -139,7 +165,8 @@ export default {
       } else {
         return [];
       }
-    }
+    },
+  
   },
   methods: {
     async getUsersStore() {
@@ -166,9 +193,15 @@ export default {
     async edit(id) {
       await this.$router.push(`/master/user/form?id=${id}`)
     },
+     async getPass(user) {
+    this.selectedUser = { ...user }
+    this.newPassword = ''
+    this.showSettingModal = true
+   
+  },
     del(id) {
       Swal.fire({
-        title: 'kamu mau menghapus data ini?',
+        title: 'kamu mau mengubah password data ini?',
         showCancelButton: true,
         confirmButtonText: 'Ya',
         denyButtonText: `Tidak`,
@@ -203,12 +236,38 @@ async editRole(id, role) {
   }
     }
   });
-}
+},
+async saveSetting() {
+  const id = this.selectedUser.id
+  const password = this.newPassword
+  if (!this.newPassword) {
+    Swal.fire('Password baru tidak boleh kosong!', '', 'warning');
+    return;
+  }
 
+  try {
+    this.isLoading = true;
+    await this.$store.dispatch(PUT_USER_PASS, {id,password
+     
+    });
 
+    Swal.fire('Password berhasil diubah!', '', 'success');
+    this.showSettingModal = false;
+    this.newPassword = '';
+    this.selectedUser = null;
 
-    
+    // refresh list user biar up-to-date
+    await this.getUsersStore();
+  } catch (error) {
+    console.error(error);
+    Swal.fire('Gagal mengubah password!', '', 'error');
+  } finally {
+    this.isLoading = false;
+  }
+},
+
   },
+
   async mounted() {
     this.isLoading = true
     this.filtered.line_id = localStorage.getItem('line_id')

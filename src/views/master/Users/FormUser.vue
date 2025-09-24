@@ -40,6 +40,18 @@
         <CInputGroupText>Noreg</CInputGroupText>
         <CFormInput v-model="form.noreg" />
       </CInputGroup>
+       <CInputGroup class="mb-3">
+        <CInputGroupText>Role</CInputGroupText>
+          <CFormSelect v-model="form.role">
+<option v-if="form.role && !roleopts.some(r => r.label === form.role)" :value="form.role">
+                    {{ form.role }}
+                  </option>
+                  <option v-for="opts in roleopts" :key="opts.label" :value="opts.label">
+                    {{ opts.label }}
+                  </option>
+          </CFormSelect>
+         
+      </CInputGroup>
       <CInputGroup class="mb-4" v-if="!isUpdate">
         <CInputGroupText>
           Password
@@ -68,6 +80,8 @@ import { GET_LINES } from '@/store/modules/line.module'
 import { GET_GROUP } from '@/store/modules/group.module'
 import { mapGetters } from 'vuex'
 import Swal from 'sweetalert2'
+import ROLE_MOCK from "@/mocks/role.mock";
+
 
 export default {
   name: 'Users',
@@ -80,11 +94,13 @@ export default {
         noreg: null,
         password: null,
         phone_number: null,
+        role:null,
         is_activated: true
       },
       usersState: [],
       selectedLine: null,
-      isUpdate: false
+      isUpdate: false,
+      roleopts:ROLE_MOCK,
     }
   },
   watch: {
