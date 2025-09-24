@@ -33,8 +33,9 @@
             <label>Status</label>
             <select class="form-select" @change="addFilter()" v-model="selectedFilterJudge">
               <option value="-1" selected>All</option>
-              <option value="true">Sudah</option>
-              <option value="false">Belum</option>
+              <option value="closed">Closed</option>
+              <option value="remain">Remain</option>
+              <option value="problem">Problem</option>
             </select>
           </div>
         </div>
@@ -151,10 +152,18 @@
                     Observation
                   </button>
                   <template v-else>
-                    <div class="card text-light" :style="`background-color: ${COLOR_STW[finding.source_category]
-                      }`">
+                    <button class="btn btn-info" :style="`background-color: ${COLOR_STW[finding.source_category]
+                      }`" @click="() => {
+                        if (finding.source_category === 'MV') {
+                          $router.push(`/stw/member-voice?start_date=${formatTheDate(finding.finding_date)}&end_date=${formatTheDate(finding.finding_date)}`)
+                        } else if (finding.source_category === 'FT') {
+                          $router.push(`/stw/focus-theme?start_date=${formatTheDate(finding.finding_date)}&end_date=${formatTheDate(finding.finding_date)}`)
+                        } else if (finding.source_category === 'H') {
+                          $router.push(`/stw/henkaten?start_date=${formatTheDate(finding.finding_date)}&end_date=${formatTheDate(finding.finding_date)}`)
+                        }
+                      }">
                       {{ finding.source_category }}
-                    </div>
+                    </button>
                   </template>
                 </td>
                 <td id="fixCol-4" class="px-2">
@@ -1551,8 +1560,8 @@ export default {
             : this.selectedMonth + '-29',
         line_id: this.selectedLine,
         source_category: this.selectedFilterSourceCat,
-        cm_judg: this.selectedFilterJudge,
-        limit: this.currentPageLimit,
+        status_finding: this.selectedFilterJudge,
+        limit: this.$route.query.no_limit ? -1 : this.currentPageLimit,
         currentPage: this.currentPage,
       }
 
@@ -1843,20 +1852,18 @@ export default {
     if (
       this.$route.query.line_id &&
       this.$route.query.source_category &&
-      this.$route.query.cm_judg
+      this.$route.query.status_finding
     ) {
       this.selectedFilterSourceCat = this.$route.query.source_category
         ? this.$route.query.source_category
         : '-1'
-      this.selectedFilterJudge = this.$route.query.cm_judg
-        ? this.$route.query.cm_judg
+      this.selectedFilterJudge = this.$route.query.status_finding
+        ? this.$route.query.status_finding
         : '-1'
       this.selectedLine = this.$route.query.line_id
         ? this.$route.query.line_id
         : '-1'
     }
-    this.selectedFilterStartDate = this.$route.query.start_date
-    this.selectedFileterEndDate = this.$route.query.end_date
 
     // const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     // const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
@@ -1869,8 +1876,13 @@ export default {
     const month = new Date().getMonth() + 1 > 9 ? new Date().getMonth() + 1 : `0${new Date().getMonth() + 1}`
     const lastDateThisMonth = new Date(year, month, 0).getDate()
     this.selectedMonth = `${year}-${month}`
-    this.selectedFilterStartDate = `${year}-${month}-01`
-    this.selectedFilterEndDate = `${year}-${month}-${lastDateThisMonth}`
+    if (this.$route.query.start_date && this.$route.query.end_date) {
+      this.selectedFilterStartDate = this.$route.query.start_date
+      this.selectedFilterEndDate = this.$route.query.end_date
+    } else {
+      this.selectedFilterStartDate = `${year}-${month}-01`
+      this.selectedFilterEndDate = `${year}-${month}-${lastDateThisMonth}`
+    }
     this.selectedLine = this.$route.query.line_id
       ? this.$route.query.line_id
       : localStorage.getItem('line_id')

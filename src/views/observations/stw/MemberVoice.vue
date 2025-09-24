@@ -1806,6 +1806,11 @@ export default {
     this.selectedFilterEndDate = `${year}-${month}-${lastDateThisMonth}`
     this.selectedLine = localStorage.getItem('line_id')
 
+    if (this.$route.query.start_date && this.$route.query.end_date) {
+      this.selectedFilterStartDate = moment(this.$route.query.start_date).set('date', 1).format('YYYY-MM-DD')
+      this.selectedFilterEndDate = moment(this.$route.query.end_date).set('date', lastDateThisMonth).format('YYYY-MM-DD')
+    }
+
     await this.getLines()
     await this.getUsers()
     await this.getMemberVoices()
