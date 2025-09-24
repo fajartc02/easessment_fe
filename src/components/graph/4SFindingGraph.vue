@@ -63,10 +63,11 @@
                 <loading :active="isLoading" :can-cancel="true" :is-full-page="false" />
               </div>
 
-              <div class="col-2 m-2" v-else v-for="detailGraph in get4SGraphs" :key="detailGraph.id">
+              <div class="col-2 m-2" v-else v-for="(detailGraph, i) in get4SGraphs" :key="detailGraph.id">
                 <div class="w-100 h-100 rounded">
                   <apexchart type="bar" :options="options" :series="detailGraph.chartData" height="100%"
-                    @click="clickHandler"></apexchart>
+                    @click="(event, chartContext, config) => { clickHandler(event, chartContext, config, i) }">
+                  </apexchart>
                 </div>
                 <div class="text-center mt-1">{{ detailGraph.month }}</div>
               </div>
@@ -127,8 +128,8 @@ export default {
         },
         tooltip: {
           y: {
-            formatter: (value, { series, seriesIndex, dataPointIndex, w }) => {
-              console.log(series, dataPointIndex, w)
+            formatter: (value, { seriesIndex }) => {
+              // console.log(series, dataPointIndex, w)
               return `${this.overallGraphData[seriesIndex].count} Temuan`
             },
             title: {
@@ -232,13 +233,13 @@ export default {
         colors: ['#b91c1c', '#15803d', '#a16207'],
         tooltip: {
           y: {
-            formatter: (value, { series, seriesIndex, dataPointIndex, w }) => {
-              console.log(series, dataPointIndex, w, seriesIndex)
+            formatter: (value) => {
+              // console.log(series, dataPointIndex, w, seriesIndex)
               return `${value} Temuan`
             },
             title: {
-              formatter: (seriesName) => {
-                console.log(seriesName);
+              formatter: () => {
+                // console.log(seriesName);
                 return `${'4S'} :`
               },
             },
@@ -304,19 +305,24 @@ export default {
     ...mapGetters(['getLinesOpts', 'getGraphs', 'get4SGraphs', 'getGroupsOpts']),
   },
   methods: {
-    clickHandler(event, chartContext, config) {
+    changeHandler(i) {
+      console.log(i);
+    },
+    clickHandler(event, chartContext, config, i) {
       console.log(event)
       console.log(chartContext)
       console.log(config)
+      console.log(i);
       if (config.seriesIndex != -1) {
-        let cm_judg = false
-
+        const seriesIndex = ['problem', 'closed', 'remain']
+        const start_date = moment().set('month', i).set('date', 1).format('YYYY-MM-DD')
+        const end_date = moment().set('month', i).set('date', moment().set('month', i).daysInMonth()).format('YYYY-MM-DD')
 
         this.$router.push(
-          `/4s/temuan?cm_judg=${cm_judg}&line_id=${this.selectedLineID?.line_id
+          `/4s/temuan?status_finding=${seriesIndex[config.seriesIndex]}&line_id=${this.selectedLineID?.line_id
             ? this.selectedLineID.line_id
             : this.selectedLine
-          }`,
+          }&start_date=${start_date}&end_date=${end_date}`,
         )
       }
 
