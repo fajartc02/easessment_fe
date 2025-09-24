@@ -48,8 +48,9 @@
             <label>Status</label>
             <select class="form-select" @change="addFilter()" v-model="selectedFilterJudge">
               <option value="-1" selected>All</option>
-              <option value="true">Sudah</option>
-              <option value="false">Belum</option>
+              <option v-for="opt in optEvaluation" :key="opt.system_value" :value="opt.system_value">{{ opt.system_value
+                }}</option>
+              <!-- <option value="false">Belum</option> -->
             </select>
           </div>
           <div class="col-sm-1">
@@ -1258,13 +1259,12 @@ export default {
         end_date: this.selectedFilterEndDate,
         limit: this.currentPageLimit,
         current_page: this.currentPage,
-        cm_judg: this.selectedFilterJudge
+        evaluation_nm: this.selectedFilterJudge
       }
       await this.$store.dispatch(GET_4S_FINDINGS, objQuery).then((res) => {
         this.findingList = res.list
         this.totalPage = res.total_page
         this.currentPage = res.current_page
-
       })
     },
     openAddFindingModal() {
@@ -1573,6 +1573,7 @@ export default {
       }
     },
     excelData() {
+      if (!this.findingList) return []
       return this.findingList.map(item => ({
         ...item,
         is_change_sop: item.is_change_sop === true ? 'Ya' : 'Tidak',
