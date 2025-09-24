@@ -1552,7 +1552,7 @@ export default {
         line_id: this.selectedLine,
         source_category: this.selectedFilterSourceCat,
         cm_judg: this.selectedFilterJudge,
-        limit: this.currentPageLimit,
+        limit: this.$route.query.no_limit ? -1 : this.currentPageLimit,
         currentPage: this.currentPage,
       }
 
@@ -1855,8 +1855,6 @@ export default {
         ? this.$route.query.line_id
         : '-1'
     }
-    this.selectedFilterStartDate = this.$route.query.start_date
-    this.selectedFileterEndDate = this.$route.query.end_date
 
     // const year = moment(new Date()).toISOString().split('T')[0].split('-')[0]
     // const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
@@ -1869,8 +1867,13 @@ export default {
     const month = new Date().getMonth() + 1 > 9 ? new Date().getMonth() + 1 : `0${new Date().getMonth() + 1}`
     const lastDateThisMonth = new Date(year, month, 0).getDate()
     this.selectedMonth = `${year}-${month}`
-    this.selectedFilterStartDate = `${year}-${month}-01`
-    this.selectedFilterEndDate = `${year}-${month}-${lastDateThisMonth}`
+    if (this.$route.query.start_date && this.$route.query.end_date) {
+      this.selectedFilterStartDate = this.$route.query.start_date
+      this.selectedFilterEndDate = this.$route.query.end_date
+    } else {
+      this.selectedFilterStartDate = `${year}-${month}-01`
+      this.selectedFilterEndDate = `${year}-${month}-${lastDateThisMonth}`
+    }
     this.selectedLine = this.$route.query.line_id
       ? this.$route.query.line_id
       : localStorage.getItem('line_id')
