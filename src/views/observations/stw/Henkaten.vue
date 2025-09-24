@@ -76,7 +76,7 @@
               <td id="fixCol-9" class="px-4">
                 <template v-for="labelScore in scoreopts">
                   <label :key="labelScore.score" v-if="labelScore.score === henkaten.score">{{ labelScore.label
-                    }}</label>
+                  }}</label>
                 </template>
               </td>
 
@@ -836,6 +836,7 @@ import { toast } from 'vue3-toastify'
 import SCORE_MOCK from '@/mocks/score.mock'
 import Treeselect from '@cholakovdev/vue3-treeselect'
 import '@cholakovdev/vue3-treeselect/dist/vue3-treeselect.css'
+import moment from 'moment'
 
 
 export default {
@@ -1414,6 +1415,13 @@ export default {
     this.selectedFilterStartDate = `${year}-${month}-01`
     this.selectedFilterEndDate = `${year}-${month}-${lastDateThisMonth}`
     this.selectedLine = localStorage.getItem('line_id')
+
+
+    if (this.$route.query.start_date && this.$route.query.end_date) {
+      this.selectedFilterStartDate = moment(this.$route.query.start_date).set('date', 1).format('YYYY-MM-DD')
+      this.selectedFilterEndDate = moment(this.$route.query.end_date).set('date', lastDateThisMonth).format('YYYY-MM-DD')
+    }
+
     await this.getLines()
     await this.getUsers()
     await this.getCategories()

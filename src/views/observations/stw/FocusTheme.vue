@@ -864,6 +864,7 @@ import Pagination from '@/components/Pagination.vue'
 import Treeselect from '@cholakovdev/vue3-treeselect'
 import '@cholakovdev/vue3-treeselect/dist/vue3-treeselect.css'
 import SCORE_MOCK from '@/mocks/score.mock'
+import moment from 'moment'
 
 
 export default {
@@ -1487,6 +1488,11 @@ export default {
     this.selectedFilterStartDate = `${year}-${month}-01`
     this.selectedFilterEndDate = `${year}-${month}-${lastDateThisMonth}`
     this.selectedLine = localStorage.getItem('line_id')
+
+    if (this.$route.query.start_date && this.$route.query.end_date) {
+      this.selectedFilterStartDate = moment(this.$route.query.start_date).set('date', 1).format('YYYY-MM-DD')
+      this.selectedFilterEndDate = moment(this.$route.query.end_date).set('date', lastDateThisMonth).format('YYYY-MM-DD')
+    }
     await this.getSystem()
     await this.getLines()
     await this.getFocusThemes()

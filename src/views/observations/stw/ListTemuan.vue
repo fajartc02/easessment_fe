@@ -152,10 +152,18 @@
                     Observation
                   </button>
                   <template v-else>
-                    <div class="card text-light" :style="`background-color: ${COLOR_STW[finding.source_category]
-                      }`">
+                    <button class="btn btn-info" :style="`background-color: ${COLOR_STW[finding.source_category]
+                      }`" @click="() => {
+                        if (finding.source_category === 'MV') {
+                          $router.push(`/stw/member-voice?start_date=${formatTheDate(finding.finding_date)}&end_date=${formatTheDate(finding.finding_date)}`)
+                        } else if (finding.source_category === 'FT') {
+                          $router.push(`/stw/focus-theme?start_date=${formatTheDate(finding.finding_date)}&end_date=${formatTheDate(finding.finding_date)}`)
+                        } else if (finding.source_category === 'H') {
+                          $router.push(`/stw/henkaten?start_date=${formatTheDate(finding.finding_date)}&end_date=${formatTheDate(finding.finding_date)}`)
+                        }
+                      }">
                       {{ finding.source_category }}
-                    </div>
+                    </button>
                   </template>
                 </td>
                 <td id="fixCol-4" class="px-2">
