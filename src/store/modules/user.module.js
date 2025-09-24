@@ -4,6 +4,7 @@ export const POST_USER = "postUser";
 export const PUT_USER = "putUser";
 export const DELETE_USER = "deleteUser";
 export const PUT_USER_ROLE = "putUserRole";
+export const PUT_USER_PASS = "PUT_USER_PASS";
 // mutation types
 export const SET_USERS = "setUsers";
 
@@ -159,7 +160,22 @@ const actions = {
           reject(err)
         });
     })
-  }
+  },
+ [PUT_USER_PASS]({ commit }, { id, password }) {
+  ApiService.setHeader()
+  return new Promise((resolve, reject) => {
+    ApiService.put(`master/users/pass/${id}`, { password })
+      .then((result) => {
+        const passdata = result.data
+        resolve(passdata.data)
+        console.log(commit) 
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+},
+
 
 };
 
