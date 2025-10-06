@@ -1,8 +1,11 @@
 <template>
-  <div class="bg-light min-vh-100 d-flex flex-row align-items-center">
+  <div class="bg-light min-vh-100 d-flex flex-row align-items-center" style="background-color: aliceblue!important;">
     <CContainer>
-      <CRow class="justify-content-center">
-        <CCol :md="8">
+      <CRow class="justify-content-between align-items-center">
+        <CCol :md="6">
+          <img class="bg-image w-100" src="@/assets/images/imageLogin.png" alt="Sign Up">
+        </CCol>
+        <CCol :md="6">
           <CCardGroup>
             <CCard class="p-4">
               <CCardBody>
@@ -27,6 +30,26 @@
                       <CButton @click="login()" color="primary" class="px-4">
                         Login
                       </CButton>
+                    </CCol>
+                  </CRow>
+                  <br>
+                  <CRow>
+                    <CCol :xs="12">
+                      <i>
+                        Admin Contact (Dita Nurlita):
+                        <a href="https://wa.me/628986264957" target="_blank">
+                          Contact Here!
+                        </a>
+                      </i>
+                    </CCol>
+
+                    <CCol :xs="12">
+                      <i>
+                        Video Tutorial (E-Observations):
+                        <a href="https://wa.me/628986264957" target="_blank">
+                          See Here!
+                        </a>
+                      </i>
                     </CCol>
                   </CRow>
                 </CForm>
