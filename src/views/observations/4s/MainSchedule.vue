@@ -65,11 +65,12 @@
                 </div> -->
                 <div class="d-flex align-items-center">
                   <CIcon icon="cilXCircle" class="text-danger" size="lg" />
-                  <span class="mx-2">Sudah Cleaning, ada temuan abnormally</span>
+                  <span class="mx-2">Sudah Cleaning, ada temuan abnormality</span>
                 </div>
               </div>
             </div>
           </div>
+
         </div>
       </template>
       <div class="card-body p-0 overflow-x-auto">
@@ -149,6 +150,9 @@
                     <div class="d-flex align-items-center">
                       <CIcon icon="cilXCircle" class="text-danger" size="lg" />
                       <span class="mx-2">Sudah Cleaning, ada temuan abnormally</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                      <button class="btn btn-outline-info" @click="add4sSubScheduleModal">add schedule</button>
                     </div>
                   </div>
                 </div>
@@ -500,6 +504,57 @@
         </CButton>
       </CModalFooter>
     </CModal>
+
+    <!-- change date modal -->
+    <CModal backdrop="static" alignment="center" :visible="modalSubScheduleAdd" @close="modalSubScheduleAdd = false"
+      size="lg">
+      <CModalHeader>
+        <CModalTitle>Add Schedule</CModalTitle>
+      </CModalHeader>
+      <CModalBody>
+        <div class="mb-2">
+          <div class="row">
+            <div class="col-12">
+              Select Date
+            </div>
+            <div class="col-12">
+              <input type="date" class="form-control py-2" v-model="formPayloadAddSchedule.selectedDate" />
+            </div>
+            <div class="col-12">
+              <label>Line</label>
+              <select class="form-select" v-model="formPayloadAddSchedule.selectedLine">
+                <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
+                  {{ line.text }}
+                </option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label>Group / Shift</label>
+              <select class="form-select" v-model="formPayloadAddSchedule.selectedGroup">
+                <option v-for="(group, index) in getGroups" :key="index" :value="group.id">
+                  {{ group.group_nm }}
+                </option>
+              </select>
+            </div>
+            <!-- get kanbans -->
+            <div class="col-12">
+              <label>Kanban</label>
+              <VueMultiselect v-model="formPayloadAddSchedule.selectedKanban" :options="getKanbansOpts"
+                :custom-label="(opt) => opt.text">
+              </VueMultiselect>
+            </div>
+          </div>
+        </div>
+      </CModalBody>
+      <CModalFooter>
+        <CButton color="secondary" class="text-white" @click="changeDateModal = false">
+          Close
+        </CButton>
+        <CButton color="info" class="text-white" @click="add4sSubSchedule()">
+          Add Schedule
+        </CButton>
+      </CModalFooter>
+    </CModal>
   </div>
 </template>
 
@@ -534,6 +589,15 @@ export default {
   components: { CustPagination, Loading, vueSignature, VueMultiselect, JudgmentConfirmation },
   data() {
     return {
+      // start:: add sub schedule data
+      modalSubScheduleAdd: false,
+      formPayloadAddSchedule: {
+        selectedDate: moment().format("YYYY-MM-DD"),
+        selectedLine: null,
+        selectedGroup: null,
+        selectedKanban: null
+      },
+      // end:: add sub schedule data
       visibleModalConfJudg: false,
       selectedJudgContent: null,
       totalDate: 31,
@@ -657,12 +721,36 @@ export default {
     selectedLineID: function () {
       this.getZone();
       this.onChangeLine();
+      this.getKanban();
     },
     selectedZoneID: function () {
+      this.getKanban();
+    },
+    ['formPayloadAddSchedule.selectedLine']: function () {
       this.getKanban();
     }
   },
   methods: {
+    add4sSubScheduleModal() {
+      this.modalSubScheduleAdd = true
+    },
+    async add4sSubSchedule() {
+      try {
+        // set params
+        let payload = {
+          ...this.formPayloadAddSchedule,
+        }
+
+        await ApiService.post('/operational/4s/sub-schedule/add', payload)
+        this.modalSubScheduleAdd = false
+        alert('Success to add schedule')
+        await this.getSchedules()
+      } catch (error) {
+        if (error.response.status == 401) this.$router.push("/login");
+        console.log(error);
+        alert('Error to add schedule')
+      }
+    },
     judgmentConf(content, judgment, dateIdx, children) {
       this.visibleModalConfJudg = true
       this.selectedJudgContent = {
@@ -756,11 +844,7 @@ export default {
             });
         }, 800); // kasih waktu render
       });
-    }
-    ,
-
-
-
+    },
     addScheduleCheck(mainScheduleID, subScheduleID) {
       this.$router.push(`/4s/schedule-check/${mainScheduleID}/${subScheduleID}`);
     },
@@ -1019,7 +1103,8 @@ export default {
     },
     async getKanban() {
       try {
-        this.$store.dispatch(GET_KANBANS, { zone_id: this.selectedZoneID ?? -1 });
+        console.log(this.formPayloadAddSchedule.selectedLine);
+        this.$store.dispatch(GET_KANBANS, { zone_id: this.selectedZoneID ?? -1, line_id: this.formPayloadAddSchedule.selectedLine ?? this.selectedLineID ?? -1, limit: 1000 });
       } catch (error) {
         if (error.response.status == 401) this.$router.push("/login");
         console.log(error);
