@@ -72,11 +72,11 @@
           <CButton variant="ghost" color="info" @click="() => {
             demoTSK = true
           }
-            ">{{ tskLabel }}</CButton>
+          ">{{ tskLabel }}</CButton>
           <CModal size="xl" :visible="demoTSK" @close="() => {
             demoTSK = false
           }
-            ">
+          ">
             <CModalHeader>
               <CModalTitle v-if="observation.job_type_nm">{{
                 tskLabel
@@ -90,11 +90,11 @@
           <CButton variant="ghost" color="info" @click="() => {
             demoTSKK = true
           }
-            ">{{ tskkLabel }}</CButton>
+          ">{{ tskkLabel }}</CButton>
           <CModal size="xl" :visible="demoTSKK" @close="() => {
             demoTSKK = false
           }
-            ">
+          ">
             <CModalHeader>
               <CModalTitle>{{ tskkLabel }}</CModalTitle>
             </CModalHeader>
@@ -106,11 +106,11 @@
           <CButton variant="ghost" color="info" @click="() => {
             demoSOP = true
           }
-            ">SOP</CButton>
+          ">SOP</CButton>
           <CModal size="xl" :visible="demoSOP" @close="() => {
             demoSOP = false
           }
-            ">
+          ">
             <CModalHeader>
               <CModalTitle>SOP</CModalTitle>
             </CModalHeader>
@@ -308,7 +308,7 @@
                 finding.obs_result_id = item.obs_result_id
                 mapUsersData()
               }
-                ">
+              ">
                 Add findings
               </button>
             </div>
@@ -743,7 +743,9 @@ export default {
         let checkedData = {
           observation_id: this.$route.params.id,
           category_id: item.id,
-          judgment_id: (this.observation?.job_type_nm === 'Type 1' || this.observation?.job_type_nm === 'Type 2' || this.observation?.job_type_nm === 'Type 3') && item.id == '3ce06d66-fe82-4e0a-a1fd-ce927ec85167' ? this.judgementID : item.judgment_id,
+          judgment_id: (this.observation?.job_type_nm === 'Type 1' || this.observation?.job_type_nm === 'Type 2' ||
+            this.observation?.job_type_nm === 'Abnormality' ||
+            this.observation?.job_type_nm === 'Type 3') && item.id == '3ce06d66-fe82-4e0a-a1fd-ce927ec85167' ? this.judgementID : item.judgment_id,
           stw_ct1: item.stw_ct1,
           stw_ct2: item.stw_ct2,
           stw_ct3: item.stw_ct3,
