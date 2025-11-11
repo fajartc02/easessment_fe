@@ -294,14 +294,14 @@
                   " icon="cil-check" size="sm" />
                 </td>
                 <td v-for="item in totalDate" :key="item.idx" style="min-width: 30px">
-                  <div v-if="item == finding.week_plan - 1" :style="`width: 20px; height: 20px; border: 2px dotted #64748b; background-color: ${finding.status_check == 'CLOSED'
+                  <div v-if="item == finding.week_plan" :style="`width: 20px; height: 20px; border: 2px dotted #64748b; background-color: ${finding.status_check == 'CLOSED'
                     ? '#bbf7d0'
                     : finding.status_check == 'DELAY'
                       ? '#fee2e2'
                       : '#f3f4f6'
                     }`"></div>
 
-                  <div v-if="item == finding.week_actual - 1" class="mt-2" style="
+                  <div v-if="item == finding.week_actual" class="mt-2" style="
                       width: 20px;
                       height: 20px;
                       border: 2px solid #64748b;
