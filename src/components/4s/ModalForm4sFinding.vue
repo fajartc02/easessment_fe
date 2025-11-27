@@ -247,7 +247,7 @@
         </CModalBody>
         <CModalFooter>
           <CButton color="secondary" @click="closeModal()"> Close </CButton>
-          <CButton color="primary" type="submit">
+          <CButton color="primary" type="submit" :disabled="isLoadingSave">
             {{ this.loadedFinding?.finding_id ? 'Update' : 'Add' }} Finding Data
           </CButton>
         </CModalFooter>
