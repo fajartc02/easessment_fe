@@ -223,8 +223,8 @@
                 <td>{{ finding.cm_pic_nm }}</td>
                 <td v-for="n in num" :key="n" style="min-width: 30px !important; padding: 5px">
                   <div v-if="
-                    n >= finding.w_str_plan_date - 1 &&
-                    n <= finding.w_end_plan_date - 1
+                    n >= finding.w_str_plan_date &&
+                    n <= finding.w_end_plan_date
                   " :style="`
                       width: 100%;
                       height: 25px;
@@ -245,8 +245,8 @@
                       `"></div>
 
                   <div class="my-2" v-if="
-                    n >= finding.w_str_act_date - 1 &&
-                    n <= finding.w_end_act_date - 1
+                    n >= finding.w_str_act_date &&
+                    n <= finding.w_end_act_date
                   " :style="`
                       width: 100%;
                       height: 25px;

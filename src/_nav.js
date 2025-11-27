@@ -215,7 +215,7 @@ export default [{
   component: 'CNavItem',
   name: 'Users',
   to: '/master/user',
-  is_admin: true,
+  is_admin: false,
   icon: 'cil-user',
   hide_for_roles: ['TM', null]
 },
