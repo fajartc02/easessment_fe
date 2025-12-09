@@ -665,7 +665,7 @@ export default {
       mainSubScheduleID: [],
       isLoadingMainSchedule: false,
       isAssyLine: false,
-      limitSubSchedule: 10,
+      limitSubSchedule: 40,
       currentPageSubSchedule: 1,
       selectedScheduleData: null, // uc. sign checker
       loadingSign: [
