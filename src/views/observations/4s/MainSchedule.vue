@@ -182,11 +182,11 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <td v-if="mainSchedule.sub_schedules.length == 0 && !isLoading" :colspan="getDateThisMonth + 9"
-                    class="text-center p-3" style="min-width: 50px;">
+                  <td v-if="mainSchedule.sub_schedules.length == 0 && !loadingSchedule[index]"
+                    :colspan="getDateThisMonth + 9" class="text-center p-3" style="min-width: 50px;">
                     No Data Available
                   </td>
-                  <td v-else-if="isLoading" :colspan="getDateThisMonth + 9" class="p-5 text-center"
+                  <td v-else-if="loadingSchedule[index]" :colspan="getDateThisMonth + 9" class="p-5 text-center"
                     style="min-width: 50px;">
                     <CSpinner aria-hidden="true" />
                   </td>
@@ -282,31 +282,39 @@
                       </td>
                     </tr>
 
-                    <!-- Sign TL 1 -->
-                    <tr>
-                      <td colspan="7" class="text-center">Sign TL</td>
-                      <td v-for="children in signCheckers[index]" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
-                        } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
-                        } `">
-
-                        <div v-if="children.canSign || children?.has_tl1_sign"
-                          class="d-flex align-items-center justify-content-center w-full">
-                          <button @click="
-                            openSignModal(extractSignReq(mainSchedule?.sub_schedules[0], children), children.tl1_sign_checker_id, 'sign_tl_1')
-                            " class="check-wrapper-null d-flex align-items-center justify-content-center">
-                            <CIcon v-if="children.canSign" icon="cil-x" class="text-danger" size="sm" />
-                            <img v-else-if="children?.has_tl1_sign" :src="children.sign_tl_1" alt="sign" :style="{
-                              width: '50px',
-                              height: '50px'
-                            }" />
-                          </button>
-                        </div>
+                    <tr v-if="loadingSign[index]">
+                      <td rowspan="3" :colspan="getDateThisMonth + 7" class="text-center p-5">
+                        <CSpinner aria-hidden="true" />
                       </td>
                     </tr>
 
-                    <!-- SIGN TL 2 -->
-                    <!-- should hide when line is crank shaft (temporary) -->
-                    <!-- <tr v-if="mainSchedule.line_id !== '73a281a9-8923-48d3-a80e-e62ed61d89b7'">
+                    <template v-else>
+
+                      <!-- Sign TL 1 -->
+                      <tr>
+                        <td colspan="7" class="text-center">Sign TL</td>
+                        <td v-for="children in signCheckers[index]" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
+                          } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
+                          } `">
+
+                          <div v-if="children.canSign || children?.has_tl1_sign"
+                            class="d-flex align-items-center justify-content-center w-full">
+                            <button @click="
+                              openSignModal(extractSignReq(mainSchedule?.sub_schedules[0], children), children.tl1_sign_checker_id, 'sign_tl_1', children)
+                              " class="check-wrapper-null d-flex align-items-center justify-content-center">
+                              <img v-if="children?.sign_tl_1" :src="children.sign_tl_1" alt="sign" :style="{
+                                width: '50px',
+                                height: '50px'
+                              }" />
+                              <CIcon v-else-if="children.canSign" icon="cil-x" class="text-danger" size="sm" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <!-- SIGN TL 2 -->
+                      <!-- should hide when line is crank shaft (temporary) -->
+                      <!-- <tr v-if="mainSchedule.line_id !== '73a281a9-8923-48d3-a80e-e62ed61d89b7'">
                       <td colspan="7" class="text-center">Sign TL 2</td>
                       <td v-for="children in mainSchedule?.sub_schedules[0]?.children" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
                         } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
@@ -333,51 +341,53 @@
                       </td>
                     </tr> -->
 
-                    <!-- SIGN GL -->
-                    <tr>
-                      <td colspan="7" class="text-center">Sign GL</td>
-                      <td v-for="children in signCheckers[index]" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
-                        } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
-                        } `">
-                        <!-- {{ children }} -->
+                      <!-- SIGN GL -->
+                      <tr>
+                        <td colspan="7" class="text-center">Sign GL</td>
+                        <td v-for="children in signCheckers[index]" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
+                          } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
+                          } `">
+                          <!-- {{ children }} -->
 
-                        <div v-if="children.canSign || children?.has_gl_sign"
-                          class="d-flex align-items-center justify-content-center w-full">
-                          <button @click="
-                            openSignModal(extractSignReq(mainSchedule?.sub_schedules[0], children), children?.gl_sign_checker_id, 'sign_gl')
-                            " class="check-wrapper-null d-flex align-items-center justify-content-center">
+                          <div v-if="children.canSign || children?.has_gl_sign"
+                            class="d-flex align-items-center justify-content-center w-full">
+                            <button @click="
+                              openSignModal(extractSignReq(mainSchedule?.sub_schedules[0], children), children?.gl_sign_checker_id, 'sign_gl', children)
+                              " class="check-wrapper-null d-flex align-items-center justify-content-center">
 
-                            <img v-if="children?.has_gl_sign" :src="children.sign_gl" alt="sign" :style="{
-                              width: '50px',
-                              height: '50px'
-                            }" />
-                            <CIcon v-else-if="children.canSign" icon="cil-x" class="text-danger" size="sm" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                              <img v-if="children?.sign_gl" :src="children.sign_gl" alt="sign" :style="{
+                                width: '50px',
+                                height: '50px'
+                              }" />
+                              <CIcon v-else-if="children.canSign" icon="cil-x" class="text-danger" size="sm" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
 
-                    <!-- SIGN SH -->
-                    <tr>
-                      <td colspan="7" class="text-center">Sign SH</td>
-                      <td v-for="children in signCheckers[index]" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
-                        } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
-                        } `">
+                      <!-- SIGN SH -->
+                      <tr>
+                        <td colspan="7" class="text-center">Sign SH</td>
+                        <td v-for="children in signCheckers[index]" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
+                          } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
+                          } `">
 
-                        <div v-if="children.canSign || children?.has_sh_sign"
-                          class="d-flex align-items-center justify-content-center w-full">
-                          <button @click="
-                            openSignModal(extractSignReq(mainSchedule?.sub_schedules[0], children), children?.sh_sign_checker_id, 'sign_sh')
-                            " class="check-wrapper-null d-flex align-items-center justify-content-center">
-                            <img v-if="children?.has_sh_sign" :src="children.sign_sh" alt="sign" :style="{
-                              width: '50px',
-                              height: '50px'
-                            }" />
-                            <CIcon v-else-if="children.canSign" icon="cil-x" class="text-danger" size="sm" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                          <div v-if="children.canSign || children?.has_sh_sign"
+                            class="d-flex align-items-center justify-content-center w-full">
+                            <button @click="
+                              openSignModal(extractSignReq(mainSchedule?.sub_schedules[0], children), children?.sh_sign_checker_id, 'sign_sh', children)
+                              " class="check-wrapper-null d-flex align-items-center justify-content-center">
+                              <img v-if="children?.sign_sh" :src="children.sign_sh" alt="sign" :style="{
+                                width: '50px',
+                                height: '50px'
+                              }" />
+                              <CIcon v-else-if="children.canSign" icon="cil-x" class="text-danger" size="sm" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    </template>
+
                   </template>
                 </tbody>
               </table>
@@ -599,6 +609,7 @@ export default {
       selectedJudgContent: null,
       totalDate: 31,
       isLoading: true,
+      loadingSchedule: [],
       isMainScheduleEmpty: false,
       isAddPICLoading: false,
       isChangeDateLoading: false,
@@ -666,10 +677,7 @@ export default {
       currentPageSubSchedule: 1,
       signCheckers: [],
       selectedScheduleData: null, // uc. sign checker
-      loadingSign: [
-        false,
-        false
-      ]
+      loadingSign: []
     };
   },
   computed: {
@@ -874,8 +882,7 @@ export default {
 
           if (this.mainScheduleData.length > 0) {
             for (let i = 0; i < this.mainScheduleData.length; i++) {
-              this.loadingSign[i] = true;
-              await this.getSubSchedules(this.mainScheduleData[i].main_schedule_id, i);
+              this.getSubSchedules(this.mainScheduleData[i].main_schedule_id, i)
             }
           } else {
             this.isMainScheduleEmpty = true;
@@ -888,6 +895,7 @@ export default {
     async getSubSchedules(mainScheduleID, index) {
       //this.newSubScheduleData = []
       //this.subScheduleData = []
+      this.loadingSchedule[index] = true;
       this.isLoading = true;
       let objQuery = {
         main_schedule_id: mainScheduleID,
@@ -899,8 +907,6 @@ export default {
         limit: this.limitSubSchedule,
         current_page: this.currentPageSubSchedule
       };
-
-      const self = this;
 
       await this.$store.dispatch(GET_SUB_SCHEDULES, objQuery).then(async (res) => {
         if (res) {
@@ -914,35 +920,6 @@ export default {
             return redTemp.localeCompare(whiteTemp);
           });
 
-          if (res.schedule && res.schedule.length && res.schedule[0].children.length) {
-
-            for (let i = 0; i < res.schedule[0].children.length; i++) {
-              const item = res.schedule[0].children[i];
-
-              try {
-                if (item.tl1_sign_checker_id && item.has_tl1_sign) {
-                  const base64 = await self.loadSign(item.tl1_sign_checker_id);
-                  const cropped = await autoCropSignature(base64);
-                  item.sign_tl_1 = cropped;
-                }
-
-                if (item.gl_sign_checker_id && item.has_gl_sign) {
-                  const base64 = await self.loadSign(item.gl_sign_checker_id);
-                  const cropped = await autoCropSignature(base64);
-                  item.sign_gl = cropped;
-                }
-
-                if (item.sh_sign_checker_id && item.has_sh_sign) {
-                  const base64 = await self.loadSign(item.sh_sign_checker_id);
-                  const cropped = await autoCropSignature(base64);
-                  item.sign_sh = cropped;
-                }
-              }
-              catch (error) {
-                console.error(`Error processing signatures for item ${i}:`, error);
-              }
-            }
-          }
 
           this.mappingSignCheckers(res, index);
           this.mainScheduleData[index].sub_schedules = res.schedule;
@@ -959,6 +936,7 @@ export default {
           this.signGLData = res.sign_checker_gl;
           this.signSHData = res.sign_checker_sh;
           this.isLoading = false;
+          this.loadingSchedule[index] = false;
 
           console.log("mainScheduleData", this.mainScheduleData);
         }
@@ -970,81 +948,109 @@ export default {
         return;
       }
 
+      this.loadingSign[mainScheduleIndex] = true;
+      const self = this;
+      if (res.schedule?.[0]?.children?.length) {
+        const children = res.schedule[0].children;
+
+        // Collect all sign loading promises to execute in parallel
+        const signPromises = children.flatMap((item, index) => {
+          const promises = [];
+
+          const signConfigs = [
+            { checkerId: item.tl1_sign_checker_id, hasSign: item.has_tl1_sign, key: 'sign_tl_1' },
+            { checkerId: item.gl_sign_checker_id, hasSign: item.has_gl_sign, key: 'sign_gl' },
+            { checkerId: item.sh_sign_checker_id, hasSign: item.has_sh_sign, key: 'sign_sh' }
+          ];
+
+          signConfigs.forEach(({ checkerId, hasSign, key }) => {
+            if (checkerId && hasSign) {
+              promises.push(
+                self.loadSign(checkerId)
+                  .then(autoCropSignature)
+                  .then(cropped => {
+                    item[key] = cropped;
+                  })
+                  .catch(error => {
+                    console.error(`Error processing ${key} for item ${index}:`, error);
+                  })
+              );
+            }
+          });
+
+          return promises;
+        });
+
+        // Execute all sign loading operations in parallel
+        await Promise.allSettled(signPromises);
+      }
+
       let signs = []
       let signTl = null, signGl = null, signSh = null;
+      let signTlId = null, signGlId = null, signShId = null;
       const [year, month] = this.getYearAndMonth(res.schedule[0].children[0].date);
 
       //hardcoded
       const isTargetPeriod = (year === 2025 && month >= 7) || (year === 2026 && month <= 0);
       console.log("isTargetPeriod", isTargetPeriod);
 
-      /* if (isTargetPeriod) {
+      if (isTargetPeriod) {
         const item = res.schedule[0];
         const availSignTl = item.children.find(c => c.tl1_sign_checker_id && c.has_tl1_sign);
         const availSignGl = item.children.find(c => c.gl_sign_checker_id && c.has_gl_sign);
         const availSignSh = item.children.find(c => c.sh_sign_checker_id && c.has_sh_sign);
 
-        console.log("availSignTl", availSignTl);
-        console.log("availSignGl", availSignGl);
-        console.log("availSignSh", availSignSh);
-
         if (availSignTl || availSignGl || availSignSh) {
-          signTl ??= availSignTl?.tl1_sign_checker_id;
-          signGl ??= availSignGl?.gl_sign_checker_id;
-          signSh ??= availSignSh?.sh_sign_checker_id;
+          signTlId ??= availSignTl?.tl1_sign_checker_id;
+          signGlId ??= availSignGl?.gl_sign_checker_id;
+          signShId ??= availSignSh?.sh_sign_checker_id;
         }
       }
 
 
-      if (signTl) {
-        const base64 = await this.loadSign(signTl);
-        console.log("tl1", base64);
-        
+      if (signTlId) {
+        const base64 = await this.loadSign(signTlId);
         const cropped = await autoCropSignature(base64);
         signTl = cropped;
-        console.log("cropped", cropped);
       }
 
-      if (signGl) {
-        const base64 = await this.loadSign(signGl);
-        console.log("gl", base64);
-        
+      if (signGlId) {
+        const base64 = await this.loadSign(signGlId);
         const cropped = await autoCropSignature(base64);
         signGl = cropped;
-        console.log("cropped", cropped);
       }
 
-      if (signSh) {
-        const base64 = await this.loadSign(signSh);
-        console.log("sh", base64);
-
+      if (signShId) {
+        const base64 = await this.loadSign(signShId);
         const cropped = await autoCropSignature(base64);
         signSh = cropped;
-        console.log("cropped", cropped);
-        
-      } */
+      }
 
       for (let i = 0; i < res.schedule.length; i++) {
-
         for (let j = 0; j < res.schedule[i].children.length; j++) {
           const activityStat = res.schedule[i].children[j]?.status === 'PLANNING'
             || res.schedule[i].children[j]?.status === 'PROBLEM'
             || res.schedule[i].children[j]?.status === 'ACTUAL';
-          const canSign = activityStat === true;
-
+          
           signs = this.pushOrReplace(
             signs,
             'date',
             res.schedule[i].children[j].date,
             {
               ...res.schedule[i].children[j],
+              sign_tl_1: res.schedule[i].children[j].sign_tl_1 || signTl,
+              sign_gl: res.schedule[i].children[j].sign_gl || signGl,
+              sign_sh: res.schedule[i].children[j].sign_sh || signSh,
               has_tl1_sign: res.schedule[i].children[j].has_tl1_sign,
               has_gl_sign: res.schedule[i].children[j].has_gl_sign,
               has_sh_sign: res.schedule[i].children[j].has_sh_sign,
-              tl1_sign_checker_id:  res.schedule[i].children[j].tl1_sign_checker_id || signTl,
-              gl_sign_checker_id: res.schedule[i].children[j].gl_sign_checker_id || signGl,
-              sh_sign_checker_id: res.schedule[i].children[j].sh_sign_checker_id || signSh,
-              canSign: canSign,
+              tl1_sign_checker_id: res.schedule[i].children[j].tl1_sign_checker_id || signTlId,
+              gl_sign_checker_id: res.schedule[i].children[j].gl_sign_checker_id || signGlId,
+              sh_sign_checker_id: res.schedule[i].children[j].sh_sign_checker_id || signShId,
+              isCloneTl: res.schedule[i].children[j].tl1_sign_checker_id,
+              isCloneGl: res.schedule[i].children[j].gl_sign_checker_id,
+              isCloneSh: res.schedule[i].children[j].sh_sign_checker_id,
+              canSign: activityStat === true,
             },
             (oldItem, newItem) => {
               return oldItem.canSign !== newItem.canSign && newItem.canSign === true;
@@ -1053,10 +1059,10 @@ export default {
         }
       }
 
-
       this.signCheckers[mainScheduleIndex] = signs;
       console.log("sign", this.signCheckers[mainScheduleIndex]);
 
+      this.loadingSign[mainScheduleIndex] = false;
     },
 
     async addPIC() {
@@ -1233,7 +1239,9 @@ export default {
     },
 
     // sign methods
-    openSignModal(schedule, signCheckerID, from) {
+    openSignModal(schedule, signCheckerID, from, signCheckerObj) {
+      console.log("openSign schedule", schedule, signCheckerID, from, signCheckerObj);
+
       this.selectedScheduleData = {
         ...schedule,
         is_tl_1: from === "sign_tl_1" ? true : null,
@@ -1241,10 +1249,18 @@ export default {
         is_sh: from === "sign_sh" ? true : null,
       };
 
+      let isClone = (from === "sign_tl_1" && !signCheckerObj.isCloneTl)
+        || (from === "sign_gl" && !signCheckerObj.isCloneGl)
+        || (from === "sign_sh" && !signCheckerObj.isCloneSh);
+      
+
+      signCheckerID = signCheckerID ?? "createnew";
       this.selectedSignType = from;
       this.addSignModal = true;
-      this.selectedSignCheckerID = signCheckerID ?? "createnew";
-      this.getSignature();
+      this.selectedSignCheckerID = isClone ? "createnew" : signCheckerID;
+      console.log("selectedSignCheckerID", this.selectedSignCheckerID);
+      
+      this.getSignature(signCheckerID);
     },
     async closeSignModal(isRefresh = false) {
       this.addSignModal = false;
@@ -1289,20 +1305,18 @@ export default {
       }
 
     },
-    async getSignature() {
-      if (!this.selectedSignCheckerID || this.selectedSignCheckerID == "createnew") {
+    async getSignature(signCheckerId) {
+      if (signCheckerId == "createnew") {
         return
       }
 
-      this.isUploadSignLoading = true;
       ApiService.setHeader();
       const getData = await ApiService.get(
-        `/operational/4s/sub-schedule/sign/${this.selectedSignCheckerID}`
+        `/operational/4s/sub-schedule/sign/${signCheckerId}`
       );
 
-      if (getData.data.message == "Success to get 4s sign checker") {
+      if (getData.data.status) {
         this.selectedSign = getData.data.data.sign;
-        this.isUploadSignLoading = false;
       }
     },
 
@@ -1403,8 +1417,10 @@ export default {
       this.selectedLineID = localStorage.getItem("line_id");
     }
     this.newSubScheduleData = [];
-    const year = moment().format("YYYY");
-    const month = moment().format("MM");
+    /* const year = moment().format("YYYY");
+    const month = moment().format("MM"); */
+    const year = "2025";
+    const month = "12";
     // const month = moment().set('month', 0).format("MM");
     this.selectedMonth = `${year}-${month}`;
     await this.getLines();
