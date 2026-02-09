@@ -50,6 +50,7 @@
           <th>SOP</th>
           <th>Pembuat</th>
           <th>Tanggal Di buat</th>
+          <th>Wras</th>
           <th colspan="2">Actions</th>
         </tr>
         <template v-if="jobState.length > 0">
@@ -72,6 +73,12 @@
             </td>
             <td>{{ job.created_by }}</td>
             <td>{{ job.created_dt.split('T')[0] }}</td>
+           <td>
+  <CButton color="info" @click="handleWras(job)">
+    <CIcon icon="cil-notes" size="sm" />
+  </CButton>
+</td>
+
             <td>
               <CButton color="warning" @click="editPos(job.uuid)">
                 <CIcon icon="cil-pencil" size="sm" />
@@ -109,12 +116,60 @@
       </div>
     </div>
   </div>
+
+<!-- Modal ADD WRAS -->
+<!-- Modal ADD WRAS -->
+<CModal :visible="isAddOpen" @close="isAddOpen = false" size="fullscreen" backdrop="static">
+  <CModalHeader>
+    <CModalTitle>Add WRAS</CModalTitle>
+  </CModalHeader>
+
+  <CModalBody class="p-0" style="overflow: hidden; height: calc(100vh - 120px);">
+    <div class="w-100 h-100">
+      <!-- Fullscreen LuckySheet -->
+      <LuckySheetWrapper ref="luckysheetAdd" :readOnly="false" class="w-100 h-100" />
+    </div>
+  </CModalBody>
+
+  <CModalFooter class="justify-content-end">
+    <CButton color="secondary" @click="isAddOpen = false">Cancel</CButton>
+    <CButton color="primary" @click="saveAdd">Save</CButton>
+  </CModalFooter>
+</CModal>
+
+<!-- Modal EDIT WRAS -->
+<CModal :visible="isEditOpen" @close="isEditOpen = false" size="fullscreen" backdrop="static">
+  <CModalHeader>
+    <CModalTitle>Edit WRAS</CModalTitle>
+  </CModalHeader>
+
+  <CModalBody class="p-0" style="overflow: hidden; height: calc(100vh - 120px);">
+    <div class="w-100 h-100">
+      <LuckySheetWrapper
+        ref="luckysheetEdit"
+        v-if="selectedJob"
+        :data="selectedJob.file"
+        :readOnly="false"
+        class="w-100 h-100"
+      />
+    </div>
+  </CModalBody>
+
+  <CModalFooter class="justify-content-end">
+    <CButton color="secondary" @click="isEditOpen = false">Cancel</CButton>
+    <CButton color="primary" @click="saveEdit">Save</CButton>
+  </CModalFooter>
+</CModal>
+
+
 </template>
 
 <script>
+import LuckySheetWrapper from "@/components/Luckysheet/Luckysheet.vue";
 import { GET_LINES } from '@/store/modules/line.module'
 import { GET_POS } from '@/store/modules/pos.module'
-import { GET_JOB, DELETE_JOB } from '@/store/modules/job.module'
+import { GET_JOB, DELETE_JOB,PUT_JOB } from '@/store/modules/job.module'
+import { PUT_WRAS,POST_WRAS,GET_WRAS} from "@/store/modules/wras.module";
 import { mapGetters } from 'vuex'
 import Swal from 'sweetalert2'
 import CustPagination from '@/components/pagination/CustPagination.vue';
@@ -122,6 +177,7 @@ import Loading from 'vue-loading-overlay'
 
 export default {
   name: 'Job',
+ 
   data() {
     return {
       form: {
@@ -156,7 +212,13 @@ export default {
           vals: null,
         },
       ],
-      isLoading: false
+      
+      isLoading: false,
+        isAddOpen: false,
+    isEditOpen: false,
+    isViewOpen: false,
+      selectedJob: null,
+      wrasMode: "add", // add | edit | view
     }
   },
   watch: {
@@ -186,7 +248,8 @@ export default {
   },
   components: {
     CustPagination,
-    Loading
+    Loading,
+    LuckySheetWrapper
   },
   methods: {
     pageControl(state = 0, page = null) {
@@ -259,6 +322,106 @@ export default {
         }
       })
     },
+ async handleWras(job) {
+  try {
+    this.isLoading = true;
+    this.selectedJob = job; // Simpan job aktif
+
+    if (!job.wras_id) {
+      // Tidak ada WRAS → Add Mode
+      this.wrasMode = "add";
+      this.isAddOpen = true;
+    } else {
+      // Ada WRAS → Edit Mode
+      this.wrasMode = "edit";
+      const res = await this.$store.dispatch(GET_WRAS, { wras_id: job.wras_id });
+      const wrasData = Array.isArray(res) ? res[0] : res?.data || {};
+      this.selectedJob = wrasData;
+      this.isEditOpen = true;
+    }
+  } catch (err) {
+    console.error("❌ Gagal load WRAS:", err);
+    Swal.fire("Gagal memuat WRAS!", "", "error");
+  } finally {
+    this.isLoading = false;
+  }
+},
+
+async saveAdd() {
+  try {
+    this.isLoading = true;
+    const sheetApi = this.$refs.luckysheetAdd.sheetApi();
+    const job = this.selectedJob;
+
+    if (!job) {
+      Swal.fire("Tidak ada Job yang dipilih!", "", "warning");
+      return;
+    }
+
+    // Inject informasi dasar ke sheet
+    sheetApi.setCellValue(1, 3, `: ${job?.plant_nm || '-'}`);
+    sheetApi.setCellValue(2, 3, `: ${job?.pos_nm || '-'}`);
+    sheetApi.setCellValue(3, 3, `: ${job?.line_nm || '-'}`);
+    sheetApi.setCellValue(5, 3, `: ${job?.job_no || '-'}`);
+
+    const allData = sheetApi.getAllSheets();
+
+    // ✅ payload WRAS baru
+    const payload = {
+      file: JSON.stringify(allData),
+    };
+
+    // ✅ 1. Simpan WRAS dan ambil wras_id dari backend
+    const res = await this.$store.dispatch(POST_WRAS, payload);
+    const wrasId = res?.wras_id || res?.data?.wras_id;
+
+    if (!wrasId) {
+      Swal.fire("Gagal membuat WRAS!", "Tidak ada ID yang dikembalikan.", "error");
+      return;
+    }
+
+    // ✅ 2. Update job supaya terhubung ke WRAS
+    await this.$store.dispatch(PUT_JOB, {
+      id: job.id, // UUID dari job
+      data: { wras_id: wrasId,
+        job_type_id:job.job_type_id
+       },
+    });
+
+    // ✅ 3. Refresh dan kasih notifikasi
+    await this.getJob();
+    Swal.fire("WRAS berhasil dibuat dan dihubungkan ke Job!", "", "success");
+
+    this.isAddOpen = false;
+  } catch (err) {
+    console.error("❌ Gagal tambah WRAS:", err);
+    Swal.fire("Gagal menyimpan WRAS!", err.message || "", "error");
+  } finally {
+    this.isLoading = false;
+  }
+},
+
+async saveEdit() {
+  try {
+    const jsonData = this.$refs.luckysheetEdit.sheetApi().getAllSheets();
+    const payload = { ...this.selectedJob, file: jsonData };
+
+    await this.$store.dispatch(PUT_WRAS, payload);
+    Swal.fire("WRAS berhasil diupdate!", "", "success");
+
+    this.isEditOpen = false;
+    this.getJob();
+  } catch (err) {
+    console.error("Gagal update WRAS:", err);
+    Swal.fire("Gagal update WRAS!", "", "error");
+  }
+},
+async viewWras(job) {
+  const res = await this.$store.dispatch(GET_WRAS, { wras_id: job.wras_id });
+  this.selectedJob = Array.isArray(res) ? res[0] : res?.data || {};
+  this.isViewOpen = true;
+}
+
   },
   async mounted() {
     this.filtered.line_id = localStorage.getItem('line_id') ? localStorage.getItem('line_id') : -1
