@@ -293,11 +293,11 @@
                       <!-- Sign TL 1 -->
                       <tr>
                         <td colspan="7" class="text-center">Sign TL</td>
-                        <td v-for="children in signCheckers[index]" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
+                        <td v-for="children in signCheckers[index]['tl']" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
                           } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
                           } `">
 
-                          <div v-if="children.canSign || children?.has_tl1_sign"
+                          <div v-if="children.canSign || children?.sign_tl_1"
                             class="d-flex align-items-center justify-content-center w-full">
                             <button @click="
                               openSignModal(extractSignReq(mainSchedule?.sub_schedules[0], children), children.tl1_sign_checker_id, 'sign_tl_1', children)
@@ -344,12 +344,12 @@
                       <!-- SIGN GL -->
                       <tr>
                         <td colspan="7" class="text-center">Sign GL</td>
-                        <td v-for="children in signCheckers[index]" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
+                        <td v-for="children in signCheckers[index]['gl']" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
                           } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
                           } `">
                           <!-- {{ children }} -->
 
-                          <div v-if="children.canSign || children?.has_gl_sign"
+                          <div v-if="children.canSign || children?.sign_gl"
                             class="d-flex align-items-center justify-content-center w-full">
                             <button @click="
                               openSignModal(extractSignReq(mainSchedule?.sub_schedules[0], children), children?.gl_sign_checker_id, 'sign_gl', children)
@@ -368,11 +368,11 @@
                       <!-- SIGN SH -->
                       <tr>
                         <td colspan="7" class="text-center">Sign SH</td>
-                        <td v-for="children in signCheckers[index]" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
+                        <td v-for="children in signCheckers[index]['sh']" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
                           } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
                           } `">
 
-                          <div v-if="children.canSign || children?.has_sh_sign"
+                          <div v-if="children.canSign || children?.sign_sh"
                             class="d-flex align-items-center justify-content-center w-full">
                             <button @click="
                               openSignModal(extractSignReq(mainSchedule?.sub_schedules[0], children), children?.sh_sign_checker_id, 'sign_sh', children)
@@ -588,7 +588,11 @@ import { toast } from "vue3-toastify";
 import CustPagination from "@/components/pagination/CustPagination.vue";
 import JudgmentConfirmation from "@/components/new/JudgmentConfirmation.vue";
 import html2pdf from "html2pdf.js";
-import { autoCropSignature } from "@/functions/imageUtils";
+import { autoCropSignature, removeWhiteBackground } from "@/functions/imageUtils";
+// eslint-disable-next-line no-unused-vars
+import { schedule1, schedule2 } from "./schedule.example";
+// eslint-disable-next-line no-unused-vars
+import { scheduleDecember1, scheduleDecember2 } from "./schedule2.example";
 
 export default {
   name: "Main Schedule",
@@ -897,6 +901,11 @@ export default {
       //this.subScheduleData = []
       this.loadingSchedule[index] = true;
       this.isLoading = true;
+      //this.mockSchedule(index);
+      this.fetchSubSchedules(mainScheduleID, index);
+    },
+    async fetchSubSchedules(mainScheduleID, index) {
+      // eslint-disable-next-line no-unused-vars
       let objQuery = {
         main_schedule_id: mainScheduleID,
         line_id: this.selectedLineID,
@@ -942,7 +951,6 @@ export default {
         }
       });
     },
-
     async mappingSignCheckers(res, mainScheduleIndex) {
       if (!res.schedule || res.schedule.length === 0) {
         return;
@@ -985,15 +993,13 @@ export default {
         await Promise.allSettled(signPromises);
       }
 
-      let signs = []
+      let signsTl1 = [], signsGl = [], signsSh = [];
       let signTl = null, signGl = null, signSh = null;
       let signTlId = null, signGlId = null, signShId = null;
       const [year, month] = this.getYearAndMonth(res.schedule[0].children[0].date);
 
       //hardcoded
-      const isTargetPeriod = (year === 2025 && month >= 7) || (year === 2026 && month <= 0);
-      console.log("isTargetPeriod", isTargetPeriod);
-
+      const isTargetPeriod = (year === 2025 && month >= 7) || (year === 2026 && month <= 1);
       if (isTargetPeriod) {
         const item = res.schedule[0];
         const availSignTl = item.children.find(c => c.tl1_sign_checker_id && c.has_tl1_sign);
@@ -1026,45 +1032,142 @@ export default {
         signSh = cropped;
       }
 
+      let clone = null;
+      if (isTargetPeriod) {
+        clone = this.cloneSigns(res, { signTlId, signGlId, signShId }, { signTl, signGl, signSh });
+      } else {
+        clone = this.cloneSignMarker(res, { signTlId, signGlId, signShId }, { signTl, signGl, signSh });
+      }
+
+      signsTl1 = clone.signsTl1;
+      signsGl = clone.signsGl;
+      signsSh = clone.signsSh;
+
+      this.signCheckers[mainScheduleIndex] = {
+        tl: signsTl1,
+        gl: signsGl,
+        sh: signsSh
+      };
+      console.log("sign", this.signCheckers[mainScheduleIndex]);
+
+      this.loadingSign[mainScheduleIndex] = false;
+    },
+    cloneSigns(res, signIds, signs) {
+      const signsTl1 = [], signsGl = [], signsSh = [];
+      const firstChildren = this.groupByChildren(res.schedule);
+      for (let j = 0; j < firstChildren.length; j++) {
+        const activityStat = firstChildren[j].status === 'PLANNING'
+          || firstChildren[j].status === 'PROBLEM'
+          || firstChildren[j].status === 'ACTUAL';
+
+        signsTl1.push({
+          ...firstChildren[j],
+          sign_tl_1: activityStat ? (firstChildren[j].sign_tl_1 || signs.signTl) : null,
+          has_tl1_sign: firstChildren[j].has_tl1_sign,
+          tl1_sign_checker_id: activityStat ? (firstChildren[j].tl1_sign_checker_id || signIds.signTlId) : null,
+          isCloneTl: firstChildren[j].tl1_sign_checker_id,
+          canSign: activityStat,
+          status: firstChildren[j].status,
+          activityStat
+        });
+
+        signsGl.push({
+          ...firstChildren[j],
+          sign_gl: activityStat ? (firstChildren[j].sign_gl || signs.signGl) : null,
+          has_gl_sign: firstChildren[j].has_gl_sign,
+          gl_sign_checker_id: activityStat ? (firstChildren[j].gl_sign_checker_id || signIds.signGlId) : null,
+          isCloneGl: activityStat ? firstChildren[j].gl_sign_checker_id : null,
+          canSign: activityStat,
+          status: firstChildren[j].status,
+          activityStat
+        });
+
+        signsSh.push({
+          ...firstChildren[j],
+          sign_sh: activityStat ? (firstChildren[j].sign_sh || signs.signSh) : null,
+          has_sh_sign: firstChildren[j].has_sh_sign,
+          sh_sign_checker_id: activityStat ? (firstChildren[j].sh_sign_checker_id || signIds.signShId) : null,
+          isCloneSh: activityStat ? firstChildren[j].sh_sign_checker_id : null,
+          canSign: activityStat,
+          status: firstChildren[j].status,
+          activityStat
+        });
+      }
+
+      return { signsTl1, signsGl, signsSh }
+    },
+    cloneSignMarker(res, signIds, signs) {
+      let signsTl1 = [], signsGl = [], signsSh = [];
       for (let i = 0; i < res.schedule.length; i++) {
         for (let j = 0; j < res.schedule[i].children.length; j++) {
-          const activityStat = res.schedule[i].children[j]?.status === 'PLANNING'
-            || res.schedule[i].children[j]?.status === 'PROBLEM'
-            || res.schedule[i].children[j]?.status === 'ACTUAL';
-          
-          signs = this.pushOrReplace(
-            signs,
+          const activityStat = res.schedule[i].children[j].status === 'PLANNING'
+            || res.schedule[i].children[j].status === 'PROBLEM'
+            || res.schedule[i].children[j].status === 'ACTUAL';
+
+          signsTl1 = this.pushOrReplace(
+            signsTl1,
             'date',
             res.schedule[i].children[j].date,
             {
               ...res.schedule[i].children[j],
-              sign_tl_1: res.schedule[i].children[j].sign_tl_1 || signTl,
-              sign_gl: res.schedule[i].children[j].sign_gl || signGl,
-              sign_sh: res.schedule[i].children[j].sign_sh || signSh,
+              sign_tl_1: res.schedule[i].children[j].sign_tl_1 || signs.signTl,
               has_tl1_sign: res.schedule[i].children[j].has_tl1_sign,
-              has_gl_sign: res.schedule[i].children[j].has_gl_sign,
-              has_sh_sign: res.schedule[i].children[j].has_sh_sign,
-              tl1_sign_checker_id: res.schedule[i].children[j].tl1_sign_checker_id || signTlId,
-              gl_sign_checker_id: res.schedule[i].children[j].gl_sign_checker_id || signGlId,
-              sh_sign_checker_id: res.schedule[i].children[j].sh_sign_checker_id || signShId,
+              tl1_sign_checker_id: res.schedule[i].children[j].tl1_sign_checker_id || signIds.signTlId,
               isCloneTl: res.schedule[i].children[j].tl1_sign_checker_id,
-              isCloneGl: res.schedule[i].children[j].gl_sign_checker_id,
-              isCloneSh: res.schedule[i].children[j].sh_sign_checker_id,
-              canSign: activityStat === true,
+              canSign: activityStat,
+              status: res.schedule[i].children[j].status,
+              activityStat
             },
             (oldItem, newItem) => {
-              return oldItem.canSign !== newItem.canSign && newItem.canSign === true;
+              if (oldItem.sign_tl_1) return false;
+              return oldItem.canSign === false || newItem.canSign === true;
+            }
+          );
+
+          signsGl = this.pushOrReplace(
+            signsGl,
+            'date',
+            res.schedule[i].children[j].date,
+            {
+              ...res.schedule[i].children[j],
+              sign_gl: res.schedule[i].children[j].sign_gl || signs.signGl,
+              has_gl_sign: res.schedule[i].children[j].has_gl_sign,
+              gl_sign_checker_id: res.schedule[i].children[j].gl_sign_checker_id || signIds.signGlId,
+              isCloneGl: res.schedule[i].children[j].gl_sign_checker_id,
+              canSign: activityStat,
+              status: res.schedule[i].children[j].status,
+              activityStat
+            },
+            (oldItem, newItem) => {
+              if (oldItem.sign_gl) return false;
+              return oldItem.canSign === false || newItem.canSign === true;
+            }
+          );
+
+          signsSh = this.pushOrReplace(
+            signsSh,
+            'date',
+            res.schedule[i].children[j].date,
+            {
+              ...res.schedule[i].children[j],
+              sign_sh: res.schedule[i].children[j].sign_sh || signs.signSh,
+              has_sh_sign: res.schedule[i].children[j].has_sh_sign,
+              sh_sign_checker_id: res.schedule[i].children[j].sh_sign_checker_id || signIds.signShId,
+              isCloneSh: res.schedule[i].children[j].sh_sign_checker_id,
+              canSign: activityStat,
+              status: res.schedule[i].children[j].status,
+              activityStat
+            },
+            (oldItem, newItem) => {
+              if (oldItem.sign_sh) return false;
+              return oldItem.canSign === false || newItem.canSign === true;
             }
           );
         }
       }
 
-      this.signCheckers[mainScheduleIndex] = signs;
-      console.log("sign", this.signCheckers[mainScheduleIndex]);
-
-      this.loadingSign[mainScheduleIndex] = false;
+      return { signsTl1, signsGl, signsSh }
     },
-
     async addPIC() {
       this.isAddPICLoading = true;
       ApiService.setHeader();
@@ -1252,14 +1355,14 @@ export default {
       let isClone = (from === "sign_tl_1" && !signCheckerObj.isCloneTl)
         || (from === "sign_gl" && !signCheckerObj.isCloneGl)
         || (from === "sign_sh" && !signCheckerObj.isCloneSh);
-      
+
 
       signCheckerID = signCheckerID ?? "createnew";
       this.selectedSignType = from;
       this.addSignModal = true;
       this.selectedSignCheckerID = isClone ? "createnew" : signCheckerID;
       console.log("selectedSignCheckerID", this.selectedSignCheckerID);
-      
+
       this.getSignature(signCheckerID);
     },
     async closeSignModal(isRefresh = false) {
@@ -1404,12 +1507,79 @@ export default {
     sliceByCurrentMonthDays(arr, dateStr) {
       const [year, month] = this.getYearAndMonth(dateStr);
       const maxDays = new Date(year, month, 0).getDate();
-      return arr.slice(0, maxDays);
+      console.log(maxDays);
+      
+      //return arr.slice(0, maxDays);
+      return arr
     },
     getYearAndMonth(dateStr) {
       const [year, month] = dateStr.split('-').map(Number);
       return [year, month];
-    }
+    },
+    mockSchedule(index) {
+      //const res = index === 0 ? scheduleDecember1 : scheduleDecember2;
+      const res = index === 0 ? schedule1 : schedule2;
+      if (res) {
+        let redTemp = "";
+        let whiteTemp = "";
+        let temp = res.schedule;
+        // console.log(temp[0]?.group_nm)
+        temp.sort(function (a, b) {
+          redTemp = a.group_nm;
+          whiteTemp = b.group_nm;
+          return redTemp.localeCompare(whiteTemp);
+        });
+
+
+        this.mappingSignCheckers(res, index);
+        this.mainScheduleData[index].sub_schedules = res.schedule;
+        this.mainScheduleData[index].glSigns = res.sign_checker_gl;
+        this.mainScheduleData[index].shSigns = res.sign_checker_sh;
+        this.mainScheduleData[index].limit = res.limit;
+        this.mainScheduleData[index].current_page = res.current_page;
+        this.mainScheduleData[index].total_data = res.total_data;
+
+
+        //console.log(temp)
+        //this.newSubScheduleData = res.schedule
+        //this.newSubScheduleData.push(res.schedule)
+        this.signGLData = res.sign_checker_gl;
+        this.signSHData = res.sign_checker_sh;
+        this.isLoading = false;
+        this.loadingSchedule[index] = false;
+
+        console.log("mainScheduleData", this.mainScheduleData);
+      }
+    },
+    groupByChildren(schedule) {
+      const allChildren = schedule.flatMap(item => item.children || []);
+
+      const grouped = allChildren.reduce((acc, current) => {
+        const dateKey = current.date;
+        const existing = acc[dateKey];
+
+        const hasStatus = (item) => !!item.status;
+        const isAllSignsEmpty = (item) => !item.tl1_sign_checker_id && !item.gl_sign_checker_id && !item.sh_sign_checker_id;
+
+        if (!existing) {
+          acc[dateKey] = current;
+        } else {
+          if (hasStatus(current) && isAllSignsEmpty(current)) {
+            // eslint-disable-next-line no-empty
+            /* if (isTargetedClone) {
+              acc[dateKey] = current;
+            } else if (!isAllSignsEmpty(current)) {
+              acc[dateKey] = current;
+            } */
+            acc[dateKey] = current;
+          }
+        }
+
+        return acc;
+      }, {});
+
+      return Object.values(grouped);
+    },
   },
 
   async mounted() {
@@ -1417,10 +1587,10 @@ export default {
       this.selectedLineID = localStorage.getItem("line_id");
     }
     this.newSubScheduleData = [];
-    /* const year = moment().format("YYYY");
-    const month = moment().format("MM"); */
-    const year = "2025";
-    const month = "12";
+    const year = moment().format("YYYY");
+    const month = moment().format("MM");
+    /* const year = "2025";
+    const month = "12"; */
     // const month = moment().set('month', 0).format("MM");
     this.selectedMonth = `${year}-${month}`;
     await this.getLines();
