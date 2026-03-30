@@ -50,7 +50,7 @@ const actions = {
     [GET_SUB_SCHEDULES]({ commit }, query) {
         ApiService.setHeader()
         return new Promise((resolve, reject) => {
-            ApiService.query("operational/4s/sub-schedule", query)
+            ApiService.query("operational/4s/new-sub-schedule", query)
                 .then((result) => {
                     const data = result.data
                     if (data) {
