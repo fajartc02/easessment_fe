@@ -198,17 +198,16 @@ export default [{
   hide_for_roles: []
 },
 {
-  component: 'CNavTitle', // --- MASTER MENU
-  name: 'Master Data',
-  is_admin: false,
-  hide_for_roles: ['TM', null]
-},
-
-{
   component: 'CNavItem',
   name: 'Item Check Kanban OM',
   to: '/master/om-item-check-kanban',
   icon: 'cil-settings',
+  is_admin: false,
+  hide_for_roles: ['TM', null]
+},
+{
+  component: 'CNavTitle', // --- MASTER MENU
+  name: 'Master Data',
   is_admin: false,
   hide_for_roles: ['TM', null]
 },
