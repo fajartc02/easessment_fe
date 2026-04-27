@@ -588,7 +588,7 @@ import { toast } from "vue3-toastify";
 import CustPagination from "@/components/pagination/CustPagination.vue";
 import JudgmentConfirmation from "@/components/new/JudgmentConfirmation.vue";
 import html2pdf from "html2pdf.js";
-import { autoCropSignature, removeWhiteBackground } from "@/functions/imageUtils";
+import { autoCropSignature /*, removeWhiteBackground */ } from "@/functions/imageUtils";
 // eslint-disable-next-line no-unused-vars
 import { schedule1, schedule2 } from "./schedule.example";
 // eslint-disable-next-line no-unused-vars
