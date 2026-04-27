@@ -18,7 +18,7 @@
     "serve:dev": "vue-cli-service --mode dev serve",
     "test:e2e": "vue-cli-service test:e2e",
     "test:unit": "vue-cli-service test:unit",
-    "build-deploy": "git pull && yarn && yarn build && cp ./dist/index.html ./dist/404.html"
+    "build-deploy": "git pull && yarn build && cp ./dist/index.html ./dist/404.html"
   },
   "dependencies": {
     "@cholakovdev/vue3-treeselect": "^0.2.0",
