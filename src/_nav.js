@@ -90,7 +90,7 @@ export default [{
   to: '/history/observation',
   icon: 'cil-clipboard',
   is_admin: false,
-  hide_for_roles: ['TM', null]
+  hide_for_roles: []
 },
 {
   component: 'CNavItem',
@@ -98,34 +98,34 @@ export default [{
   to: '/schedule/observation',
   icon: 'cil-clipboard',
   is_admin: false,
-  hide_for_roles: ['TM', null]
+  hide_for_roles: []
 },
 {
   component: 'CNavGroup',
   name: 'Master STW',
   icon: 'cil-clipboard',
   is_admin: false,
-  hide_for_roles: ['TM', null],
+  hide_for_roles: [],
   items: [{
     component: 'CNavItem',
     name: 'Pos',
     to: '/master/pos',
     is_admin: false,
-    hide_for_roles: ['TM', null]
+    hide_for_roles: []
   },
   {
     component: 'CNavItem',
     name: 'Job',
     to: '/master/job',
     is_admin: false,
-    hide_for_roles: ['TM', null]
+    hide_for_roles: []
   },
   {
     component: 'CNavItem',
     name: 'Wras',
     to: '/master/wras',
     is_admin: false,
-    hide_for_roles: ['TM', null]
+    hide_for_roles: []
   },
   ]
 },
@@ -157,7 +157,7 @@ export default [{
   to: '/master/kanban',
   icon: 'cil-clipboard',
   is_admin: false,
-  hide_for_roles: ['TM', null]
+  hide_for_roles: []
 },
 {
   component: 'CNavItem',
@@ -165,7 +165,7 @@ export default [{
   to: '/master/zone',
   icon: 'cil-location-pin',
   is_admin: false,
-  hide_for_roles: ['TM', null]
+  hide_for_roles: []
 },
 
 // {
@@ -203,7 +203,7 @@ export default [{
   to: '/master/om-item-check-kanban',
   icon: 'cil-settings',
   is_admin: false,
-  hide_for_roles: ['TM', null]
+  hide_for_roles: []
 },
 {
   component: 'CNavTitle', // --- MASTER MENU
