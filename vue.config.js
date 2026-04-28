@@ -10,4 +10,5 @@ module.exports = defineConfig({
         })
     },
     // outputDir: './dist_dev'
+    publicPath: '/eobservation/fe/'
 })
