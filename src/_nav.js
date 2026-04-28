@@ -90,7 +90,7 @@ export default [{
   to: '/history/observation',
   icon: 'cil-clipboard',
   is_admin: false,
-  hide_for_roles: ['TM', null]
+  hide_for_roles: []
 },
 {
   component: 'CNavItem',
@@ -98,7 +98,36 @@ export default [{
   to: '/schedule/observation',
   icon: 'cil-clipboard',
   is_admin: false,
-  hide_for_roles: ['TM', null]
+  hide_for_roles: []
+},
+{
+  component: 'CNavGroup',
+  name: 'Master STW',
+  icon: 'cil-clipboard',
+  is_admin: false,
+  hide_for_roles: [],
+  items: [{
+    component: 'CNavItem',
+    name: 'Pos',
+    to: '/master/pos',
+    is_admin: false,
+    hide_for_roles: []
+  },
+  {
+    component: 'CNavItem',
+    name: 'Job',
+    to: '/master/job',
+    is_admin: false,
+    hide_for_roles: []
+  },
+  {
+    component: 'CNavItem',
+    name: 'Wras',
+    to: '/master/wras',
+    is_admin: false,
+    hide_for_roles: []
+  },
+  ]
 },
 {
   component: 'CNavTitle', // --- 4S MENU
@@ -114,12 +143,6 @@ export default [{
   is_admin: false,
   hide_for_roles: []
 },
-// {
-//     component: 'CNavItem',
-//     name: 'Kanban 4S',
-//     to: '/4s/kanban',
-//     icon: 'cil-speedometer'
-// },
 {
   component: 'CNavItem',
   name: 'Temuan 4S',
@@ -128,6 +151,23 @@ export default [{
   is_admin: false,
   hide_for_roles: []
 },
+{
+  component: 'CNavItem',
+  name: 'Kanban 4S',
+  to: '/master/kanban',
+  icon: 'cil-clipboard',
+  is_admin: false,
+  hide_for_roles: []
+},
+{
+  component: 'CNavItem',
+  name: 'Zone 4S',
+  to: '/master/zone',
+  icon: 'cil-location-pin',
+  is_admin: false,
+  hide_for_roles: []
+},
+
 // {
 //     component: 'CNavItem',
 //     name: 'Grafik 4S',
@@ -158,32 +198,16 @@ export default [{
   hide_for_roles: []
 },
 {
-  component: 'CNavTitle', // --- MASTER MENU
-  name: 'Master Data',
-  is_admin: false,
-  hide_for_roles: ['TM', null]
-},
-{
-  component: 'CNavItem',
-  name: 'Kanban 4S',
-  to: '/master/kanban',
-  icon: 'cil-clipboard',
-  is_admin: false,
-  hide_for_roles: ['TM', null]
-},
-{
-  component: 'CNavItem',
-  name: 'Zone 4S',
-  to: '/master/zone',
-  icon: 'cil-location-pin',
-  is_admin: false,
-  hide_for_roles: ['TM', null]
-},
-{
   component: 'CNavItem',
   name: 'Item Check Kanban OM',
   to: '/master/om-item-check-kanban',
   icon: 'cil-settings',
+  is_admin: false,
+  hide_for_roles: []
+},
+{
+  component: 'CNavTitle', // --- MASTER MENU
+  name: 'Master Data',
   is_admin: false,
   hide_for_roles: ['TM', null]
 },
@@ -219,35 +243,7 @@ export default [{
   icon: 'cil-user',
   hide_for_roles: ['TM', null]
 },
-{
-  component: 'CNavGroup',
-  name: 'Master STW',
-  icon: 'cil-clipboard',
-  is_admin: false,
-  hide_for_roles: ['TM', null],
-  items: [{
-    component: 'CNavItem',
-    name: 'Pos',
-    to: '/master/pos',
-    is_admin: false,
-    hide_for_roles: ['TM', null]
-  },
-  {
-    component: 'CNavItem',
-    name: 'Job',
-    to: '/master/job',
-    is_admin: false,
-    hide_for_roles: ['TM', null]
-  },
-  {
-    component: 'CNavItem',
-    name: 'Wras',
-    to: '/master/wras',
-    is_admin: false,
-    hide_for_roles: ['TM', null]
-  },
-  ]
-},
+
 {
   component: 'CNavGroup',
   name: 'Locations',

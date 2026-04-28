@@ -76,79 +76,86 @@
     <div class="card mb-3">
       <!-- filter -->
       <div class="card-header">
-        <div class="row align-items-end justify-content-between">
-          <div class="col">
-            <label>Select month</label>
+        <div class="row g-3 align-items-end">
+          <div class="col-12 col-md-4">
+            <label class="form-label">Select month</label>
             <input type="month" class="form-control" v-model="selectedMonth" />
           </div>
-          <div class="col">
-            <label>Line</label>
+          <div class="col-12 col-md-4">
+            <label class="form-label">Line</label>
             <select class="form-select" v-model="selectedLine">
               <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
                 {{ line.text }}
               </option>
             </select>
           </div>
-          <div class="col">
+          <div class="col-12 col-md-4 d-grid d-md-block">
             <CButton color="primary" @click="searchData">Search</CButton>
           </div>
         </div>
       </div>
       <!-- end filter -->
 
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <h6>Schedule Observation</h6>
-        <div class="d-flex align-items-center">
-          <div class="d-flex" style="margin-right: 20px">
-            <div>
-              Type 1 & 2:
-              <CButton color="dark rounded-circle" variant="outline" disabled>
+      <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+        <h6 class="mb-0">Schedule Observation</h6>
+        <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center gap-3">
+          <div class="d-flex flex-wrap align-items-center gap-3">
+            <div class="d-flex align-items-center gap-1">
+              <small>Type 1 & 2:</small>
+              <CButton color="dark rounded-circle p-0" variant="outline" disabled style="width: 24px; height: 24px;">
                 <CIcon icon="cil-circlea" class="text-dark" size="sm" />
               </CButton>
             </div>
-            <div class="mx-2">
-              Type 3:
-              <CButton color="dark" variant="outline" disabled>
+            <div class="d-flex align-items-center gap-1">
+              <small>Type 3:</small>
+              <CButton color="dark p-0" variant="outline" disabled style="width: 24px; height: 24px;">
                 <CIcon icon="cil-circlea" class="text-dark" size="sm" />
               </CButton>
             </div>
-            <div>
-              Pengecekan 2 TL:
-              <CButton color="dark" variant="outline" disabled style="
-                  margin-left: 5px;
-                  width: 35px;
-                  height: 35px;
+            <div class="d-flex align-items-center gap-1">
+              <small>Pengecekan 2 TL:</small>
+              <CButton color="dark p-0" variant="outline" disabled style="
+                  width: 24px;
+                  height: 24px;
                   transform: rotate(45deg);
                 ">
                 <CIcon icon="cil-circlea" class="text-dark" size="sm" />
               </CButton>
             </div>
           </div>
-          <div class="d-flex justify-content-center align-items-center">
-            OnProgress:
-            <CIcon icon="cil-circle" class="text-dark" size="sm" />
-            Done:
-            <CIcon icon="cil-check-circle" class="text-success" size="sm" />
-            Delay:
-            <CIcon icon="cil-circle" class="text-danger" size="sm" />
-            Is Finding:
-            <CIcon icon="cil-bell" class="text-warning" size="sm" />
-            Reschedule:
-            <h6 class="m-0 p-0 text-primary">R</h6>
+          <div class="d-flex flex-wrap align-items-center gap-2 border-start-md ps-md-3">
+            <div class="d-flex align-items-center gap-1">
+              <small>OnProgress:</small>
+              <CIcon icon="cil-circle" class="text-dark" size="sm" />
+            </div>
+            <div class="d-flex align-items-center gap-1">
+              <small>Done:</small>
+              <CIcon icon="cil-check-circle" class="text-success" size="sm" />
+            </div>
+            <div class="d-flex align-items-center gap-1">
+              <small>Delay:</small>
+              <CIcon icon="cil-circle" class="text-danger" size="sm" />
+            </div>
+            <div class="d-flex align-items-center gap-1">
+              <small>Finding:</small>
+              <CIcon icon="cil-bell" class="text-warning" size="sm" />
+            </div>
+            <div class="d-flex align-items-center gap-1">
+              <small>Reschedule:</small>
+              <h6 class="m-0 p-0 text-primary" style="font-size: 0.875rem;">R</h6>
+            </div>
           </div>
         </div>
-
       </div>
 
 
       <!-- white shift -->
       <div class="card">
-         <div class="card">
-              <button class="btn btn-primary" @click="exportToPDF(observation)" :disabled="isLoading">Export PDF</button>
-           
-            </div>
-        <div class="card-header">
-          <h6>White Shift</h6>
+        <div class="card-header d-flex justify-content-between align-items-center py-2">
+          <h6 class="mb-0">White Shift</h6>
+          <button class="btn btn-primary btn-sm" @click="exportToPDF(observation)" :disabled="isLoading">
+            <CIcon icon="cil-cloud-download" class="me-1" /> Export PDF
+          </button>
         </div>
         <div class="card-body">
           <div class="card-body p-0 tableFixHead" :ref="'content_' + observation">
@@ -452,11 +459,11 @@
       <!-- Red shift table -->
 
       <div class="card">
-         <div class="card">
-              <button class="btn btn-primary" @click="exportToPDFRed(observationRedShift)" :disabled="isLoading">Export PDF</button>
-            </div>
-        <div class="card-header">
-          <h6>Red Shift</h6>
+        <div class="card-header d-flex justify-content-between align-items-center py-2">
+          <h6 class="mb-0">Red Shift</h6>
+          <button class="btn btn-primary btn-sm" @click="exportToPDFRed(observationRedShift)" :disabled="isLoading">
+            <CIcon icon="cil-cloud-download" class="me-1" /> Export PDF
+          </button>
         </div>
         <div class="card-body">
           <div class="tableFixHead" :ref="'content_' + observationRedShift">
