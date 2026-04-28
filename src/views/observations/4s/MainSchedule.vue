@@ -590,7 +590,8 @@ import JudgmentConfirmation from "@/components/new/JudgmentConfirmation.vue";
 import html2pdf from "html2pdf.js";
 // eslint-disable-next-line no-unused-vars
 //import { autoCropSignature /*, removeWhiteBackground */ } from "@/functions/imageUtils";
-import { autoCropSignature, removeWhiteBackground } from "@/functions/imageUtils";
+//import { autoCropSignature, removeWhiteBackground } from "@/functions/imageUtils";
+import { autoCropSignature } from "@/functions/imageUtils";
 // eslint-disable-next-line no-unused-vars
 import { schedule1, schedule2 } from "./schedule.example";
 // eslint-disable-next-line no-unused-vars
