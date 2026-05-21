@@ -153,12 +153,12 @@
       <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center py-2">
           <h6 class="mb-0">White Shift</h6>
-          <button class="btn btn-primary btn-sm" @click="exportToPDF(observation)" :disabled="isLoading">
+          <button class="btn btn-primary btn-sm" @click="exportToPDF('White')" :disabled="isLoading">
             <CIcon icon="cil-cloud-download" class="me-1" /> Export PDF
           </button>
         </div>
         <div class="card-body">
-          <div class="card-body p-0 tableFixHead" :ref="'content_' + observation">
+          <div class="card-body p-0 tableFixHead" ref="content_White">
             <table class="table table-bordered text-center table-stripped">
               <thead>
                 <tr>
@@ -461,12 +461,12 @@
       <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center py-2">
           <h6 class="mb-0">Red Shift</h6>
-          <button class="btn btn-primary btn-sm" @click="exportToPDFRed(observationRedShift)" :disabled="isLoading">
+          <button class="btn btn-primary btn-sm" @click="exportToPDFRed('Red')" :disabled="isLoading">
             <CIcon icon="cil-cloud-download" class="me-1" /> Export PDF
           </button>
         </div>
         <div class="card-body">
-          <div class="tableFixHead" :ref="'content_' + observationRedShift">
+          <div class="tableFixHead" ref="content_Red">
             <table class="table table-bordered text-center">
               <thead>
                 <tr>
@@ -1329,7 +1329,7 @@ export default {
 .tableFixHead th {
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 9;
   background-color: white;
 }
 

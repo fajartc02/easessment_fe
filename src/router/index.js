@@ -284,6 +284,12 @@ const routes = [{
     component: () =>
       import('@/views/observations/om/ScheduleDetailOm.vue'),
   },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: () =>
+      import('@/views/pages/Profile.vue'),
+  },
   ],
 },
 
