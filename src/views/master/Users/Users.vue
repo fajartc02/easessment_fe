@@ -43,8 +43,9 @@
             <th>Nama</th>
             <th>Pembuat</th>
             <th>Tanggal Di buat</th>
-            <th >Role</th>
-            <th colspan="2">Actions</th>
+            <th>Aktivasi</th>
+            <th>Role</th>
+            <th colspan="3">Actions</th>
           </tr>
           <template v-if="usersState.length > 0">
             <tr v-for="(pos, i) in usersState" :key="pos.id">
@@ -53,7 +54,13 @@
               <td>{{ pos.text }}</td>
               <td>{{ pos.created_by }}</td>
               <td>{{ pos.created_dt.split('T')[0] }}</td>
-               <td>
+              <td>
+                <CFormSwitch 
+                  :checked="!!pos.is_activated" 
+                  @change="toggleActivation(pos)"
+                />
+              </td>
+              <td>
                 <select class="form-select form-select-sm w-auto"
                 v-model="pos.role"
                 @change="editRole(pos.id, pos.role)">
@@ -80,10 +87,11 @@
                   <CIcon icon="cil-trash" size="sm" />
                 </CButton>
               </td>
+
             </tr>
           </template>
           <tr v-else>
-            <td colspan="6">
+            <td colspan="10">
               <h3>Tidak Ada Data</h3>
             </td>
           </tr>
@@ -201,21 +209,24 @@ export default {
   },
     del(id) {
       Swal.fire({
-        title: 'kamu mau mengubah password data ini?',
+        title: 'kamu yakin mau menghapus data ini?',
+        icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Ya',
-        denyButtonText: `Tidak`,
+        cancelButtonText: 'Tidak',
       }).then(async (result) => {
         if (result.isConfirmed) {
-          await this.$store.dispatch(DELETE_USER, id)
-            .then(async () => {
-              Swal.fire('Berhasil menghapus!', '', 'success')
-              await this.$store.dispatch(GET_USERS)
-            })
-            .catch(err => {
-              console.log(err);
-              Swal.fire('Gagal menghapus!', '', 'error')
-            })
+          try {
+            this.isLoading = true;
+            await this.$store.dispatch(DELETE_USER, id);
+            Swal.fire('Berhasil menghapus!', '', 'success');
+            await this.getUsersStore();
+          } catch (err) {
+            console.log(err);
+            Swal.fire('Gagal menghapus!', '', 'error');
+          } finally {
+            this.isLoading = false;
+          }
         }
       })
     },
@@ -228,12 +239,44 @@ async editRole(id, role) {
   }).then(async (result) => {
     if (result.isConfirmed) {
       try {
-    await this.$store.dispatch(PUT_USER_ROLE, { id, role })
-    Swal.fire('Berhasil ubah role', '', 'success')
-  } catch (error) {
-    console.error(error)
-    Swal.fire('Gagal ubah role', '', 'error')
-  }
+        await this.$store.dispatch(PUT_USER_ROLE, { id, role });
+        Swal.fire('Berhasil ubah role', '', 'success');
+      } catch (error) {
+        console.error(error);
+        Swal.fire('Gagal ubah role', '', 'error');
+        await this.getUsersStore();
+      }
+    } else {
+      await this.getUsersStore();
+    }
+  });
+},
+async toggleActivation(user) {
+  const targetStatus = !user.is_activated;
+  const actionText = targetStatus ? 'mengaktifkan' : 'menonaktifkan';
+  
+  Swal.fire({
+    title: `Apakah Anda yakin ingin ${actionText} user ini?`,
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Ya',
+    cancelButtonText: 'Tidak',
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        this.isLoading = true;
+        await this.$store.dispatch(PUT_USER_ROLE, { id: user.id, is_activated: targetStatus });
+        Swal.fire('Berhasil!', `User telah ${targetStatus ? 'diaktifkan' : 'dinonaktifkan'}.`, 'success');
+        user.is_activated = targetStatus;
+      } catch (error) {
+        console.error(error);
+        Swal.fire('Gagal!', `Gagal ${actionText} user.`, 'error');
+        await this.getUsersStore();
+      } finally {
+        this.isLoading = false;
+      }
+    } else {
+      await this.getUsersStore();
     }
   });
 },

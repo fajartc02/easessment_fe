@@ -49,14 +49,14 @@ const actions = {
         context.commit(PURGE_AUTH);
     },
     [REGISTER](context, credentials) {
-        return new Promise(resolve => {
-            ApiService.post("login", credentials)
+        return new Promise((resolve, reject) => {
+            ApiService.post("register", credentials)
                 .then(({ data }) => {
-                    context.commit(SET_AUTH, data);
                     resolve(data);
                 })
                 .catch(({ response }) => {
-                    context.commit(SET_ERROR, response.data.errors);
+                    context.commit(SET_ERROR, response.data.errors || response.data.message || response.data);
+                    reject(response);
                 });
         });
     },
@@ -70,6 +70,7 @@ const actions = {
                     localStorage.setItem('name', data.message.fullname)
                     localStorage.setItem('noreg', data.message.noreg)
                     localStorage.setItem('role',data.message.role)
+                    localStorage.setItem('photo_url', data.message.photo_url)
                         // localStorage.setItem('line_id', data.message.line_id)
                         // context.commit(SET_AUTH, data);
                 })

@@ -33,7 +33,7 @@
       ${child.is_wajik ? 'transform: rotate(45deg);' : ''}`"
         @click="child?.parent_revision_id ? null : $emit('detail-schedule', child)">
         <img v-if="observation.comments.length > 0" src="@/assets/comment.png" alt="comment" width="45"
-          :style="`z-index: 10;position: absolute;top: -30px;left: 20px;${child.is_wajik ? 'transform: rotate(-45deg);left: 10;top:-20px' : ''}`">
+          :style="`z-index: 5;position: absolute;top: -30px;left: 20px;${child.is_wajik ? 'transform: rotate(-45deg);left: 10;top:-20px' : ''}`">
         <span v-if="child.is_finding">
           <CIcon icon="cil-bell" class="text-danger font-weight-bold" size="lg"
             :style="child.is_wajik ? 'transform: rotate(-45deg)' : ''" />

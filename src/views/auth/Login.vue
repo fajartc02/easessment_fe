@@ -26,9 +26,16 @@
                       autocomplete="current-password" />
                   </CInputGroup>
                   <CRow>
-                    <CCol :xs="6">
-                      <CButton @click="login()" color="primary" class="px-4">
+                    <CCol :xs="12">
+                      <CButton @click="login()" color="primary" class="px-4 w-100">
                         Login
+                      </CButton>
+                    </CCol>
+                  </CRow>
+                  <CRow class="mt-2">
+                    <CCol :xs="12" class="text-center">
+                      <CButton color="link" @click="$router.push('/pages/register')" class="px-0 text-decoration-none">
+                        Belum punya akun? Daftar di sini
                       </CButton>
                     </CCol>
                   </CRow>
@@ -36,8 +43,8 @@
                   <CRow>
                     <CCol :xs="12">
                       <i>
-                        Admin Contact (Dita Nurlita):
-                        <a href="https://wa.me/628986264957" target="_blank">
+                        Admin Contact (Zaenal Arifin):
+                        <a href="https://wa.me/6285742291388" target="_blank">
                           Contact Here!
                         </a>
                       </i>

@@ -147,10 +147,13 @@ const actions = {
 
     });
   },
-  [PUT_USER_ROLE]({ commit }, { id, role }) {
+  [PUT_USER_ROLE]({ commit }, payload) {
+    const id = payload.id;
+    const data = { ...payload };
+    delete data.id;
     ApiService.setHeader()
     return new Promise((resolve, reject) => {
-      ApiService.put(`master/users/role/${id}`, { role })
+      ApiService.put(`master/users/role/${id}`, data)
 
         .then((result) => {
           const roledata = result.data
