@@ -40,6 +40,7 @@ import omScheduleModule from './modules/omSchedule.module';
 import judgmentModule from './modules/judgment.module';
 import omFindingModule from './modules/omFinding.module';
 import comments from './modules/comments.module';
+import materialTraining from './modules/materialTraining.module';
 // import wras from '@/views/master/Wras/wras.vue';
 export default createStore({
   state: {
@@ -101,6 +102,7 @@ export default createStore({
     omFindingModule,
 
     comments,
+    materialTraining,
     // wras
   },
 })

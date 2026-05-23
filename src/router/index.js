@@ -156,6 +156,13 @@ const routes = [{
   // },
 
   {
+    path: '/master/material-training',
+    name: 'MaterialTraining',
+    component: () =>
+      import('@/views/master/MaterialTraining/MaterialTraining.vue'),
+  },
+
+  {
     path: '/stw/dashboard',
     name: 'STW Dashboard',
     component: () =>
