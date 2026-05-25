@@ -5,9 +5,28 @@
 <script>
 export default {
   name: '4SLineAreaChart',
-  data() {
-    return {
-      options: {
+  props: {
+    title: {
+      type: String,
+      required: true
+    },
+    series: {
+      type: Array,
+      default: () => [
+        {
+          name: 'Time 4S',
+          data: [2664, 5308, 5308, 5308, 5308, 5308, 2664, 5308, 5308, 5308, 5308, 5308]
+        }
+      ]
+    },
+    labels: {
+      type: Array,
+      default: () => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    }
+  },
+  computed: {
+    options() {
+      return {
         chart: {
           height: 350,
           type: 'area'
@@ -15,7 +34,7 @@ export default {
         dataLabels: {
           enabled: false
         },
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        labels: this.labels,
         stroke: {
           curve: 'smooth'
         },
@@ -24,17 +43,7 @@ export default {
             text: this.title || 'Time 4S'
           }
         },
-      },
-      series: [{
-        name: 'Time 4S',
-        data: [2664, 5308, 5308, 5308, 5308, 5308, 2664, 5308, 5308, 5308, 5308, 5308]
-      }],
-    }
-  },
-  props: {
-    title: {
-      type: String,
-      required: true
+      }
     }
   }
 }

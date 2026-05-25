@@ -5,9 +5,40 @@
 <script>
 export default {
   name: '4SColumnChart',
-  data() {
-    return {
-      options: {
+  props: {
+    title: {
+      type: String,
+      default: ''
+    },
+    yTitle: {
+      type: String,
+      default: 'Total'
+    },
+    series: {
+      type: Array,
+      default: () => [
+        {
+          name: 'Daily',
+          data: [44, 55, 57, 56, 61, 58, 44, 55, 57, 56, 61, 58]
+        },
+        {
+          name: 'Weekly',
+          data: [44, 55, 57, 56, 61, 58, 44, 55, 57, 56, 61, 58]
+        },
+        {
+          name: 'Monthly',
+          data: [44, 55, 57, 56, 61, 58, 44, 55, 57, 56, 61, 58]
+        }
+      ]
+    },
+    categories: {
+      type: Array,
+      default: () => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    }
+  },
+  computed: {
+    options() {
+      return {
         chart: {
           type: 'bar',
           height: 350
@@ -28,34 +59,17 @@ export default {
           colors: ['transparent']
         },
         xaxis: {
-          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          categories: this.categories,
         },
         yaxis: {
           title: {
-            text: 'Total Time'
+            text: this.yTitle
           }
         },
         fill: {
           opacity: 1
         },
-      },
-      series: [{
-        name: 'Daily',
-        data: [44, 55, 57, 56, 61, 58, 44, 55, 57, 56, 61, 58]
-      }, {
-        name: 'Weekly',
-        data: [44, 55, 57, 56, 61, 58, 44, 55, 57, 56, 61, 58]
-      },
-      {
-        name: 'Monthly',
-        data: [44, 55, 57, 56, 61, 58, 44, 55, 57, 56, 61, 58]
-      }],
-    }
-  },
-  props: {
-    title: {
-      type: String,
-      required: true
+      }
     }
   }
 }
