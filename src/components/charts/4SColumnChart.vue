@@ -47,11 +47,19 @@ export default {
           bar: {
             horizontal: false,
             columnWidth: '55%',
-            endingShape: 'rounded'
+            endingShape: 'rounded',
+            dataLabels: {
+              position: 'top', // place data labels on top of bars
+            },
           },
         },
         dataLabels: {
-          enabled: true
+          enabled: true,
+          offsetY: -20,
+          style: {
+            fontSize: '12px',
+            colors: ["#304758"]
+          }
         },
         stroke: {
           show: true,

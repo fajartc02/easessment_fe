@@ -32,7 +32,7 @@ export default {
           type: 'area'
         },
         dataLabels: {
-          enabled: false
+          enabled: true
         },
         labels: this.labels,
         stroke: {

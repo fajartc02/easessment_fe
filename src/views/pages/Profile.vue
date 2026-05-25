@@ -15,8 +15,9 @@
           </div>
           <div class="px-3">
             <CFormInput type="file" @change="onFileChange" accept="image/*" class="mb-2 form-control-sm" />
-            <button class="btn btn-sm w-100 text-white" style="background-color: #1e3a5f;" @click="uploadPhoto" :disabled="!selectedFile">
-              <CIcon icon="cil-cloud-upload" class="me-1" /> Upload Foto
+            <button class="btn btn-sm w-100 text-white" style="background-color: #1e3a5f;" @click="uploadPhoto" :disabled="!selectedFile || isUploading">
+              <span v-if="isUploading" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+              <CIcon v-else icon="cil-cloud-upload" class="me-1" /> {{ isUploading ? 'Uploading...' : 'Upload Foto' }}
             </button>
           </div>
         </div>
@@ -43,8 +44,9 @@
             </CInputGroup>
           </div>
           <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-            <button class="btn text-white px-4 shadow-sm" style="background-color: #1e3a5f;" @click="updateProfile">
-              <CIcon icon="cil-save" class="me-1" /> Simpan Perubahan
+            <button class="btn text-white px-4 shadow-sm" style="background-color: #1e3a5f;" @click="updateProfile" :disabled="isSaving">
+              <span v-if="isSaving" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+              <CIcon v-else icon="cil-save" class="me-1" /> {{ isSaving ? 'Menyimpan...' : 'Simpan Perubahan' }}
             </button>
           </div>
         </div>
@@ -70,7 +72,9 @@ export default {
       selectedFile: null,
       photoPreview: null,
       defaultAvatar: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
-      appUrl: process.env.VUE_APP_URL
+      appUrl: process.env.VUE_APP_URL,
+      isUploading: false,
+      isSaving: false
     }
   },
   methods: {
@@ -114,6 +118,7 @@ export default {
     async uploadPhoto() {
       if (!this.selectedFile) return;
       
+      this.isUploading = true;
       const formData = new FormData();
       formData.append('dest', 'profiles');
       formData.append('photo', this.selectedFile);
@@ -124,15 +129,24 @@ export default {
         ApiService.setHeader(false);
         
         if (data.status === 'success') {
-          Swal.fire('Berhasil', 'Foto profil diperbarui', 'success');
           this.form.photo_url = data.data.photo_url;
           localStorage.setItem('photo_url', data.data.photo_url);
           this.selectedFile = null;
           this.photoPreview = null;
+          Swal.fire({
+            title: 'Berhasil',
+            text: 'Foto profil berhasil diperbarui',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          }).then(() => {
+            window.location.reload();
+          });
         }
       } catch (error) {
         console.error(error);
         Swal.fire('Error', 'Gagal mengunggah foto', 'error');
+      } finally {
+        this.isUploading = false;
       }
     },
     async updateProfile() {
@@ -140,6 +154,7 @@ export default {
         Swal.fire('Peringatan', 'Nama lengkap tidak boleh kosong', 'warning');
         return;
       }
+      this.isSaving = true;
       try {
         const { data } = await ApiService.put('auth/profile', { 
           fullname: this.form.fullname,
@@ -160,6 +175,8 @@ export default {
       } catch (error) {
         console.error(error);
         Swal.fire('Error', 'Gagal memperbarui profil', 'error');
+      } finally {
+        this.isSaving = false;
       }
     }
   },

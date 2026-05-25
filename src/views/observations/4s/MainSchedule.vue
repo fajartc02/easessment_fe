@@ -925,13 +925,14 @@ export default {
         if (res) {
           let redTemp = "";
           let whiteTemp = "";
-          let temp = res.schedule;
+          let temp = res.schedule || [];
           // console.log(temp[0]?.group_nm)
           temp.sort(function (a, b) {
-            redTemp = a.group_nm;
-            whiteTemp = b.group_nm;
+            redTemp = a.group_nm || "";
+            whiteTemp = b.group_nm || "";
             return redTemp.localeCompare(whiteTemp);
           });
+          res.schedule = temp;
 
 
           this.mappingSignCheckers(res, index);
