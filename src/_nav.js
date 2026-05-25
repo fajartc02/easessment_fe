@@ -127,6 +127,13 @@ export default [{
     is_admin: false,
     hide_for_roles: []
   },
+  {
+    component: 'CNavItem',
+    name: 'Material Training',
+    to: '/master/material-training',
+    is_admin: false,
+    hide_for_roles: []
+  },
   ]
 },
 {

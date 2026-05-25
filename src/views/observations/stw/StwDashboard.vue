@@ -77,20 +77,17 @@
       <!-- filter -->
       <div class="card-header">
         <div class="row g-3 align-items-end">
-          <div class="col-12 col-md-4">
+          <div class="col-12 col-md-6">
             <label class="form-label">Select month</label>
-            <input type="month" class="form-control" v-model="selectedMonth" />
+            <input type="month" class="form-control" v-model="selectedMonth" @change="searchData" />
           </div>
-          <div class="col-12 col-md-4">
+          <div class="col-12 col-md-6">
             <label class="form-label">Line</label>
-            <select class="form-select" v-model="selectedLine">
+            <select class="form-select" v-model="selectedLine" @change="searchData">
               <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
                 {{ line.text }}
               </option>
             </select>
-          </div>
-          <div class="col-12 col-md-4 d-grid d-md-block">
-            <CButton color="primary" @click="searchData">Search</CButton>
           </div>
         </div>
       </div>

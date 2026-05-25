@@ -43,8 +43,8 @@
                   <CRow>
                     <CCol :xs="12">
                       <i>
-                        Admin Contact (Zaenal Arifin):
-                        <a href="https://wa.me/6285742291388" target="_blank">
+                        Admin Contact (Dian Kartika):
+                        <a href="https://wa.me/62882003343769" target="_blank">
                           Contact Here!
                         </a>
                       </i>

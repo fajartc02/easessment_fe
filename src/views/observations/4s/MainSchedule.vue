@@ -217,7 +217,7 @@
                       <td> {{ data?.freq_nm }}</td>
 
                       <td v-for="(children, childIdx) in sliceByCurrentMonthDays(data?.children, data.children[0].date)"
-                        :key="children"
+                        :key="children?.sub_schedule_id || children?.date || childIdx"
                         :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''} ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''}; z-index: 10; min-width: 80px;`">
 
                         <CDropdown variant="btn-group"
@@ -293,7 +293,7 @@
                       <!-- Sign TL 1 -->
                       <tr>
                         <td colspan="7" class="text-center">Sign TL</td>
-                        <td v-for="children in signCheckers[index]['tl']" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
+                        <td v-for="children in signCheckers[index]['tl']" :key="children?.date || children?.sub_schedule_id" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
                           } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
                           } `">
 
@@ -344,7 +344,7 @@
                       <!-- SIGN GL -->
                       <tr>
                         <td colspan="7" class="text-center">Sign GL</td>
-                        <td v-for="children in signCheckers[index]['gl']" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
+                        <td v-for="children in signCheckers[index]['gl']" :key="children?.date || children?.sub_schedule_id" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
                           } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
                           } `">
                           <!-- {{ children }} -->
@@ -368,7 +368,7 @@
                       <!-- SIGN SH -->
                       <tr>
                         <td colspan="7" class="text-center">Sign SH</td>
-                        <td v-for="children in signCheckers[index]['sh']" :key="children" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
+                        <td v-for="children in signCheckers[index]['sh']" :key="children?.date || children?.sub_schedule_id" :style="`${children?.is_holiday ? 'background-color: #f9fafb' : ''
                           } ${children?.status == 'NIGHT_SHIFT' && isAssyLine ? 'background-color: #fffbeb' : ''
                           } `">
 
@@ -759,9 +759,10 @@ export default {
         alert('Success to add schedule')
         await this.getSchedules()
       } catch (error) {
-        if (error.response.status == 401) this.$router.push("/login");
+        if (error.response && error.response.status == 401) this.$router.push("/login");
         console.log(error);
-        alert('Error to add schedule')
+        const errorMsg = error?.response?.data?.message || 'Error to add schedule';
+        alert(errorMsg);
       }
     },
     judgmentConf(content, judgment, dateIdx, children) {
@@ -924,13 +925,14 @@ export default {
         if (res) {
           let redTemp = "";
           let whiteTemp = "";
-          let temp = res.schedule;
+          let temp = res.schedule || [];
           // console.log(temp[0]?.group_nm)
           temp.sort(function (a, b) {
-            redTemp = a.group_nm;
-            whiteTemp = b.group_nm;
+            redTemp = a.group_nm || "";
+            whiteTemp = b.group_nm || "";
             return redTemp.localeCompare(whiteTemp);
           });
+          res.schedule = temp;
 
 
           this.mappingSignCheckers(res, index);

@@ -135,63 +135,63 @@ const actions = {
 
     const cloneMainSchedule = [...state.omMainSchedules]
 
-    for (let i = 0; i < cloneMainSchedule.length; i++)
-    {
+    const promises = cloneMainSchedule.map(async (mainSchedule, i) => {
       commit(SET_IS_LOADING_SUB_SCHEDULE, {
-        om_main_schedule_id: cloneMainSchedule[i].om_main_schedule_id,
+        om_main_schedule_id: mainSchedule.om_main_schedule_id,
         loading: true,
       })
 
       let limitSubSchedule = 10
       let currentPageSubSchedule = 1
 
-      if (typeof query.limit === 'object' && query.limit.om_main_schedule_id == cloneMainSchedule[i].om_main_schedule_id)
+      // Clone filter query to prevent concurrent modification of the same query object
+      const localQuery = { ...query }
+
+      if (typeof localQuery.limit === 'object' && localQuery.limit.om_main_schedule_id == mainSchedule.om_main_schedule_id)
       {
-        limitSubSchedule = query.limit.limit
-        delete query.limit
+        limitSubSchedule = localQuery.limit.limit
+        delete localQuery.limit
       }
-      if (typeof query.current_page === 'object' && query.current_page.om_main_schedule_id == cloneMainSchedule[i].om_main_schedule_id)
+      if (typeof localQuery.current_page === 'object' && localQuery.current_page.om_main_schedule_id == mainSchedule.om_main_schedule_id)
       {
-        currentPageSubSchedule = query.current_page.page
-        delete query.current_page
+        currentPageSubSchedule = localQuery.current_page.page
+        delete localQuery.current_page
       }
 
       let params = {
-        om_main_schedule_id: cloneMainSchedule[i].om_main_schedule_id,
+        om_main_schedule_id: mainSchedule.om_main_schedule_id,
         limit: limitSubSchedule,
         current_page: currentPageSubSchedule,
+        ...localQuery
       }
 
-      if (query)
-      {
-        params = {
-          ...params,
-          ...query
+      try {
+        const subScheduleRequest = await ApiService.query("operational/om/sub-schedule", params)
+        const subScheduleResponse = subScheduleRequest.data
+        if (subScheduleResponse)
+        {
+          mainSchedule.sub_schedules = subScheduleResponse.data.schedule.list
+          mainSchedule.limit = subScheduleResponse.data.schedule.limit
+          mainSchedule.current_page = subScheduleResponse.data.schedule.current_page
+          mainSchedule.total_data = subScheduleResponse.data.schedule.total_data
+          mainSchedule.glSigns = subScheduleResponse.data.sign_checker_gl
+
+          if (subScheduleResponse.data.limit) commit(SET_LIMIT_SUB_SCHEDULE, subScheduleResponse.data.schedule.limit)
+          if (subScheduleResponse.data.current_page) commit(SET_CURRENT_PAGE_SUB_SCHEDULE, subScheduleResponse.data.schedule.current_page)
+          if (subScheduleResponse.data.total_data) commit(SET_TOTAL_DATA_SUB_SCHEDULE, subScheduleResponse.data.schedule.total_data)
         }
+      } catch (err) {
+        console.error("Error fetching OM sub-schedule:", err)
+      } finally {
+        commit(SET_IS_LOADING_SUB_SCHEDULE, {
+          om_main_schedule_id: mainSchedule.om_main_schedule_id,
+          loading: false,
+        })
       }
+    })
 
-      const subScheduleRequest = await ApiService.query("operational/om/sub-schedule", params)
-      const subScheduleResponse = subScheduleRequest.data
-      if (subScheduleResponse)
-      {
-        cloneMainSchedule[i].sub_schedules = subScheduleResponse.data.schedule.list
-        cloneMainSchedule[i].limit = subScheduleResponse.data.schedule.limit
-        cloneMainSchedule[i].current_page = subScheduleResponse.data.schedule.current_page
-        cloneMainSchedule[i].total_data = subScheduleResponse.data.schedule.total_data
-        cloneMainSchedule[i].glSigns = subScheduleResponse.data.sign_checker_gl
-
-        if (subScheduleResponse.data.limit) commit(SET_LIMIT_SUB_SCHEDULE, subScheduleResponse.data.schedule.limit)
-        if (subScheduleResponse.data.current_page) commit(SET_CURRENT_PAGE_SUB_SCHEDULE, subScheduleResponse.data.schedule.current_page)
-        if (subScheduleResponse.data.total_data) commit(SET_TOTAL_DATA_SUB_SCHEDULE, subScheduleResponse.data.schedule.total_data)
-      }
-
-      commit(SET_IS_LOADING_SUB_SCHEDULE, {
-        om_main_schedule_id: cloneMainSchedule[i].om_main_schedule_id,
-        loading: false,
-      })
-
-      commit(SET_OM_MAIN_SCHEDULES, cloneMainSchedule)
-    }
+    await Promise.all(promises)
+    commit(SET_OM_MAIN_SCHEDULES, cloneMainSchedule)
   },
   [GET_OM_SUB_SCHEDULES_DETAIL]({ commit }, sub_schedule_id) {
     ApiService.setHeader()

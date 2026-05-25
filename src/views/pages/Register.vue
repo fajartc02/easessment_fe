@@ -134,6 +134,11 @@ export default {
   watch: {
     ['form.fullname']: function () {
       this.form.fullname = this?.form?.fullname?.toUpperCase()
+    },
+    ['form.noreg']: function (val) {
+      if (val) {
+        this.form.noreg = val.replace(/\D/g, '').slice(0, 7)
+      }
     }
   },
   computed: {
@@ -150,8 +155,22 @@ export default {
       await this.$store.dispatch(GET_GROUP)
     },
     async register() {
-      if (!this.form.fullname || !this.form.noreg || !this.form.phone_number || !this.form.password || !this.form.line_id || !this.form.group_id) {
+      if (
+        !this.form.fullname ||
+        !this.form.noreg ||
+        !this.form.phone_number ||
+        !this.form.password ||
+        !this.form.line_id ||
+        this.form.group_id === null ||
+        this.form.group_id === undefined ||
+        this.form.group_id === ''
+      ) {
         Swal.fire('Info', 'Mohon lengkapi semua input data!', 'info')
+        return
+      }
+
+      if (this.form.noreg.length !== 7) {
+        Swal.fire('Peringatan', 'Noreg harus berjumlah 7 digit angka!', 'warning')
         return
       }
 
