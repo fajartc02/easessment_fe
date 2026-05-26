@@ -1,5 +1,10 @@
 <template>
   <Loading :active="isLoading" :can-cancel="true" :is-full-page="true" />
+  <div class="mb-3">
+    <CButton color="secondary" class="text-white shadow-sm" @click="$router.push('/stw/dashboard')">
+      &larr; Back
+    </CButton>
+  </div>
   <div class="card">
     <div class="card-body" v-if="observation">
       <CInputGroup class="mb-3">

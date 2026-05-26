@@ -1,5 +1,10 @@
 <template>
   <div class="position-relative">
+    <div class="mb-3 d-flex align-items-center justify-content-between">
+      <CButton color="secondary" class="text-white shadow-sm" @click="$router.push('/4s/main-schedule')">
+        &larr; Back
+      </CButton>
+    </div>
     <div class="card">
       <div class="row">
         <div class="col-lg-6 col-md-6 col-12">

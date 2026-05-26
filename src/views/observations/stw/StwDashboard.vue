@@ -1008,6 +1008,7 @@ export default {
     },
     searchData() {
       if (this.selectedMonth || this.selectedLine != '0') {
+        this.saveFilters()
         this.generateDate()
         let idx = this.idxMonth.indexOf(this.selectedMonth.split('-')[1])
         this.yearMonth = `${this.monthStr[idx]} ${this.selectedMonth.split('-')[0]
@@ -1023,6 +1024,13 @@ export default {
         this.getSignature('SH', 'signObservationsSH')
         this.getSignature('SH', 'signObservationsSH_RED')
       }
+    },
+    saveFilters() {
+      const filters = {
+        selectedMonth: this.selectedMonth,
+        selectedLine: this.selectedLine
+      }
+      localStorage.setItem("stw_dashboard_filters", JSON.stringify(filters))
     },
     onPageChange(page) {
       if (page == -1) {
@@ -1281,6 +1289,17 @@ export default {
     const month = moment(new Date()).toISOString().split('T')[0].split('-')[1]
     this.selectedMonth = `${year}-${month}`
     this.selectedLine = localStorage.getItem('line_id')
+
+    const savedFiltersStr = localStorage.getItem("stw_dashboard_filters")
+    if (savedFiltersStr) {
+      try {
+        const savedFilters = JSON.parse(savedFiltersStr)
+        if (savedFilters.selectedMonth) this.selectedMonth = savedFilters.selectedMonth
+        if (savedFilters.selectedLine) this.selectedLine = savedFilters.selectedLine
+      } catch (e) {
+        console.error("Error parsing saved STW filters", e)
+      }
+    }
 
     // await this.getObsSchedule()
     // await this.getObsScheduleRedShift()
