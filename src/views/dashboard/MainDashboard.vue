@@ -52,8 +52,8 @@
         :selectedMonth="selectedMonth" @emit-selectedMonth="(payload) => { selectedMonth = payload }" :cond="cond"
         @emit-cond="(payload) => { cond = payload }" :isLoading="isLoading"
         @emit-isLoading="(payload) => { isLoading = payload }" />
-
-      <OmFindingGraph :selectedLineID="selectedLineID" @emit-lineID="(payload) => { selectedLineID = payload }"
+        <!--Grafik OM-->
+      <!-- <OmFindingGraph :selectedLineID="selectedLineID" @emit-lineID="(payload) => { selectedLineID = payload }"
         :selectedFilterStartDate="selectedFilterStartDate"
         @emit-filterStartDate="(payload) => { selectedFilterStartDate = payload }"
         :selectedFilterEndDate="selectedFilterEndDate"
@@ -61,7 +61,7 @@
         @emit-line="(payload) => { selectedLine = payload }" :selectedFilterShift="selectedFilterShift"
         :selectedMonth="selectedMonth" @emit-selectedMonth="(payload) => { selectedMonth = payload }" :cond="cond"
         @emit-cond="(payload) => { cond = payload }" :isLoading="isLoading"
-        @emit-isLoading="(payload) => { isLoading = payload }" />
+        @emit-isLoading="(payload) => { isLoading = payload }" /> -->
     </div>
   </div>
 </template>
@@ -77,7 +77,7 @@ import { mapGetters } from 'vuex'
 
 import STWFindingGraph from '@/components/graph/STWFindingGraph.vue'
 import SFindingGraph from '@/components/graph/4SFindingGraph.vue'
-import OmFindingGraph from '@/components/graph/OmFindingGraph.vue'
+// import OmFindingGraph from '@/components/graph/OmFindingGraph.vue'
 
 
 export default {
@@ -138,7 +138,7 @@ export default {
   components: {
     STWFindingGraph,
     SFindingGraph,
-    OmFindingGraph
+    // OmFindingGraph
   },
 }
 </script>
