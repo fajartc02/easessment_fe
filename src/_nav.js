@@ -55,7 +55,7 @@ export default [{
 {
   component: 'CNavItem',
   name: 'Yamazumi',
-  to: '/stw/yamazumi',
+  to: '/pages/404',
   icon: 'cil-graph',
   is_admin: false,
   hide_for_roles: []
@@ -182,6 +182,7 @@ export default [{
 //     icon: 'cil-speedometer'
 // },
 
+/*
 {
   component: 'CNavTitle', // --- OM MENU
   name: 'OM',
@@ -212,6 +213,7 @@ export default [{
   is_admin: false,
   hide_for_roles: []
 },
+*/
 {
   component: 'CNavTitle', // --- MASTER MENU
   name: 'Master Data',

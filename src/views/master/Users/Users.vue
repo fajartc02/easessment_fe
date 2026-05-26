@@ -156,7 +156,12 @@ export default {
     getUsers: function () {
       this.usersState = this.getUsers
       this.selectedrole = this.filtered.role
- 
+    },
+    'filtered.line_id': function () {
+      this.getUsersStore()
+    },
+    'filtered.id': function () {
+      this.getUsersStore()
     }
   },
   computed: {
@@ -180,6 +185,7 @@ export default {
     async getUsersStore() {
       this.isLoading = true
       console.log(this.filtered)
+      localStorage.setItem("master_users_filters", JSON.stringify(this.filtered))
       await this.$store.dispatch(GET_USERS, this.filtered)
       this.isLoading = false
     },
@@ -192,6 +198,7 @@ export default {
         currentPage: 1,
         id: -1
       }
+      localStorage.removeItem("master_users_filters")
       await this.$store.dispatch(GET_USERS, this.filtered)
       this.isLoading = false
     },
@@ -314,6 +321,21 @@ async saveSetting() {
   async mounted() {
     this.isLoading = true
     this.filtered.line_id = localStorage.getItem('line_id')
+    
+    const savedFiltersStr = localStorage.getItem("master_users_filters")
+    if (savedFiltersStr) {
+      try {
+        const savedFilters = JSON.parse(savedFiltersStr)
+        if (savedFilters.line_id !== undefined) this.filtered.line_id = savedFilters.line_id
+        if (savedFilters.id !== undefined) this.filtered.id = savedFilters.id
+        if (savedFilters.limit !== undefined) this.filtered.limit = savedFilters.limit
+        if (savedFilters.currentPage !== undefined) this.filtered.currentPage = savedFilters.currentPage
+        if (savedFilters.totalPage !== undefined) this.filtered.totalPage = savedFilters.totalPage
+      } catch (e) {
+        console.error("Error parsing saved Master Users filters", e)
+      }
+    }
+    
     await this.getUsersStore()
     await this.getLines()
     this.isLoading = false

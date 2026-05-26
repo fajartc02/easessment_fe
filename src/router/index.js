@@ -367,6 +367,13 @@ router.beforeEach((to, from, next) => {
     localStorage.removeItem("stw_dashboard_filters");
   }
 
+  const isFromUsers = from.path === '/master/user' || from.path.startsWith('/master/user/form');
+  const isToUsers = to.path === '/master/user' || to.path.startsWith('/master/user/form');
+
+  if (isFromUsers && !isToUsers) {
+    localStorage.removeItem("master_users_filters");
+  }
+
   next();
 })
 
