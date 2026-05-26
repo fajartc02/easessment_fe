@@ -445,18 +445,21 @@ export default {
 
 /* ========== Add Button ========== */
 .btn-add-material {
-  background: linear-gradient(135deg, #321fdb, #6b5ce7);
+  background: #1e3a5f;
+  color: #ffffff;
   border: none;
   padding: 10px 20px;
   font-weight: 600;
   border-radius: 10px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(50, 31, 219, 0.3);
+  box-shadow: 0 4px 15px rgba(30, 58, 95, 0.3);
 }
 
 .btn-add-material:hover {
+  background: #152943;
+  color: #ffffff;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(50, 31, 219, 0.4);
+  box-shadow: 0 6px 20px rgba(30, 58, 95, 0.4);
 }
 
 /* ========== Filter Buttons ========== */
@@ -475,16 +478,16 @@ export default {
 }
 
 .btn-filter:hover {
-  border-color: #321fdb;
-  color: #321fdb;
-  background: rgba(50, 31, 219, 0.04);
+  border-color: #1e3a5f;
+  color: #1e3a5f;
+  background: rgba(30, 58, 95, 0.04);
 }
 
 .btn-filter-active {
-  background: #321fdb !important;
+  background: #1e3a5f !important;
   color: #fff !important;
-  border-color: #321fdb !important;
-  box-shadow: 0 2px 10px rgba(50, 31, 219, 0.3);
+  border-color: #1e3a5f !important;
+  box-shadow: 0 2px 10px rgba(30, 58, 95, 0.3);
 }
 
 .btn-filter-active .filter-dot {
@@ -511,7 +514,7 @@ export default {
   text-transform: uppercase;
   font-size: 0.75rem;
   letter-spacing: 0.5px;
-  background-color: #3c4b64 !important;
+  background-color: #1e3a5f !important;
   color: #ffffff !important;
 }
 
@@ -532,7 +535,7 @@ export default {
 /* Mengatasi latar belakang transparan saat discroll */
 thead th.sticky-col-1,
 thead th.sticky-col-2 {
-  background-color: #3c4b64 !important; /* Latar belakang dark slate matching CoreUI/Bootstrap theme */
+  background-color: #1e3a5f !important; /* Latar belakang dark slate matching CoreUI/Bootstrap theme */
   color: #ffffff !important;
 }
 

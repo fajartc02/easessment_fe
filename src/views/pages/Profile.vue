@@ -80,10 +80,11 @@ export default {
   methods: {
     async fetchProfile() {
       try {
+        ApiService.setHeader();
         const res = await ApiService.get('auth/profile');
-        const data = res.data ? res.data : res; 
+        const data = res.data ? res.data : res;
         
-        if (data && data.status === 'success') {
+        if ((res && res.status === 200) || (data && data.status == 200)) {
           this.form = data.data;
           if (this.form.photo_url) {
             localStorage.setItem('photo_url', this.form.photo_url);
@@ -118,63 +119,132 @@ export default {
     async uploadPhoto() {
       if (!this.selectedFile) return;
       
+      const result = await Swal.fire({
+        title: 'Upload Foto Profil?',
+        text: 'Apakah Anda yakin ingin mengunggah foto profil baru ini?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#1e3a5f',
+        confirmButtonText: 'Ya, Upload',
+        cancelButtonText: 'Batal'
+      });
+
+      if (!result.isConfirmed) return;
+
       this.isUploading = true;
+      Swal.fire({
+        title: 'Mengunggah Foto...',
+        text: 'Mohon tunggu selagi foto Anda sedang diproses.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+
       const formData = new FormData();
       formData.append('dest', 'profiles');
       formData.append('photo', this.selectedFile);
 
       try {
-        ApiService.setHeader(true);
-        const { data } = await ApiService.post('auth/profile/upload', formData);
-        ApiService.setHeader(false);
+        ApiService.setHeader();
+        const res = await ApiService.post('auth/profile/upload', formData);
         
-        if (data.status === 'success') {
-          this.form.photo_url = data.data.photo_url;
-          localStorage.setItem('photo_url', data.data.photo_url);
+        const resData = res.data ? res.data : res;
+        
+        if ((res && res.status === 200) || (resData && resData.status == 200)) {
+          this.form.photo_url = resData.data.photo_url;
+          localStorage.setItem('photo_url', resData.data.photo_url);
           this.selectedFile = null;
           this.photoPreview = null;
+          
           Swal.fire({
-            title: 'Berhasil',
-            text: 'Foto profil berhasil diperbarui',
+            title: 'Berhasil!',
+            text: 'Foto profil berhasil diperbarui.',
             icon: 'success',
+            confirmButtonColor: '#1e3a5f',
             confirmButtonText: 'OK'
           }).then(() => {
             window.location.reload();
           });
+        } else {
+          throw new Error(resData?.message || 'Gagal');
         }
       } catch (error) {
         console.error(error);
-        Swal.fire('Error', 'Gagal mengunggah foto', 'error');
+        Swal.fire({
+          title: 'Gagal',
+          text: 'Gagal mengunggah foto profil.',
+          icon: 'error',
+          confirmButtonColor: '#1e3a5f'
+        });
       } finally {
         this.isUploading = false;
       }
     },
     async updateProfile() {
       if (!this.form.fullname) {
-        Swal.fire('Peringatan', 'Nama lengkap tidak boleh kosong', 'warning');
+        Swal.fire({
+          title: 'Peringatan',
+          text: 'Nama lengkap tidak boleh kosong',
+          icon: 'warning',
+          confirmButtonColor: '#1e3a5f'
+        });
         return;
       }
+
+      const result = await Swal.fire({
+        title: 'Simpan Perubahan?',
+        text: 'Apakah Anda yakin ingin menyimpan perubahan profil Anda?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#1e3a5f',
+        confirmButtonText: 'Ya, Simpan',
+        cancelButtonText: 'Batal'
+      });
+
+      if (!result.isConfirmed) return;
+
       this.isSaving = true;
+      Swal.fire({
+        title: 'Menyimpan...',
+        text: 'Mohon tunggu selagi profil Anda sedang diperbarui.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+
       try {
-        const { data } = await ApiService.put('auth/profile', { 
+        const res = await ApiService.put('auth/profile', { 
           fullname: this.form.fullname,
           noreg: this.form.noreg
         });
-        if (data.status === 'success') {
+        const resData = res.data ? res.data : res;
+        
+        if ((res && res.status === 200) || (resData && resData.status == 200)) {
           localStorage.setItem('name', this.form.fullname);
           localStorage.setItem('noreg', this.form.noreg);
+          
           Swal.fire({
-            title: 'Berhasil',
-            text: 'Profil diperbarui',
+            title: 'Berhasil!',
+            text: 'Profil berhasil diperbarui.',
             icon: 'success',
+            confirmButtonColor: '#1e3a5f',
             confirmButtonText: 'OK'
           }).then(() => {
             window.location.reload();
           });
+        } else {
+          throw new Error(resData?.message || 'Gagal');
         }
       } catch (error) {
         console.error(error);
-        Swal.fire('Error', 'Gagal memperbarui profil', 'error');
+        Swal.fire({
+          title: 'Gagal',
+          text: 'Gagal memperbarui profil.',
+          icon: 'error',
+          confirmButtonColor: '#1e3a5f'
+        });
       } finally {
         this.isSaving = false;
       }
