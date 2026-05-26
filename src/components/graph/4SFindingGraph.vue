@@ -265,6 +265,24 @@ export default {
         await this.getOverallGraph()
         await this.getGraph()
       }
+    },
+    selectedFilterShift: {
+      async handler() {
+        await this.getOverallGraph()
+        await this.getGraph()
+      }
+    },
+    selectedFilterStartDate: {
+      async handler() {
+        await this.getOverallGraph()
+        await this.getGraph()
+      }
+    },
+    selectedFilterEndDate: {
+      async handler() {
+        await this.getOverallGraph()
+        await this.getGraph()
+      }
     }
   },
   props: {
