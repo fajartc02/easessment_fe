@@ -352,4 +352,22 @@ const router = createRouter({
   },
 })
 
+router.beforeEach((to, from, next) => {
+  const isFromSchedule = from.path === '/4s/main-schedule' || from.path.startsWith('/4s/schedule-check');
+  const isToSchedule = to.path === '/4s/main-schedule' || to.path.startsWith('/4s/schedule-check');
+  
+  if (isFromSchedule && !isToSchedule) {
+    localStorage.removeItem("main_schedule_4s_filters");
+  }
+
+  const isFromStw = from.path === '/stw/dashboard' || from.path.startsWith('/new-observation') || from.path.startsWith('/observation');
+  const isToStw = to.path === '/stw/dashboard' || to.path.startsWith('/new-observation') || to.path.startsWith('/observation');
+
+  if (isFromStw && !isToStw) {
+    localStorage.removeItem("stw_dashboard_filters");
+  }
+
+  next();
+})
+
 export default router

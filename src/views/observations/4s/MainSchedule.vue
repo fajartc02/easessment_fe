@@ -1253,6 +1253,7 @@ export default {
     },
 
     async addFilter() {
+      this.saveFilters();
       await this.getSchedules();
     },
     resetFilter() {
@@ -1261,7 +1262,19 @@ export default {
       this.selectedGroupID = "-1";
       this.selectedZoneID = "-1";
       this.selectedKanbanID = "-1";
+      this.saveFilters();
       this.getSchedules();
+    },
+    saveFilters() {
+      const filters = {
+        selectedMonth: this.selectedMonth,
+        selectedLineID: this.selectedLineID,
+        selectedGroupID: this.selectedGroupID,
+        selectedZoneID: this.selectedZoneID,
+        selectedKanbanID: this.selectedKanbanID,
+        selectedFreqID: this.selectedFreqID
+      };
+      localStorage.setItem("main_schedule_4s_filters", JSON.stringify(filters));
     },
 
     async getUsers() {
@@ -1588,16 +1601,30 @@ export default {
   },
 
   async mounted() {
-    if (localStorage.getItem("line_id")) {
-      this.selectedLineID = localStorage.getItem("line_id");
-    }
     this.newSubScheduleData = [];
     const year = moment().format("YYYY");
     const month = moment().format("MM");
-    /* const year = "2025";
-    const month = "12"; */
-    // const month = moment().set('month', 0).format("MM");
     this.selectedMonth = `${year}-${month}`;
+
+    const savedFiltersStr = localStorage.getItem("main_schedule_4s_filters");
+    if (savedFiltersStr) {
+      try {
+        const savedFilters = JSON.parse(savedFiltersStr);
+        if (savedFilters.selectedMonth) this.selectedMonth = savedFilters.selectedMonth;
+        if (savedFilters.selectedLineID) this.selectedLineID = savedFilters.selectedLineID;
+        if (savedFilters.selectedGroupID) this.selectedGroupID = savedFilters.selectedGroupID;
+        if (savedFilters.selectedZoneID) this.selectedZoneID = savedFilters.selectedZoneID;
+        if (savedFilters.selectedKanbanID) this.selectedKanbanID = savedFilters.selectedKanbanID;
+        if (savedFilters.selectedFreqID) this.selectedFreqID = savedFilters.selectedFreqID;
+      } catch (e) {
+        console.error("Error parsing saved filters", e);
+      }
+    } else {
+      if (localStorage.getItem("line_id")) {
+        this.selectedLineID = localStorage.getItem("line_id");
+      }
+    }
+
     await this.getLines();
     this.getGroup();
     this.getZone();
