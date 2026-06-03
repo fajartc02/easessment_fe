@@ -11,7 +11,14 @@
               :src="photoPreview || (isValidPhoto(form.photo_url) ? `${appUrl}/file?path=${form.photo_url}` : defaultAvatar)" 
               alt="Profile Photo" 
               class="img-thumbnail rounded-circle profile-photo shadow-sm"
+              @click="showFullPhoto"
+              title="Klik untuk memperbesar"
             >
+          </div>
+          <div class="mb-3">
+            <small class="text-muted cursor-pointer" @click="showFullPhoto">
+              <CIcon icon="cil-zoom-in" class="me-1" /> Klik foto untuk memperbesar
+            </small>
           </div>
           <div class="px-3">
             <CFormInput type="file" @change="onFileChange" accept="image/*" class="mb-2 form-control-sm" />
@@ -78,6 +85,22 @@ export default {
     }
   },
   methods: {
+    showFullPhoto() {
+      const photoUrl = this.photoPreview || (this.isValidPhoto(this.form.photo_url) ? `${this.appUrl}/file?path=${this.form.photo_url}` : this.defaultAvatar);
+      Swal.fire({
+        imageUrl: photoUrl,
+        imageAlt: 'Foto Profil',
+        showConfirmButton: false,
+        showCloseButton: true,
+        backdrop: 'rgba(0,0,0,0.8)',
+        width: '360px',
+        imageWidth: '280px',
+        imageHeight: '280px',
+        customClass: {
+          image: 'img-thumbnail rounded-circle object-fit-cover shadow-sm'
+        }
+      });
+    },
     async fetchProfile() {
       try {
         ApiService.setHeader();
@@ -262,6 +285,15 @@ export default {
   height: 150px;
   object-fit: cover;
   border: 4px solid #fff;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.profile-photo:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15) !important;
+}
+.cursor-pointer {
+  cursor: pointer;
 }
 .profile-card {
   max-width: 800px;

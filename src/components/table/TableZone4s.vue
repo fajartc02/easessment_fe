@@ -1,85 +1,87 @@
 <template>
-  <table class="table table-stripped">
-    <thead>
-      <tr class="text-center">
-        <th>No</th>
-        <th>Line</th>
-        <th>Zone</th>
-        <th>Created By</th>
-        <th>Created Date</th>
-        <th colspan="3">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <template v-if="getZonesWithStatusModal && !isLoading">
-        <tr v-for="(zone, i) in getZonesWithStatusModal" :key="i">
-          <td>
-            {{ zone.no }}
-          </td>
-          <td>
-            {{ zone.line_nm }}
-          </td>
-          <td>
-            {{ zone.zone_nm }}
-          </td>
-          <td>
-            {{ zone.created_by }}
-          </td>
-          <td>
-            {{ zone.created_dt.split(' ')[0] }}
-          </td>
-          <td class="text-center">
-            <button class="btn btn-sm btn-warning" @click="() => { zone.is_edit = true }">Edit</button>
-            <CModal backdrop="static" :visible="zone.is_edit" @close="() => { zone.is_edit = false }" clos size="lg">
-              <CModalHeader>
-                <CModalTitle>Edit Zone</CModalTitle>
-              </CModalHeader>
-              <CModalBody>
-                <div class="row">
-                  <div class="col">
-                    <div class="input-group">
-                      <span class="input-group-text">Line</span>
-                      <select class="form-select" v-model="zone.line_id">
-                        <option v-for="(line, index) in getLinesOptsWithoutAll" :key="index" :value="line.id">
-                          {{ line.text }}
-                        </option>
-                      </select>
+  <div class="table-responsive">
+    <table class="table table-stripped">
+      <thead>
+        <tr class="text-center">
+          <th>No</th>
+          <th>Line</th>
+          <th>Zone</th>
+          <th>Created By</th>
+          <th>Created Date</th>
+          <th colspan="3">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template v-if="getZonesWithStatusModal && !isLoading">
+          <tr v-for="(zone, i) in getZonesWithStatusModal" :key="i">
+            <td>
+              {{ zone.no }}
+            </td>
+            <td>
+              {{ zone.line_nm }}
+            </td>
+            <td>
+              {{ zone.zone_nm }}
+            </td>
+            <td>
+              {{ zone.created_by }}
+            </td>
+            <td>
+              {{ zone.created_dt.split(' ')[0] }}
+            </td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-warning" @click="() => { zone.is_edit = true }">Edit</button>
+              <CModal backdrop="static" :visible="zone.is_edit" @close="() => { zone.is_edit = false }" clos size="lg">
+                <CModalHeader>
+                  <CModalTitle>Edit Zone</CModalTitle>
+                </CModalHeader>
+                <CModalBody>
+                  <div class="row">
+                    <div class="col">
+                      <div class="input-group">
+                        <span class="input-group-text">Line</span>
+                        <select class="form-select" v-model="zone.line_id">
+                          <option v-for="(line, index) in getLinesOptsWithoutAll" :key="index" :value="line.id">
+                            {{ line.text }}
+                          </option>
+                        </select>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div class="row mt-3">
-                  <div class="col">
-                    <div class="input-group">
-                      <span class="input-group-text">Zone</span>
-                      <input class="form-control" type="text" v-model="zone.zone_nm">
+                  <div class="row mt-3">
+                    <div class="col">
+                      <div class="input-group">
+                        <span class="input-group-text">Zone</span>
+                        <input class="form-control" type="text" v-model="zone.zone_nm">
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CModalBody>
-              <CModalFooter>
-                <CButton color="primary" @click="ActionEditKanban({ zone })">Save</CButton>
-                <CButton color="secondary" @click="() => { zone.is_edit = false }">Close</CButton>
-              </CModalFooter>
-            </CModal>
-          </td>
-          <td class="text-center">
-            <button class="btn btn-sm btn-danger" @click="ActionDeleteKanban(zone.zone_id)">Delete</button>
-          </td>
-        </tr>
-      </template>
-      <template v-else-if="isLoading && getZonesWithStatusModal?.length != 0">
-        <tr>
-          <td class="text-center" colspan="9">
-            <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
-            Loading...
-          </td>
-        </tr>
-      </template>
-      <template v-else>
-        <NoDataTable :colspan="9" />
-      </template>
-    </tbody>
-  </table>
+                </CModalBody>
+                <CModalFooter>
+                  <CButton color="primary" @click="ActionEditKanban({ zone })">Save</CButton>
+                  <CButton color="secondary" @click="() => { zone.is_edit = false }">Close</CButton>
+                </CModalFooter>
+              </CModal>
+            </td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-danger" @click="ActionDeleteKanban(zone.zone_id)">Delete</button>
+            </td>
+          </tr>
+        </template>
+        <template v-else-if="isLoading && getZonesWithStatusModal?.length != 0">
+          <tr>
+            <td class="text-center" colspan="9">
+              <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
+              Loading...
+            </td>
+          </tr>
+        </template>
+        <template v-else>
+          <NoDataTable :colspan="9" />
+        </template>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 
