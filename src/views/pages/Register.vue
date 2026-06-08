@@ -43,19 +43,19 @@
                   <!-- Line Select -->
                   <CInputGroup class="mb-3">
                     <CInputGroupText>Line</CInputGroupText>
-                    <CFormSelect v-model="form.line_id" required>
+                    <select class="form-select" v-model="form.line_id" required>
                       <option :value="null" disabled>Select Line</option>
                       <option v-for="line in getLinesOptsWithoutAll" :key="line.id" :value="line.id">{{ line.text }}</option>
-                    </CFormSelect>
+                    </select>
                   </CInputGroup>
 
                   <!-- Shift/Group Select -->
                   <CInputGroup class="mb-3">
                     <CInputGroupText>Shift</CInputGroupText>
-                    <CFormSelect v-model="form.group_id" required>
+                    <select class="form-select" v-model="form.group_id" required>
                       <option :value="null" disabled>Select Shift</option>
                       <option v-for="group in getGroupsOptsWithoutAll" :key="group.id" :value="group.id">{{ group.text }}</option>
-                    </CFormSelect>
+                    </select>
                   </CInputGroup>
 
                   <!-- Password -->
