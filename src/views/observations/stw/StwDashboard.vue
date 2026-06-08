@@ -219,8 +219,8 @@
                   </td>
                   <td v-for="date in containerDate" :key="date" :class="date.bg">
                     <template v-if="
-                      observationSchedule.find((obserChild) =>
-                        obserChild.children.find(
+                      observationSchedule?.find((obserChild) =>
+                        obserChild.children?.find(
                           (childObser) => childObser.idxdate == date.idx,
                         ),
                       )
@@ -228,7 +228,7 @@
                       <!-- make condition for switch if sign in this date is available -->
 
                       <CButton v-if="
-                        !signObservationsTL_1.find(
+                        !signObservationsTL_1?.find(
                           (obserChild) =>
                             obserChild.date_idx == date.idx &&
                             obserChild.role_sign_sys == 'TL_1' &&
@@ -246,7 +246,7 @@
                       ">
                         <CIcon icon="cil-pencil" class="text-dark" size="sm" />
                       </CButton>
-                      <img v-else :src="signObservationsTL_1.find(
+                      <img v-else :src="signObservationsTL_1?.find(
                         (obserChild) =>
                           obserChild.date_idx == date.idx &&
                           obserChild.role_sign_sys == 'TL_1' &&
@@ -254,7 +254,7 @@
                       )?.sign
                         " width="50" height="50" alt="sign" style="cursor: pointer" @click="
                           () => {
-                            const signData = signObservationsTL_1.find(
+                            const signData = signObservationsTL_1?.find(
                               (obserChild) =>
                                 obserChild.date_idx == date.idx &&
                                 obserChild.role_sign_sys == 'TL_1' &&
@@ -286,8 +286,8 @@
                   >
                     <template
                       v-if="
-                        observationSchedule.find((obserChild) =>
-                          obserChild.children.find(
+                        observationSchedule?.find((obserChild) =>
+                          obserChild.children?.find(
                             (childObser) => childObser.idxdate == date.idx,
                           ),
                         )
@@ -295,7 +295,7 @@
                     >
                       <CButton
                         v-if="
-                          !signObservationsTL_2.find(
+                          !signObservationsTL_2?.find(
                             (obserChild) =>
                               obserChild.date_idx == date.idx &&
                               obserChild.role_sign_sys == 'TL_2' &&
@@ -321,7 +321,7 @@
                       <img
                         v-else
                         :src="
-                          signObservationsTL_2.find(
+                          signObservationsTL_2?.find(
                             (obserChild) =>
                               obserChild.date_idx == date.idx &&
                               obserChild.role_sign_sys == 'TL_2' &&
@@ -346,8 +346,8 @@
                   </td>
                   <td v-for="date in containerDate" :key="date" :class="date.bg">
                     <template v-if="
-                      observationSchedule.find((obserChild) =>
-                        obserChild.children.find(
+                      observationSchedule?.find((obserChild) =>
+                        obserChild.children?.find(
                           (childObser) => childObser.idxdate == date.idx,
                         ),
                       )
@@ -355,7 +355,7 @@
                       <!-- make condition for switch if sign in this date is available -->
 
                       <CButton v-if="
-                        !signObservationsGL.find(
+                        !signObservationsGL?.find(
                           (obserChild) =>
                             obserChild.date_idx == date.idx &&
                             obserChild.role_sign_sys == 'GL' &&
@@ -368,7 +368,7 @@
                       ">
                         <CIcon icon="cil-pencil" class="text-dark" size="sm" />
                       </CButton>
-                      <img v-else :src="signObservationsGL.find(
+                      <img v-else :src="signObservationsGL?.find(
                         (obserChild) =>
                           obserChild.date_idx == date.idx &&
                           obserChild.role_sign_sys == 'GL' &&
@@ -376,7 +376,7 @@
                       )?.sign
                         " width="50" height="50" alt="sign" style="cursor: pointer" @click="
                           () => {
-                            const signData = signObservationsGL.find(
+                            const signData = signObservationsGL?.find(
                               (obserChild) =>
                                 obserChild.date_idx == date.idx &&
                                 obserChild.role_sign_sys == 'GL' &&
@@ -401,8 +401,8 @@
                   </td>
                   <td v-for="date in containerDate" :key="date" :class="date.bg">
                     <template v-if="
-                      observationSchedule.find((obserChild) =>
-                        obserChild.children.find(
+                      observationSchedule?.find((obserChild) =>
+                        obserChild.children?.find(
                           (childObser) => childObser.idxdate == date.idx,
                         ),
                       )
@@ -410,7 +410,7 @@
                       <!-- make condition for switch if sign in this date is available -->
 
                       <CButton v-if="
-                        !signObservationsSH.find(
+                        !signObservationsSH?.find(
                           (obserChild) =>
                             obserChild.date_idx == date.idx &&
                             obserChild.role_sign_sys == 'SH' &&
@@ -423,7 +423,7 @@
                       ">
                         <CIcon icon="cil-pencil" class="text-dark" size="sm" />
                       </CButton>
-                      <img v-else :src="signObservationsSH.find(
+                      <img v-else :src="signObservationsSH?.find(
                         (obserChild) =>
                           obserChild.date_idx == date.idx &&
                           obserChild.role_sign_sys == 'SH' &&
@@ -432,7 +432,7 @@
                         " width="50" height="50" alt="sign" style="cursor: pointer" @click="
 
                           () => {
-                            const signData = signObservationsSH.find(
+                            const signData = signObservationsSH?.find(
                               (obserChild) =>
                                 obserChild.date_idx == date.idx &&
                                 obserChild.role_sign_sys == 'SH' &&
@@ -527,8 +527,8 @@ observationRedShift, i
                   </td>
                   <td v-for="date in containerDate" :key="date" :class="date.bg">
                     <template v-if="
-                      observationScheduleRedShift.find((obserChild) =>
-                        obserChild.children.find(
+                      observationScheduleRedShift?.find((obserChild) =>
+                        obserChild.children?.find(
                           (childObser) => childObser.idxdate == date.idx,
                         ),
                       )
@@ -536,7 +536,7 @@ observationRedShift, i
                       <!-- make condition for switch if sign in this date is available -->
 
                       <CButton v-if="
-                        !signObservationsTL_1_RED.find(
+                        !signObservationsTL_1_RED?.find(
                           (obserChild) =>
                             obserChild.date_idx == date.idx &&
                             obserChild.role_sign_sys == 'TL_1' &&
@@ -549,7 +549,7 @@ observationRedShift, i
                       ">
                         <CIcon icon="cil-pencil" class="text-dark" size="sm" />
                       </CButton>
-                      <img v-else :src="signObservationsTL_1_RED.find(
+                      <img v-else :src="signObservationsTL_1_RED?.find(
                         (obserChild) =>
                           obserChild.date_idx == date.idx &&
                           obserChild.role_sign_sys == 'TL_1' &&
@@ -557,7 +557,7 @@ observationRedShift, i
                       )?.sign
                         " width="50" height="50" alt="sign" style="cursor: pointer" @click="
                           () => {
-                            const signData = signObservationsTL_1_RED.find(
+                            const signData = signObservationsTL_1_RED?.find(
                               (obserChild) =>
                                 obserChild.date_idx == date.idx &&
                                 obserChild.role_sign_sys == 'TL_1' &&
@@ -589,8 +589,8 @@ observationRedShift, i
                   >
                     <template
                       v-if="
-                        observationScheduleRedShift.find((obserChild) =>
-                          obserChild.children.find(
+                        observationScheduleRedShift?.find((obserChild) =>
+                          obserChild.children?.find(
                             (childObser) => childObser.idxdate == date.idx,
                           ),
                         )
@@ -598,7 +598,7 @@ observationRedShift, i
                     >
                       <CButton
                         v-if="
-                          !signObservationsTL_2_RED.find(
+                          !signObservationsTL_2_RED?.find(
                             (obserChild) =>
                               obserChild.date_idx == date.idx &&
                               obserChild.role_sign_sys == 'TL_2' &&
@@ -619,7 +619,7 @@ observationRedShift, i
                       <img
                         v-else
                         :src="
-                          signObservationsTL_2_RED.find(
+                          signObservationsTL_2_RED?.find(
                             (obserChild) =>
                               obserChild.date_idx == date.idx &&
                               obserChild.role_sign_sys == 'TL_2' &&
@@ -644,8 +644,8 @@ observationRedShift, i
                   </td>
                   <td v-for="date in containerDate" :key="date" :class="date.bg">
                     <template v-if="
-                      observationScheduleRedShift.find((obserChild) =>
-                        obserChild.children.find(
+                      observationScheduleRedShift?.find((obserChild) =>
+                        obserChild.children?.find(
                           (childObser) => childObser.idxdate == date.idx,
                         ),
                       )
@@ -653,7 +653,7 @@ observationRedShift, i
                       <!-- make condition for switch if sign in this date is available -->
 
                       <CButton v-if="
-                        !signObservationsGL_RED.find(
+                        !signObservationsGL_RED?.find(
                           (obserChild) =>
                             obserChild.date_idx == date.idx &&
                             obserChild.role_sign_sys == 'GL' &&
@@ -666,14 +666,14 @@ observationRedShift, i
                       ">
                         <CIcon icon="cil-pencil" class="text-dark" size="sm" />
                       </CButton>
-                      <img v-else :src="signObservationsGL_RED.find(
+                      <img v-else :src="signObservationsGL_RED?.find(
                         (obserChild) =>
                           obserChild.date_idx == date.idx &&
                           obserChild.role_sign_sys == 'GL' &&
                           obserChild.group_nm == 'RED'
                       )?.sign" width="50" height="50" alt="sign" style="cursor: pointer" @click="
                         () => {
-                          const signData = signObservationsGL_RED.find(
+                          const signData = signObservationsGL_RED?.find(
                             (obserChild) =>
                               obserChild.date_idx == date.idx &&
                               obserChild.role_sign_sys == 'GL' &&
@@ -699,8 +699,8 @@ observationRedShift, i
                   </td>
                   <td v-for="date in containerDate" :key="date" :class="date.bg">
                     <template v-if="
-                      observationScheduleRedShift.find((obserChild) =>
-                        obserChild.children.find(
+                      observationScheduleRedShift?.find((obserChild) =>
+                        obserChild.children?.find(
                           (childObser) => childObser.idxdate == date.idx,
                         ),
                       )
@@ -708,7 +708,7 @@ observationRedShift, i
                       <!-- make condition for switch if sign in this date is available -->
 
                       <CButton v-if="
-                        !signObservationsSH_RED.find(
+                        !signObservationsSH_RED?.find(
                           (obserChild) =>
                             obserChild.date_idx == date.idx &&
                             obserChild.role_sign_sys == 'SH' &&
@@ -721,7 +721,7 @@ observationRedShift, i
                       ">
                         <CIcon icon="cil-pencil" class="text-dark" size="sm" />
                       </CButton>
-                      <img v-else :src="signObservationsSH_RED.find(
+                      <img v-else :src="signObservationsSH_RED?.find(
                         (obserChild) =>
                           obserChild.date_idx == date.idx &&
                           obserChild.role_sign_sys == 'SH' &&
@@ -729,7 +729,7 @@ observationRedShift, i
                       )?.sign
                         " width="50" height="50" alt="sign" style="cursor: pointer" @click="
                           () => {
-                            const signData = signObservationsSH_RED.find(
+                            const signData = signObservationsSH_RED?.find(
                               (obserChild) =>
                                 obserChild.date_idx == date.idx &&
                                 obserChild.role_sign_sys == 'SH' &&
@@ -998,7 +998,7 @@ export default {
           },
         )
         if (getData.data.message == 'Success to get sign') {
-          this[state] = getData.data.data
+          this[state] = getData.data.data || []
         }
       } catch (error) {
         toast.error('Error to get signature data', {
@@ -1006,23 +1006,26 @@ export default {
         })
       }
     },
-    searchData() {
+    async searchData() {
       if (this.selectedMonth || this.selectedLine != '0') {
         this.saveFilters()
         this.generateDate()
         let idx = this.idxMonth.indexOf(this.selectedMonth.split('-')[1])
         this.yearMonth = `${this.monthStr[idx]} ${this.selectedMonth.split('-')[0]
           }`
-        this.getObsSchedule()
-        this.getObsScheduleRedShift()
-        this.getSignature('TL_1', 'signObservationsTL_1')
-        this.getSignature('TL_1', 'signObservationsTL_1_RED')
-        this.getSignature('TL_2', 'signObservationsTL_2')
-        this.getSignature('TL_2', 'signObservationsTL_2_RED')
-        this.getSignature('GL', 'signObservationsGL')
-        this.getSignature('GL', 'signObservationsGL_RED')
-        this.getSignature('SH', 'signObservationsSH')
-        this.getSignature('SH', 'signObservationsSH_RED')
+        // ✅ Run ALL requests in parallel for faster loading
+        await Promise.all([
+          this.getObsSchedule(),
+          this.getObsScheduleRedShift(),
+          this.getSignature('TL_1', 'signObservationsTL_1'),
+          this.getSignature('TL_1', 'signObservationsTL_1_RED'),
+          this.getSignature('TL_2', 'signObservationsTL_2'),
+          this.getSignature('TL_2', 'signObservationsTL_2_RED'),
+          this.getSignature('GL', 'signObservationsGL'),
+          this.getSignature('GL', 'signObservationsGL_RED'),
+          this.getSignature('SH', 'signObservationsSH'),
+          this.getSignature('SH', 'signObservationsSH_RED'),
+        ])
       }
     },
     saveFilters() {
@@ -1301,17 +1304,8 @@ export default {
       }
     }
 
-    // await this.getObsSchedule()
-    // await this.getObsScheduleRedShift()
-    this.searchData()
-    this.getSignature('TL_1', 'signObservationsTL_1')
-    this.getSignature('TL_1', 'signObservationsTL_1_RED')
-    this.getSignature('TL_2', 'signObservationsTL_2')
-    this.getSignature('TL_2', 'signObservationsTL_2_RED')
-    this.getSignature('GL', 'signObservationsGL')
-    this.getSignature('GL', 'signObservationsGL_RED')
-    this.getSignature('SH', 'signObservationsSH')
-    this.getSignature('SH', 'signObservationsSH_RED')
+    // ✅ searchData() already calls getObsSchedule + getObsScheduleRedShift + all 8 getSignature in parallel
+    await this.searchData()
   },
   updated() {
     if (this.$route.query.line) {
