@@ -1192,7 +1192,7 @@ export default {
 
         this.isAddPICLoading = false;
         this.editDataModal = false;
-        // await this.getSchedules();
+        await this.getSchedules();
       }
     },
 
