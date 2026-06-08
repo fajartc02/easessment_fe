@@ -117,7 +117,7 @@ export default {
     posData: function () {
       console.log(this.posData)
       this.posState = this.posData
-      Swal.hideLoading()
+      Swal.close()
     },
     ['filtered.line_id']: function () {
       this.getPos({ line_id: this.filtered.line_id })

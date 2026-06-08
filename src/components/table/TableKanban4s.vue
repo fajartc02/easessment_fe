@@ -1,90 +1,92 @@
 <template>
-  <table class="table table-stripped">
-    <thead>
-      <tr class="text-center">
-        <th>No</th>
-        <th>Line</th>
-        <th>Shift</th>
-        <th>Zone</th>
-        <th>Area</th>
-        <th>Kanban No</th>
-        <th>Frequency</th>
-        <th colspan="3">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <template v-if="getKanbansWithStatusModal && !isLoading">
-        <tr v-for="(kanban, i) in getKanbansWithStatusModal" :key="i">
-          <td>
-            {{ kanban.no }}
-          </td>
-          <td>
-            {{ kanban.line_nm }}
-          </td>
-          <td>
-            {{ kanban.group_nm }}
-          </td>
-          <td>
-            {{ kanban.zone_nm }}
-          </td>
-          <td>
-            {{ kanban.area_nm }}
-          </td>
-          <td>
-            {{ kanban.kanban_no }}
-          </td>
-          <td>
-            {{ kanban.freq_nm }}
-          </td>
-          <td class="text-center">
-            <button class="btn btn-sm btn-primary" @click="
-              () => {
-                kanban.status = true
-              }
-            ">
-              Kanban
-            </button>
-            <CModal :visible="kanban.status" @close="
-              () => {
-                kanban.status = false
-              }
-            " size="lg">
-              <CModalBody>
-                <KanbanItemCheck :kanban_id="kanban.kanban_id" />
-              </CModalBody>
-            </CModal>
-          </td>
-
-          <td class="text-center">
-            <button class="btn btn-sm btn-warning" @click="
-              () => {
-                isVisibleModalEdit = true
-                selectedKanban = kanban
-              }
-            ">
-              Edit
-            </button>
-          </td>
-          <td class="text-center">
-            <button class="btn btn-sm btn-danger" @click="ActionDeleteKanban(kanban.kanban_id)">
-              Delete
-            </button>
-          </td>
+  <div class="table-responsive">
+    <table class="table table-stripped">
+      <thead>
+        <tr class="text-center">
+          <th>No</th>
+          <th>Line</th>
+          <th>Shift</th>
+          <th>Zone</th>
+          <th>Area</th>
+          <th>Kanban No</th>
+          <th>Frequency</th>
+          <th colspan="3">Actions</th>
         </tr>
-      </template>
-      <template v-else-if="isLoading && getKanbansWithStatusModal?.length != 0">
-        <tr>
-          <td class="text-center" colspan="9">
-            <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
-            Loading Kanban ...
-          </td>
-        </tr>
-      </template>
-      <template v-else>
-        <NoDataTable :colspan="9" />
-      </template>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <template v-if="getKanbansWithStatusModal && !isLoading">
+          <tr v-for="(kanban, i) in getKanbansWithStatusModal" :key="i">
+            <td>
+              {{ kanban.no }}
+            </td>
+            <td>
+              {{ kanban.line_nm }}
+            </td>
+            <td>
+              {{ kanban.group_nm }}
+            </td>
+            <td>
+              {{ kanban.zone_nm }}
+            </td>
+            <td>
+              {{ kanban.area_nm }}
+            </td>
+            <td>
+              {{ kanban.kanban_no }}
+            </td>
+            <td>
+              {{ kanban.freq_nm }}
+            </td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-primary" @click="
+                () => {
+                  kanban.status = true
+                }
+              ">
+                Kanban
+              </button>
+              <CModal :visible="kanban.status" @close="
+                () => {
+                  kanban.status = false
+                }
+              " size="lg">
+                <CModalBody>
+                  <KanbanItemCheck :kanban_id="kanban.kanban_id" />
+                </CModalBody>
+              </CModal>
+            </td>
+  
+            <td class="text-center">
+              <button class="btn btn-sm btn-warning" @click="
+                () => {
+                  isVisibleModalEdit = true
+                  selectedKanban = kanban
+                }
+              ">
+                Edit
+              </button>
+            </td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-danger" @click="ActionDeleteKanban(kanban.kanban_id)">
+                Delete
+              </button>
+            </td>
+          </tr>
+        </template>
+        <template v-else-if="isLoading && getKanbansWithStatusModal?.length != 0">
+          <tr>
+            <td class="text-center" colspan="9">
+              <CSpinner component="span" size="sm" variant="grow" aria-hidden="true" />
+              Loading Kanban ...
+            </td>
+          </tr>
+        </template>
+        <template v-else>
+          <NoDataTable :colspan="9" />
+        </template>
+      </tbody>
+    </table>
+  </div>
   <CModal backdrop="static" :visible="isVisibleModalEdit" @close="
     () => {
       isVisibleModalEdit = false
