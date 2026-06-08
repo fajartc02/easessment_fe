@@ -10,6 +10,10 @@
           <th>Member</th>
           <td>{{ child.member_nm }}</td>
         </tr>
+        <tr v-if="child.checkers && child.checkers.length > 0">
+          <th>Observer</th>
+          <td>{{ child.checkers.join(', ') }}</td>
+        </tr>
         <tr v-if="child?.parent_revision_id">
           <th>Reason Schedule</th>
           <td>{{ child.reason_revision }}</td>

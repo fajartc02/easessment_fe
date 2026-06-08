@@ -6,6 +6,10 @@
         <CInputGroupText>Line</CInputGroupText>
         <CFormInput :value="observation.line_nm" disabled />
       </CInputGroup>
+      <CInputGroup class="mb-3" v-if="observation.checkers && observation.checkers.length > 0">
+        <CInputGroupText>Observer</CInputGroupText>
+        <CFormInput :value="observation.checkers.join(', ')" disabled />
+      </CInputGroup>
       <CInputGroup class="mb-3">
         <CInputGroupText>Machine</CInputGroupText>
         <CFormInput :value="observation.machine_nm" disabled />

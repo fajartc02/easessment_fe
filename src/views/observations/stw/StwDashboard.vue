@@ -779,7 +779,7 @@ export default {
   data() {
     return {
       customTooltipStyle: {
-        width: '100%',
+        width: 'max-content',
       },
       isLoading: false,
       isRedShiftLoading: false,
