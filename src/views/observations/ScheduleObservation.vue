@@ -37,7 +37,7 @@
           <th>Shift</th>
           <th>Pos</th>
           <th>Type Pekerjaan</th>
-          <th>Petugas</th>
+          <th>Observer</th>
           <th>Member</th>
           <th>Job Desc</th>
           <th>Planning</th>
@@ -48,7 +48,7 @@
           <tr v-if="isLoading">
             <td colspan="10" class="p-0" style="height: 200px">
               <div class="vl-parent p-0" style="height: 100%">
-                <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false" :on-cancel="onCancel" />
+                <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="false" />
               </div>
             </td>
           </tr>
@@ -59,11 +59,14 @@
             <td>{{ obaservation.group_nm }}</td>
             <td>{{ obaservation.pos_nm }}</td>
             <td>{{ obaservation.job_type_nm }}</td>
-            <td v-if="obaservation.checkers.length > 0">
-              <button v-for="checker in obaservation.checkers" :key="checker.id"
-                class="btn btn-warning text-dark disabled">
-                {{ checker.checker_nm }}
-              </button>
+            <td>
+              <template v-if="obaservation.checkers && obaservation.checkers.length > 0">
+                <button v-for="checker in obaservation.checkers" :key="checker.id"
+                  class="btn btn-warning text-dark disabled mx-1 mb-1">
+                  {{ checker.checker_nm }}
+                </button>
+              </template>
+              <span v-else>-</span>
             </td>
             <td>{{ obaservation.member_nm }}</td>
             <td>{{ obaservation.job_nm }}</td>
@@ -208,7 +211,14 @@ export default {
   methods: {
     handlePageChange(page) {
       this.filter.current_page = page;
-      this.$store.dispatch(GET_OBSERVATION_SCHEDULE_LIST, this.filter)
+      const query = {
+        line: this.filter.line,
+        month: this.filter.month,
+        year: this.filter.year,
+        limit: this.filter.limit,
+        current_page: this.filter.current_page,
+      }
+      this.$store.dispatch(GET_OBSERVATION_SCHEDULE_LIST, query)
     },
     onPageChangeLimit(limit) {
       this.filter.limit = limit
@@ -219,8 +229,17 @@ export default {
       this.filter.month = this.selectedMonth?.split('-')[1]
       this.filter.year = this.selectedMonth?.split('-')[0]
 
+      // Build query without total_data to avoid backend whitelist rejection
+      const query = {
+        line: this.filter.line,
+        month: this.filter.month,
+        year: this.filter.year,
+        limit: this.filter.limit,
+        current_page: this.filter.current_page,
+      }
+
       await this.$store
-        .dispatch(GET_OBSERVATION_SCHEDULE_LIST, this.filter)
+        .dispatch(GET_OBSERVATION_SCHEDULE_LIST, query)
         .then((res) => {
           if (res) {
             this.isLoading = false
