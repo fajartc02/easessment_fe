@@ -68,9 +68,12 @@
     </div>
 
     <div class="card">
-      <div class="card-header">
+      <div class="card-header d-flex justify-content-between">
         <button class="btn btn-primary" @click="modalKanbanDetail = true">
           Lihat Kanban
+        </button>
+        <button class="btn btn-success text-white" @click="saveAllScheduleChecks" :disabled="isSavingAll">
+          {{ isSavingAll ? 'Saving All...' : 'Save All Items' }}
         </button>
         <CModal backdrop="static" size="xl" :visible="modalKanbanDetail" @close="
           () => {
@@ -523,6 +526,7 @@ export default {
       isAddCheckLoading: null, // object id, isLoading where id = item_check_kanban_id
       isCAddFinding: null, // object id, isCanAdd where id = item_check_kanban_id
       isUpdateCheckLoading: false,
+      isSavingAll: false,
       itemCheks: null,
       judgments: null,
       addFindingModal: false,
@@ -678,11 +682,81 @@ export default {
             ? res.actual_time
             : res.plan_time
           this.gettingKanbanID = res.kanban_id
-          this.itemCheks = res.item_check_kanbans
+
+          const newItems = res.item_check_kanbans || []
+          if (this.itemCheks && this.itemCheks.length > 0) {
+            this.itemCheks = newItems.map(newItem => {
+              const existingItem = this.itemCheks.find(
+                item => item.item_check_kanban_id === newItem.item_check_kanban_id
+              )
+              if (existingItem) {
+                return {
+                  ...newItem,
+                  actual_time: existingItem.actual_time !== null && existingItem.actual_time !== undefined && existingItem.actual_time !== '' ? existingItem.actual_time : newItem.actual_time,
+                  judgment_id: existingItem.judgment_id !== null && existingItem.judgment_id !== undefined && existingItem.judgment_id !== 'Select' ? existingItem.judgment_id : newItem.judgment_id,
+                  standart_time: existingItem.standart_time !== null && existingItem.standart_time !== undefined && existingItem.standart_time !== '' ? existingItem.standart_time : newItem.standart_time,
+                  findings: newItem.findings || existingItem.findings || []
+                }
+              }
+              return newItem
+            })
+          } else {
+            this.itemCheks = newItems
+          }
+
           this.isLoading = false
           this.planDateSubSchedule = res.plan_time
         }
       })
+    },
+    async saveAllScheduleChecks() {
+      try {
+        this.isSavingAll = true
+        console.log("saveAllScheduleChecks - itemCheks:", this.itemCheks)
+        console.log("saveAllScheduleChecks - planDateSubSchedule:", this.planDateSubSchedule)
+        
+        let savedCount = 0
+        for (const item of this.itemCheks) {
+          console.log("Item check details:", {
+            name: item.item_check_nm,
+            actual_time: item.actual_time,
+            judgment_id: item.judgment_id,
+            item_check_kanban_id: item.item_check_kanban_id
+          })
+          if (item.actual_time && item.judgment_id && item.judgment_id !== 'Select') {
+            const data = {
+              judgment_id: item.judgment_id,
+              main_schedule_id: this.$route.params.mainScheduleID,
+              item_check_kanban_id: item.item_check_kanban_id,
+              actual_time: item.actual_time,
+              checked_date: this.planDateSubSchedule,
+              sub_schedule_id: this.$route.params.subScheduleID,
+              standart_time: item.judgment_id !== 'c4f5ff30-1b95-4ad8-8af8-e3e9d90bd942'
+                ? item.standart_time
+                : null,
+            }
+            console.log("Sending POST payload sequentially for item:", item.item_check_nm, data)
+            ApiService.setHeader()
+            await ApiService.post(`operational/4s/schedule-item-check-kanban/add`, data)
+            savedCount++
+          }
+        }
+        
+        console.log("Total items saved sequentially:", savedCount)
+        if (savedCount === 0) {
+          toast.warning('Isi actual time dan judgment terlebih dahulu', { autoClose: 1500 })
+          this.isSavingAll = false
+          return
+        }
+        
+        toast.success('Semua data berhasil disimpan', { autoClose: 1000 })
+        await this.getScheduleCheck()
+      } catch (error) {
+        console.error("Error in saveAllScheduleChecks:", error)
+        toast.error('Gagal menyimpan semua data')
+      } finally {
+        this.isSavingAll = false
+      }
     },
     async saveScheduleCheck(
       selectedJudgementID,
