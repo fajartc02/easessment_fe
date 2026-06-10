@@ -3,7 +3,7 @@
     <CDropdownToggle placement="bottom-end" class="py-0">
       <img 
         :src="avatar" 
-        alt="User Avatar"
+        alt=""
         class="rounded-circle border shadow-sm" 
         style="width: 40px; height: 40px; object-fit: cover; object-position: top; border-width: 2px !important; border-color: #ddd !important;"
       />

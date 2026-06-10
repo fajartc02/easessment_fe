@@ -9,25 +9,31 @@
           <CCardGroup>
             <CCard class="p-4">
               <CCardBody>
-                <CForm>
+                <CForm @submit.prevent="login()">
                   <h1>Login</h1>
                   <p class="text-medium-emphasis">Sign In to your account</p>
-                  <CInputGroup class="mb-3">
-                    <CInputGroupText>
-                      <CIcon icon="cil-user" />
-                    </CInputGroupText>
-                    <CFormInput placeholder="noreg" v-model="noreg" />
-                  </CInputGroup>
-                  <CInputGroup class="mb-4">
-                    <CInputGroupText>
-                      <CIcon icon="cil-lock-locked" />
-                    </CInputGroupText>
-                    <CFormInput type="password" v-model="password" placeholder="Password"
-                      autocomplete="current-password" />
-                  </CInputGroup>
+                  <div class="mb-3">
+                    <CInputGroup>
+                      <CInputGroupText>
+                        <CIcon icon="cil-user" />
+                      </CInputGroupText>
+                      <CFormInput placeholder="noreg" v-model="noreg" />
+                    </CInputGroup>
+                    <div v-if="errors.noreg" class="text-danger small mt-1">{{ errors.noreg }}</div>
+                  </div>
+                  <div class="mb-4">
+                    <CInputGroup>
+                      <CInputGroupText>
+                        <CIcon icon="cil-lock-locked" />
+                      </CInputGroupText>
+                      <CFormInput type="password" v-model="password" placeholder="Password"
+                        autocomplete="current-password" />
+                    </CInputGroup>
+                    <div v-if="errors.password" class="text-danger small mt-1">{{ errors.password }}</div>
+                  </div>
                   <CRow>
                     <CCol :xs="12">
-                      <CButton @click="login()" color="primary" class="px-4 w-100">
+                      <CButton type="submit" color="primary" class="px-4 w-100">
                         Login
                       </CButton>
                     </CCol>
@@ -83,10 +89,17 @@ export default {
       password: null,
       isError: false,
       errMsg: null,
+      errors: {},
     }
   },
   methods: {
     async login() {
+      this.errors = {}
+      if (!this.noreg) this.errors.noreg = 'Noreg belum diisi'
+      if (!this.password) this.errors.password = 'Password belum diisi'
+      
+      if (Object.keys(this.errors).length > 0) return
+
       this.isError = false
       Swal.showLoading()
       await this.$store
