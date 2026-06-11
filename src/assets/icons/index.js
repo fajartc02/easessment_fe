@@ -90,6 +90,7 @@ import {
   cilTrash,
   cilPlus,
   cilX,
+  cilArrowCircleTop,
 } from '@coreui/icons'
 
 export const iconsSet = Object.assign({}, {
@@ -103,6 +104,7 @@ export const iconsSet = Object.assign({}, {
   cilTrash,
   cilPlus,
   cilX,
+  cilArrowCircleTop,
   cilVideo,
   cilAvTimer,
   cilGraph,

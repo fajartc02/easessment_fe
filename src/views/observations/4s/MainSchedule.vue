@@ -56,6 +56,10 @@
                   <span class="mx-2">Sudah Cleaning</span>
                 </div>
                 <div class="d-flex align-items-center">
+                  <CIcon icon="cilArrowCircleTop" class="text-success" size="lg" />
+                  <span class="mx-2">OK (levelup)</span>
+                </div>
+                <div class="d-flex align-items-center">
                   <CIcon icon="cil-circle" class="text-danger" size="lg" />
                   <span class="mx-2">Delay</span>
                 </div>
@@ -133,6 +137,10 @@
                       <CIcon icon="cil-check-circle" class="text-success" size="lg" />
                       <!-- <div class="bullet-filled" style="width: 20px; height: 20px"></div> -->
                       <span class="mx-2">Sudah Cleaning</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                      <CIcon icon="cilArrowCircleTop" class="text-success" size="lg" />
+                      <span class="mx-2">OK (levelup)</span>
                     </div>
                     <div class="d-flex align-items-center">
                       <CIcon icon="cil-circle" class="text-danger" size="lg" />
@@ -226,26 +234,16 @@
                           <CButton color="secondary" class="text-secondary bg-white"
                             @click="addScheduleCheck(data.main_schedule_id, children?.sub_schedule_id)"
                             style="z-index: 1">
-                            <!--                          :class="{ 'py-2 px-2': children?.status == 'PROBLEM' }"-->
-                            <CIcon v-if="children?.status == 'PLANNING'" icon="cil-circle" class="text-dark"
+                             <CIcon v-if="children?.status == 'PLANNING'" icon="cil-circle" class="text-dark"
                               size="lg" />
-                            <!-- <div  class="bullet"></div> -->
-                            <!-- <div  class="bullet-filled"></div> -->
                             <CIcon v-else-if="children?.status == 'ACTUAL'" icon="cil-check-circle" class="text-success"
                               size="lg" />
-                            <!--                            <CIcon v-else-if="children?.status == 'PROBLEM'" icon="cil-bell" class="text-warning"
-                                                        size="lg" />-->
-                            <!-- <div v-else-if="children?.status == 'PROBLEM'">
-                              <img src="../../../assets/red-x-mark.svg" width="23" />
-                            </div> -->
+                            <CIcon v-else-if="children?.status == 'LEVEL_UP'" icon="cilArrowCircleTop" class="text-success"
+                              size="lg" />
+                            <CIcon v-else-if="children?.status == 'DELAY'" icon="cil-circle" class="text-danger"
+                              size="lg" />
                             <CIcon v-else-if="children?.status == 'PROBLEM'" icon="cilXCircle" class="text-danger"
                               size="lg" />
-
-                            <!-- <div
-                            class="bullet-cancel d-flex justify-content-center align-items-center"
-                            style="width: 20px; height: 20px">
-                            <CIcon icon="cil-x" class="text-danger text-bold" size="sm" />
-                          </div> -->
                           </CButton>
                           <div style="margin-left: -5px;">
                             <CDropdownToggle color="secondary" class="text-white" split> item</CDropdownToggle>
