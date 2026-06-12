@@ -56,7 +56,7 @@
                   <span class="mx-2">Sudah Cleaning</span>
                 </div>
                 <div class="d-flex align-items-center">
-                  <CIcon icon="cilArrowCircleTop" class="text-success" size="lg" />
+                  <CIcon icon="cilArrowCircleTop" class="text-warning" size="lg" />
                   <span class="mx-2">OK (levelup)</span>
                 </div>
                 <div class="d-flex align-items-center">
@@ -139,7 +139,7 @@
                       <span class="mx-2">Sudah Cleaning</span>
                     </div>
                     <div class="d-flex align-items-center">
-                      <CIcon icon="cilArrowCircleTop" class="text-success" size="lg" />
+                      <CIcon icon="cilArrowCircleTop" class="text-warning" size="lg" />
                       <span class="mx-2">OK (levelup)</span>
                     </div>
                     <div class="d-flex align-items-center">
@@ -238,7 +238,7 @@
                               size="lg" />
                             <CIcon v-else-if="children?.status == 'ACTUAL'" icon="cil-check-circle" class="text-success"
                               size="lg" />
-                            <CIcon v-else-if="children?.status == 'LEVEL_UP'" icon="cilArrowCircleTop" class="text-success"
+                            <CIcon v-else-if="children?.status == 'LEVEL_UP'" icon="cilArrowCircleTop" class="text-warning"
                               size="lg" />
                             <CIcon v-else-if="children?.status == 'DELAY'" icon="cil-circle" class="text-danger"
                               size="lg" />
@@ -1201,23 +1201,45 @@ export default {
     },
 
     async changeDate() {
-      this.isChangeDateLoading = true;
-      ApiService.setHeader();
-      const data = {
-        plan_date: this.updateDate,
-        before_plan_date: this.selectedBeforeDate
-      };
-
-      const change = await ApiService.put(
-        `/operational/4s/sub-schedule/edit/${this.selectedSubScheduleID}`,
-        data
-      );
-      if (change.data.message == "Success to edit 4s schedule plan") {
-        this.isChangeDateLoading = false;
-        this.changeDateModal = false;
-        await this.getSchedules();
+      if (!this.updateDate) {
+        toast.error("Pilih tanggal tujuan terlebih dahulu", { autoClose: 2000 });
+        return;
+      }
+      if (this.updateDate === this.selectedBeforeDate) {
+        toast.error("Tanggal tujuan tidak boleh sama dengan tanggal asal", { autoClose: 2000 });
+        return;
       }
 
+      this.isChangeDateLoading = true;
+      try {
+        ApiService.setHeader();
+        const data = {
+          plan_date: this.updateDate,
+          before_plan_date: this.selectedBeforeDate
+        };
+
+        const change = await ApiService.put(
+          `/operational/4s/sub-schedule/edit/${this.selectedSubScheduleID}`,
+          data
+        );
+        if (change.data.message == "Success to edit 4s schedule plan") {
+          toast.success("Schedule berhasil dipindahkan", { autoClose: 1000 });
+          this.changeDateModal = false;
+          await this.getSchedules();
+        } else {
+          toast.error(change.data.message || "Gagal mengubah jadwal", { autoClose: 2000 });
+        }
+      } catch (error) {
+        console.error("changeDate error:", error);
+        if (error.response && error.response.status == 401) {
+          this.$router.push("/login");
+        } else {
+          const errorMsg = error?.response?.data?.message || "Gagal mengubah jadwal, coba lagi";
+          toast.error(errorMsg, { autoClose: 3000 });
+        }
+      } finally {
+        this.isChangeDateLoading = false;
+      }
     },
 
     async deleteScheduleCheck(subScheduleID) {
@@ -1521,12 +1543,20 @@ export default {
       return newArray
     },
     sliceByCurrentMonthDays(arr, dateStr) {
+      if (!arr || arr.length === 0) return [];
       const [year, month] = this.getYearAndMonth(dateStr);
       const maxDays = new Date(year, month, 0).getDate();
-      console.log(maxDays);
       
-      //return arr.slice(0, maxDays);
-      return arr
+      const mappedDays = Array(maxDays).fill(null);
+      arr.forEach(child => {
+        if (child && child.date_num) {
+          const dayIdx = parseInt(child.date_num) - 1;
+          if (dayIdx >= 0 && dayIdx < maxDays && !mappedDays[dayIdx]) {
+            mappedDays[dayIdx] = child;
+          }
+        }
+      });
+      return mappedDays;
     },
     getYearAndMonth(dateStr) {
       const [year, month] = dateStr.split('-').map(Number);
