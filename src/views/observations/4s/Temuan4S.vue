@@ -718,7 +718,7 @@
               <label class="mb-1">Evaluation</label>
               <select class="form-select" v-model="evaluationName" :disabled="findingActionType == 'update'">
                 <option value="null" selected>Select Evaluation</option>
-                <option v-for="optEval in optEvaluation" :key="optEval" :value="optEval.system_value">
+                <option v-for="optEval in optEvaluation" :key="optEval" :value="optEval.system_value" :disabled="optEval.system_value === 'Finish' && !actualCMDate">
                   {{ optEval.system_value }}
                 </option>
               </select>
@@ -995,7 +995,7 @@ export default {
       evaluationName: null,
       selectedScheduleItemCheckKanbanID: null,
       selectedFindingID: null,
-      currentPage: 0,
+      currentPage: 1,
       totalPage: 0,
       currentPageLimit: 10,
       selectedSubScheduleID: null,
@@ -1072,6 +1072,18 @@ export default {
     },
     zoneGetID: function () {
       this.getFindings()
+    },
+    evaluationName(val) {
+      if (val === 'Finish') {
+        this.cmJudg = true
+      } else {
+        this.cmJudg = false
+      }
+    },
+    actualCMDate(val) {
+      if (!val && this.evaluationName === 'Finish') {
+        this.evaluationName = null
+      }
     },
   },
   updated() {
@@ -1218,6 +1230,7 @@ export default {
     },
     onPageChangeLimit(limit) {
       this.currentPageLimit = limit
+      this.currentPage = 1
       this.getFindings()
     },
     getImage(eval_nm) {

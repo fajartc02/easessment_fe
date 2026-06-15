@@ -96,7 +96,8 @@
       </div>
       <div style="
           width: 100%;
-          height: 500px;
+          height: calc(100vh - 300px);
+          min-height: 550px;
           display: block;
           overflow-x: auto;
           white-space: nowrap;
@@ -405,7 +406,7 @@
           </table>
         </div>
       </div>
-      <Pagination :totalPages="10" :perPage="10" :currentPage="currentPage" :totalPage="totalPage"
+      <Pagination :totalPages="totalPage" :perPage="currentPageLimit" :currentPage="currentPage" :totalPage="totalPage"
         @changePage="onPageChange" @changeLimit="onPageChangeLimit" />
     </div>
 
@@ -1525,6 +1526,7 @@ export default {
     },
     onPageChangeLimit(limit) {
       this.currentPageLimit = limit
+      this.currentPage = 1
       this.getFindingsFunc()
     },
     async getLines() {
@@ -1549,6 +1551,10 @@ export default {
     },
 
     async getFindingsFunc() {
+      let limitVal = this.$route.query.no_limit ? -1 : this.currentPageLimit;
+      if (limitVal == -1) {
+        limitVal = 100000;
+      }
       let objQuery = {
         start_date:
           this.selectedFilterStartDate !== ''
@@ -1561,7 +1567,7 @@ export default {
         line_id: this.selectedLine,
         source_category: this.selectedFilterSourceCat,
         status_finding: this.selectedFilterJudge,
-        limit: this.$route.query.no_limit ? -1 : this.currentPageLimit,
+        limit: limitVal,
         currentPage: this.currentPage,
       }
 

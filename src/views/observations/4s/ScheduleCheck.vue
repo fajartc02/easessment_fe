@@ -413,7 +413,7 @@
               <label class="mb-1">Evaluation</label>
               <select class="form-select" v-model="evaluationName">
                 <option value="null" selected>Select Evaluation</option>
-                <option v-for="optEval in optEvaluation" :key="optEval" :value="optEval.system_value">
+                <option v-for="optEval in optEvaluation" :key="optEval" :value="optEval.system_value" :disabled="optEval.system_value === 'Finish' && !actualCMDate">
                   {{ optEval.system_value }}
                 </option>
               </select>
@@ -615,6 +615,18 @@ export default {
       handler() {
         console.log('getSubSchedulesCheck', this.getSubSchedulesCheck)
       },
+    },
+    evaluationName(val) {
+      if (val === 'Finish') {
+        this.cmJudg = true
+      } else {
+        this.cmJudg = false
+      }
+    },
+    actualCMDate(val) {
+      if (!val && this.evaluationName === 'Finish') {
+        this.evaluationName = null
+      }
     },
   },
   methods: {
