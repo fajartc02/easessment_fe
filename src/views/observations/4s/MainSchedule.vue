@@ -413,6 +413,50 @@
               </div>
             </div>
           </template>
+          <div v-if="mainScheduleData && mainScheduleData.length === 0" class="card-header">
+            <div class="row d-flex align-items-center">
+              <div class="col">
+                <label>Select month</label>
+                <input type="month" class="form-control" v-model="selectedMonth" @change="addFilter()" />
+              </div>
+              <div class="col">
+                <label>Line</label>
+                <select class="form-select" v-model="selectedLineID" @change="addFilter()">
+                  <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
+                    {{ line.text }}
+                  </option>
+                </select>
+              </div>
+              <div class="col">
+                <label>Zona</label>
+                <Select2 v-if="getZoneOpts.length > 1" class="form-control" v-model="selectedZoneID"
+                  :options="getZoneOpts" @select="addFilter()" :disabled="getZoneOpts.length == 1" />
+                <input v-else type="text" class="form-control" value="tidak ada zona" disabled>
+              </div>
+              <div class="col">
+                <label>Kanban</label>
+                <Select2 v-if="getZoneOpts.length > 1" class="form-control" v-model="selectedKanbanID"
+                  :options="getKanbansOpts" @select="addFilter()" />
+                <input v-else type="text" class="form-control" value="tidak ada kanban" disabled>
+              </div>
+              <div class="col">
+                <label>Freq</label>
+                <select class="form-select" v-model="selectedFreqID" @change="addFilter()">
+                  <option v-for="freq in getFreqsOpts" :key="freq.id" :value="freq.id">
+                    {{ freq.text }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-sm-1">
+                <button class="mt-4 btn btn-info text-white" @click="resetFilter()">
+                  Reset
+                </button>
+              </div>
+            </div>
+            <div class="alert alert-info mt-3 text-center">
+              No main schedule found for this month and line.
+            </div>
+          </div>
         </div>
       </div>
     </div>

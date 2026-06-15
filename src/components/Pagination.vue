@@ -1,44 +1,39 @@
 <template>
-  <div class="card-footer">
-    <div class="d-flex justify-content-between">
+  <div class="card-footer bg-white py-3 border-top">
+    <div class="d-flex justify-content-between align-items-center">
+      <!-- Limit dropdown on the left -->
       <div>
-        <label>Total data</label>
-        <select class="form-control mt-1" v-model="selectedLimit" @change="onPageChangeLimitClick">
-          <option v-for="limit in limitOpts" :key="limit.label" :value="limit.vals">
-            {{ limit.label }}
-          </option>
-        </select>
+        <div class="input-group input-group-sm">
+          <span class="input-group-text bg-light text-secondary border-end-0">Limit</span>
+          <select class="form-select border-start-0" v-model="selectedLimit" @change="onPageChangeLimitClick" style="width: 75px;">
+            <option v-for="limit in limitOpts" :key="limit.label" :value="limit.vals">
+              {{ limit.label }}
+            </option>
+          </select>
+        </div>
       </div>
+
+      <!-- Pagination buttons on the right -->
       <div class="overflow-auto">
-        <label class="mx-2">Page {{ currentPage }}</label>
-        <select class="form-control mt-1" v-model="selectedPage">
-          <option v-for="page in totalPage" :key="page" :value="page">
-            {{ page }}
-          </option>
-        </select>
-        <!-- <nav aria-label="Page navigation example" class="mt-1 px-2">
-          <ul class="pagination">
-            <li class="page-item">
-              <button class="page-link text-black" :disabled="totalPage == 1 || currentPage == 1"
-                :style="`${totalPage == 1 ? 'background-color: #fff;' : ''}`" @click="onPageChangeClick(-1, 'prev')">
-                Prev
+        <nav aria-label="Page navigation">
+          <ul class="pagination pagination-sm mb-0">
+            <li class="page-item" :class="{ disabled: currentPage === 1 }">
+              <button class="page-link" @click="onPageChangeClick(currentPage - 1, 'prev')" :disabled="currentPage === 1">
+                Previous
               </button>
             </li>
-            <li v-for="n in totalPage" :key="n" class="page-item">
-              <button class="page-link" @click="onPageChangeClick(n, 'fromnumber')" :disabled="n == currentPage"
-                :style="`${n == currentPage ? 'background-color: #eaeaea;' : ''}`">
-                {{ n }}
+            <li v-for="page in pages" :key="page" class="page-item" :class="{ active: page === currentPage }">
+              <button class="page-link" @click="onPageChangeClick(page, 'fromnumber')">
+                {{ page }}
               </button>
             </li>
-            <li class="page-item">
-              <button class="page-link text-black" :style="`${totalPage == 1 ? 'background-color: #fff;' : ''}`"
-                :disabled="totalPage == 1 || totalPage == undefined || currentPage == totalPage"
-                @click="onPageChangeClick(1, 'next')">
+            <li class="page-item" :class="{ disabled: currentPage === totalPage || totalPage === 0 }">
+              <button class="page-link" @click="onPageChangeClick(currentPage + 1, 'next')" :disabled="currentPage === totalPage || totalPage === 0">
                 Next
               </button>
             </li>
           </ul>
-        </nav> -->
+        </nav>
       </div>
     </div>
   </div>
@@ -98,37 +93,35 @@ export default {
     selectedPage(newVal) {
       this.$emit('changePage', newVal, 'fromnumber')
     },
+    currentPage(newVal) {
+      this.selectedPage = newVal
+    },
+    perPage(newVal) {
+      if (newVal === 100000 || newVal === -1) {
+        this.selectedLimit = -1
+      } else {
+        this.selectedLimit = newVal
+      }
+    }
+  },
+  created() {
+    this.selectedPage = this.currentPage
+    if (this.perPage === 100000 || this.perPage === -1) {
+      this.selectedLimit = -1
+    } else {
+      this.selectedLimit = this.perPage
+    }
   },
   computed: {
-    startPage() {
-      // When on the first page
-      if (this.currentPage === 1) {
-        return 1
-      }
-      // When on the last page
-      if (this.currentPage === this.totalPages) {
-        return this.totalPages - this.maxVisibleButtons
-      }
-      // When inbetween
-      return this.currentPage - 1
-    },
     pages() {
-      const range = []
-
-      for (
-        let i = this.startPage;
-        i <=
-        Math.min(this.startPage + this.maxVisibleButtons - 1, this.totalPages);
-        i++
-      ) {
-        range.push({
-          name: i,
-          isDisabled: i === this.currentPage,
-        })
+      const range = [];
+      const start = Math.max(1, this.currentPage - 2);
+      const end = Math.min(this.totalPage, this.currentPage + 2);
+      for (let i = start; i <= end; i++) {
+        range.push(i);
       }
-
-      return range
-    },
+      return range;
+    }
   },
   methods: {
     onPageChangeClick(page, type) {
@@ -137,23 +130,25 @@ export default {
     onPageChangeLimitClick() {
       this.$emit('changeLimit', this.selectedLimit)
     },
-    // onClickFirstPage() {
-    //   this.$emit('pagechanged', 1)
-    // },
-    // onClickPreviousPage() {
-    //   this.$emit('pagechanged', this.currentPage - 1)
-    // },
-    // onClickPage(page) {
-    //   this.$emit('pagechanged', page)
-    // },
-    // onClickNextPage() {
-    //   this.$emit('pagechanged', this.currentPage + 1)
-    // },
-    // onClickLastPage() {
-    //   this.$emit('pagechanged', this.totalPages)
-    // },
   },
 }
 </script>
 
-<style></style>
+<style scoped>
+.page-item.active .page-link {
+  background-color: #1e3a5f; /* Deep Navy blue color */
+  border-color: #1e3a5f;
+  color: white !important;
+}
+.page-link {
+  color: #1e3a5f;
+  cursor: pointer;
+}
+.page-item.disabled .page-link {
+  color: #6c757d;
+  cursor: not-allowed;
+  background-color: #fff;
+  border-color: #dee2e6;
+}
+</style>
+
