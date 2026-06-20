@@ -13,14 +13,7 @@ export default [{
   is_admin: false,
   hide_for_roles: []
 },
-{
-  component: 'CNavItem',
-  name: 'Historical Waktu 4S',
-  to: '/history-time-4s',
-  icon: 'cil-av-timer',
-  is_admin: false,
-  hide_for_roles: []
-},
+
 //
 {
   component: 'CNavItem',
@@ -147,6 +140,22 @@ export default [{
   name: 'Main Schedule 4S',
   to: '/4s/main-schedule',
   icon: 'cil-speedometer',
+  is_admin: false,
+  hide_for_roles: []
+},
+{
+  component: 'CNavItem',
+  name: 'Rotasi Member 4S',
+  to: '/4s/rotasi-member',
+  icon: 'cil-people',
+  is_admin: false,
+  hide_for_roles: []
+},
+{
+  component: 'CNavItem',
+  name: 'Historical Waktu 4S',
+  to: '/history-time-4s',
+  icon: 'cil-av-timer',
   is_admin: false,
   hide_for_roles: []
 },

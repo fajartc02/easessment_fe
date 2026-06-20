@@ -2,121 +2,111 @@
   <div>
     <div class="card mb-5">
       <div class="card-header">
-        <div class="row d-flex align-items-center">
-          <div class="col">
-            <label>Start date</label>
+        <div class="row g-3 align-items-end">
+          <div class="col-6 col-md-4 col-lg-3 col-xl">
+            <label class="form-label">Start date</label>
             <input type="date" class="form-control" v-model="selectedFilterStartDate" @change="addFilter()" />
           </div>
-          <div class="col">
-            <label>End date</label>
+          <div class="col-6 col-md-4 col-lg-3 col-xl">
+            <label class="form-label">End date</label>
             <input type="date" class="form-control" v-model="selectedFilterEndDate" @change="addFilter()" />
           </div>
-          <div class="col">
-            <label>Line</label>
+          <div class="col-6 col-md-4 col-lg-3 col-xl">
+            <label class="form-label">Line</label>
             <select class="form-select" v-model="selectedLineIDFilter" @change="addFilter()">
               <option v-for="(line, index) in getLinesOpts" :key="index" :value="line.id">
                 {{ line.text }}
               </option>
             </select>
           </div>
-          <div class="col">
-            <label>Shift / group</label>
+          <div class="col-6 col-md-4 col-lg-3 col-xl">
+            <label class="form-label">Shift / group</label>
             <select class="form-select" v-model="selectedGroupIDFilter" @change="addFilter()">
               <option v-for="group in getGroupsOpts" :key="group.id" :value="group.id">
                 {{ group.text }}
               </option>
             </select>
           </div>
-          <div class="col">
-            <label>Zona</label>
+          <div class="col-6 col-md-4 col-lg-3 col-xl">
+            <label class="form-label">Zona</label>
             <Select2 class="form-control" v-model="selectedZoneIDFilter" :options="getZoneOpts" @select="addFilter()" />
           </div>
-          <div class="col">
-            <label>Kanban</label>
+          <div class="col-6 col-md-4 col-lg-3 col-xl">
+            <label class="form-label">Kanban</label>
             <Select2 class="form-control" v-model="selectedKanbanIDFilter" :options="getKanbansOpts"
               @select="addFilter()" />
           </div>
-          <div class="col">
-            <label>Freq</label>
+          <div class="col-6 col-md-4 col-lg-3 col-xl">
+            <label class="form-label">Freq</label>
             <select class="form-select" v-model="selectedFreqIDFilter" @change="addFilter()">
               <option v-for="freq in getFreqsOpts" :key="freq.id" :value="freq.id">
                 {{ freq.text }}
               </option>
             </select>
           </div>
-          <div class="col">
-            <label>Status</label>
+          <div class="col-6 col-md-4 col-lg-3 col-xl">
+            <label class="form-label">Status</label>
             <select class="form-select" @change="addFilter()" v-model="selectedFilterJudge">
               <option value="-1" selected>All</option>
-              <!-- <option v-for="opt in optEvaluation" :key="opt.system_value" :value="opt.system_value">{{ opt.system_value
-                }}</option> -->
               <option value="closed">Closed</option>
               <option value="remain">Remain</option>
               <option value="problem">Problem</option>
             </select>
           </div>
-          <div class="col-sm-1">
-            <button class="mt-4 btn btn-info text-white" @click="resetFilter()">
+          <div class="col-12 col-md-4 col-lg-3 col-xl-auto d-flex align-items-end">
+            <button class="btn btn-info text-white w-100" @click="resetFilter()">
               Reset
             </button>
           </div>
         </div>
       </div>
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <h5>List temuan</h5>
-        <div class="d-flex align-items-center justify-content-center">
-          <table class="table">
-            <tr>
-              <th>
-                <img src="@/../public/tanoko/0.png" width="20" height="20" />
-              </th>
-              <th>Order Part</th>
-              <th>
-                <img src="@/../public/tanoko/1.png" width="20" height="20" />
-              </th>
-              <th>Countermeasure</th>
-              <th>
-                <img src="@/../public/tanoko/2.png" width="20" height="20" />
-              </th>
-              <th>Monitor / Follow</th>
-              <th>
-                <img src="@/../public/tanoko/3.png" width="20" height="20" />
-              </th>
-              <th>Finish</th>
-            </tr>
-          </table>
-        </div>
-        <div class="d-flex align-items-center">
-          <div class="mx-2 d-flex align-items-center">
-            <div class="d-flex align-items-center">
-              <div style="
-                  background-color: transparent;
-                  width: 20px;
-                  height: 20px;
-                  border: 2px dotted black;
-                "></div>
-              <span class="mx-2">Plan</span>
-            </div>
-            <div class="d-flex align-items-center">
-              <div style="
-                  background-color: transparent;
-                  width: 20px;
-                  height: 20px;
-                  border: 2px solid black;
-                "></div>
-              <span class="mx-2">Actual</span>
-            </div>
+      <div class="card-header d-flex flex-column flex-md-row gap-3 justify-content-between align-items-md-center">
+        <h5 class="mb-0">List temuan</h5>
+        <div class="d-flex flex-wrap align-items-center justify-content-center gap-2">
+          <div class="d-flex align-items-center me-2">
+            <img src="@/../public/tanoko/0.png" width="20" height="20" class="me-1" />
+            <span style="font-size: 0.85rem; font-weight: 500;">Order Part</span>
           </div>
-          <button class="btn btn-info text-white mx-2" @click="openAddFindingModal()">
+          <div class="d-flex align-items-center me-2">
+            <img src="@/../public/tanoko/1.png" width="20" height="20" class="me-1" />
+            <span style="font-size: 0.85rem; font-weight: 500;">Countermeasure</span>
+          </div>
+          <div class="d-flex align-items-center me-2">
+            <img src="@/../public/tanoko/2.png" width="20" height="20" class="me-1" />
+            <span style="font-size: 0.85rem; font-weight: 500;">Monitor / Follow</span>
+          </div>
+          <div class="d-flex align-items-center me-2">
+            <img src="@/../public/tanoko/3.png" width="20" height="20" class="me-1" />
+            <span style="font-size: 0.85rem; font-weight: 500;">Finish</span>
+          </div>
+        </div>
+        <div class="d-flex flex-wrap align-items-center justify-content-center gap-2">
+          <div class="d-flex align-items-center">
+            <div style="
+                background-color: transparent;
+                width: 20px;
+                height: 20px;
+                border: 2px dotted black;
+              "></div>
+            <span class="mx-2" style="font-size: 0.85rem;">Plan</span>
+          </div>
+          <div class="d-flex align-items-center me-3">
+            <div style="
+                background-color: transparent;
+                width: 20px;
+                height: 20px;
+                border: 2px solid black;
+              "></div>
+            <span class="mx-2" style="font-size: 0.85rem;">Actual</span>
+          </div>
+          <button class="btn btn-info text-white btn-sm" @click="openAddFindingModal()">
             Add Finding
           </button>
-          <div>
-            <button :disabled="get4sFindings?.length < 1" class="btn btn-info btn-sm text-white w-full my-1">
-              <download-excel :data="excelData()" :fields="json_fields" worksheet="Temuan4S" name="temuan4Slist.xls">
-                Export all data
-              </download-excel>
-            </button>
-          </div>
+          <button :disabled="get4sFindings?.length < 1" class="btn btn-info btn-sm text-white">
+            <download-excel :data="excelData()" :fields="json_fields" worksheet="Temuan4S" name="temuan4Slist.xls">
+              Export all data
+            </download-excel>
+          </button>
         </div>
       </div>
       <div class="card-body p-0">
@@ -1887,5 +1877,27 @@ export default {
 .multiselect--disabled>.multiselect__tags>.multiselect__single,
 .multiselect--disabled>.multiselect__select {
   background: #d8dbe0 !important;
+}
+
+@media (max-width: 767.98px) {
+  /* Headers should be sticky vertically (top: 0) but scrollable horizontally (left: auto) */
+  #fixCol-head-3,
+  #fixCol-head-4,
+  #fixCol-head-5,
+  #fixCol-head-6,
+  #fixCol-head-7 {
+    position: sticky !important;
+    top: 0px !important;
+    left: auto !important;
+    z-index: 2 !important;
+  }
+  /* Table body cells can be completely static (non-sticky in both directions) */
+  #fixCol-3,
+  #fixCol-4,
+  #fixCol-5,
+  #fixCol-6,
+  #fixCol-7 {
+    position: static !important;
+  }
 }
 </style>

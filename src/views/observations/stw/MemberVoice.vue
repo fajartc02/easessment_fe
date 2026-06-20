@@ -230,9 +230,9 @@
                 </td>
 
                 <td class="d-flex justify-content-between">
-                  <button v-if="membervoice.findings[0].finding_img" @click="
+                  <button v-if="membervoice.findings[0]?.finding_img" @click="
                     () => {
-                      openFindingImage(membervoice.findings[0].finding_img)
+                      openFindingImage(membervoice.findings[0]?.finding_img)
                     }
                   " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
                     Finding image
@@ -240,9 +240,9 @@
                   <button v-else class="btn btn-secondary btn-sm" disabled>
                     No Image
                   </button>
-                  <button v-if="membervoice.findings[0].cm_image" @click="
+                  <button v-if="membervoice.findings[0]?.cm_image" @click="
                     () => {
-                      openFindingImage(membervoice.findings[0].cm_image)
+                      openFindingImage(membervoice.findings[0]?.cm_image)
                     }
                   " class="btn btn-info btn-sm text-white w-full my-1 mx-1">
                     C/M image
@@ -252,10 +252,10 @@
                   </button>
                   <button :class="{
                     'btn btn-sm w-full my-1 mx-1': true,
-                    'btn-info text-white': membervoice.findings[0].kaizen_file,
-                    'btn-secondary text-white': !membervoice.findings[0].kaizen_file,
-                  }" @click="showKaizenModal(membervoice.findings[0].kaizen_file)"
-                    :disabled="!membervoice.findings[0].kaizen_file">
+                    'btn-info text-white': membervoice.findings[0]?.kaizen_file,
+                    'btn-secondary text-white': !membervoice.findings[0]?.kaizen_file,
+                  }" @click="showKaizenModal(membervoice.findings[0]?.kaizen_file)"
+                    :disabled="!membervoice.findings[0]?.kaizen_file">
                     Kaizen
                   </button>
                   <button class="btn btn-warning btn-sm text-white w-full my-1 mx-1" @click="() => {
@@ -563,7 +563,7 @@
         <CModalTitle>Edit member voice</CModalTitle>
       </CModalHeader>
 
-      <CModalBody>
+      <CModalBody v-if="memberVoiceDetail">
 
         <div class="col" v-if="showScoreField">
           <label>Score</label>
@@ -1512,10 +1512,10 @@ export default {
               const remapFinding = res.map(itm => {
                 return {
                   ...itm,
-                  cm_desc: itm.findings[0].cm_desc,
-                  cm_str_plan_date: itm.findings[0].cm_str_plan_date,
-                  cm_str_act_date: itm.findings[0].cm_str_act_date,
-                  cm_status: itm.findings[0].cm_judg ? 'Closed' : 'Open',
+                  cm_desc: itm.findings[0]?.cm_desc || '',
+                  cm_str_plan_date: itm.findings[0]?.cm_str_plan_date || '',
+                  cm_str_act_date: itm.findings[0]?.cm_str_act_date || '',
+                  cm_status: itm.findings[0]?.cm_judg ? 'Closed' : 'Open',
                 }
               })
               this.json_data = remapFinding
@@ -1775,6 +1775,9 @@ export default {
       this.editMVModal = true
       const data = this.getMemberVoice[MVIndex]
       this.selectedMVID = data.mv_id
+      if (!data.findings || data.findings.length === 0) {
+        data.findings = [{}]
+      }
       this.memberVoiceDetail = data
     },
     addFilter() {
