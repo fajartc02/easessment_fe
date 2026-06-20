@@ -1209,12 +1209,15 @@ export default {
       this.findingsData.line_id = this.selectedLineID?.line_id
       // this.findingsData.cm_pic_id = this.selectedFindingPIC?.pic_id
 
-      if (!this.findingsData.finding_img
-        || !this.findingsData.line_id
+      // Auto-fallback missing fields
+      if (!this.findingsData.cm_end_plan_date) {
+        this.findingsData.cm_end_plan_date = this.findingsData.cm_str_plan_date
+      }
+
+      if (!this.findingsData.line_id
         || !this.findingsData.cm_pic_id
         || !this.findingsData.finding_location
         || !this.findingsData.finding_desc
-        || !this.findingsData.finding_location
         || !this.findingsData.cm_desc
         || !this.findingsData.cm_priority
         || !this.findingsData.factor_id
@@ -1222,8 +1225,8 @@ export default {
         || !this.findingsData.cm_end_plan_date
         || !this.findingsData.pic_supervisor_id) {
         console.log(this.findingsData);
-        toast.error('Harap isi semua field di finding', {
-          autoClose: 1000
+        toast.error('Harap isi semua field utama finding (Line, PIC, Problem, Penanggulangan, Priority, Faktor, Tgl Plan)', {
+          autoClose: 2000
         })
       } else {
         let data = {
