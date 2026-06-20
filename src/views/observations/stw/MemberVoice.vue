@@ -79,18 +79,18 @@
           <table class="table table-bordered overflow-auto table-stripped">
             <thead class="text-center">
               <tr>
-                <th id="fixCol-1" rowspan="3">No</th>
-                <th id="fixCol-2" rowspan="3">Line name</th>
-                <th id="fixCol-3" rowspan="3">Tanggal</th>
-                <th id="fixCol-4" rowspan="3">Lokasi</th>
-                <th id="fixCol-5" rowspan="3">Problem</th>
+                <th class="fix-col-1" rowspan="3">No</th>
+                <th class="fix-col-2" rowspan="3">Line name</th>
+                <th class="fix-col-3" rowspan="3">Tanggal</th>
+                <th class="fix-col-4" rowspan="3">Lokasi</th>
+                <th class="fix-col-5" rowspan="3">Problem</th>
                 <th rowspan="3">No Proses</th>
                 <th rowspan="3">Kategori</th>
                 <th rowspan="3">Penanggulangan</th>
                 <th rowspan="3">Hasil Evaluasi</th>
                 <th colspan="48">Waktu Pelaksanaan</th>
                 <th rowspan="3">PIC</th>
-                <th id="fixCol-6" rowspan="3">Score</th>
+                <th rowspan="3">Score</th>
                 <th style="min-width: 500px" rowspan="3">Actions</th>
               </tr>
               <tr>
@@ -168,11 +168,11 @@
                 </td>
               </tr>
               <tr v-else v-for="(membervoice, index) in getMemberVoice" :key="membervoice.mv_id">
-                <td id="fixCol-1">{{ index + 1 }}</td>
-                <td id="fixCol-2">{{ membervoice.line_nm }}</td>
-                <td id="fixCol-3">{{ formatTheDate(membervoice.mv_date_finding) }}</td>
-                <td id="fixCol-4">{{ membervoice.mv_location }}</td>
-                <td id="fixCol-5">{{ membervoice.mv_problem }}</td>
+                <td class="fix-col-1">{{ index + 1 }}</td>
+                <td class="fix-col-2">{{ membervoice.line_nm }}</td>
+                <td class="fix-col-3">{{ formatTheDate(membervoice.mv_date_finding) }}</td>
+                <td class="fix-col-4">{{ membervoice.mv_location }}</td>
+                <td class="fix-col-5">{{ membervoice.mv_problem }}</td>
                 <td>{{ membervoice.mv_process_no }}</td>
                 <td>{{ membervoice.mv_category }}</td>
                 <td>{{ membervoice.mv_countermeasure }}</td>
@@ -219,7 +219,7 @@
                       `"></div>
                 </td>
                 <td>{{ membervoice.mv_pic_nm }}</td>
-                <td id="fixCol-9" class="px-4">
+                <td class="px-4">
                   <template v-if="membervoice.score && membervoice.score !== 0">
                     <template v-for="labelScore in scoreopts">
                       <label :key="labelScore.score" v-if="labelScore.score === membervoice.score">
@@ -1450,10 +1450,19 @@ export default {
       this.findingsData.cm_result_factor_id = this.findingsData?.factor_id
       // this.findingsData.cm_pic_id = this.selectedPIC?.id
       this.findingsData.finding_location = this.memberVoiceData.mv_location
+      
+      // Auto-fallback missing fields in finding from member voice data
+      if (!this.findingsData.cm_pic_id) {
+        this.findingsData.cm_pic_id = this.memberVoiceData.mv_pic_id
+      }
+      if (!this.findingsData.cm_end_plan_date) {
+        this.findingsData.cm_end_plan_date = this.findingsData.cm_str_plan_date
+      }
+
       console.log(this.findingsData)
-      if (!this.findingsData.finding_img || !this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.finding_location || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date) {
-        toast.error('Harap isi semua field di finding', {
-          autoClose: 1000
+      if (!this.findingsData.line_id || !this.findingsData.cm_pic_id || !this.findingsData.finding_location || !this.findingsData.finding_desc || !this.findingsData.cm_desc || !this.findingsData.cm_priority || !this.findingsData.factor_id || !this.findingsData.cm_str_plan_date || !this.findingsData.cm_end_plan_date) {
+        toast.error('Harap isi semua field utama (Line, Problem, Penanggulangan, Priority, Faktor, PIC, Tgl Plan)', {
+          autoClose: 2000
         })
       } else {
         let data = {
@@ -1831,52 +1840,64 @@ export default {
   height: 60vh;
 }
 
-.tableFixHead th {
+/* Make table header sticky vertically */
+.tableFixHead thead {
   position: sticky;
   top: 0;
-  background-color: white;
+  z-index: 10;
 }
 
-#fixCol-1 {
+.tableFixHead thead th {
   position: sticky;
-  width: 38px;
-  top: 0px;
-  left: 0px;
-  z-index: 1;
-  background-color: white;
+  top: 0;
+  background-color: #3f4c5e !important;
+  color: white !important;
+  z-index: 10;
 }
 
-#fixCol-2 {
-  position: sticky;
-  top: 0px;
-  left: 37px;
-  z-index: 1;
-  background-color: white;
-}
+/* Horizontal sticky behavior, only enabled on larger screens (min-width: 769px) */
+@media (min-width: 769px) {
+  .fix-col-1,
+  .fix-col-2,
+  .fix-col-3,
+  .fix-col-4,
+  .fix-col-5 {
+    position: sticky;
+    z-index: 2;
+    background-color: white;
+  }
 
-#fixCol-3 {
-  position: sticky;
-  min-width: 121px;
-  top: 0px;
-  left: 105px;
-  z-index: 1;
-  background-color: white;
-}
+  .fix-col-1 {
+    width: 38px;
+    left: 0px;
+  }
 
-#fixCol-4 {
-  position: sticky;
-  top: 0px;
-  left: 230px;
-  z-index: 1;
-  background-color: white;
-}
+  .fix-col-2 {
+    left: 37px;
+  }
 
-#fixCol-5 {
-  position: sticky;
-  top: 0px;
-  left: 300px;
-  z-index: 1;
-  background-color: white;
+  .fix-col-3 {
+    min-width: 121px;
+    left: 105px;
+  }
+
+  .fix-col-4 {
+    left: 230px;
+  }
+
+  .fix-col-5 {
+    left: 300px;
+  }
+
+  /* Ensure the intersecting header cells stay on top of the sticky body columns when scrolling */
+  thead th.fix-col-1,
+  thead th.fix-col-2,
+  thead th.fix-col-3,
+  thead th.fix-col-4,
+  thead th.fix-col-5 {
+    z-index: 12;
+    background-color: #3f4c5e !important;
+  }
 }
 </style>
 
