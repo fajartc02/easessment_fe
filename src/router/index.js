@@ -206,6 +206,12 @@ const routes = [{
       import('@/views/observations/4s/MainSchedule.vue'),
   },
   {
+    path: '/4s/rotasi-member',
+    name: 'Rotasi Member 4S',
+    component: () =>
+      import('@/views/observations/4s/RotasiMember4S.vue'),
+  },
+  {
     path: '/4s/schedule-check/:mainScheduleID/:subScheduleID',
     name: 'Schedule Check',
     component: () =>

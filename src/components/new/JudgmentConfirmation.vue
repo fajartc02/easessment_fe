@@ -227,7 +227,7 @@
           <div class="col-md-6">
             <div class="mb-2">
               <label class="mb-1">Actual Countermeasure Date</label>
-              <input type="date" class="form-control" v-model="actualCMDate" :disabled="!isEdit" />
+              <input type="date" class="form-control" v-model="actualCMDate" :disabled="!isEdit && evaluationName !== 'Finish'" />
             </div>
           </div>
         </div>
@@ -393,6 +393,9 @@ export default {
       'getUsersOpts',
       'getLinesOpts',
     ]),
+    isEdit() {
+      return this.selectedFindingID != null
+    },
   },
   watch: {
     visible(val) {

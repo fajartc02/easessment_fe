@@ -132,7 +132,7 @@
             <div class="col-md-6">
               <div class="mb-2">
                 <label class="mb-1">Actual Countermeasure Date</label>
-                <input type="date" class="form-control" v-model="form.actual_cm_date" :disabled="!isEdit" />
+                <input type="date" class="form-control" v-model="form.actual_cm_date" :disabled="!isEdit && form.evaluation_name !== 'Finish'" />
               </div>
             </div>
           </div>
@@ -341,6 +341,8 @@ export default {
     },
     async handleSubmit(event) {
       event.preventDefault()
+      const formElement = event.currentTarget
+      const isValid = formElement ? formElement.checkValidity() : false
 
       const findingData = {
         sub_schedule_id: null,
@@ -355,8 +357,8 @@ export default {
         finding_date: this.form.finding_date,
         finding_desc: this.form.finding_desc,
         plan_cm_date: this.form.plan_cm_date,
-        plan_cm_desc: this.form.plan_cm_desc,
-        time_cm: +this.form.time_cm,
+        plan_cm_desc: this.form.plan_cm_desc || '',
+        time_cm: this.enabledReduceTime && this.form.time_cm ? +this.form.time_cm : null,
         time_yokoten: this.form.time_yokoten,
         opt_changes: this.form.opt_changes,
         opt_depts: this.form.opt_department,
@@ -371,17 +373,26 @@ export default {
       }
 
       console.log('====================================')
-      console.log('checkValidity', event.currentTarget.checkValidity())
+      console.log('checkValidity', isValid)
       console.log('findingData', findingData)
       console.log('====================================')
 
       const saveFn = async (callback) => {
-        console.log('savefn', event.currentTarget.checkValidity())
+        console.log('savefn', isValid)
 
-        if (event.currentTarget.checkValidity() === true) {
+        if (isValid === true) {
           this.isLoadingSave = true
-          await callback()
-          this.isLoadingSave = false
+          try {
+            await callback()
+          } catch (err) {
+            console.error('Save error:', err)
+            const errMsg = err?.response?.data?.message || err?.message || 'Gagal menyimpan data'
+            toast.error(errMsg, {
+              autoClose: 2000,
+            })
+          } finally {
+            this.isLoadingSave = false
+          }
         } else {
           //event.stopPropagation();
 

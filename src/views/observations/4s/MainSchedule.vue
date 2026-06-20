@@ -56,7 +56,7 @@
                   <span class="mx-2">Sudah Cleaning</span>
                 </div>
                 <div class="d-flex align-items-center">
-                  <CIcon icon="cilArrowCircleTop" class="text-warning" size="lg" />
+                  <CIcon icon="cilXCircle" class="text-warning" size="lg" />
                   <span class="mx-2">OK (levelup)</span>
                 </div>
                 <div class="d-flex align-items-center">
@@ -139,7 +139,7 @@
                       <span class="mx-2">Sudah Cleaning</span>
                     </div>
                     <div class="d-flex align-items-center">
-                      <CIcon icon="cilArrowCircleTop" class="text-warning" size="lg" />
+                      <CIcon icon="cilXCircle" class="text-warning" size="lg" />
                       <span class="mx-2">OK (levelup)</span>
                     </div>
                     <div class="d-flex align-items-center">
@@ -166,8 +166,9 @@
                 </div>
               </div>
             </div>
-            <div class="card">
+            <div class="card p-2 d-flex flex-row">
               <button class="btn btn-primary" @click="exportToPDF(index)" :disabled="isLoading">Export PDF</button>
+              <button class="btn btn-success text-white ms-2" @click="exportToExcel(mainSchedule.main_schedule_id)" :disabled="isLoading">Export Excel</button>
             </div>
             <div class="card bg-dark text-light p-2">
               <h6>4S Schedule Activities ({{ mainSchedule.line_nm }} - {{ mainSchedule.group_nm }})</h6>
@@ -183,7 +184,7 @@
                     <th id="fixCol-5" class="bg-dark" rowspan="2">PIC</th>
                     <th style="z-index: 1;" rowspan="2">Time</th>
                     <th style="z-index: 1;" rowspan="2">Freq</th>
-                    <th :colspan="getDateThisMonth" class="text-center">{{ getMonthStr }}</th>
+                    <th :colspan="getDateThisMonth" class="text-center month-header-cell">{{ getMonthStr }}</th>
                   </tr>
                   <tr>
                     <th v-for="n in getDateThisMonth" :key="n">{{ n }}</th>
@@ -238,7 +239,7 @@
                               size="lg" />
                             <CIcon v-else-if="children?.status == 'ACTUAL'" icon="cil-check-circle" class="text-success"
                               size="lg" />
-                            <CIcon v-else-if="children?.status == 'LEVEL_UP'" icon="cilArrowCircleTop" class="text-warning"
+                            <CIcon v-else-if="children?.status == 'LEVEL_UP'" icon="cilXCircle" class="text-warning"
                               size="lg" />
                             <CIcon v-else-if="children?.status == 'DELAY'" icon="cil-circle" class="text-danger"
                               size="lg" />
@@ -630,6 +631,8 @@ import { toast } from "vue3-toastify";
 import CustPagination from "@/components/pagination/CustPagination.vue";
 import JudgmentConfirmation from "@/components/new/JudgmentConfirmation.vue";
 import html2pdf from "html2pdf.js";
+import JwtService from "@/store/jwt.service";
+import axios from "axios";
 // eslint-disable-next-line no-unused-vars
 //import { autoCropSignature /*, removeWhiteBackground */ } from "@/functions/imageUtils";
 //import { autoCropSignature, removeWhiteBackground } from "@/functions/imageUtils";
@@ -814,6 +817,45 @@ export default {
         judgment,
         dateIdx,
         ...children
+      }
+    },
+    async exportToExcel(mainScheduleId) {
+      try {
+        this.isLoading = true;
+        const response = await axios.get(
+          `${process.env.VUE_APP_URL}/operational/4s/sub-schedule/export-excel`,
+          {
+            params: { main_schedule_id: mainScheduleId },
+            responseType: 'blob',
+            headers: {
+              Authorization: `Bearer ${JwtService.getToken()}`
+            }
+          }
+        );
+        
+        const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        
+        let filename = '4S_Schedule.xlsx';
+        const disposition = response.headers['content-disposition'];
+        if (disposition && disposition.indexOf('attachment') !== -1) {
+          const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+          const matches = filenameRegex.exec(disposition);
+          if (matches != null && matches[1]) { 
+            filename = matches[1].replace(/['"]/g, '');
+          }
+        }
+        
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (error) {
+        console.error("Export Excel error:", error);
+        toast.error("Gagal mendownload Excel");
+      } finally {
+        this.isLoading = false;
       }
     },
 
@@ -1840,6 +1882,19 @@ export default {
   top: 0px;
   left: 440px;
   z-index: 60;
+}
+
+.month-header-cell {
+  height: 38px;
+  line-height: 38px;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.tableFixHead thead tr:nth-child(2) th {
+  position: sticky;
+  top: 38px !important;
+  z-index: 29;
 }
 </style>
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
